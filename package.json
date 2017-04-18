@@ -3,7 +3,9 @@
   "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentnful CLI tool",
   "main": "index.js",
-  "bin": "dist/cli.js",
+  "bin": {
+    "contentful": "bin/contentful.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel lib -d dist"
@@ -24,6 +26,7 @@
   },
   "dependencies": {
     "cli-table2": "^0.2.0",
+    "contentful-management": "^3.3.4",
     "express": "^4.15.2",
     "inquirer": "^3.0.6",
     "mz": "^2.6.0",
