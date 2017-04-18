@@ -1,5 +1,5 @@
 {
-  "name": "contentful-cli",
+  "name": "@contentful/contentful-cli",
   "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentnful CLI tool",
   "main": "index.js",
@@ -10,6 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel lib -d dist"
   },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ],
   "author": "Benedikt Rötsch <benedikt@contentful.com>",
   "license": "MIT",
   "devDependencies": {
