@@ -7,7 +7,7 @@
     "contentful": "bin/contentful.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec npm run build -w lib",
     "build": "babel lib -d dist"
   },
   "files": [
@@ -27,7 +27,8 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "nodemon": "^1.11.0"
   },
   "dependencies": {
     "cli-table2": "^0.2.0",
