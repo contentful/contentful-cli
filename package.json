@@ -22,9 +22,9 @@
     "babel-core": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.3.3",
+    "babel-preset-env": "^1.4.0",
     "eslint": "^3.19.0",
-    "eslint-config-standard": "^10.2.0",
+    "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
@@ -32,9 +32,10 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "babel-runtime": "^6.23.0",
     "chalk": "^1.1.3",
     "cli-table2": "^0.2.0",
-    "contentful-management": "^3.3.4",
+    "contentful-management": "^3.4.0",
     "emojic": "^1.1.9",
     "express": "^4.15.2",
     "inquirer": "^3.0.6",
@@ -42,6 +43,6 @@
     "opn": "^4.0.2",
     "shell-escape": "^0.2.0",
     "wrap-ansi": "^2.1.0",
-    "yargs": "^7.0.2"
+    "yargs": "^7.1.0"
   }
 }
