@@ -711,6 +711,13 @@ camelcase@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-3.0.0.tgz#32fc4b9fcdaf845fcdf7e73bb97cac2261f0ab0a"
 
+camelo@^1.0.0:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/camelo/-/camelo-1.1.7.tgz#5e6c787bde11211f7e83007c3fa1d38efc53efa4"
+  dependencies:
+    regex-escape "^3.3.0"
+    uc-first-array "^1.0.0"
+
 caniuse-db@^1.0.30000639:
   version "1.0.30000649"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000649.tgz#1ee1754a6df235450c8b7cd15e0ebf507221a86a"
@@ -1007,6 +1014,19 @@ ee-first@1.1.1:
 electron-to-chromium@^1.2.7:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.3.tgz#651eb63fe89f39db70ffc8dbd5d9b66958bc6a0e"
+
+emojic@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/emojic/-/emojic-1.1.9.tgz#2759bd5f8fefbe1b632e4db1a68ea264bb5e2b69"
+  dependencies:
+    camelo "^1.0.0"
+    emojilib "^2.0.2"
+    iterate-object "^1.2.0"
+    r-json "^1.1.0"
+
+emojilib@^2.0.2:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/emojilib/-/emojilib-2.2.1.tgz#36723c8197a80917c422b1160af900f61ea28772"
 
 encodeurl@~1.0.1:
   version "1.0.1"
@@ -1858,6 +1878,10 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
+iterate-object@^1.2.0:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/iterate-object/-/iterate-object-1.3.2.tgz#24ec15affa5d0039e8839695a21c2cae1f45b66b"
+
 jodid25519@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/jodid25519/-/jodid25519-1.0.2.tgz#06d4912255093419477d425633606e0e90782967"
@@ -2464,6 +2488,10 @@ qs@6.4.0, qs@^6.1.0, qs@~6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 
+r-json@^1.1.0:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/r-json/-/r-json-1.2.7.tgz#abe3935f10728dab0895a7aa10f855ce49cb0742"
+
 randomatic@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-1.1.6.tgz#110dcabff397e9dcff7c0789ccc0a49adf1ec5bb"
@@ -2563,6 +2591,10 @@ regex-cache@^0.4.2:
   dependencies:
     is-equal-shallow "^0.1.3"
     is-primitive "^2.0.0"
+
+regex-escape@^3.3.0:
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/regex-escape/-/regex-escape-3.4.6.tgz#5a393a9fca2a293f60927611ba2f9122002a511b"
 
 regexpu-core@^2.0.0:
   version "2.0.0"
@@ -2756,6 +2788,10 @@ set-immediate-shim@^1.0.1:
 setprototypeof@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.0.3.tgz#66567e37043eeb4f04d91bd658c0cbefb55b8e04"
+
+shell-escape@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/shell-escape/-/shell-escape-0.2.0.tgz#68fd025eb0490b4f567a027f0bf22480b5f84133"
 
 shelljs@^0.7.5:
   version "0.7.7"
@@ -3018,6 +3054,16 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
+uc-first-array@^1.0.0:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/uc-first-array/-/uc-first-array-1.1.6.tgz#caa7271175826d84b35301ec14e8d7e050049048"
+  dependencies:
+    ucfirst "^1.0.0"
+
+ucfirst@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ucfirst/-/ucfirst-1.0.0.tgz#4e105b6448d05e264ecec435e0b919363c5f2f2f"
+
 uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
@@ -3105,7 +3151,7 @@ wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
 
-wrap-ansi@^2.0.0:
+wrap-ansi@^2.0.0, wrap-ansi@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-2.1.0.tgz#d8fc3d284dd05794fe84973caecdd1cf824fdd85"
   dependencies:

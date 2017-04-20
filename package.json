@@ -31,12 +31,16 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "chalk": "^1.1.3",
     "cli-table2": "^0.2.0",
     "contentful-management": "^3.3.4",
+    "emojic": "^1.1.9",
     "express": "^4.15.2",
     "inquirer": "^3.0.6",
     "mz": "^2.6.0",
     "opn": "^4.0.2",
+    "shell-escape": "^0.2.0",
+    "wrap-ansi": "^2.1.0",
     "yargs": "^7.0.2"
   }
 }

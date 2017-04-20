@@ -37,6 +37,15 @@ contentful --help
 contentful space --help
 ```
 
+## Development
+
+After installing the dependencies, there is a trick to get your version of the CLI tool available globally on your system:
+```sh
+npm link
+```
+
+This may collide with your already globally installed contentful CLI. Make sure to remove that one first.
+
 ## Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.
