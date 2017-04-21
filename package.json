@@ -14,21 +14,32 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --exec npm run build -w lib",
-    "build": "babel lib -d dist"
+    "build": "babel lib -d dist",
+    "test": "npm run test:coverage",
+    "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
+    "test:unit": "BABEL_ENV=test ava --verbose",
+    "test:unit:watch": "BABEL_ENV=test ava --verbose --watch"
   },
   "devDependencies": {
+    "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
+    "babel-plugin-istanbul": "^4.1.1",
+    "babel-plugin-rewire": "^1.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "babel-template": "^6.24.1",
+    "babel-types": "^6.24.1",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "nyc": "^10.2.0",
+    "sinon": "^2.1.0"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
@@ -51,5 +62,20 @@
     "bin",
     "dist",
     "README.md"
-  ]
+  ],
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  }
 }

@@ -13,5 +13,13 @@
       "polyfill": false,
       "regenerator": true
     }]
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul",
+        "rewire"
+      ]
+    }
+  }
 }
