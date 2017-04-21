@@ -29,6 +29,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "babel-register": "^6.24.1",
     "babel-template": "^6.24.1",
     "babel-types": "^6.24.1",
     "eslint": "^3.19.0",
