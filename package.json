@@ -1,22 +1,21 @@
 {
   "name": "@contentful/contentful-cli",
   "version": "0.1.3",
-  "description": "Contentnful CLI tool",
+  "description": "Contentful CLI tool",
   "main": "index.js",
   "bin": {
     "contentful": "bin/contentful.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/contentful/contentful-cli.git"
+  },
+  "author": "Contentful <opensource@contentful.com>",
+  "license": "MIT",
   "scripts": {
     "dev": "nodemon --exec npm run build -w lib",
     "build": "babel lib -d dist"
   },
-  "files": [
-    "bin",
-    "dist",
-    "README.md"
-  ],
-  "author": "Benedikt Rötsch <benedikt@contentful.com>",
-  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
@@ -44,5 +43,13 @@
     "shell-escape": "^0.2.0",
     "wrap-ansi": "^2.1.0",
     "yargs": "^7.1.0"
-  }
+  },
+  "engines": {
+    "node": ">=4.7.2"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ]
 }
