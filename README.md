@@ -1,4 +1,6 @@
 [![npm](https://img.shields.io/npm/v/contentfulc-li.svg)](https://www.npmjs.com/package/contentful-cli)
+[![Build Status](https://travis-ci.com/contentful/contentful-cli.svg?token=fyDxSEex8FXB9BKySX88&branch=master)](https://travis-ci.com/contentful/contentful-cli)
+[![codecov](https://codecov.io/gh/contentful/contentful-cli/branch/master/graph/badge.svg?token=L0f5L0tgr9)](https://codecov.io/gh/contentful/contentful-cli)
 
 [Contentful's](https://www.contentful.com) command line interface tool. Use Contentful features straight from your CLI.
 

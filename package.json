@@ -15,10 +15,14 @@
   "scripts": {
     "dev": "nodemon --exec npm run build -w lib",
     "build": "babel lib -d dist",
+    "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:unit": "BABEL_ENV=test ava --verbose",
-    "test:unit:watch": "BABEL_ENV=test ava --verbose --watch"
+    "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
+    "test:simulate-ci": "trevor",
+    "precommit": "npm run lint",
+    "prepush": "npm run test"
   },
   "devDependencies": {
     "ava": "^0.19.1",
@@ -33,15 +37,18 @@
     "babel-template": "^6.24.1",
     "babel-types": "^6.24.1",
     "contentful-import": "^4.2.0",
+    "cz-conventional-changelog": "^2.0.0",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-node": "^4.2.2",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.13.3",
     "nodemon": "^1.11.0",
     "nyc": "^10.2.0",
-    "sinon": "^2.1.0"
+    "sinon": "^2.1.0",
+    "trevor": "^2.3.0"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
@@ -73,11 +80,17 @@
   },
   "nyc": {
     "check-coverage": true,
+    "lines": 80,
     "reporter": [
       "lcov",
       "text"
     ],
     "sourceMap": false,
     "instrument": false
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
