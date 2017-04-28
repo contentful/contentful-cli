@@ -2,7 +2,7 @@ import test from 'ava'
 import { stub } from 'sinon'
 
 import {
-  handler as spaceCreateHandler,
+  spaceCreate as spaceCreateHandler,
   __RewireAPI__ as spaceCreateRewireAPI
 } from '../../../lib/cmds/space_cmds/create'
 import {
