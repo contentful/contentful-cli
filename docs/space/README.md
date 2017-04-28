@@ -6,3 +6,6 @@
 * [list](./list)
 * [seed](./seed)
 * [use](./use)
+* [import](./import)
+* [export](./export)
+* [diff](./diff)
