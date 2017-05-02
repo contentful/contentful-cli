@@ -66,6 +66,7 @@
     "emojic": "^1.1.9",
     "express": "^4.15.2",
     "figlet": "^1.2.0",
+    "fast-json-patch": "^1.1.9",
     "inquirer": "^3.0.6",
     "markdown-cli": "^1.5.1",
     "jsdiff": "^1.1.1",
