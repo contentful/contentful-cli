@@ -13,8 +13,9 @@
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
+    "build": "npm run clean && babel lib -d dist",
+    "clean": "rimraf dist",
     "dev": "nodemon --exec npm run build -w lib",
-    "build": "babel lib -d dist",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
@@ -47,6 +48,7 @@
     "husky": "^0.13.3",
     "nodemon": "^1.11.0",
     "nyc": "^10.2.0",
+    "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
     "trevor": "^2.3.0"
   },
