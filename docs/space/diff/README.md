@@ -7,7 +7,9 @@ This command shows the contentTypes diff between two spaces
 Usage: contentful space diff [options]
 
 Options:
-  --target-space           target space to check against      [string] [required]
+  --target-space           Target space to check against      [string] [required]
+  --generate-patch         Generate patch file along with the diffing [boolean] [default: false]
+  --patch-dir              Directory to save the patch files to [string] [default: cwd]
 ```
 
 ### Example
