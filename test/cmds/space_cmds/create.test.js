@@ -2,13 +2,14 @@ import test from 'ava'
 import { stub } from 'sinon'
 
 import {
-  spaceCreate as spaceCreateHandler,
+  spaceCreate,
   __RewireAPI__ as spaceCreateRewireAPI
 } from '../../../lib/cmds/space_cmds/create'
 import {
   emptyContext,
   setContext
 } from '../../../lib/context'
+import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const fakeClient = {
   createSpace: stub().returns({
@@ -41,7 +42,7 @@ test.serial('create space', async (t) => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  const result = await spaceCreateHandler(spaceData)
+  const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
   t.true(createClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
@@ -58,7 +59,7 @@ test.serial('create space with passed organization id', async (t) => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  const result = await spaceCreateHandler(spaceData)
+  const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
   t.true(createClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
@@ -75,7 +76,7 @@ test.serial('create space with organization id from context', async (t) => {
     cmaToken: 'mockedToken',
     activeOrganizationId: 'mockedOrganizationIdFromContext'
   })
-  const result = await spaceCreateHandler(spaceData)
+  const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
   t.true(createClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
@@ -88,9 +89,8 @@ test.serial('create space - fails when not logged in', async (t) => {
   setContext({
     cmaToken: null
   })
-  const result = await spaceCreateHandler({})
-  t.false(result, 'returned false')
-
+  const error = await t.throws(spaceCreate({}), PreconditionFailedError, 'throws precondition failed error')
+  t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
   t.true(createClientStub.notCalled, 'did not create client')
 })
 
@@ -102,6 +102,6 @@ test.serial('create space - throws error when sth goes wrong', async (t) => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  await t.throws(spaceCreateHandler({}), errorMessage, 'throws error')
+  await t.throws(spaceCreate({}), errorMessage, 'throws error')
   t.true(fakeClient.createSpace.calledOnce, 'tried to created space')
 })
