@@ -1,14 +1,14 @@
-[![npm](https://img.shields.io/npm/v/contentfulc-li.svg)](https://www.npmjs.com/package/contentful-cli)
+# Contentful CLI
+
+> [Contentful's](https://www.contentful.com) command line interface tool. Use Contentful features straight from your CLI.
+
+[![npm](https://img.shields.io/npm/v/contentful-cli.svg)](https://www.npmjs.com/package/contentful-cli)
 [![Build Status](https://travis-ci.com/contentful/contentful-cli.svg?token=fyDxSEex8FXB9BKySX88&branch=master)](https://travis-ci.com/contentful/contentful-cli)
 [![codecov](https://codecov.io/gh/contentful/contentful-cli/branch/master/graph/badge.svg?token=L0f5L0tgr9)](https://codecov.io/gh/contentful/contentful-cli)
 
-[Contentful's](https://www.contentful.com) command line interface tool. Use Contentful features straight from your CLI.
-
-# About
-
 [Contentful](https://www.contentful.com) is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via a powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-## Features
+## :rocket: Features
 
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
 - Manage spaces - List, create, ...
@@ -16,7 +16,7 @@
 - Run a guide which introduces you to the Contentful basics.
 - More to come soon! 🚀
 
-## Installation
+## :cloud: Installation
 
 Using [npm](http://npmjs.org):
 
@@ -29,7 +29,7 @@ Using [yarn](https://yarnpkg.com):
 yarn global add contentful-cli
 ```
 
-## Usage
+## :hand: Usage
 
 Use the `--help` parameter to display the help section for CLI tool or combined with a specific command to get the help section for that commandd.
 
@@ -39,7 +39,11 @@ contentful --help
 contentful space --help
 ```
 
-## Development
+## :books: Documentation
+
+More detailed documentation for every command can be found in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
+
+## :hammer_and_wrench: Development
 
 After installing the dependencies, there is a trick to get your version of the CLI tool available globally on your system:
 ```sh
@@ -48,16 +52,16 @@ npm link
 
 This may collide with your already globally installed contentful CLI. Make sure to remove that one first.
 
-## Support
+## :question: Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.
 
 If you have other problems with Contentful not related to this library, you can contact [Customer Support](https://support.contentful.com).
 
-## Contributing
+## :writing_hand: Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## License
+## :scroll: License
 
 MIT
