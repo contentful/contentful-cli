@@ -7,24 +7,30 @@ import {
 test.afterEach.always(() => {
   rewire.__ResetDependency__('diffJson')
   rewire.__ResetDependency__('getDiffOrPatchData')
+  rewire.__ResetDependency__('getDiffData')
+  rewire.__ResetDependency__('getPatchData')
 })
 
 test('diff and patches remove unneeded props from content types', t => {
   const currentModel = [{
-    sys: { id: 1 },
-    version: null,
-    firstPublishedAt: null,
-    name: 'foo',
-    publishedAt: null,
-    publishedBy: null
+    sys: {
+      id: 1,
+      publishedAt: null,
+      publishedBy: null,
+      version: null,
+      firstPublishedAt: null
+    },
+    name: 'foo'
   }]
   const targetModel = [{
-    sys: { id: 1 },
-    publishedCounter: null,
-    publishedVersion: null,
-    updatedAt: null,
     displayName: 'bar',
-    updatedBy: null
+    sys: {
+      id: 1,
+      publishedCounter: null,
+      publishedVersion: null,
+      updatedAt: null,
+      updatedBy: null
+    }
   }]
 
   rewire.__Rewire__('diffJson', fakeCompare)
@@ -53,7 +59,7 @@ test('diff and patches leave other values alone', t => {
   rewire.__Rewire__('diffJson', fakeCompare)
   function fakeCompare (y, x) {
     t.deepEqual(x, { name: 'foo', somethingElse: 'bar' })
-    t.deepEqual(y, '')
+    t.deepEqual(y, {})
   }
 
   getPatchesAndDiff(currentModel, targetModel)
@@ -81,7 +87,8 @@ test('diff and patches consider content types from both current and target model
     }
   ]
 
-  rewire.__Rewire__('getDiffOrPatchData', function () { return null })
+  rewire.__Rewire__('getPatchData', function () { return null })
+  rewire.__Rewire__('getDiffData', function () { return null })
 
   const expected = {
     diff: [
@@ -97,7 +104,7 @@ test('diff and patches consider content types from both current and target model
   }
 
   const result = getPatchesAndDiff(currentModel, targetModel)
-
+  console.log(result)
   t.deepEqual(result.diff, expected.diff)
   t.deepEqual(result.patches, expected.patches)
 })
