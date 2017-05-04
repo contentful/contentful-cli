@@ -23,7 +23,7 @@
     "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
-    "prepush": "npm run test"
+    "prepush": "npm run test:unit"
   },
   "devDependencies": {
     "ava": "^0.19.1",
