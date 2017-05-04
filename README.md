@@ -31,7 +31,7 @@ yarn global add contentful-cli
 
 ## :hand: Usage
 
-Use the `--help` parameter to display the help section for CLI tool or combined with a specific command to get the help section for that commandd.
+Use the `--help` parameter to display the help section for CLI tool or combined with a specific command to get the help section for that command.
 
 ```sh
 contentful --help
