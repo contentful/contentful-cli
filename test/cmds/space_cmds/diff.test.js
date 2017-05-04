@@ -9,7 +9,7 @@ test.afterEach.always(() => {
   rewire.__ResetDependency__('getDiffOrPatchData')
 })
 
-test('getDiffOrPatchData removes unneeded props from content types', t => {
+test('diff and patches remove unneeded props from content types', t => {
   const currentModel = [{
     sys: { id: 1 },
     version: null,
@@ -42,7 +42,7 @@ test('getDiffOrPatchData removes unneeded props from content types', t => {
   getPatchesAndDiff(currentModel, targetModel)
 })
 
-test('getDiffOrPatchData leaves other values alone', t => {
+test('diff and patches leave other values alone', t => {
   const currentModel = [{
     sys: { id: 1 },
     name: 'foo',
@@ -59,7 +59,7 @@ test('getDiffOrPatchData leaves other values alone', t => {
   getPatchesAndDiff(currentModel, targetModel)
 })
 
-test('getPatchesAndDiff considers content types from both current and target model', t => {
+test('diff and patches consider content types from both current and target model', t => {
   const currentModel = [
     {
       sys: { id: 1 },
