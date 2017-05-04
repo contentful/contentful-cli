@@ -101,3 +101,61 @@ test('diff and patches consider content types from both current and target model
   t.deepEqual(result.diff, expected.diff)
   t.deepEqual(result.patches, expected.patches)
 })
+
+test('It should add an extra operation when a field is deleted', (t) => {
+  const sourceCT = {
+    sys: {
+      id: 'ctid'
+    },
+    name: 'CT',
+    fields: [
+      {
+        'id': 'companyName',
+        'name': 'Company name',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      },
+      {
+        'id': 'companydescription',
+        'name': 'Company Description',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      }
+    ]
+  }
+  const destinationCT = {
+    sys: {
+      id: 'ctid'
+    },
+    name: 'CT',
+    fields: [
+      {
+        'id': 'companyName',
+        'name': 'Company name',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      }
+    ]
+  }
+  const result = getPatchesAndDiff([destinationCT], [sourceCT])
+  const ctPatch = result.patches[0]
+  t.is(ctPatch.patches[0].op, 'replace')
+  t.is(ctPatch.patches[0].path, '/fields/1/omitted')
+  t.is(ctPatch.patches[0].value, true)
+
+  t.is(ctPatch.patches[1].op, 'replace')
+  t.is(ctPatch.patches[1].path, '/fields/1/deleted')
+  t.is(ctPatch.patches[1].value, true)
+})
