@@ -1,6 +1,8 @@
 import test from 'ava'
+import chalk from 'chalk'
 import {
   getPatchesAndDiff,
+  renderDiff,
   __RewireAPI__ as rewire
 } from '../../../lib/cmds/space_cmds/diff/index'
 
@@ -107,6 +109,32 @@ test('diff and patches consider content types from both current and target model
   console.log(result)
   t.deepEqual(result.diff, expected.diff)
   t.deepEqual(result.patches, expected.patches)
+})
+
+test('renderDiff renders changes including context', (t) => {
+  const diffData = [
+    {
+      name: 'a content type where nothing changed',
+      diff: [{ value: 'nulla ut metus varius laor' }]
+    },
+    {
+      name: 'another content type',
+      diff: [
+        { value: 'Lorem ipsum dolor sit amet' },
+        { value: 'consectetuer adipisci', added: true },
+        { value: 'g elit. Aenean commodo ' }
+      ]
+    }
+  ]
+
+  rewire.__Rewire__('frame', function (str) {
+    t.deepEqual(str.split('\n'), [
+      'another content type',
+      `Lorem ipsum dolor sit amet${chalk.green('consectetuer adipisci')}g elit. Aenean commodo `
+    ])
+  })
+
+  renderDiff(diffData)
 })
 
 test('It should add an extra operation when a field is deleted', (t) => {
