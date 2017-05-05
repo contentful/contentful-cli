@@ -194,3 +194,61 @@ test('It should add an extra operation when a field is deleted', (t) => {
   t.is(ctPatch.patches[1].path, '/fields/1/deleted')
   t.is(ctPatch.patches[1].value, true)
 })
+
+test('uh oh this is not right', (t) => {
+  const sourceCT = {
+    sys: {
+      id: 'ctid'
+    },
+    name: 'CT',
+    fields: [
+      {
+        'id': 'companydescription',
+        'immutableId': 'immutable-1',
+        'name': 'Company Description',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      }
+    ]
+  }
+  const destinationCT = {
+    sys: {
+      id: 'ctid'
+    },
+    name: 'CT',
+    fields: [
+      {
+        'id': 'companydescription',
+        'immutableId': 'immutable-2',
+        'name': 'Company Description',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      },
+      {
+        'id': 'companyName',
+        'immutableId': 'immutable-1',
+        'name': 'Company name',
+        'type': 'Text',
+        'localized': false,
+        'required': true,
+        'validations': [],
+        'disabled': false,
+        'omitted': false
+      }
+    ]
+  }
+  const result = getPatchesAndDiff([destinationCT], [sourceCT])
+  const ctPatch = result.patches[0]
+  var util = require('util')
+  console.log(util.inspect(ctPatch, {showHidden: false, depth: null}))
+
+  t.pass()
+})
