@@ -186,13 +186,14 @@ test('It should add an extra operation when a field is deleted', (t) => {
   }
   const result = getPatchesAndDiff([destinationCT], [sourceCT])
   const ctPatch = result.patches[0]
-  t.is(ctPatch.patches[0].op, 'replace')
-  t.is(ctPatch.patches[0].path, '/fields/1/omitted')
-  t.is(ctPatch.patches[0].value, true)
 
-  t.is(ctPatch.patches[1].op, 'replace')
-  t.is(ctPatch.patches[1].path, '/fields/1/deleted')
-  t.is(ctPatch.patches[1].value, true)
+  t.is(ctPatch.patches[0].op, 'replace', 'It should be a `replace` `op` for omitted property')
+  t.is(ctPatch.patches[0].path, '/fields/1/omitted', 'It should point to omitted property')
+  t.is(ctPatch.patches[0].value, true, 'It should set omitted to true')
+
+  t.is(ctPatch.patches[1].op, 'replace', 'it should be a `replace` `op` for deleted property')
+  t.is(ctPatch.patches[1].path, '/fields/1/deleted', 'It should point to the deleted property')
+  t.is(ctPatch.patches[1].value, true, 'it should set deleted property to true')
 })
 
 test('uh oh this is not right', (t) => {
