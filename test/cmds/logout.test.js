@@ -7,6 +7,9 @@ import {
   __RewireAPI__ as logoutRewireAPI
 } from '../../lib/cmds/logout'
 import {
+  __RewireAPI__ as actionsRewireAPI
+} from '../../lib/utils/actions'
+import {
   emptyContext,
   setContext,
   getContext,
@@ -21,7 +24,7 @@ const warningStub = stub()
 const successStub = stub()
 
 test.before(() => {
-  logoutRewireAPI.__Rewire__('inquirer', inquirer)
+  actionsRewireAPI.__Rewire__('inquirer', inquirer)
   logoutRewireAPI.__Rewire__('log', logStub)
   logoutRewireAPI.__Rewire__('success', successStub)
   logoutRewireAPI.__Rewire__('warning', warningStub)
@@ -29,7 +32,7 @@ test.before(() => {
 })
 
 test.after.always(() => {
-  logoutRewireAPI.__ResetDependency__('inquirer')
+  actionsRewireAPI.__ResetDependency__('inquirer')
   logoutRewireAPI.__ResetDependency__('log')
   logoutRewireAPI.__ResetDependency__('success')
   logoutRewireAPI.__ResetDependency__('warning')
@@ -46,6 +49,7 @@ test.afterEach((t) => {
 
 test.serial('logout fails when not logged in', async (t) => {
   emptyContext()
+  setContext({})
   const error = await t.throws(logout({}), PreconditionFailedError, 'throws precondition failed error')
   t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
   t.is(warningStub.callCount, 0, 'does not display warning')
