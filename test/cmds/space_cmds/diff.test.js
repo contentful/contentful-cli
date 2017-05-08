@@ -45,6 +45,7 @@ test('diff and patches remove unneeded props from content types', t => {
     }
     t.deepEqual(x, cleanedX)
     t.deepEqual(y, cleanedY)
+    return []
   }
 
   getPatchesAndDiff(currentModel, targetModel)
@@ -62,6 +63,7 @@ test('diff and patches leave other values alone', t => {
   function fakeCompare (y, x) {
     t.deepEqual(x, { name: 'foo', somethingElse: 'bar' })
     t.deepEqual(y, {})
+    return []
   }
 
   getPatchesAndDiff(currentModel, targetModel)
