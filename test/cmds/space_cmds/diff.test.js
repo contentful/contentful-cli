@@ -115,23 +115,92 @@ test('renderDiff renders changes including context', (t) => {
   const diffData = [
     {
       name: 'a content type where nothing changed',
-      diff: [{ value: 'nulla ut metus varius laor' }]
+      diff: [{ value: 'nulla ut metus varius laor\n' }]
     },
     {
       name: 'another content type',
       diff: [
-        { value: 'Lorem ipsum dolor sit amet' },
-        { value: 'consectetuer adipisci', added: true },
-        { value: 'g elit. Aenean commodo ' }
+        { value: 'Lorem ipsum dolor sit amet\n' },
+        { value: 'consectetuer adipisci\n', added: true },
+        { value: 'g elit. Aenean commodo \n' }
       ]
     }
   ]
 
   rewire.__Rewire__('frame', function (str) {
-    t.deepEqual(str.split('\n'), [
-      'another content type',
-      `Lorem ipsum dolor sit amet${chalk.green('consectetuer adipisci')}g elit. Aenean commodo `
-    ])
+    let expected =
+      'another content type\n' +
+      'Lorem ipsum dolor sit amet\n' +
+      chalk.green('consectetuer adipisci\n') +
+      'g elit. Aenean commodo \n'
+
+    t.is(str, expected)
+  })
+
+  renderDiff(diffData)
+})
+
+test('renderDiff only adds context around blocks of changes, not in between', (t) => {
+  const diffData = [
+    {
+      name: 'a content type where nothing changed',
+      diff: [{ value: 'nulla ut metus varius laor' }]
+    },
+    {
+      name: 'another content type',
+      diff: [
+        { value: 'Lorem ipsum dolor sit amet\n' },
+        { value: 'this was removed\n', removed: true },
+        { value: 'this was added\n', added: true },
+        { value: 'and this was also removed\n', removed: true },
+        { value: 'g elit. Aenean commodo \n' }
+      ]
+    }
+  ]
+
+  rewire.__Rewire__('frame', function (str) {
+    let expected =
+      'another content type\n' +
+      'Lorem ipsum dolor sit amet\n' +
+      chalk.red('this was removed\n') +
+      chalk.green('this was added\n') +
+      chalk.red('and this was also removed\n') +
+      'g elit. Aenean commodo \n'
+
+    t.is(str, expected)
+  })
+
+  renderDiff(diffData)
+})
+
+test('renderDiff does not repeat context chunks', (t) => {
+  const diffData = [
+    {
+      name: 'a content type where nothing changed',
+      diff: [{ value: 'nulla ut metus varius laor' }]
+    },
+    {
+      name: 'another content type',
+      diff: [
+        { value: 'Lorem ipsum dolor sit amet\n' },
+        { value: 'this was removed\n', removed: true },
+        { value: 'This should only show up once and not be repeated Lorem ipsum dolor sit amet, consectetuer adipisci\n' },
+        { value: 'and this was also removed\n', removed: true },
+        { value: 'g elit. Aenean commodo \n' }
+      ]
+    }
+  ]
+
+  rewire.__Rewire__('frame', function (str) {
+    let expected =
+      'another content type\n' +
+      'Lorem ipsum dolor sit amet\n' +
+      chalk.red('this was removed\n') +
+      'This should only show up once and not be repeated Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
+      chalk.red('and this was also removed\n') +
+      'g elit. Aenean commodo \n'
+
+    t.is(str, expected)
   })
 
   renderDiff(diffData)
