@@ -131,7 +131,7 @@ test('renderDiff renders changes including context', (t) => {
 
   rewire.__Rewire__('frame', function (str) {
     let expected =
-      'another content type\n' +
+      'another content type\n\n' +
       'Lorem ipsum dolor sit amet\n' +
       chalk.green('consectetuer adipisci\n') +
       'g elit. Aenean commodo \n'
@@ -162,7 +162,7 @@ test('renderDiff only adds context around blocks of changes, not in between', (t
 
   rewire.__Rewire__('frame', function (str) {
     let expected =
-      'another content type\n' +
+      'another content type\n\n' +
       'Lorem ipsum dolor sit amet\n' +
       chalk.red('this was removed\n') +
       chalk.green('this was added\n') +
@@ -186,7 +186,7 @@ test('renderDiff does not repeat context chunks', (t) => {
       diff: [
         { value: 'Lorem ipsum dolor sit amet\n' },
         { value: 'this was removed\n', removed: true },
-        { value: 'This should only show up once and not be repeated Lorem ipsum dolor sit amet, consectetuer adipisci\n' },
+        { value: 'Lorem ipsum dolor sit amet, consectetuer adipisci\n' },
         { value: 'and this was also removed\n', removed: true },
         { value: 'g elit. Aenean commodo \n' }
       ]
@@ -195,10 +195,12 @@ test('renderDiff does not repeat context chunks', (t) => {
 
   rewire.__Rewire__('frame', function (str) {
     let expected =
-      'another content type\n' +
+      'another content type\n\n' +
       'Lorem ipsum dolor sit amet\n' +
       chalk.red('this was removed\n') +
-      'This should only show up once and not be repeated Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
+      'Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
+      '\n' + '-'.repeat(30) + '\n\n' +
+      'Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
       chalk.red('and this was also removed\n') +
       'g elit. Aenean commodo \n'
 
