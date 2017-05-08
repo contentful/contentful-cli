@@ -291,7 +291,7 @@ test('It should add an extra operation when a field is deleted', (t) => {
   t.is(ctPatch.patches[1].value, true, 'it should set deleted property to true')
 })
 
-test('uh oh this is not right', (t) => {
+test('detect field renaming', (t) => {
   const sourceCT = {
     sys: {
       id: 'ctid'
@@ -343,6 +343,15 @@ test('uh oh this is not right', (t) => {
   }
   const result = getPatchesAndDiff([destinationCT], [sourceCT])
   const ctPatch = result.patches[0]
-  console.log(ctPatch)
-  t.pass()
+
+  t.is(ctPatch.patches.length, 3)
+
+  t.is(ctPatch.patches[0].op, 'replace')
+  t.is(ctPatch.patches[0].path, '/fields/0/name')
+
+  t.is(ctPatch.patches[1].op, 'replace')
+  t.is(ctPatch.patches[1].path, '/fields/0/id')
+
+  t.is(ctPatch.patches[2].op, 'add')
+  t.is(ctPatch.patches[2].path, '/fields/1')
 })
