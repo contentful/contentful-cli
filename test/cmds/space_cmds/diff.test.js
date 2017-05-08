@@ -292,9 +292,9 @@ test('uh oh this is not right', (t) => {
     name: 'CT',
     fields: [
       {
-        'id': 'companydescription',
-        'immutableId': 'immutable-2',
-        'name': 'Company Description',
+        'id': 'companyName',
+        'immutableId': 'immutable-1',
+        'name': 'Company name',
         'type': 'Text',
         'localized': false,
         'required': true,
@@ -303,9 +303,9 @@ test('uh oh this is not right', (t) => {
         'omitted': false
       },
       {
-        'id': 'companyName',
-        'immutableId': 'immutable-1',
-        'name': 'Company name',
+        'id': 'companydescription',
+        'immutableId': 'immutable-2',
+        'name': 'Company Description',
         'type': 'Text',
         'localized': false,
         'required': true,
@@ -317,8 +317,6 @@ test('uh oh this is not right', (t) => {
   }
   const result = getPatchesAndDiff([destinationCT], [sourceCT])
   const ctPatch = result.patches[0]
-  var util = require('util')
-  console.log(util.inspect(ctPatch, {showHidden: false, depth: null}))
-
+  console.log(ctPatch)
   t.pass()
 })
