@@ -1,5 +1,6 @@
 import test from 'ava'
 import chalk from 'chalk'
+import emojic from 'emojic'
 import {
   getPatchesAndDiff,
   renderDiff,
@@ -203,6 +204,27 @@ test('renderDiff does not repeat context chunks', (t) => {
       'Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
       chalk.red('and this was also removed\n') +
       'g elit. Aenean commodo \n'
+
+    t.is(str, expected)
+  })
+
+  renderDiff(diffData)
+})
+
+test('no diff when no changes in model', (t) => {
+  const diffData = [
+    {
+      name: 'a content type where nothing changed',
+      diff: [{ value: 'nulla ut metus varius laor' }]
+    },
+    {
+      name: 'another content type where nothing changed',
+      diff: [{ value: 'nulla ut metus varius laor' }]
+    }
+  ]
+
+  rewire.__Rewire__('frame', function (str) {
+    let expected = `${emojic.sparkles}  Your content types are identical ${emojic.sparkles}`
 
     t.is(str, expected)
   })
