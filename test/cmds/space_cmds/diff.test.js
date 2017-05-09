@@ -1,16 +1,18 @@
 import test from 'ava'
-import chalk from 'chalk'
 import {
   getPatchesAndDiff,
-  renderDiff,
+  diffBoundaryContext,
   __RewireAPI__ as rewire
 } from '../../../lib/cmds/space_cmds/diff/index'
+
+let getDiffBoundaries
 
 test.afterEach.always(() => {
   rewire.__ResetDependency__('diffJson')
   rewire.__ResetDependency__('getDiffOrPatchData')
   rewire.__ResetDependency__('getDiffData')
   rewire.__ResetDependency__('getPatchData')
+  getDiffBoundaries = diffBoundaryContext(100, '*')
 })
 
 test('diff and patches remove unneeded props from content types', t => {
@@ -108,106 +110,61 @@ test('diff and patches consider content types from both current and target model
   }
 
   const result = getPatchesAndDiff(currentModel, targetModel)
-  console.log(result)
   t.deepEqual(result.diff, expected.diff)
   t.deepEqual(result.patches, expected.patches)
 })
 
-test('renderDiff renders changes including context', (t) => {
-  const diffData = [
-    {
-      name: 'a content type where nothing changed',
-      diff: [{ value: 'nulla ut metus varius laor\n' }]
-    },
-    {
-      name: 'another content type',
-      diff: [
-        { value: 'Lorem ipsum dolor sit amet\n' },
-        { value: 'consectetuer adipisci\n', added: true },
-        { value: 'g elit. Aenean commodo \n' }
-      ]
-    }
+test('diffBoundary finds boundaries', (t) => {
+  const diff = [
+    { value: 'Lorem ipsum dolor sit amet\n' },
+    { value: 'consectetuer adipisci\n', added: true },
+    { value: 'g elit. Aenean commodo \n' }
   ]
 
-  rewire.__Rewire__('frame', function (str) {
-    let expected =
-      'another content type\n\n' +
-      'Lorem ipsum dolor sit amet\n' +
-      chalk.green('consectetuer adipisci\n') +
-      'g elit. Aenean commodo \n'
+  let expected = {
+    before: 'Lorem ipsum dolor sit amet\n',
+    after: 'g elit. Aenean commodo \n'
+  }
 
-    t.is(str, expected)
-  })
-
-  renderDiff(diffData)
+  let result = getDiffBoundaries(diff, 1)
+  t.deepEqual(result, expected)
 })
 
-test('renderDiff only adds context around blocks of changes, not in between', (t) => {
-  const diffData = [
-    {
-      name: 'a content type where nothing changed',
-      diff: [{ value: 'nulla ut metus varius laor' }]
-    },
-    {
-      name: 'another content type',
-      diff: [
-        { value: 'Lorem ipsum dolor sit amet\n' },
-        { value: 'this was removed\n', removed: true },
-        { value: 'this was added\n', added: true },
-        { value: 'and this was also removed\n', removed: true },
-        { value: 'g elit. Aenean commodo \n' }
-      ]
-    }
+test('diffBoundary only adds context around blocks of changes, not in between', (t) => {
+  const diff = [
+    { value: 'Lorem ipsum dolor sit amet\n' },
+    { value: 'this was removed\n', removed: true },
+    { value: 'this was added\n', added: true },
+    { value: 'and this was also removed\n', removed: true },
+    { value: 'g elit. Aenean commodo \n' }
   ]
 
-  rewire.__Rewire__('frame', function (str) {
-    let expected =
-      'another content type\n\n' +
-      'Lorem ipsum dolor sit amet\n' +
-      chalk.red('this was removed\n') +
-      chalk.green('this was added\n') +
-      chalk.red('and this was also removed\n') +
-      'g elit. Aenean commodo \n'
+  let expected = {
+    before: 'Lorem ipsum dolor sit amet\n',
+    after: null
+  }
 
-    t.is(str, expected)
-  })
-
-  renderDiff(diffData)
+  let result = getDiffBoundaries(diff, 1)
+  t.deepEqual(result, expected)
 })
 
-test('renderDiff does not repeat context chunks', (t) => {
-  const diffData = [
-    {
-      name: 'a content type where nothing changed',
-      diff: [{ value: 'nulla ut metus varius laor' }]
-    },
-    {
-      name: 'another content type',
-      diff: [
-        { value: 'Lorem ipsum dolor sit amet\n' },
-        { value: 'this was removed\n', removed: true },
-        { value: 'Lorem ipsum dolor sit amet, consectetuer adipisci\n' },
-        { value: 'and this was also removed\n', removed: true },
-        { value: 'g elit. Aenean commodo \n' }
-      ]
-    }
+test('diffBoundary adds delimiter between change chunks', (t) => {
+  const diff = [
+    { value: 'Lorem ipsum dolor sit amet\n' },
+    { value: 'this was removed\n', removed: true },
+    { value: 'Lorem ipsum dolor sit amet, consectetuer adipisci\n' },
+    { value: 'and this was also removed\n', removed: true },
+    { value: 'g elit. Aenean commodo \n' }
   ]
 
-  rewire.__Rewire__('frame', function (str) {
-    let expected =
-      'another content type\n\n' +
-      'Lorem ipsum dolor sit amet\n' +
-      chalk.red('this was removed\n') +
-      'Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
-      '\n' + '-'.repeat(30) + '\n\n' +
-      'Lorem ipsum dolor sit amet, consectetuer adipisci\n' +
-      chalk.red('and this was also removed\n') +
-      'g elit. Aenean commodo \n'
+  let expected = {
+    before: '*' + 'Lorem ipsum dolor sit amet, consectetuer adipisci\n',
+    after: 'g elit. Aenean commodo \n'
+  }
 
-    t.is(str, expected)
-  })
-
-  renderDiff(diffData)
+  getDiffBoundaries(diff, 1)
+  let result = getDiffBoundaries(diff, 3)
+  t.deepEqual(result, expected)
 })
 
 test('It should add an extra operation when a field is deleted', (t) => {
