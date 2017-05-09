@@ -24,21 +24,18 @@ Options:
   --skip-content          Skip exporting assets and entries
                                                       [boolean] [default: false]
 
-  --skip-roles            Skip exporting roles and permissions
-                                                      [boolean] [default: false]
-
   --skip-webhooks         Skip exporting webhooks     [boolean] [default: false]
 
   --download-assets       With this flags assets will also be downloaded
-                                                                       [boolean]
+                                                      [boolean] [default: false]
 
   --max-allowed-limit     How many items per page per request
-                                                        [number] [default: 1000]
+                                                      [number] [default: 1000]
 
   --management-host       Management API host
                                         [string] [default: "api.contentful.com"]
 
-  --error-log-file        Full path to the error log file               [string]
+  --error-log-file        Full path to the error log file [string]
 
   --use-verbose-renderer  Display progress in new lines instead of displaying a
                           busy spinner and the status in the same line. Useful
@@ -63,7 +60,7 @@ contentful space export
   "assets": [],
   "locales": [],
   "webhooks": [],
-  "roles": [],
+  "roles: [],
   "editorInterfaces": []
 }
 ```
@@ -72,4 +69,4 @@ contentful space export
 
 - This tool currently does **not** support the export of space memberships.
 - Exported webhooks with credentials will be exported as normal webhooks. Credentials should be added manually afterwards.
-- If you have custom UI extensions, you need to reinstall them manually in the new space.
+- UI extensions will not be exported 
