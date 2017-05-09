@@ -1,6 +1,6 @@
 # Contentful CLI - `space export` command
 
-This command helps you backup your published Content Model, Content and Assets or move them to a new Contentful space. It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version.
+This command helps you backup your published Content Model, Content and Assets or move them to a new Contentful space. It will support Roles & Permissions in a future version.
 
 To import your exported data, please refer to the [import](../import) command.
 
