@@ -103,9 +103,9 @@ test('diff and patches consider content types from both current and target model
       { name: 'content type C', diff: null }
     ],
     patches: [
-      { name: 'content type A', patches: null },
-      { name: 'content type B', patches: null },
-      { name: 'content type C', patches: null }
+      { name: 'content type A', id: 1, patches: null },
+      { name: 'content type B', id: 2, patches: null },
+      { name: 'content type C', id: 3, patches: null }
     ]
   }
 
