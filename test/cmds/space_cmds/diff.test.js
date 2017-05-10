@@ -1,7 +1,7 @@
 import test from 'ava'
 import {
   getPatchesAndDiff,
-  diffBoundaryContext,
+  resetDetectionOfFirstChunk,
   __RewireAPI__ as rewire
 } from '../../../lib/cmds/space_cmds/diff/index'
 
@@ -12,7 +12,7 @@ test.afterEach.always(() => {
   rewire.__ResetDependency__('getDiffOrPatchData')
   rewire.__ResetDependency__('getDiffData')
   rewire.__ResetDependency__('getPatchData')
-  getDiffBoundaries = diffBoundaryContext(100, '*')
+  getDiffBoundaries = resetDetectionOfFirstChunk(100, '*')
 })
 
 test('diff and patches remove unneeded props from content types', t => {
