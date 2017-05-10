@@ -1,17 +1,18 @@
 import test from 'ava'
 import {
   getPatchesAndDiff,
-  resetDetectionOfFirstChunk,
-  __RewireAPI__ as rewire
-} from '../../../lib/cmds/space_cmds/diff/index'
+  __RewireAPI__ as rewirePatchDiff
+} from '../../../lib/cmds/space_cmds/diff/diff-patch-data'
+
+import { resetDetectionOfFirstChunk } from '../../../lib/cmds/space_cmds/diff/render-diff'
 
 let getDiffBoundaries
 
 test.afterEach.always(() => {
-  rewire.__ResetDependency__('diffJson')
-  rewire.__ResetDependency__('getDiffOrPatchData')
-  rewire.__ResetDependency__('getDiffData')
-  rewire.__ResetDependency__('getPatchData')
+  rewirePatchDiff.__ResetDependency__('diffJson')
+  rewirePatchDiff.__ResetDependency__('getDiffOrPatchData')
+  rewirePatchDiff.__ResetDependency__('getDiffData')
+  rewirePatchDiff.__ResetDependency__('getPatchData')
   getDiffBoundaries = resetDetectionOfFirstChunk(100, '*')
 })
 
@@ -37,7 +38,7 @@ test('diff and patches remove unneeded props from content types', t => {
     }
   }]
 
-  rewire.__Rewire__('diffJson', fakeCompare)
+  rewirePatchDiff.__Rewire__('diffJson', fakeCompare)
   function fakeCompare (y, x) {
     const cleanedX = {
       name: 'foo'
@@ -61,7 +62,7 @@ test('diff and patches leave other values alone', t => {
   }]
   const targetModel = []
 
-  rewire.__Rewire__('diffJson', fakeCompare)
+  rewirePatchDiff.__Rewire__('diffJson', fakeCompare)
   function fakeCompare (y, x) {
     t.deepEqual(x, { name: 'foo', somethingElse: 'bar' })
     t.deepEqual(y, {})
@@ -93,8 +94,8 @@ test('diff and patches consider content types from both current and target model
     }
   ]
 
-  rewire.__Rewire__('getPatchData', function () { return null })
-  rewire.__Rewire__('getDiffData', function () { return null })
+  rewirePatchDiff.__Rewire__('getPatchData', function () { return null })
+  rewirePatchDiff.__Rewire__('getDiffData', function () { return null })
 
   const expected = {
     diff: [
