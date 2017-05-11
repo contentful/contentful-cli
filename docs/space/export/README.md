@@ -60,7 +60,6 @@ contentful space export
   "assets": [],
   "locales": [],
   "webhooks": [],
-  "roles": [],
   "editorInterfaces": []
 }
 ```
