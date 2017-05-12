@@ -1632,9 +1632,9 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-emojic@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/emojic/-/emojic-1.1.9.tgz#2759bd5f8fefbe1b632e4db1a68ea264bb5e2b69"
+emojic@^1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/emojic/-/emojic-1.1.11.tgz#27eb9bd45c060c28df0b839292e014fd8a8a6bfa"
   dependencies:
     camelo "^1.0.0"
     emojilib "^2.0.2"
