@@ -4,7 +4,6 @@ import { spy } from 'sinon'
 import {
   log,
   wrappedLog,
-  info,
   warning,
   success,
   error,
@@ -71,16 +70,6 @@ test('wrappedLog', (t) => {
   wrappedLog('arg1', 10)
   t.is(wrapSpy.callCount, 2, 'content was wrapped again')
   t.true(wrapSpy.calledWith('arg1', 10), 'content was wrapped with given length')
-})
-
-test('info', (t) => {
-  info('arg1', 'arg2')
-  t.is(infoStyleSpy.callCount, 2, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 0, 'warningStyle was not applied')
-  t.is(errorStyleSpy.callCount, 0, 'errorStyle was not applied')
-  t.is(successStyleSpy.callCount, 0, 'successStyle was not applied')
-  t.is(wrapSpy.callCount, 0, 'content was not wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
 })
 
 test('warning', (t) => {

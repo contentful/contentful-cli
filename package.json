@@ -70,7 +70,6 @@
     "fast-json-patch": "^1.1.9",
     "figlet": "^1.2.0",
     "inquirer": "^3.0.6",
-    "markdown-cli": "^1.5.1",
     "listr": "^0.11.0",
     "lodash": "^4.17.4",
     "markdown-cli": "^1.5.1",
