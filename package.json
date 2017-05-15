@@ -2,7 +2,7 @@
   "name": "@contentful/contentful-cli",
   "version": "0.3.1",
   "description": "Contentful CLI tool",
-  "main": "index.js",
+  "main": "bin/contentful.js",
   "bin": {
     "contentful": "bin/contentful.js"
   },
@@ -14,6 +14,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run clean && babel lib -d dist",
+    "build:standalone": "npm run build && pkg --targets node6-macos-x64,node6-linux-x64,node6-win-x64 --debug --out-dir build .",
     "clean": "rimraf dist",
     "dev": "nodemon --exec npm run build -w lib",
     "lint": "eslint bin lib test",
@@ -47,6 +48,7 @@
     "husky": "^0.13.3",
     "nodemon": "^1.11.0",
     "nyc": "10.3.0",
+    "pkg": "^3.0.2",
     "rimraf": "^2.6.1",
     "sinon": "2.2.0",
     "stream-buffers": "^3.0.1",
@@ -108,5 +110,15 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "pkg": {
+    "scripts": [
+      "./node_modules/blessed/lib/widgets/*.js",
+      "./dist/**/*.js"
+    ],
+    "assets": [
+      "./node_modules/figlet/fonts/Standard.flf",
+      "./node_modules/opn/xdg-open"
+    ]
   }
 }
