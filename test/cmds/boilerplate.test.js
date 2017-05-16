@@ -41,7 +41,7 @@ const mockedSpace = {
 const fakeClient = {
   getSpace: stub().returns(mockedSpace)
 }
-const createClientStub = stub().returns(fakeClient)
+const createManagementClientStub = stub().returns(fakeClient)
 const promptStub = stub(inquirer, 'prompt').returns({boilerplate: mockedBoilerplate.sys.id})
 const writeFileStub = stub()
 const statStub = stub().rejects()
@@ -50,7 +50,7 @@ const createWriteStreamStub = stub().callsFake(() => new streamBuffers.WritableS
 
 test.before(() => {
   boilerplateRewireAPI.__Rewire__('inquirer', inquirer)
-  boilerplateRewireAPI.__Rewire__('createClient', createClientStub)
+  boilerplateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   boilerplateRewireAPI.__Rewire__('axios', axiosStub)
   boilerplateRewireAPI.__Rewire__('createWriteStream', createWriteStreamStub)
   contextRewireAPI.__Rewire__('stat', statStub)
@@ -74,7 +74,7 @@ test.beforeEach(() => {
 
 test.after.always(() => {
   boilerplateRewireAPI.__ResetDependency__('inquirer')
-  boilerplateRewireAPI.__ResetDependency__('createClient')
+  boilerplateRewireAPI.__ResetDependency__('createManagementClient')
   boilerplateRewireAPI.__ResetDependency__('axios')
   boilerplateRewireAPI.__ResetDependency__('createWriteStream')
   contextRewireAPI.__ResetDependency__('stat')

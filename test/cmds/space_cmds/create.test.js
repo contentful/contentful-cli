@@ -19,19 +19,19 @@ const fakeClient = {
     }
   })
 }
-const createClientStub = stub().returns(fakeClient)
+const createManagementClientStub = stub().returns(fakeClient)
 
 test.before(() => {
-  spaceCreateRewireAPI.__Rewire__('createClient', createClientStub)
+  spaceCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
 test.after.always(() => {
-  spaceCreateRewireAPI.__ResetDependency__('createClient')
+  spaceCreateRewireAPI.__ResetDependency__('createManagementClient')
 })
 
 test.afterEach((t) => {
   fakeClient.createSpace.resetHistory()
-  createClientStub.resetHistory()
+  createManagementClientStub.resetHistory()
 })
 
 test.serial('create space', async (t) => {
@@ -44,7 +44,7 @@ test.serial('create space', async (t) => {
   })
   const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
-  t.true(createClientStub.calledOnce, 'did create client')
+  t.true(createManagementClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
   t.deepEqual(fakeClient.createSpace.args[0][0], spaceData, 'with correct payload')
   t.is(fakeClient.createSpace.args[0][1], null, 'without organization id')
@@ -61,7 +61,7 @@ test.serial('create space with passed organization id', async (t) => {
   })
   const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
-  t.true(createClientStub.calledOnce, 'did create client')
+  t.true(createManagementClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
   t.deepEqual(fakeClient.createSpace.args[0][0], {name: spaceData.name}, 'with correct payload')
   t.is(fakeClient.createSpace.args[0][1], 'mockedOrganizationId', 'with passed organization id')
@@ -78,7 +78,7 @@ test.serial('create space with organization id from context', async (t) => {
   })
   const result = await spaceCreate(spaceData)
   t.truthy(result, 'returned truthy value')
-  t.true(createClientStub.calledOnce, 'did create client')
+  t.true(createManagementClientStub.calledOnce, 'did create client')
   t.true(fakeClient.createSpace.calledOnce, 'created space')
   t.deepEqual(fakeClient.createSpace.args[0][0], spaceData, 'with correct payload')
   t.is(fakeClient.createSpace.args[0][1], 'mockedOrganizationIdFromContext', 'with organization id from context')
@@ -91,7 +91,7 @@ test.serial('create space - fails when not logged in', async (t) => {
   })
   const error = await t.throws(spaceCreate({}), PreconditionFailedError, 'throws precondition failed error')
   t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
-  t.true(createClientStub.notCalled, 'did not create client')
+  t.true(createManagementClientStub.notCalled, 'did not create client')
 })
 
 test.serial('create space - throws error when sth goes wrong', async (t) => {

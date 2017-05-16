@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import version from '../../version'
 import { createManagementClient, __RewireAPI__ as rw } from '../../lib/utils/contentful-clients'
 
-test.only('set the correct application name and version', (t) => {
+test('set the correct application name and version', (t) => {
   const rewiredCreateClient = sinon.stub()
   rw.__Rewire__('createClient', rewiredCreateClient)
   createManagementClient({accessToken: 'accessToken'})
