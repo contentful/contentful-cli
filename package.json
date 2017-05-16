@@ -13,7 +13,7 @@
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && babel lib -d dist",
+    "build": "npm run clean && npm run vendor:version && babel lib -d dist",
     "build:standalone": "npm run build && pkg --targets node6-macos-x64,node6-linux-x64,node6-win-x64 --debug --out-dir build .",
     "clean": "rimraf dist",
     "dev": "nodemon --exec npm run build -w lib",
@@ -23,9 +23,10 @@
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
     "test:unit": "BABEL_ENV=test ava --verbose",
     "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
+    "test:simulate-ci": "trevor",
+    "vendor:version": "echo \"module.exports = '`cat package.json|json version`'\" > version.js",
     "precommit": "npm run lint",
-    "prepush": "npm run test:unit",
-    "test:simulate-ci": "trevor"
+    "prepush": "npm run test:unit"
   },
   "devDependencies": {
     "ava": "^0.19.1",
@@ -71,6 +72,7 @@
     "fast-json-patch": "^1.1.9",
     "figlet": "^1.2.0",
     "inquirer": "^3.0.6",
+    "json": "^9.0.6",
     "listr": "^0.12.0",
     "lodash": "^4.17.4",
     "markdown-cli": "^1.5.1",
