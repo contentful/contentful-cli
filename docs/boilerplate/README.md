@@ -2,15 +2,15 @@
 
 Downloads a boilerplate to get quickly started with Contentful.
 
-```
-Usage: contentful boilerplate [options]
 
+## Usage
+```
 Options:
   --spaceId, -s  ID of the Space the boilerplate will be connecting to
 ```
 
 ### Example
 
-```shell
+```sh
 contentful boilerplate
 ```

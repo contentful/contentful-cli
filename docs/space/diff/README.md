@@ -1,7 +1,7 @@
 # Contentful CLI - `space diff` command
 This command shows the contentTypes diff between two spaces
 
-
+## Usage
 
 ```
 Usage: contentful space diff [options]
@@ -14,7 +14,7 @@ Options:
 
 ### Example
 
-```shell
+```sh
 contentful space diff \
   --target-space <space-id>\
 ```

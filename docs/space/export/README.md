@@ -4,7 +4,7 @@ This command helps you backup your published Content Model, Content and Assets o
 
 To import your exported data, please refer to the [import](../import) command.
 
-## Usage and examples
+## Usage
 
 ```
 Usage: contentful space export [options]
@@ -47,7 +47,7 @@ Options:
 
 ### Example
 
-```shell
+```sh
 contentful space export
 ```
 
@@ -68,4 +68,4 @@ contentful space export
 
 - This tool currently does **not** support the export of space memberships.
 - Exported webhooks with credentials will be exported as normal webhooks. Credentials should be added manually afterwards.
-- UI extensions will not be exported 
+- UI extensions will not be exported
