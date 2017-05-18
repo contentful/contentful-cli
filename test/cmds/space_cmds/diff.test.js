@@ -2,9 +2,9 @@ import test from 'ava'
 import {
   getPatchesAndDiff,
   __RewireAPI__ as rewirePatchDiff
-} from '../../../lib/cmds/space_cmds/diff/diff-patch-data'
+} from '../../../lib/cmds/diff-patch/diff-patch-data'
 
-import { resetDetectionOfFirstChunk } from '../../../lib/cmds/space_cmds/diff/render-diff'
+import { resetDetectionOfFirstChunk } from '../../../lib/cmds/diff-patch/render-diff'
 
 let getDiffBoundaries
 

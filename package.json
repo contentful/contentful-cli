@@ -22,9 +22,9 @@
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:unit": "BABEL_ENV=test ava --verbose",
     "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
-    "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
-    "prepush": "npm run test:unit"
+    "prepush": "npm run test:unit",
+    "test:simulate-ci": "trevor"
   },
   "devDependencies": {
     "ava": "^0.19.1",
@@ -59,6 +59,7 @@
     "axios": "^0.16.1",
     "babel-runtime": "^6.23.0",
     "blessed": "^0.1.81",
+    "bluebird": "^3.5.0",
     "chalk": "^1.1.3",
     "cli-table2": "^0.2.0",
     "contentful-export": "^4.5.0",
