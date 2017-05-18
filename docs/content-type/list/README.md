@@ -2,6 +2,8 @@
 
 Prints the Content Types in a space
 
+## Usage
+
 ```
 Usage: contentful content-type list [options]
 

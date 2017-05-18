@@ -2,6 +2,8 @@
 
 Prints the structure of the requested Content Type
 
+## Usage
+
 ```
 Usage: contentful content-type get [options]
 

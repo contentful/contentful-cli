@@ -3,6 +3,7 @@
 Modifies a Content Type by applying patches to its structure. This patches are inspired in the format described
 in http://jsonpatch.com/
 
+## Usage
 ```
 Usage: contentful content-type patch [options]
 
