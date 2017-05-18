@@ -110,3 +110,37 @@ test('deletes the Content Type when the resulting payload is an empty object', a
   t.true(contentType.delete.called)
   t.is(contentType.delete.callCount, 1)
 })
+
+test('waits until the Content Type is updated', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    { op: 'add', path: '/fields/0/omitted', value: true },
+    { op: 'replace', path: '/name', value: 'lol' }
+  ]
+
+  const contentType = stubContentType()
+  let resolved = false
+  const promise = Bluebird.delay(500).then(function () { resolved = true })
+  contentType.update = sinon.stub().returns(promise)
+
+  await applyPatches(patches, contentType, helpers)
+
+  t.true(resolved)
+})
+
+test('waits until the Content Type is deleted', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    { op: 'remove', path: '/fields' },
+    { op: 'remove', path: '/name' }
+  ]
+
+  const contentType = stubContentType()
+  let resolved = false
+  const promise = Bluebird.delay(500).then(function () { resolved = true })
+  contentType.delete = sinon.stub().returns(promise)
+
+  await applyPatches(patches, contentType, helpers)
+
+  t.true(resolved)
+})
