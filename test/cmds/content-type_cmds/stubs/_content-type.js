@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import Bluebird from 'bluebird'
 
 class ContentType {
   constructor () {
@@ -12,7 +13,13 @@ class ContentType {
     _.extend(this, defaults)
   }
 
-  update () {}
+  update () {
+    return Bluebird.resolve()
+  }
+
+  publish () {
+    return Bluebird.resolve()
+  }
 
   toPlainObject () {
     return _.pick(this, ['name', 'fields'])

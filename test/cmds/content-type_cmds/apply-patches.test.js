@@ -144,3 +144,21 @@ test('waits until the Content Type is deleted', async function (t) {
 
   t.true(resolved)
 })
+
+test('waits until the Content Type is published', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    { op: 'add', path: '/fields/0/omitted', value: true }
+  ]
+
+  // omiting a field forces a publish
+
+  const contentType = stubContentType()
+  let resolved = false
+  const promise = Bluebird.delay(500).then(function () { resolved = true })
+  contentType.publish = sinon.stub().returns(promise)
+
+  await applyPatches(patches, contentType, helpers)
+
+  t.true(resolved)
+})
