@@ -162,3 +162,21 @@ test('waits until the Content Type is published', async function (t) {
 
   t.true(resolved)
 })
+
+test('does not return until the Content Type has been updated', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    { op: 'replace', path: '/name', value: 'New CT' }
+  ]
+
+  // This patches don't require any additional update beside the one at the end
+  // of the process
+
+  const contentType = stubContentType()
+  const promise = Bluebird.delay(500)
+  contentType.update = sinon.stub().returns(promise)
+
+  await applyPatches(patches, contentType, helpers)
+
+  t.true(promise.isFulfilled())
+})
