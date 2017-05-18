@@ -82,7 +82,7 @@ test('throws when a patch is rejected', async function (t) {
   await t.throws(applyPatches(patches, contentType, helpers), /Patch application has been aborted/)
 })
 
-test('does not ask for confirmation with the "noConfirm" option', async function (t) {
+test('does not ask for confirmation with the "skipConfirm" option', async function (t) {
   const helpers = stubHelpers()
   const patches = [
     { op: 'add', path: '/fields/0/omitted', value: true },
@@ -91,7 +91,7 @@ test('does not ask for confirmation with the "noConfirm" option', async function
   ]
   const contentType = stubContentType()
 
-  await applyPatches(patches, contentType, helpers, { noConfirm: true })
+  await applyPatches(patches, contentType, helpers, { skipConfirm: true })
 
   t.false(helpers.confirmPatch.called)
 })
