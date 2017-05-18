@@ -7,7 +7,7 @@ import applyPatches from '../../../lib/cmds/content-type_cmds/utils/apply-patche
 import stubContentType from './stubs/_content-type'
 import stubHelpers from './stubs/_helpers'
 
-test('saves the Content Type after the paches have been applied', async function (t) {
+test('saves the Content Type after the patches have been applied', async function (t) {
   const helpers = stubHelpers()
   const patches = [
     { op: 'add', path: '/fields/0/required', value: true },
