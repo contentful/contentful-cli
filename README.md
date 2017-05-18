@@ -29,6 +29,8 @@ Using [yarn](https://yarnpkg.com):
 yarn global add contentful-cli
 ```
 
+Please note that for the non standalone versions you need node `=> v6` to use the CLI.
+
 Using Brew on MacOS:
 ```sh
 brew install contentful-cli

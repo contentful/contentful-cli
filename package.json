@@ -81,7 +81,7 @@
     "yargs": "^7.1.0"
   },
   "engines": {
-    "node": ">=4.7.2"
+    "node": ">=6"
   },
   "files": [
     "bin",
