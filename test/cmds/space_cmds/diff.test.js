@@ -13,7 +13,7 @@ test.afterEach.always(() => {
   rewirePatchDiff.__ResetDependency__('getDiffOrPatchData')
   rewirePatchDiff.__ResetDependency__('getDiffData')
   rewirePatchDiff.__ResetDependency__('getPatchData')
-  getDiffBoundaries = resetDetectionOfFirstChunk(100, '*')
+  getDiffBoundaries = resetDetectionOfFirstChunk(2, '*')
 })
 
 test('diff and patches remove unneeded props from content types', t => {
@@ -128,6 +128,24 @@ test('diffBoundary finds boundaries', (t) => {
   }
 
   let result = getDiffBoundaries(diff, 1)
+  t.deepEqual(result, expected)
+})
+
+test('diffboundary boundaries only consist of whole lines', (t) => {
+  const diff = [
+    { value: 'lorem ipsum dolor sit amet\n' },
+    { value: 'this should not be part of the diff\nthis is \nwhat should come before\n' },
+    { value: 'consectetuer adipisci\n', added: true },
+    { value: 'these lines\nshould come after\nbut not this anymore' },
+    { value: 'g elit. aenean commodo \n' }
+  ]
+
+  let expected = {
+    before: 'this is \nwhat should come before\n',
+    after: 'these lines\nshould come after\n'
+  }
+
+  let result = getDiffBoundaries(diff, 2)
   t.deepEqual(result, expected)
 })
 
