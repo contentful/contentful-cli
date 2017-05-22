@@ -104,9 +104,14 @@ test('diff and patches consider content types from both current and target model
       { name: 'content type C', diff: null }
     ],
     patches: [
-      { name: 'content type A', id: 1, patches: null },
-      { name: 'content type B', id: 2, patches: null },
-      { name: 'content type C', id: 3, patches: null }
+      { name: 'content type A', id: 1, action: 'patch', patches: null },
+      {
+        name: 'content type B',
+        id: 2,
+        action: 'create',
+        patches: [ { op: 'add', path: '', value: { name: 'content type B' } } ]
+      },
+      { name: 'content type C', id: 3, action: 'delete', patches: [] }
     ]
   }
 
@@ -308,4 +313,48 @@ test('detect field renaming', (t) => {
 
   t.is(ctPatch.patches[2].op, 'add')
   t.is(ctPatch.patches[2].path, '/fields/1')
+})
+
+test('"patch" action', (t) => {
+  const sourceCT = {
+    sys: { id: 'ctid' },
+    name: 'CT',
+    fields: [{ 'id': 'myfield', 'type': 'Text' }]
+  }
+  const destinationCT = {
+    sys: { id: 'ctid' },
+    name: 'CT',
+    fields: [{ 'id': 'myfield', 'type': 'Text', 'omitted': true }]
+  }
+  const result = getPatchesAndDiff([destinationCT], [sourceCT])
+  const patches = result.patches
+
+  t.is(patches[0].action, 'patch')
+})
+
+test('"delete" action', (t) => {
+  const sourceCT = {
+    sys: { id: 'ctid' },
+    name: 'CT',
+    fields: [{ 'id': 'myfield', 'type': 'Text' }]
+  }
+  const result = getPatchesAndDiff([], [sourceCT])
+  const patches = result.patches
+
+  t.is(patches[0].id, 'ctid')
+  t.is(patches[0].action, 'delete')
+})
+
+test('"create" action', (t) => {
+  const sourceCT = {
+    sys: { id: 'ctid' },
+    name: 'CT',
+    fields: [{ 'id': 'myfield', 'type': 'Text' }]
+  }
+  const result = getPatchesAndDiff([sourceCT], [])
+  const patches = result.patches
+
+  t.is(patches[0].id, 'ctid')
+  t.is(patches[0].action, 'create')
+  t.is(patches[0].patches[{ op: 'add', path: '', value: sourceCT }])
 })

@@ -7,6 +7,7 @@ export default function () {
   return {
     applyPatch: sinon.spy(applyPatch),
     confirmPatch: sinon.stub().returns(Bluebird.resolve(true)),
+    confirm: sinon.stub().returns(Bluebird.resolve(true)),
     prettyDiff: sinon.stub(),
     hasChanged: sinon.stub().returns(true),
     transformPath
