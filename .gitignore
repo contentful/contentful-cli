@@ -1,6 +1,5 @@
 dist
 build
-version.js
 
 # Docker
 *.dockerfile

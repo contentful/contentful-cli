@@ -91,6 +91,7 @@
     "bin",
     "dist",
     "docs",
+    "version.js",
     "README.md"
   ],
   "ava": {
