@@ -8,6 +8,9 @@ import {
   __RewireAPI__ as boilerplateRewireAPI
 } from '../../lib/cmds/boilerplate'
 import {
+  __RewireAPI__ as accessTokenCreateRewireAPI
+} from '../../lib/cmds/space_cmds/accesstoken_cmds/create'
+import {
   emptyContext,
   setContext,
   __RewireAPI__ as contextRewireAPI
@@ -39,7 +42,12 @@ const mockedSpace = {
   createApiKey: stub().returns(mockedApiKey)
 }
 const fakeClient = {
-  getSpace: stub().returns(mockedSpace)
+  getSpace: stub().returns(mockedSpace),
+  getApiKeys: stub().returns([{
+    name: 'Mocked access token',
+    description: 'Mocked access token',
+    accessToken: 'mockedaccesstoken'
+  }])
 }
 const createManagementClientStub = stub().returns(fakeClient)
 const promptStub = stub(inquirer, 'prompt').returns({boilerplate: mockedBoilerplate.sys.id})
@@ -49,8 +57,8 @@ const axiosStub = stub()
 const createWriteStreamStub = stub().callsFake(() => new streamBuffers.WritableStreamBuffer())
 
 test.before(() => {
+  accessTokenCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   boilerplateRewireAPI.__Rewire__('inquirer', inquirer)
-  boilerplateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   boilerplateRewireAPI.__Rewire__('axios', axiosStub)
   boilerplateRewireAPI.__Rewire__('createWriteStream', createWriteStreamStub)
   contextRewireAPI.__Rewire__('stat', statStub)
@@ -73,6 +81,7 @@ test.beforeEach(() => {
 })
 
 test.after.always(() => {
+  accessTokenCreateRewireAPI.__ResetDependency__('createClient')
   boilerplateRewireAPI.__ResetDependency__('inquirer')
   boilerplateRewireAPI.__ResetDependency__('createManagementClient')
   boilerplateRewireAPI.__ResetDependency__('axios')
@@ -91,7 +100,7 @@ test.afterEach((t) => {
   writeFileStub.resetHistory()
 })
 
-test.serial('successfully downloads boilerplate with existing api key', async (t) => {
+test.serial('successfully downloads boilerplate and generates access token', async (t) => {
   setContext({
     cmaToken: 'mocked'
   })
@@ -100,7 +109,7 @@ test.serial('successfully downloads boilerplate with existing api key', async (t
   })
   t.is(axiosStub.callCount, 2, 'axios called twice')
   t.is(createWriteStreamStub.callCount, 1, 'boilerplate is written to disk')
-  t.false(mockedSpace.createApiKey.called, 'did not create a new api key')
+  t.true(mockedSpace.createApiKey.called, 'did create a new access token')
 })
 
 test.serial('requires login', async (t) => {

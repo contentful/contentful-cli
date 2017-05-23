@@ -1,6 +1,5 @@
 dist
 build
-content-models
 
 # Docker
 *.dockerfile
