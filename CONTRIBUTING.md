@@ -51,3 +51,4 @@ Both of these test environments are setup to deal with Babel and code transpilin
 - `npm run clean` removes any built files
 - `npm run build` builds node package
 - `npm run build:standalone` build standalone binary version
+- `npm run dev` live rebuild - very useful when working on a feature
