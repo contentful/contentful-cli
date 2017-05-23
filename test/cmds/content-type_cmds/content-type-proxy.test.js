@@ -1,9 +1,12 @@
 import test from 'ava'
 import sinon from 'sinon'
 import Bluebird from 'bluebird'
+import _ from 'lodash'
 
 import stubContentType from './stubs/_content-type'
 import ContentTypeProxy from '../../../lib/cmds/content-type_cmds/utils/content-type-proxy'
+import { getDiffDataForPatch } from '../../../lib/cmds/diff-patch/diff-patch-data'
+import * as helpers from '../../../lib/cmds/content-type_cmds/patch/helpers'
 
 test('returns the plain object', t => {
   const space = 'fake-space'
@@ -54,4 +57,21 @@ test('it updates once the Content Type has been created', async function (t) {
 
   t.is(space.createContentTypeWithId.callCount, 1)
   t.is(stubbedContentType.update.callCount, 1)
+})
+
+test('diff data does not show deletion of "fields: {}" ', (t) => {
+  const source = new ContentTypeProxy('foo')
+  const originalData = _.cloneDeep(source.toPlainObject())
+
+  const patch = { op: 'add', path: '', value: { name: 'foo', fields: [{id: 'foo'}] } }
+  helpers.applyPatch(source, patch)
+  const patchedData = source.toPlainObject()
+
+  const result = getDiffDataForPatch(patchedData, originalData)
+
+  const found = result.diff.find((chunk) => {
+    return chunk.removed && chunk.value.match(/"fields": \[\]/)
+  })
+
+  t.is(found, undefined)
 })

@@ -1,4 +1,5 @@
 import test from 'ava'
+
 import { transformPath } from '../../../../lib/cmds/content-type_cmds/patch/helpers'
 
 test('Does not transform the path when it uses an index numer', (t) => {
