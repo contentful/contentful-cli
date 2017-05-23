@@ -1,10 +1,17 @@
 import test from 'ava'
+import chalk from 'chalk'
+import { stub } from 'sinon'
 import {
   getPatchesAndDiff,
   __RewireAPI__ as rewirePatchDiff
 } from '../../../lib/cmds/diff-patch/diff-patch-data'
 
-import { resetDetectionOfFirstChunk } from '../../../lib/cmds/diff-patch/render-diff'
+import {
+  resetDetectionOfFirstChunk,
+  renderContentTypeDiff,
+  renderModelDiff,
+  __RewireAPI__ as rewireRenderDiff
+} from '../../../lib/cmds/diff-patch/render-diff'
 
 let getDiffBoundaries
 
@@ -13,6 +20,7 @@ test.afterEach.always(() => {
   rewirePatchDiff.__ResetDependency__('getDiffOrPatchData')
   rewirePatchDiff.__ResetDependency__('getDiffData')
   rewirePatchDiff.__ResetDependency__('getPatchData')
+  rewireRenderDiff.__ResetDependency__('frame')
   getDiffBoundaries = resetDetectionOfFirstChunk(2, '*')
 })
 
@@ -189,6 +197,58 @@ test('diffBoundary adds delimiter between change chunks', (t) => {
   getDiffBoundaries(diff, 1)
   let result = getDiffBoundaries(diff, 3)
   t.deepEqual(result, expected)
+})
+
+test('renderContentTypeDiff renders', t => {
+  rewireRenderDiff.__Rewire__('log', () => {})
+  const contentType = {
+    name: 'foo',
+    diff: [{
+      added: true,
+      value: 'bar'
+    }, {
+      value: 'baz'
+    }]
+  }
+  const expected = `foo\n\n${chalk.green('bar')}baz\n`
+  rewireRenderDiff.__Rewire__('frame', function (result) {
+    t.is(result, expected)
+  })
+  renderContentTypeDiff(contentType)
+})
+
+test('renderContentTypeDiff does not render when no changes', t => {
+  rewireRenderDiff.__Rewire__('log', () => {})
+  const contentType = {
+    name: 'foo',
+    diff: [{ value: 'bar' }, { value: 'baz' }]
+  }
+  rewireRenderDiff.__Rewire__('frame', function () {
+    t.fail()
+  })
+  renderContentTypeDiff(contentType)
+  t.pass()
+})
+
+test('renderModelDiff renders CT diffs', t => {
+  const model = [{
+    name: 'foo',
+    diff: [{
+      added: true,
+      value: 'bar'
+    }, {
+      value: 'baz'
+    }]
+  }, {
+    name: 'bar',
+    diff: [{ value: 'bar' }, { value: 'baz' }]
+  }]
+  const renderStub = stub()
+  rewireRenderDiff.__Rewire__('renderContentTypeDiff', renderStub)
+  renderModelDiff(model)
+  t.is(renderStub.callCount, 2)
+  t.true(renderStub.calledWith(model[0]))
+  t.true(renderStub.calledWith(model[1]))
 })
 
 test('It should add an extra operation when a field is deleted', (t) => {
