@@ -14,11 +14,11 @@ class ContentType {
   }
 
   update () {
-    return Bluebird.resolve()
+    return Bluebird.resolve(this)
   }
 
   publish () {
-    return Bluebird.resolve()
+    return Bluebird.resolve(this)
   }
 
   toPlainObject () {

@@ -21,8 +21,9 @@ test('returns the plain object', t => {
 })
 
 test('creates the Content Type', async function (t) {
+  const newContentType = stubContentType()
   const space = {
-    createContentTypeWithId: sinon.stub().returns(Bluebird.resolve(stubContentType()))
+    createContentTypeWithId: sinon.stub().returns(Bluebird.resolve(newContentType))
   }
   const contentType = new ContentTypeProxy('foo', space)
 
@@ -30,13 +31,14 @@ test('creates the Content Type', async function (t) {
   contentType.description = 'Very Content Type'
   contentType.fields = [{ id: 'field' }]
 
-  await contentType.update()
+  const result = await contentType.update()
 
   t.true(space.createContentTypeWithId.firstCall.calledWith('foo', {
     name: 'My CT',
     description: 'Very Content Type',
     fields: [{ id: 'field' }]
   }))
+  t.is(result, newContentType)
 })
 
 test('it updates once the Content Type has been created', async function (t) {

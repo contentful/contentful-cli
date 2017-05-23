@@ -40,10 +40,10 @@ test('calls the "before" hook before applying each patch', async function (t) {
 
   const contentType = stubContentType()
   const hooks = {
-    before: (patch, ct) => {
+    before: ({ patch, contentType }) => {
       t.is(helpers.applyPatch.callCount, 1)
       t.is(patch, patches[0])
-      t.deepEqual(ct, contentType)
+      t.deepEqual(contentType, contentType)
     },
     after: sinon.stub()
   }
@@ -58,10 +58,10 @@ test('calls the "after" hook after applying each patch', async function (t) {
   ]
   const hooks = {
     before: () => {},
-    after: (patch, ct) => {
+    after: ({ patch, contentType }) => {
       t.is(helpers.applyPatch.callCount, 2)
       t.is(patch, patches[0])
-      t.is(ct.fields[0].name, 'foo')
+      t.is(contentType.fields[0].name, 'foo')
     }
   }
 
