@@ -11,7 +11,7 @@ Current it supports the following seed template:
 Options:
   --template, -t  The template to apply on your Space
                                                     [required] [choices: "blog"]
-  --spaceId, -s   ID of the Space to seed the data to
+  --space-id, -s   ID of the Space to seed the data to
 ```
 
 ### Example

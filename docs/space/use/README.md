@@ -10,7 +10,7 @@ command.
 
 ```
 Options:
-  --spaceId, -s  ID of the Space to use for other commands
+  --space-id, -s  ID of the Space to use for other commands
 ```
 
 

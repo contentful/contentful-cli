@@ -6,7 +6,7 @@ Downloads a boilerplate to get quickly started with Contentful.
 ## Usage
 ```
 Options:
-  --spaceId, -s  ID of the Space the boilerplate will be connecting to
+  --space-id, -s  ID of the Space the boilerplate will be connecting to
 ```
 
 ### Example
