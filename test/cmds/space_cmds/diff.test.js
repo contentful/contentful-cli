@@ -302,11 +302,11 @@ test('It should add an extra operation when a field is deleted', (t) => {
   const ctPatch = result.patches[0]
 
   t.is(ctPatch.patches[0].op, 'replace', 'It should be a `replace` `op` for omitted property')
-  t.is(ctPatch.patches[0].path, '/fields/1/omitted', 'It should point to omitted property')
+  t.is(ctPatch.patches[0].path, '/fields/companydescription/omitted', 'It should point to omitted property')
   t.is(ctPatch.patches[0].value, true, 'It should set omitted to true')
 
   t.is(ctPatch.patches[1].op, 'add', 'it should be a `add` `op` for deleted property')
-  t.is(ctPatch.patches[1].path, '/fields/1/deleted', 'It should point to the deleted property')
+  t.is(ctPatch.patches[1].path, '/fields/companydescription/deleted', 'It should point to the deleted property')
   t.is(ctPatch.patches[1].value, true, 'it should set deleted property to true')
 })
 
@@ -318,8 +318,8 @@ test('detect field renaming', (t) => {
     name: 'CT',
     fields: [
       {
-        'id': 'companydescription',
-        'immutableId': 'immutable-1',
+        'apiName': 'companydescription',
+        'id': 'immutable-1',
         'name': 'Company Description',
         'type': 'Text',
         'localized': false,
@@ -337,8 +337,8 @@ test('detect field renaming', (t) => {
     name: 'CT',
     fields: [
       {
-        'id': 'companyName',
-        'immutableId': 'immutable-1',
+        'apiName': 'companyName',
+        'id': 'immutable-1',
         'name': 'Company name',
         'type': 'Text',
         'localized': false,
@@ -348,8 +348,8 @@ test('detect field renaming', (t) => {
         'omitted': false
       },
       {
-        'id': 'companydescription',
-        'immutableId': 'immutable-2',
+        'apiName': 'companydescription',
+        'id': 'immutable-2',
         'name': 'Company Description',
         'type': 'Text',
         'localized': false,
@@ -366,13 +366,13 @@ test('detect field renaming', (t) => {
   t.is(ctPatch.patches.length, 3)
 
   t.is(ctPatch.patches[0].op, 'replace')
-  t.is(ctPatch.patches[0].path, '/fields/0/name')
+  t.is(ctPatch.patches[0].path, '/fields/immutable-1/name')
 
   t.is(ctPatch.patches[1].op, 'replace')
-  t.is(ctPatch.patches[1].path, '/fields/0/id')
+  t.is(ctPatch.patches[1].path, '/fields/immutable-1/apiName')
 
   t.is(ctPatch.patches[2].op, 'add')
-  t.is(ctPatch.patches[2].path, '/fields/1')
+  t.is(ctPatch.patches[2].path, '/fields/-')
 })
 
 test('"patch" action', (t) => {
