@@ -3,6 +3,7 @@ import sinon from 'sinon'
 import Bluebird from 'bluebird'
 
 import patchHandler from '../../../lib/cmds/space_cmds/patch-handler'
+import stubContentType from '../content-type_cmds/stubs/_content-type'
 
 const loggingStubs = () => ({ log: sinon.spy(), error: sinon.spy() })
 
@@ -100,6 +101,29 @@ test('it sets the migration header on the Contentful Client', async function (t)
       'X-Contentful-Beta-Content-Type-Migration': true
     }
   }))
+})
+
+test('it passes the right arguments to the patch applier', async function (t) {
+  const args = {
+    patchFilePaths: ['fake-file.json']
+  }
+  const patchFileContents = { id: 'foo', action: 'delete', patches: [] }
+  const helpers = { readPatchFile: () => patchFileContents }
+  const contentType = stubContentType()
+  const spaceStub = {
+    getContentType: sinon.stub().returns(Bluebird.resolve(contentType))
+  }
+  const createContentfulClient = () => {
+    return {
+      getSpace: sinon.stub().returns(spaceStub)
+    }
+  }
+  const logging = loggingStubs()
+  const patchApplier = sinon.stub()
+
+  await patchHandler(args, createContentfulClient, patchApplier, helpers, logging)
+
+  t.true(patchApplier.calledWith(patchFileContents, contentType, helpers, logging))
 })
 
 test('it ignores nested directories', async function (t) {
