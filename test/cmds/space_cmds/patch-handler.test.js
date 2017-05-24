@@ -42,6 +42,9 @@ test('it applies the patch files', async function (t) {
     'test content type',
     helpers)
   )
+
+  t.true(logging.log.calledWith('Patch File: "a"'))
+  t.true(logging.log.calledWith('Content Type: "123"'))
 })
 
 test('it does not crash when applying a patch to delete a deleted Content Type', async function (t) {
