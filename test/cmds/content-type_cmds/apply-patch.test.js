@@ -69,3 +69,53 @@ test('calls the "after" hook after applying each patch', async function (t) {
 
   await applyPatch(patches, contentType, helpers, hooks)
 })
+
+test('differences in "sys" properties do not result in patch application', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    {op: 'add', path: '', value: {name: 'foo', fields: []}}
+  ]
+  const hooks = {
+    before: () => {
+      // this shouldn't be called
+      t.fail('hook should not have been called')
+    },
+    after: () => {
+      // this shouldn't be called
+      t.fail('hook should not have been called')
+    }
+  }
+
+  // Note that the only difference between the stubbed CT and the one resulting from
+  // the patch is the presence of the 'sys' objece
+  const contentType = stubContentType({name: 'foo', fields: [], sys: {id: 1}})
+
+  await applyPatch(patches, contentType, helpers, hooks)
+
+  t.is(helpers.applyPatch.callCount, 1)
+})
+
+test('differences in "sys" properties do not result in diff printing', async function (t) {
+  const helpers = stubHelpers()
+  const patches = [
+    {op: 'add', path: '', value: {name: 'foo', fields: []}}
+  ]
+  const hooks = {
+    before: () => {
+      // this shouldn't be called
+      t.fail('hook should not have been called')
+    },
+    after: () => {
+      // this shouldn't be called
+      t.fail('hook should not have been called')
+    }
+  }
+
+  // Note that the only difference between the stubbed CT and the one resulting from
+  // the patch is the presence of the 'sys' objece
+  const contentType = stubContentType({name: 'foo', fields: [], sys: {id: 1}})
+
+  await applyPatch(patches, contentType, helpers, hooks)
+
+  t.false(helpers.prettyDiff.called)
+})

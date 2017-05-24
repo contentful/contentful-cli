@@ -2,7 +2,7 @@ import _ from 'lodash'
 import Bluebird from 'bluebird'
 
 class ContentType {
-  constructor () {
+  constructor (overrides) {
     const defaults = {
       name: 'CT',
       fields: [
@@ -10,7 +10,7 @@ class ContentType {
       ]
     }
 
-    _.extend(this, defaults)
+    _.extend(this, defaults, overrides)
   }
 
   update () {
@@ -22,10 +22,10 @@ class ContentType {
   }
 
   toPlainObject () {
-    return _.pick(this, ['name', 'fields'])
+    return _.pick(this, ['name', 'fields', 'description', 'sys'])
   }
 }
 
-export default function () {
-  return new ContentType()
+export default function (overrides) {
+  return new ContentType(overrides)
 }
