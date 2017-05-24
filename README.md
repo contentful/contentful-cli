@@ -65,13 +65,7 @@ contentful space --help
 
 ## :question: Support
 
-If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.
-
 If you have other problems with Contentful not related to this library, you can contact [Customer Support](https://support.contentful.com).
-
-## :writing_hand: Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## :scroll: License
 
