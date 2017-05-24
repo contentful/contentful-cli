@@ -1,5 +1,5 @@
 {
-  "name": "@contentful/contentful-cli",
+  "name": "contentful-cli",
   "version": "0.4.0",
   "description": "Contentful CLI tool",
   "main": "bin/contentful.js",
@@ -96,8 +96,7 @@
     "bin",
     "dist",
     "docs",
-    "version.js",
-    "README.md"
+    "version.js"
   ],
   "ava": {
     "require": [
