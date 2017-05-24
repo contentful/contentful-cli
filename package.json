@@ -6,10 +6,6 @@
   "bin": {
     "contentful": "bin/contentful.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/contentful/contentful-cli.git"
-  },
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
@@ -71,6 +67,7 @@
     "contentful-management": "^3.5.0",
     "diff": "^3.2.0",
     "emojic": "^1.1.11",
+    "execa": "^0.6.3",
     "fast-json-patch": "^1.1.9",
     "figlet": "^1.2.0",
     "inquirer": "^3.0.6",

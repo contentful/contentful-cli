@@ -41,7 +41,7 @@ Standalone installation on Linux or MacOS:
 - Add the download directory to path `export PATH=$PATH:~/downloaddirectory`
 - You now have the Contentful cli tool installed.
 
-Standalone installation on Windows: 
+Standalone installation on Windows:
 - Download the latest version of the `.exe`
 - Add the executeable to your Path:
     1. Open the start menu and type "Edit environment variables"
@@ -62,19 +62,6 @@ contentful --help
 # or
 contentful space --help
 ```
-
-## :books: Documentation
-
-More detailed documentation for every command can be found in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
-
-## :hammer_and_wrench: Development
-
-After installing the dependencies, there is a trick to get your version of the CLI tool available globally on your system:
-```sh
-npm link
-```
-
-This may collide with your already globally installed Contentful CLI. Make sure to remove that one first.
 
 ## :question: Support
 
