@@ -95,7 +95,7 @@ test('throws when a patch is rejected', async function (t) {
   await t.throws(applyPatches(patchSet, contentType, helpers, logging), /Patch application has been aborted/)
 })
 
-test('does not ask for confirmation with the "skipConfirm" option', async function (t) {
+test('does not ask for confirmation with the "yes" option', async function (t) {
   const helpers = stubHelpers()
   const patches = [
     { op: 'add', path: '/fields/0/omitted', value: true },
@@ -106,7 +106,7 @@ test('does not ask for confirmation with the "skipConfirm" option', async functi
   const contentType = stubContentType()
   const logging = logStubs()
 
-  await applyPatches(patchSet, contentType, helpers, logging, { skipConfirm: true })
+  await applyPatches(patchSet, contentType, helpers, logging, { yes: true })
 
   t.false(helpers.confirmPatch.called)
 })

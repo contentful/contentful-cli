@@ -9,7 +9,7 @@ Usage: contentful space patch [options]
 --space-id        Space id                                            [string]
 --dry-run         Do not save the changes to the Content Model
 [boolean] [default: false]
---skip-confirm      Do not ask for confirmation for each patch
+--yes      Do not ask for confirmation for each patch
 [boolean] [default: false]
 --patch-dir, -p                                                    [required]
 ``
