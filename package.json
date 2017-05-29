@@ -123,6 +123,7 @@
   "pkg": {
     "scripts": [
       "./node_modules/blessed/lib/widgets/*.js",
+      "./version.js",
       "./dist/**/*.js"
     ],
     "assets": [
