@@ -5,7 +5,7 @@ import _ from 'lodash'
 
 import stubContentType from './stubs/_content-type'
 import ContentTypeProxy from '../../../lib/cmds/content-type_cmds/utils/content-type-proxy'
-import { getDiffDataForPatch } from '../../../lib/cmds/diff-patch/diff-patch-data'
+import { getDiffDataForPatch } from '../../../lib/cmds/diff-patch/get-patch-data'
 import * as helpers from '../../../lib/cmds/content-type_cmds/patch/helpers'
 
 test('returns the plain object', t => {

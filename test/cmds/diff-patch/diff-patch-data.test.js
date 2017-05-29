@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { getPatchData } from '../../../lib/cmds/diff-patch/diff-patch-data'
+import { getPatchData } from '../../../lib/cmds/diff-patch/get-patch-data'
 
 function removeFirstUpdateSecondAddThird () {
   const base = {
