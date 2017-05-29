@@ -5,6 +5,7 @@ import { stub } from 'sinon'
 import {
   resetDetectionOfFirstChunk,
   renderContentTypeDiff,
+  formatDiff,
   renderModelDiff,
   __RewireAPI__ as rewireRenderDiff
 } from '../../../lib/cmds/diff-patch/render-diff'
@@ -92,8 +93,7 @@ test('diffBoundary adds delimiter between change chunks', (t) => {
   t.deepEqual(result, expected)
 })
 
-test('renderContentTypeDiff renders', t => {
-  rewireRenderDiff.__Rewire__('log', () => {})
+test('formatDiff produces formatted diff', t => {
   const contentType = {
     name: 'foo',
     diff: [{
@@ -103,9 +103,19 @@ test('renderContentTypeDiff renders', t => {
       value: 'baz'
     }]
   }
-  const expected = `foo\n\n${chalk.green('bar')}baz\n`
-  rewireRenderDiff.__Rewire__('frame', function (result) {
-    t.is(result, expected)
+  const expected = ['foo\n\n', `${chalk.green('bar')}`, 'baz\n']
+  const result = formatDiff(contentType)
+  t.deepEqual(result, expected)
+})
+
+test('renderContentTypeDiff renders with changes', t => {
+  rewireRenderDiff.__Rewire__('log', () => {})
+  const contentType = {
+    name: 'foo',
+    diff: [{ value: 'bar', added: true }, { value: 'baz' }]
+  }
+  rewireRenderDiff.__Rewire__('frame', function () {
+    t.pass()
   })
   renderContentTypeDiff(contentType)
 })
