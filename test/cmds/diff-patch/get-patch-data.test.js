@@ -62,26 +62,6 @@ function removeFirstUpdateSecondAddThird () {
   }
 
   const patches = [{
-    op: 'replace',
-    path: '/fields/DznyonGvWM9HHLy7/omitted',
-    value: true
-  },
-  {
-    op: 'add',
-    path: '/fields/DznyonGvWM9HHLy7/deleted',
-    value: true
-  },
-  {
-    op: 'replace',
-    path: '/fields/dfYqFqOw894YNNol/apiName',
-    value: 'lastName'
-  },
-  {
-    op: 'replace',
-    path: '/displayField',
-    value: 'dfYqFqOw894YNNol'
-  },
-  {
     op: 'add',
     path: '/fields/-',
     value: {
@@ -95,6 +75,26 @@ function removeFirstUpdateSecondAddThird () {
       disabled: false,
       omitted: false
     }
+  },
+  {
+    op: 'replace',
+    path: '/fields/dfYqFqOw894YNNol/apiName',
+    value: 'lastName'
+  },
+  {
+    op: 'replace',
+    path: '/displayField',
+    value: 'dfYqFqOw894YNNol'
+  },
+  {
+    op: 'replace',
+    path: '/fields/DznyonGvWM9HHLy7/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/DznyonGvWM9HHLy7/deleted',
+    value: true
   }]
 
   return { base, target, patches }
@@ -184,16 +184,6 @@ function removeAndAddFieldWithSameNameDifferentType () {
   }
 
   const patches = [{
-    op: 'replace',
-    path: '/fields/elYqFqOw123YNNyp/omitted',
-    value: true
-  },
-  {
-    op: 'add',
-    path: '/fields/elYqFqOw123YNNyp/deleted',
-    value: true
-  },
-  {
     op: 'add',
     path: '/fields/-',
     value: {
@@ -211,6 +201,16 @@ function removeAndAddFieldWithSameNameDifferentType () {
       disabled: false,
       omitted: false
     }
+  },
+  {
+    op: 'replace',
+    path: '/fields/elYqFqOw123YNNyp/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/elYqFqOw123YNNyp/deleted',
+    value: true
   }]
 
   return { base, target, patches }

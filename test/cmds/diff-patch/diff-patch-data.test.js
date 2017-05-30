@@ -229,14 +229,14 @@ test('detect field renaming', (t) => {
 
   t.is(ctPatch.patches.length, 3)
 
-  t.is(ctPatch.patches[0].op, 'replace')
-  t.is(ctPatch.patches[0].path, '/fields/immutable-1/name')
+  t.is(ctPatch.patches[0].op, 'add')
+  t.is(ctPatch.patches[0].path, '/fields/-')
 
   t.is(ctPatch.patches[1].op, 'replace')
-  t.is(ctPatch.patches[1].path, '/fields/immutable-1/apiName')
+  t.is(ctPatch.patches[1].path, '/fields/immutable-1/name')
 
-  t.is(ctPatch.patches[2].op, 'add')
-  t.is(ctPatch.patches[2].path, '/fields/-')
+  t.is(ctPatch.patches[2].op, 'replace')
+  t.is(ctPatch.patches[2].path, '/fields/immutable-1/apiName')
 })
 
 test('"patch" action', (t) => {
