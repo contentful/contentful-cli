@@ -22,9 +22,9 @@ test('applies the patches and returns the modified Content Type', async function
 
   const contentType = stubContentType()
 
-  const patchedContentType = await applyPatch(patches, contentType, helpers, hooks)
+  const maybePatched = await applyPatch(patches, contentType, helpers, hooks)
 
-  const patchedFields = patchedContentType.fields
+  const patchedFields = maybePatched.contentType.fields
 
   t.is(helpers.applyPatch.callCount, 6)
   t.is(patchedFields[0].name, 'foo')

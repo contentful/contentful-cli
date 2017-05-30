@@ -2,6 +2,7 @@ import test from 'ava'
 import sinon from 'sinon'
 import Bluebird from 'bluebird'
 
+import { successEmoji } from '../../../lib/utils/emojis'
 import patchHandler from '../../../lib/cmds/space_cmds/patch-handler'
 import stubContentType from '../content-type_cmds/stubs/_content-type'
 
@@ -23,7 +24,7 @@ test('it applies the patch files', async function (t) {
   const helpers = {
     readPatchFile: (path) => patches[path]
   }
-  const applyPatchesSpy = sinon.spy()
+  const applyPatchesSpy = sinon.stub().returns({})
   const args = {
     patchFilePaths: Object.keys(patches)
   }
@@ -122,7 +123,7 @@ test('it passes the right arguments to the patch applier', async function (t) {
     }
   }
   const logging = loggingStubs()
-  const patchApplier = sinon.stub()
+  const patchApplier = sinon.stub().returns({})
 
   await patchHandler(args, createContentfulClient, patchApplier, helpers, logging)
 
@@ -152,7 +153,7 @@ test('it ignores nested directories', async function (t) {
       return patches[path]
     }
   }
-  const applyPatchesSpy = sinon.spy()
+  const applyPatchesSpy = sinon.stub().returns({})
   const args = {
     patchFilePaths: Object.keys(patches)
   }
@@ -167,4 +168,90 @@ test('it ignores nested directories', async function (t) {
     helpers)
   )
   t.is(logging.error.callCount, 1)
+})
+
+test('it logs if the patches did not change the Content Type', async function (t) {
+  const patches = {
+    'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
+    'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
+  }
+  const helpers = {
+    readPatchFile: (path) => patches[path]
+  }
+  const spaceStub = {
+    getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
+  }
+  const createContentfulClient = () => {
+    return {
+      getSpace: sinon.stub().returns(spaceStub)
+    }
+  }
+  const args = {
+    patchFilePaths: Object.keys(patches)
+  }
+  const logging = loggingStubs()
+  const applyPatchesSpy = sinon.stub().returns({patched: true})
+
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+
+  t.true(logging.log.called)
+  t.true(logging.log.calledWith(`${successEmoji} Patches applied`))
+})
+
+test('it logs if the patches changed the Content Type', async function (t) {
+  const patches = {
+    'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
+    'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
+  }
+  const helpers = {
+    readPatchFile: (path) => patches[path]
+  }
+  const spaceStub = {
+    getContentType: sinon.stub().returns(Bluebird.resolve({name: 'test content type'}))
+  }
+  const createContentfulClient = () => {
+    return {
+      getSpace: sinon.stub().returns(spaceStub)
+    }
+  }
+  const args = {
+    patchFilePaths: Object.keys(patches)
+  }
+  const logging = loggingStubs()
+  const applyPatchesSpy = sinon.stub().returns({patched: false})
+
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+
+  t.true(logging.log.called)
+  t.true(logging.log.calledWith('No changes for content type "test content type"'))
+})
+
+test('it does not log anything when --dry-run', async function (t) {
+  const patches = {
+    'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
+    'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
+  }
+  const helpers = {
+    readPatchFile: (path) => patches[path]
+  }
+  const spaceStub = {
+    getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
+  }
+  const createContentfulClient = () => {
+    return {
+      getSpace: sinon.stub().returns(spaceStub)
+    }
+  }
+  const args = {
+    patchFilePaths: Object.keys(patches),
+    dryRun: true
+  }
+  const logging = loggingStubs()
+  const applyPatchesSpy = sinon.stub().returns({patched: false})
+
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+
+  t.true(logging.log.called)
+  t.false(logging.log.calledWith('No changes for Content Type "CT"'))
+  t.false(logging.log.calledWith(`${successEmoji} Patches applied`))
 })

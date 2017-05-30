@@ -32,6 +32,36 @@ test('saves the Content Type after the patches have been applied', async functio
   await applyPatches(patchSet, contentType, helpers, logging)
 })
 
+test('indicates when patches were applied', async function (t) {
+  const helpers = stubHelpers()
+  helpers.hasChanged = sinon.stub().returns(true)
+  const patches = [
+    { op: 'add', path: '/fields/0/required', value: true },
+    { op: 'replace', path: '/name', value: 'New CT' }
+  ]
+  const patchSet = { action: 'patch', patches }
+  const contentType = stubContentType()
+  const logging = logStubs()
+
+  let result = await applyPatches(patchSet, contentType, helpers, logging)
+  t.is(result.patched, true)
+})
+
+test('indicates when no patches were applied', async function (t) {
+  const helpers = stubHelpers()
+  helpers.hasChanged = sinon.stub().returns(false)
+  const patches = [
+    { op: 'add', path: '/fields/0/required', value: true },
+    { op: 'replace', path: '/name', value: 'New CT' }
+  ]
+  const patchSet = { action: 'patch', patches }
+  const contentType = stubContentType()
+  const logging = logStubs()
+
+  let result = await applyPatches(patchSet, contentType, helpers, logging)
+  t.is(result.patched, false)
+})
+
 test('saves the Content Type right after a field is omitted', async function (t) {
   const helpers = stubHelpers()
   const patches = [
@@ -313,41 +343,6 @@ test('when omitting a field calls "publish" on the updated Content Type', async 
   await applyPatches(patchSet, contentType, helpers, logging)
 
   t.true(contentTypeWithOmittedField.publish.called)
-})
-
-test('it logs if the patches did not change the Content Type', async function (t) {
-  const helpers = stubHelpers()
-  const patchSet = {
-    action: 'patch',
-    patches: [
-      { op: 'replace', path: '/fields/0/name', value: 'Title' }
-    ]
-  }
-  const contentType = stubContentType()
-  const logging = logStubs()
-
-  // The operation sets the same field name so there were no changes
-  // applied to the CT
-  await applyPatches(patchSet, contentType, helpers, logging)
-
-  t.true(logging.log.called)
-  t.true(logging.log.calledWith('No changes for Content Type "CT"'))
-})
-
-test('it does not log it if the patches changed the Content Type', async function (t) {
-  const helpers = stubHelpers()
-  const patchSet = {
-    action: 'patch',
-    patches: [
-      { op: 'replace', path: '/fields/0/name', value: 'Very nice' }
-    ]
-  }
-  const contentType = stubContentType()
-  const logging = logStubs()
-
-  await applyPatches(patchSet, contentType, helpers, logging)
-
-  t.false(logging.log.called)
 })
 
 test('regression: contentType.toPlainObject is not undefined', async function (t) {
