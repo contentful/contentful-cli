@@ -1,6 +1,6 @@
 import test from 'ava'
 import sinon from 'sinon'
-import version from '../../version'
+import {version} from '../../package.json'
 import { createManagementClient, __RewireAPI__ as rw } from '../../lib/utils/contentful-clients'
 
 test('set the correct application name and version', (t) => {
