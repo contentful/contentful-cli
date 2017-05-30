@@ -21,7 +21,7 @@
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
-    "test:unit": "BABEL_ENV=test ava --verbose",
+    "test:unit": "BABEL_ENV=test ava --verbose --concurrency 16",
     "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
