@@ -1,0 +1,51 @@
+{
+    "id": "newCt",
+    "action": "create",
+    "patches": [
+        {
+            "op": "add",
+            "path": "",
+            "value": {
+                "displayField": "qai5KQywQffI2jfG",
+                "name": "NewCT",
+                "description": "new content type",
+                "fields": [
+                    {
+                        "id": "qai5KQywQffI2jfG",
+                        "apiName": "newTextField",
+                        "name": "NewTextField",
+                        "type": "Symbol",
+                        "localized": false,
+                        "required": false,
+                        "validations": [],
+                        "disabled": false,
+                        "omitted": false
+                    },
+                    {
+                        "id": "IoVzM9xBoOXVj4eD",
+                        "apiName": "newReference",
+                        "name": "NewReference",
+                        "type": "Link",
+                        "localized": false,
+                        "required": true,
+                        "validations": [],
+                        "disabled": false,
+                        "omitted": false,
+                        "linkType": "Entry"
+                    },
+                    {
+                        "id": "GXmKAP95FxW3Kkx8",
+                        "apiName": "newDateField",
+                        "name": "NewDateField",
+                        "type": "Date",
+                        "localized": false,
+                        "required": false,
+                        "validations": [],
+                        "disabled": false,
+                        "omitted": false
+                    }
+                ]
+            }
+        }
+    ]
+}

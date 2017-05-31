@@ -23,11 +23,14 @@
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
     "test:unit": "BABEL_ENV=test ava --verbose --concurrency 16",
     "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
+    "test:e2e": "BABEL_ENV=test ava test/integration/beta.test.js -v -s",
+    "test:e2e:watch": "BABEL_ENV=test ava test/integration/beta.test.js -v -s --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
     "prepush": "npm run test:unit"
   },
   "devDependencies": {
+    "app-root-path": "^2.0.1",
     "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
@@ -47,6 +50,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.13.3",
+    "nixt": "^0.5.0",
     "nodemon": "^1.11.0",
     "nyc": "^10.3.2",
     "pkg": "^3.0.4",
@@ -101,6 +105,10 @@
   "ava": {
     "require": [
       "babel-register"
+    ],
+    "files": [
+      "test/**/*.js",
+      "!**/beta.test.js"
     ],
     "babel": "inherit"
   },
