@@ -21,10 +21,10 @@
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
-    "test:unit": "BABEL_ENV=test ava --verbose --concurrency 16",
-    "test:unit:watch": "BABEL_ENV=test ava --verbose --watch",
-    "test:e2e": "BABEL_ENV=test ava test/integration/beta.test.js -v -s",
-    "test:e2e:watch": "BABEL_ENV=test ava test/integration/beta.test.js -v -s --watch",
+    "test:unit": "BABEL_ENV=test ava test/unit/** --verbose --concurrency 16",
+    "test:unit:watch": "BABEL_ENV=test ava test/unit/** --verbose --watch",
+    "test:e2e": "BABEL_ENV=test ava test/integration/** --verbose --serial",
+    "test:e2e:watch": "BABEL_ENV=test ava test/integration/** --verbose --serial --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
     "prepush": "npm run test:unit"
@@ -105,10 +105,6 @@
   "ava": {
     "require": [
       "babel-register"
-    ],
-    "files": [
-      "test/**/*.js",
-      "!**/beta.test.js"
     ],
     "babel": "inherit"
   },
