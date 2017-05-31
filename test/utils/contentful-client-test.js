@@ -7,6 +7,6 @@ test('set the correct application name and version', (t) => {
   const rewiredCreateClient = sinon.stub()
   rw.__Rewire__('createClient', rewiredCreateClient)
   createManagementClient({accessToken: 'accessToken'})
-  t.truthy(rewiredCreateClient.args[0][0].application.match(new RegExp(`contentful-cli/${version}`, 'g')))
+  t.truthy(rewiredCreateClient.args[0][0].application.match(new RegExp(`contentful.cli/${version}`, 'g')))
   t.is(rewiredCreateClient.callCount, 1)
 })
