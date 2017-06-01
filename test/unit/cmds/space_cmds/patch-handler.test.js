@@ -170,7 +170,7 @@ test('it ignores nested directories', async function (t) {
   t.is(logging.error.callCount, 1)
 })
 
-test('it logs if the patches did not change the Content Type', async function (t) {
+test('it logs if the patches changed the Content Type', async function (t) {
   const patches = {
     'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
     'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
@@ -187,7 +187,8 @@ test('it logs if the patches did not change the Content Type', async function (t
     }
   }
   const args = {
-    patchFilePaths: Object.keys(patches)
+    patchFilePaths: Object.keys(patches),
+    dryRun: false
   }
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: true})
@@ -198,7 +199,7 @@ test('it logs if the patches did not change the Content Type', async function (t
   t.true(logging.log.calledWith(`${successEmoji} Patches applied`))
 })
 
-test('it logs if the patches changed the Content Type', async function (t) {
+test('it logs if the patches did not change the Content Type', async function (t) {
   const patches = {
     'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
     'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
@@ -215,7 +216,8 @@ test('it logs if the patches changed the Content Type', async function (t) {
     }
   }
   const args = {
-    patchFilePaths: Object.keys(patches)
+    patchFilePaths: Object.keys(patches),
+    dryRun: false
   }
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: false})
