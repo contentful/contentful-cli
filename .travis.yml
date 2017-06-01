@@ -7,9 +7,6 @@ script:
   - npm test
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-after_script:
-  - npm run build
-  - ./test-e2e.sh
 env:
   global:
   - secure: mE27aBUo8fRRCoziD/DjfGFN+a/MyOB0dE41dJPJeick+5BBQehJ9lzT51X7PdJI1XlfEkJIim8yX5J2gd0m/zCTX8jOKd/bw7l+keDBUZFmRmTmviauhxdiqwMykN4+nOID4IzJl1SHslPrEwdnzOiZsK4fzdtg7VQ1pwuZD4xDKPkEH5ga13CS9nivmsCO5O8na8/bbwHPTXaqXZ3VqSkuw0ct6BuykJ0A9EjWR+6/l7cFtodFg6tnZA4Hu7u4+UCMaWbMBE+fUuY9GLJUBNuCc5rMA4H6shD55vj/atmAj/rA2DnUKOCCIlaxcva+0kd9B6FfI53keVWT3AkUWH8kqfnLIgDtLa1OgldaLnKIM4a8Zy8KGzu7pLQjdzi/cGxacptfTLRNncscSJ6+BI/W1Xp1DvqDBpCeScDYVNIf+icM0ZhKWatzvRLFT3TL/hjiXNfjwq5tBDZGPWO8eA4kqyUEanuWyH0pTo8A/d09pWhLpZwC2ih/Vd1uI8ub+4WTo9wTuYbYE8Ti7dbZ/81+5vtOUq/z3Uc5WukRjQLm2vyzDBK2FVpf/oD6YQzteeICPOzV0QG/kdC7UDuL7Z8EcsNhM6MNlyfPWrYfKgAZKJk0gr9HCadrMzXGdDBogbibyoidC6339TU0XUD0YU8KZTy3WN05OFdXJb6veLQ=
