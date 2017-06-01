@@ -11,7 +11,7 @@ import {
   separator,
   DEFAULT_COLUMNS,
   __RewireAPI__ as textRewireAPI
-} from '../../lib/utils/text'
+} from '../../../lib/utils/text'
 
 const wrapAnsiSpy = spy(wrapAnsi)
 const textSyncSpy = spy(figlet, 'textSync')

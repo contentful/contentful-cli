@@ -5,7 +5,7 @@ import inquirer from 'inquirer'
 import {
   confirmation,
   __RewireAPI__ as actionsRewireAPI
-} from '../../lib/utils/actions'
+} from '../../../lib/utils/actions'
 
 const promptStub = stub(inquirer, 'prompt')
 

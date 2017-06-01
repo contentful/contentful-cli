@@ -1,7 +1,7 @@
 import test from 'ava'
 import { stub, spy } from 'sinon'
 
-import { handleAsyncError } from '../../lib/utils/async'
+import { handleAsyncError } from '../../../lib/utils/async'
 
 test('handleAsyncError (success)', async (t) => {
   const asyncFn = stub().resolves('value')

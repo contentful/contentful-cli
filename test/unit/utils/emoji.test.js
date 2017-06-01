@@ -6,7 +6,7 @@ import {
   errorEmoji,
   infoEmoji,
   generateNumberEmoji
-} from '../../lib/utils/emojis'
+} from '../../../lib/utils/emojis'
 
 const emojis = [welcomeEmoji, successEmoji, errorEmoji, infoEmoji]
 

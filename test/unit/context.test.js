@@ -10,7 +10,7 @@ import {
   emptyContext,
   storeRuntimeConfig,
   __RewireAPI__ as contextRewireAPI
-} from '../lib/context'
+} from '../../lib/context'
 
 const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
 

@@ -5,17 +5,17 @@ import inquirer from 'inquirer'
 import {
   logout,
   __RewireAPI__ as logoutRewireAPI
-} from '../../lib/cmds/logout'
+} from '../../../lib/cmds/logout'
 import {
   __RewireAPI__ as actionsRewireAPI
-} from '../../lib/utils/actions'
+} from '../../../lib/utils/actions'
 import {
   emptyContext,
   setContext,
   getContext,
   __RewireAPI__ as contextRewireAPI
-} from '../../lib/context'
-import { PreconditionFailedError } from '../../lib/utils/error'
+} from '../../../lib/context'
+import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const promptStub = stub(inquirer, 'prompt')
 const writeFileStub = stub()

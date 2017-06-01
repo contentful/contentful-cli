@@ -5,12 +5,12 @@ import {
   assertLoggedIn,
   assertSpaceIdProvided,
   __RewireAPI__ as assertionsRewireAPI
-} from '../../lib/utils/assertions'
+} from '../../../lib/utils/assertions'
 import {
   emptyContext,
   setContext
-} from '../../lib/context'
-import { PreconditionFailedError } from '../../lib/utils/error'
+} from '../../../lib/context'
+import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const highlightStyleSpy = spy()
 

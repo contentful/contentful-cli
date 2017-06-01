@@ -4,12 +4,12 @@ import { stub } from 'sinon'
 import {
   accessTokenCreate,
   __RewireAPI__ as accessTokenCreateRewireAPI
-} from '../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
+} from '../../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
 import {
   emptyContext,
   setContext
-} from '../../../../lib/context'
-import { PreconditionFailedError } from '../../../../lib/utils/error'
+} from '../../../../../lib/context'
+import { PreconditionFailedError } from '../../../../../lib/utils/error'
 
 const mockedAccessTokenData = {
   name: 'access token name',

@@ -9,10 +9,10 @@ import {
   error,
   logError,
   __RewireAPI__ as logRewireAPI
-} from '../../lib/utils/log'
-import { infoStyle, warningStyle, errorStyle, successStyle } from '../../lib/utils/styles'
-import { frame, wrap } from '../../lib/utils/text'
-import { PreconditionFailedError } from '../../lib/utils/error'
+} from '../../../lib/utils/log'
+import { infoStyle, warningStyle, errorStyle, successStyle } from '../../../lib/utils/styles'
+import { frame, wrap } from '../../../lib/utils/text'
+import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const infoStyleSpy = spy(infoStyle)
 const warningStyleSpy = spy(warningStyle)

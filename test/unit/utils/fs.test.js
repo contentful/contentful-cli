@@ -1,7 +1,7 @@
 import test from 'ava'
 import Bluebird from 'bluebird'
 
-import * as fsUtils from '../../lib/utils/fs'
+import * as fsUtils from '../../../lib/utils/fs'
 import * as fs from 'fs'
 
 const accessP = Bluebird.promisify(fs.access)

@@ -6,16 +6,16 @@ import streamBuffers from 'stream-buffers'
 import {
   downloadBoilerplate,
   __RewireAPI__ as boilerplateRewireAPI
-} from '../../lib/cmds/boilerplate'
+} from '../../../lib/cmds/boilerplate'
 import {
   __RewireAPI__ as accessTokenCreateRewireAPI
-} from '../../lib/cmds/space_cmds/accesstoken_cmds/create'
+} from '../../../lib/cmds/space_cmds/accesstoken_cmds/create'
 import {
   emptyContext,
   setContext,
   __RewireAPI__ as contextRewireAPI
-} from '../../lib/context'
-import { PreconditionFailedError } from '../../lib/utils/error'
+} from '../../../lib/context'
+import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const mockedBoilerplate = {
   sys: {

@@ -5,12 +5,12 @@ import inquirer from 'inquirer'
 import {
   handler as loginHandler,
   __RewireAPI__ as loginRewireAPI
-} from '../../lib/cmds/login'
+} from '../../../lib/cmds/login'
 import {
   emptyContext,
   setContext,
   __RewireAPI__ as contextRewireAPI
-} from '../../lib/context'
+} from '../../../lib/context'
 
 const promptStub = stub(inquirer, 'prompt')
 const opnStub = stub()
