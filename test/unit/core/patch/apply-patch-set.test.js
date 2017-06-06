@@ -2,10 +2,10 @@ import test from 'ava'
 import Bluebird from 'bluebird'
 import sinon from 'sinon'
 
-import applyPatch from '../../../../lib/cmds/content-type_cmds/utils/apply-patch'
+import applyPatch from '../../../../lib/core/patch/apply-patch-set'
 
-import stubContentType from './stubs/_content-type'
-import stubHelpers from './stubs/_helpers'
+import stubContentType from '../../cmds/content-type_cmds/stubs/_content-type'
+import stubHelpers from '../../cmds/content-type_cmds/stubs/_helpers'
 
 test('applies the patches and returns the modified Content Type', async function (t) {
   const helpers = stubHelpers()
