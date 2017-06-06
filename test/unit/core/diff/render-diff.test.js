@@ -8,7 +8,7 @@ import {
   formatDiff,
   renderModelDiff,
   __RewireAPI__ as rewireRenderDiff
-} from '../../../../lib/cmds/diff-patch/render-diff'
+} from '../../../../lib/core/diff/render-diff'
 
 let getDiffBoundaries
 

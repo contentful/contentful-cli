@@ -2,7 +2,7 @@ import test from 'ava'
 import {
   getPatchesAndDiff,
   __RewireAPI__ as rewirePatchDiff
-} from '../../../../lib/cmds/diff-patch/diff-patch-data'
+} from '../../../../lib/core/diff/diff-patch-data'
 
 test.afterEach.always(() => {
   rewirePatchDiff.__ResetDependency__('diffJson')
