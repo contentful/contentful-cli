@@ -6,8 +6,8 @@ import { successEmoji } from '../../../../lib/utils/emojis'
 import patchHandler, {
   publishPatchResults,
   __RewireAPI__ as publishRewire
-} from '../../../../lib/cmds/space_cmds/patch-handler'
-import stubContentType from '../content-type_cmds/stubs/_content-type'
+} from '../../../../lib/core/patch/patch-files-handler'
+import stubContentType from '../../cmds/content-type_cmds/stubs/_content-type'
 
 const loggingStubs = () => ({ log: sinon.spy(), error: sinon.spy() })
 
