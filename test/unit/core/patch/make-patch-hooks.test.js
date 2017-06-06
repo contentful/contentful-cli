@@ -3,10 +3,10 @@ import Bluebird from 'bluebird'
 import sinon from 'sinon'
 
 import ContentTypeProxy from '../../../../lib/cmds/content-type_cmds/utils/content-type-proxy'
-import applyPatches from '../../../../lib/cmds/content-type_cmds/utils/apply-patches'
+import applyPatches from '../../../../lib/core/patch/make-patch-hooks'
 
-import stubContentType from './stubs/_content-type'
-import stubHelpers from './stubs/_helpers'
+import stubContentType from '../../cmds/content-type_cmds/stubs/_content-type'
+import stubHelpers from '../../cmds/content-type_cmds/stubs/_helpers'
 
 const logStubs = () => {
   return { log: sinon.spy(), success: sinon.spy() }
