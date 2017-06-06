@@ -21,7 +21,7 @@
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
-    "test:unit": "BABEL_ENV=test ava test/unit/** --verbose --concurrency 16",
+    "test:unit": "BABEL_ENV=test ava test/unit/** --verbose",
     "test:unit:watch": "BABEL_ENV=test ava test/unit/** --verbose --watch",
     "test:e2e": "BABEL_ENV=test ava test/integration/** --verbose --serial",
     "test:e2e:watch": "BABEL_ENV=test ava test/integration/** --verbose --serial --watch",
