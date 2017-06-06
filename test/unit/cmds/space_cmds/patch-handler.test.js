@@ -335,6 +335,42 @@ test('does not publish changes when user does not confirm,', async function (t) 
   t.true(logging.log.calledWith('Your patches have been applied as drafts, not published.'))
 })
 
+test('does ask for publish confirmatiion when user did not provide skip option', async function (t) {
+  const patchResults = [
+    { patched: true, contentType: 'first' },
+    { patched: true, contentType: 'second' }
+  ]
+  const confirmStub = sinon.stub().returns(true)
+  const helpers = {
+    confirm: confirmStub
+  }
+  const logging = loggingStubs()
+  const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+
+  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging, false)
+
+  t.true(confirmStub.called)
+  t.true(maybePublishContentType.called)
+})
+
+test('does not ask for publish confirmatiion when user did provide skip option', async function (t) {
+  const patchResults = [
+    { patched: true, contentType: 'first' },
+    { patched: true, contentType: 'second' }
+  ]
+  const confirmStub = sinon.stub().returns(true)
+  const helpers = {
+    confirm: confirmStub
+  }
+  const logging = loggingStubs()
+  const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+
+  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging, true)
+
+  t.false(confirmStub.called)
+  t.true(maybePublishContentType.called)
+})
+
 test('does nothing when there were no changes', async function (t) {
   const patchResults = [
     { patched: false, contentType: 'first' },
