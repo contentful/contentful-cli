@@ -6,7 +6,7 @@ import {
   transformPath,
   readPatchDir,
   __RewireAPI__ as helpersRewireAPI
-} from '../../../../../lib/cmds/content-type_cmds/patch/helpers'
+} from '../../../../../lib/core/patch/helpers/helpers'
 
 test('Does not transform the path when it uses an index numer', (t) => {
   const path = '/fields/0/name'

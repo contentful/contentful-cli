@@ -6,7 +6,7 @@ import _ from 'lodash'
 import stubContentType from './stubs/_content-type'
 import ContentTypeProxy from '../../../../lib/cmds/content-type_cmds/utils/content-type-proxy'
 import { getDiffDataForPatch } from '../../../../lib/core/diff/get-patch-data'
-import * as helpers from '../../../../lib/cmds/content-type_cmds/patch/helpers'
+import * as helpers from '../../../../lib/core/patch/helpers/helpers'
 
 test('returns the plain object', t => {
   const space = 'fake-space'
