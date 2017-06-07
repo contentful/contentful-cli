@@ -313,7 +313,7 @@ test('publishes changes when user wants', async function (t) {
   t.true(maybePublishContentType.calledWith('second'))
 
   t.true(logging.log.called)
-  t.true(logging.log.calledWith(`${successEmoji} Patches published`))
+  t.true(logging.log.calledWith(`${successEmoji} Content types published`))
 })
 
 test('does not publish changes when user does not confirm,', async function (t) {
@@ -332,7 +332,7 @@ test('does not publish changes when user does not confirm,', async function (t) 
   t.false(maybePublishContentType.called)
 
   t.true(logging.log.called)
-  t.true(logging.log.calledWith('Your patches have been applied as drafts, not published.'))
+  t.true(logging.log.calledWith('Your content types have been saved as drafts, not published.'))
 })
 
 test('does ask for publish confirmatiion when user did not provide skip option', async function (t) {
@@ -353,7 +353,7 @@ test('does ask for publish confirmatiion when user did not provide skip option',
   t.true(maybePublishContentType.called)
 })
 
-test('does not ask for publish confirmatiion when user did provide skip option', async function (t) {
+test('does not ask for publish confirmation when user did provide skip option', async function (t) {
   const patchResults = [
     { patched: true, contentType: 'first' },
     { patched: true, contentType: 'second' }
