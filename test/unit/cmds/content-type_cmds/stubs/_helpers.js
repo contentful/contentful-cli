@@ -1,7 +1,7 @@
 import Bluebird from 'bluebird'
 import sinon from 'sinon'
 
-import * as helpers from '../../../../../lib/core/patch/helpers/helpers'
+import * as helpers from '../../../../../lib/core/patch/helpers'
 
 export default function () {
   return {
