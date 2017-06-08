@@ -6,5 +6,6 @@
 * [logout](./logout) - End CLI session
 * [boilerplate](./boilerplate) - Kickstart an example project with one of our 9 SDK's
 * [guide](./guide) - Getting started with Contentful
+* [space](./config) - Config related commands
 * [space](./space) - Space related commands
 * [content-type](./content-type) - Content Type related commands
