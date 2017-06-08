@@ -62,6 +62,16 @@ function removeFirstUpdateSecondAddThird () {
   }
 
   const patches = [{
+    op: 'replace',
+    path: '/fields/DznyonGvWM9HHLy7/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/DznyonGvWM9HHLy7/deleted',
+    value: true
+  },
+  {
     op: 'add',
     path: '/fields/-',
     value: {
@@ -85,16 +95,6 @@ function removeFirstUpdateSecondAddThird () {
     op: 'replace',
     path: '/displayField',
     value: 'dfYqFqOw894YNNol'
-  },
-  {
-    op: 'replace',
-    path: '/fields/DznyonGvWM9HHLy7/omitted',
-    value: true
-  },
-  {
-    op: 'add',
-    path: '/fields/DznyonGvWM9HHLy7/deleted',
-    value: true
   }]
 
   return { base, target, patches }
@@ -170,7 +170,7 @@ function removeAndAddFieldWithSameNameDifferentType () {
       id: 'LjRqFqOw123YmEpD',
       apiName: 'author',
       name: 'author',
-      type: 'Symbol',
+      type: 'Array',
       items: {
         type: 'Link',
         linkType: 'Entry'
@@ -184,13 +184,139 @@ function removeAndAddFieldWithSameNameDifferentType () {
   }
 
   const patches = [{
+    op: 'replace',
+    path: '/fields/elYqFqOw123YNNyp/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/elYqFqOw123YNNyp/deleted',
+    value: true
+  },
+  {
     op: 'add',
     path: '/fields/-',
     value: {
       id: 'LjRqFqOw123YmEpD',
       apiName: 'author',
       name: 'author',
+      type: 'Array',
+      items: {
+        type: 'Link',
+        linkType: 'Entry'
+      },
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    }
+  }]
+
+  return { base, target, patches }
+}
+
+function removeAndAddFieldWithSameNameDifferentTypeAndMoveThingsAround () {
+  const base = {
+    displayField: 'dfYqFqOw894YNNol',
+    name: 'base',
+    description: '',
+    fields: [{
+      id: 'dfYqFqOw894YNNol',
+      apiName: 'heading',
+      name: 'heading',
       type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    },
+    {
+      id: 'cwcjodF6A233LW3L',
+      apiName: 'content',
+      name: 'content',
+      type: 'Text',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    },
+    {
+      id: 'elYqFqOw123YNNyp',
+      apiName: 'author',
+      name: 'author',
+      type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    }]
+  }
+
+  const target = {
+    displayField: 'dfYqFqOw894YNNol',
+    name: 'base',
+    description: '',
+    fields: [{
+      id: 'LjRqFqOw123YmEpD',
+      apiName: 'author',
+      name: 'author',
+      type: 'Array',
+      items: {
+        type: 'Link',
+        linkType: 'Entry'
+      },
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    },
+    {
+      id: 'dfYqFqOw894YNNol',
+      apiName: 'heading',
+      name: 'heading',
+      type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    },
+    {
+      id: 'cwcjodF6A233LW3L',
+      apiName: 'content',
+      name: 'content',
+      type: 'Text',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    }]
+  }
+
+  const patches = [{
+    op: 'replace',
+    path: '/fields/elYqFqOw123YNNyp/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/elYqFqOw123YNNyp/deleted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/-',
+    value: {
+      id: 'LjRqFqOw123YmEpD',
+      apiName: 'author',
+      name: 'author',
+      type: 'Array',
       items: {
         type: 'Link',
         linkType: 'Entry'
@@ -203,14 +329,9 @@ function removeAndAddFieldWithSameNameDifferentType () {
     }
   },
   {
-    op: 'replace',
-    path: '/fields/elYqFqOw123YNNyp/omitted',
-    value: true
-  },
-  {
-    op: 'add',
-    path: '/fields/elYqFqOw123YNNyp/deleted',
-    value: true
+    op: 'move',
+    from: '/fields/2',
+    path: '/fields/0'
   }]
 
   return { base, target, patches }
@@ -312,6 +433,7 @@ test('patch generation', (t) => {
   const mockFns = [
     removeFirstUpdateSecondAddThird,
     removeAndAddFieldWithSameNameDifferentType,
+    removeAndAddFieldWithSameNameDifferentTypeAndMoveThingsAround,
     addFieldBetweenTwoExistingFields
   ]
 
