@@ -25,6 +25,7 @@ const client = createClient({
 
 var spaces = {}
 var spacesToDelete = []
+var activePatchFile = ''
 
 test.before('add tmp folder', () => {
   fs.mkdirSync(tmpFolder)
@@ -47,7 +48,6 @@ test.after.always('remove created spaces', async t => {
 // Login to the CLI
 // `contentful login`
 test.cb('should login', t => {
-  console.log('cma token: ', setup.cmaToken)
   app()
     .run('login')
     .on(/A browser window will open where you will log in/).respond('Y\n')
@@ -58,22 +58,9 @@ test.cb('should login', t => {
     .end(t.end)
 })
 
-// Export the <PROD> space
-// contentful space export --space-id <PROD>
-// test.cb('should successfully export space', t => {
-//   const output = `${appRoot.path}/test/integration/expected/tmp`;
-//   app()
-//   .run(`space export --export-dir ${output}`)
-//   .stdout(/✨ Done/)
-//   // .stdout(/Exported entities/)
-//   // .stdout(/The export took a few seconds/)
-//   // .exist(output + 'contentful-export-' + ex_space + '-' + date + '.json')
-//   .end(t.end)
-// });
-
 // Create a new space we’ll use as our development environment
 // contentful space create --name <DEV-NAME> --org <ORG-ID>
-test.cb('should create dev space', t => {
+test.cb('should create <DEV> space', t => {
   app()
   .run(`space create --name cli_test_dev_space --org ${setup.orgId}`)
   .expect((result) => {
@@ -88,7 +75,7 @@ test.cb('should create dev space', t => {
 })
 
 // contentful space create --name <STAGING-NAME> --org <ORG-ID>
-test.cb('should create staging space', t => {
+test.cb('should create <STAGING> space', t => {
   app()
   .run(`space create --name cli_test_stg_space --org ${setup.orgId}`)
   .expect((result) => {
@@ -134,16 +121,17 @@ test.cb('should import exported space <STAGING>', t => {
 })
 
 // Compare imported spaces
-test.cb('should be identical spaces', t => {
+test.cb('should have <DEV> and <STAGING> as identical spaces', t => {
   app()
   .run(`space diff --space-id ${spaces.dev} --target-space ${spaces.stg}`)
   .stdout(/Your content types are identical/)
+  .code(0)
   .end(t.end)
 })
 
 // Make a few changes to the DEV space’s content model:
 // Now, try to diff the STAGING and DEV spaces:
-test.cb('should be diff with new ct', t => {
+test.cb('should add new CT to <DEV> space and has valid patch file', t => {
   var exportFile = `${appRoot}/test/integration/expected/export-new-ct.json`
   var expectedDir = `${appRoot}/test/integration/expected`
   app()
@@ -151,12 +139,52 @@ test.cb('should be diff with new ct', t => {
   .run(`space diff --space-id ${spaces.dev} --target-space ${spaces.stg} \
         --generate-patch --patch-dir ${tmpFolder}/patches`)
   .expect((result) => {
+    const resultText = result.stdout.trim()
+    activePatchFile = extractPatchFile(resultText, 'NewCT')
     const expected = read(`${expectedDir}/patches/NewCT.json`)
-    const actual = read(`${tmpFolder}/patches/NewCT.json`)
+    const actual = read(activePatchFile)
     t.is(actual, expected)
   })
   .end(t.end)
 })
+
+// Patch STAGING space with new content type
+test.cb('should patch <STAGING> space and be identical with <DEV> after', t => {
+  app()
+  .run(`content-type patch --space-id ${spaces.stg} --patch-file ${activePatchFile} --yes`)
+  .stdout(/Patches applied/)
+  .stdout(/Patches published/)
+  .code(0)
+  .end(() => {
+    app()
+      .run(`space diff --space-id ${spaces.dev} --target-space ${spaces.stg}`)
+      .stdout(/Your content types are identical/)
+      .code(0)
+      .end(t.end)
+  })
+})
+
+test.cb('should generate a patch to add a new field', t => {
+  t.plan(0)
+  var fieldName = 'field_' + Date.now()
+  var field = { id: fieldName, name: fieldName, type: 'Symbol' }
+  addNewField(spaces.dev, 'blogPost', field).then(() => {
+    app()
+      .run(`space diff --space-id ${spaces.dev} --target-space ${spaces.stg}`)
+      .stdout(new RegExp('"name": "' + field.name + '"'))
+      .stdout(new RegExp('"type": "' + field.type + '"'))
+      .code(0)
+      .end(t.end)
+  })
+})
+
+async function addNewField (spaceId, contentTypeId, field) {
+  var space = await client.getSpace(spaceId)
+  var contentType = await space.getContentType(contentTypeId)
+  contentType.fields.push(field)
+  contentType = await contentType.update()
+  await contentType.publish()
+}
 
 function read (filepath) {
   return fs.readFileSync(filepath, 'utf-8').trim()
@@ -164,6 +192,12 @@ function read (filepath) {
 
 function extractId (text) {
   var regex = /successfully created space \w* \((.*)\)/i
+  var found = text.match(regex)
+  return found[1]
+}
+
+function extractPatchFile (text, contentType) {
+  var regex = new RegExp(contentType + ' --> (.*) ')
   var found = text.match(regex)
   return found[1]
 }

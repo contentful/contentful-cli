@@ -76,6 +76,30 @@ npm link
 
 This may collide with your already globally installed Contentful CLI. Make sure to remove that one first.
 
+## :robot: Testing
+
+### End-To-End Functional Tests
+
+:warning: Environment variables should be set:
+
+```
+CMA_TOKEN = <cma_auth_token>
+ORG_ID = <organization_id>
+```
+
+#### npm:
+```sh
+npm run test:e2e
+```
+
+#### or using AVA:
+```sh
+$ ava test/integration/** --verbose --serial
+```
+
+:warning: Since the e2e tests are running in serial mode currently, you should be logged out or `rm ~/.contentfulrc.json`
+
+
 ## :question: Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.
