@@ -429,12 +429,73 @@ function addFieldBetweenTwoExistingFields () {
   return { base, target, patches }
 }
 
+function removeFieldWithoutOmitProperty () {
+  const base = {
+    displayField: 'dfYqFqOw894YNNol',
+    name: 'base',
+    description: '',
+    fields: [{
+      id: 'DznyonGvWM9HHLy7',
+      apiName: 'firstName',
+      name: 'firstName',
+      type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false
+    },
+    {
+      id: 'dfYqFqOw894YNNol',
+      apiName: 'surname',
+      name: 'lastName',
+      type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    }
+    ]
+  }
+
+  const target = {
+    displayField: 'dfYqFqOw894YNNol',
+    name: 'base',
+    description: '',
+    fields: [{
+      id: 'dfYqFqOw894YNNol',
+      apiName: 'surname',
+      name: 'lastName',
+      type: 'Symbol',
+      localized: false,
+      required: false,
+      validations: [],
+      disabled: false,
+      omitted: false
+    }]
+  }
+
+  const patches = [{
+    op: 'add',
+    path: '/fields/DznyonGvWM9HHLy7/omitted',
+    value: true
+  },
+  {
+    op: 'add',
+    path: '/fields/DznyonGvWM9HHLy7/deleted',
+    value: true
+  }]
+
+  return { base, target, patches }
+}
+
 test('patch generation', (t) => {
   const mockFns = [
     removeFirstUpdateSecondAddThird,
     removeAndAddFieldWithSameNameDifferentType,
     removeAndAddFieldWithSameNameDifferentTypeAndMoveThingsAround,
-    addFieldBetweenTwoExistingFields
+    addFieldBetweenTwoExistingFields,
+    removeFieldWithoutOmitProperty
   ]
 
   t.plan(mockFns.length)
