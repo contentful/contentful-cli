@@ -11,15 +11,17 @@ import stubContentType from '../../cmds/content-type_cmds/stubs/_content-type'
 
 const loggingStubs = () => ({ log: sinon.spy(), error: sinon.spy() })
 
+const clientGenerator = (returnValue) => () => {
+  return Promise.resolve({
+    getSpace: sinon.stub().returns(returnValue)
+  })
+}
+
 test('it applies the patch files', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const patches = {
     'path/a': {id: '123', action: 'patch', patches: ['beep', 'boop']},
     'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
@@ -61,11 +63,7 @@ test('it does not crash when applying a patch to delete a deleted Content Type',
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.reject({name: 'NotFound'}))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
 
   await t.notThrows(patchHandler(args, createContentfulClient, function () {}, helpers, logging))
@@ -81,11 +79,7 @@ test('it logs when can not deleted non existing Content Type', async function (t
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.reject({name: 'NotFound'}))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
 
   await patchHandler(args, createContentfulClient, function () {}, helpers, logging)
@@ -97,7 +91,7 @@ test('it logs when can not deleted non existing Content Type', async function (t
 test('it sets the migration header on the Contentful Client', async function (t) {
   const args = { accessToken: 'very-token', patchFilePaths: [] }
   const helpers = {}
-  const createContentfulClient = sinon.stub().returns({ getSpace: sinon.stub().returns(Bluebird.resolve) })
+  const createContentfulClient = sinon.stub().returns(Bluebird.resolve({ getSpace: sinon.stub().returns(Bluebird.resolve) }))
   const logging = loggingStubs()
 
   await patchHandler(args, createContentfulClient, function () {}, helpers, logging)
@@ -120,11 +114,7 @@ test('it passes the right arguments to the patch applier', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve(contentType))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
   const patchApplier = sinon.stub().returns({})
 
@@ -137,11 +127,7 @@ test('it ignores nested directories', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const patches = {
     'path/dir': {},
     'path/b': {id: '123', action: 'patch', patches: [{op: 'add', path: '/name', value: 'hello there'}]}
@@ -185,11 +171,7 @@ test('it logs if the patches changed the Content Type', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const args = {
     patchFilePaths: Object.keys(patches),
     dryRun: false
@@ -215,11 +197,7 @@ test('it logs if the patches did not change the Content Type', async function (t
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve({name: 'test content type'}))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const args = {
     patchFilePaths: Object.keys(patches),
     dryRun: false
@@ -244,11 +222,7 @@ test('it does not log or publish  anything when --dry-run', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const args = {
     patchFilePaths: Object.keys(patches),
     dryRun: true
@@ -278,11 +252,7 @@ test('publishes patch results in the end', async function (t) {
   const spaceStub = {
     getContentType: sinon.stub().returns(Bluebird.resolve('test content type'))
   }
-  const createContentfulClient = () => {
-    return {
-      getSpace: sinon.stub().returns(spaceStub)
-    }
-  }
+  const createContentfulClient = clientGenerator(spaceStub)
   const args = {
     patchFilePaths: Object.keys(patches),
     dryRun: false
