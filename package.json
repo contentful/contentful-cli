@@ -74,7 +74,7 @@
     "contentful-management": "^3.6.1",
     "diff": "^3.2.0",
     "emojic": "^1.1.11",
-    "fast-json-patch": "^1.1.9",
+    "fast-json-patch": "1.1.10",
     "figlet": "^1.2.0",
     "inquirer": "^3.0.6",
     "inquirer-select-directory": "^1.1.2",
