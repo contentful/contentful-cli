@@ -9,12 +9,40 @@ import patchHandler, {
 } from '../../../../lib/core/patch/patch-files-handler'
 import stubContentType from '../../cmds/content-type_cmds/stubs/_content-type'
 
+import { EventSystem } from '../../../../lib/core/events'
+import { PATCH_FILE_HANDLER } from '../../../../lib/core/events/scopes'
+import IntentSystem from '../../../../lib/core/event-handlers/intents'
+import LoggingSystem from '../../../../lib/core/event-handlers/logging'
+import patchFileLogging from '../../../../lib/core/event-handlers/logging/patch-file-handler'
+
 const loggingStubs = () => ({ log: sinon.spy(), error: sinon.spy() })
 
 const clientGenerator = (returnValue) => () => {
   return Promise.resolve({
     getSpace: sinon.stub().returns(returnValue)
   })
+}
+
+const createEventSystem = (logging, confirm = true) => {
+  const eventSystem = new EventSystem()
+  const intentSystem = new IntentSystem()
+  const loggingSystem = new LoggingSystem(logging)
+
+  intentSystem.addHandler({
+    scopes: [PATCH_FILE_HANDLER],
+    intents: {
+      'CONFIRM_CONTENT_TYPE_PUBLISH': async () => {
+        return confirm
+      }
+    }
+  })
+
+  loggingSystem.addHandler(patchFileLogging)
+
+  eventSystem.attachSubsystem(intentSystem)
+  eventSystem.attachSubsystem(loggingSystem)
+
+  return eventSystem
 }
 
 test('it applies the patch files', async function (t) {
@@ -34,8 +62,9 @@ test('it applies the patch files', async function (t) {
     patchFilePaths: Object.keys(patches)
   }
   const logging = loggingStubs()
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.is(applyPatchesSpy.callCount, 2)
   t.true(applyPatchesSpy.calledWith(
@@ -49,8 +78,7 @@ test('it applies the patch files', async function (t) {
     helpers)
   )
 
-  t.true(logging.log.calledWith('Patch File: "a"'))
-  t.true(logging.log.calledWith('Content Type: "123"'))
+  t.true(logging.log.calledWith('Patch File: "a"\nContent Type: "123"'))
 })
 
 test('it does not crash when applying a patch to delete a deleted Content Type', async function (t) {
@@ -65,8 +93,9 @@ test('it does not crash when applying a patch to delete a deleted Content Type',
   }
   const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
+  const eventSystem = createEventSystem(logging)
 
-  await t.notThrows(patchHandler(args, createContentfulClient, function () {}, helpers, logging))
+  await t.notThrows(patchHandler(args, createContentfulClient, function () {}, helpers, eventSystem))
 })
 
 test('it logs when can not deleted non existing Content Type', async function (t) {
@@ -81,8 +110,9 @@ test('it logs when can not deleted non existing Content Type', async function (t
   }
   const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, function () {}, helpers, logging)
+  await patchHandler(args, createContentfulClient, function () {}, helpers, eventSystem)
 
   t.true(logging.log.called)
   t.true(logging.log.calledWith('Content Type "foo" doesn\'t exist or has already been deleted'))
@@ -93,8 +123,9 @@ test('it sets the migration header on the Contentful Client', async function (t)
   const helpers = {}
   const createContentfulClient = sinon.stub().returns(Bluebird.resolve({ getSpace: sinon.stub().returns(Bluebird.resolve) }))
   const logging = loggingStubs()
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, function () {}, helpers, logging)
+  await patchHandler(args, createContentfulClient, function () {}, helpers, eventSystem)
 
   t.true(createContentfulClient.calledWith({
     accessToken: args.accessToken,
@@ -117,10 +148,10 @@ test('it passes the right arguments to the patch applier', async function (t) {
   const createContentfulClient = clientGenerator(spaceStub)
   const logging = loggingStubs()
   const patchApplier = sinon.stub().returns({})
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, patchApplier, helpers, logging)
-
-  t.true(patchApplier.calledWith(patchFileContents, contentType, helpers, logging))
+  await patchHandler(args, createContentfulClient, patchApplier, helpers, eventSystem)
+  t.true(patchApplier.calledWith(patchFileContents, contentType, helpers, eventSystem))
 })
 
 test('it ignores nested directories', async function (t) {
@@ -147,8 +178,9 @@ test('it ignores nested directories', async function (t) {
     patchFilePaths: Object.keys(patches)
   }
   const logging = loggingStubs()
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.is(applyPatchesSpy.callCount, 1)
   t.true(applyPatchesSpy.calledWith(
@@ -178,8 +210,9 @@ test('it logs if the patches changed the Content Type', async function (t) {
   }
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: true})
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.true(logging.log.called)
   t.true(logging.log.calledWith(`${successEmoji} Patches applied`))
@@ -204,8 +237,9 @@ test('it logs if the patches did not change the Content Type', async function (t
   }
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: false})
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.true(logging.log.called)
   t.true(logging.log.calledWith('No changes for content type "test content type"'))
@@ -230,8 +264,9 @@ test('it does not log or publish  anything when --dry-run', async function (t) {
   const publishStub = sinon.stub()
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: false})
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.true(logging.log.called)
   t.false(logging.log.calledWith('No changes for Content Type "CT"'))
@@ -259,8 +294,9 @@ test('publishes patch results in the end', async function (t) {
   }
   const logging = loggingStubs()
   const applyPatchesSpy = sinon.stub().returns({patched: false})
+  const eventSystem = createEventSystem(logging)
 
-  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, logging)
+  await patchHandler(args, createContentfulClient, applyPatchesSpy, helpers, eventSystem)
 
   t.true(publishStub.called)
 })
@@ -270,13 +306,12 @@ test('publishes changes when user wants', async function (t) {
     { patched: true, contentType: 'first' },
     { patched: true, contentType: 'second' }
   ]
-  const helpers = {
-    confirm: sinon.stub().returns(true)
-  }
+
   const logging = loggingStubs()
   const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+  const eventSystem = createEventSystem(logging)
 
-  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging)
+  await publishPatchResults(patchResults, maybePublishContentType, eventSystem.dispatcher(PATCH_FILE_HANDLER))
 
   t.is(maybePublishContentType.callCount, 2)
   t.true(maybePublishContentType.calledWith('first'))
@@ -291,13 +326,12 @@ test('does not publish changes when user does not confirm,', async function (t) 
     { patched: true, contentType: 'first' },
     { patched: true, contentType: 'second' }
   ]
-  const helpers = {
-    confirm: sinon.stub().returns(false)
-  }
+
   const logging = loggingStubs()
   const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+  const eventSystem = createEventSystem(logging, false)
 
-  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging)
+  await publishPatchResults(patchResults, maybePublishContentType, eventSystem.dispatcher(PATCH_FILE_HANDLER))
 
   t.false(maybePublishContentType.called)
 
@@ -305,39 +339,18 @@ test('does not publish changes when user does not confirm,', async function (t) 
   t.true(logging.log.calledWith('Your content types have been saved as drafts, not published.'))
 })
 
-test('does ask for publish confirmatiion when user did not provide skip option', async function (t) {
+test('does ask for publish confirmation when user did not provide skip option', async function (t) {
   const patchResults = [
     { patched: true, contentType: 'first' },
     { patched: true, contentType: 'second' }
   ]
-  const confirmStub = sinon.stub().returns(true)
-  const helpers = {
-    confirm: confirmStub
-  }
+
   const logging = loggingStubs()
   const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+  const eventSystem = createEventSystem(logging)
 
-  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging, false)
+  await publishPatchResults(patchResults, maybePublishContentType, eventSystem.dispatcher(PATCH_FILE_HANDLER))
 
-  t.true(confirmStub.called)
-  t.true(maybePublishContentType.called)
-})
-
-test('does not ask for publish confirmation when user did provide skip option', async function (t) {
-  const patchResults = [
-    { patched: true, contentType: 'first' },
-    { patched: true, contentType: 'second' }
-  ]
-  const confirmStub = sinon.stub().returns(true)
-  const helpers = {
-    confirm: confirmStub
-  }
-  const logging = loggingStubs()
-  const maybePublishContentType = sinon.stub().returns(Promise.resolve())
-
-  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging, true)
-
-  t.false(confirmStub.called)
   t.true(maybePublishContentType.called)
 })
 
@@ -346,13 +359,12 @@ test('does nothing when there were no changes', async function (t) {
     { patched: false, contentType: 'first' },
     { patched: false, contentType: 'second' }
   ]
-  const helpers = {
-    confirm: sinon.stub().returns(true)
-  }
+
   const logging = loggingStubs()
   const maybePublishContentType = sinon.stub().returns(Promise.resolve())
+  const eventSystem = createEventSystem(logging)
 
-  await publishPatchResults(patchResults, maybePublishContentType, helpers, logging)
+  await publishPatchResults(patchResults, maybePublishContentType, eventSystem.dispatcher(PATCH_FILE_HANDLER))
 
   t.false(maybePublishContentType.called)
   t.false(logging.log.called)
