@@ -1374,9 +1374,9 @@ contentful-import@^4.5.1:
     npmlog "^4.0.0"
     yargs "^7.0.2"
 
-contentful-management@^3.7.5:
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/contentful-management/-/contentful-management-3.7.5.tgz#47b8a21883ca8b2fe84955346f30bd73dbe54c04"
+contentful-management@^3.7.5, contentful-management@^3.7.6:
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/contentful-management/-/contentful-management-3.7.6.tgz#d550086e7069988c41bfb06d53b12d4ffdabc781"
   dependencies:
     axios contentful/axios#fix/https-via-http-proxy
     contentful-sdk-core "^3.12.2"
