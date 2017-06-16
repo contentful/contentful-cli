@@ -16,6 +16,7 @@ test('proxyString with basic auth, with protocol', (t) => {
   const expectedParsed = {
     host: '127.0.0.1',
     port: 8213,
+    isHttps: false,
     auth: {
       username: 'foo',
       password: 'bar'
@@ -34,7 +35,8 @@ test('proxyString without auth, with protocol', (t) => {
   const expectedStringified = '127.0.0.1:8213'
   const expected = {
     host: '127.0.0.1',
-    port: 8213
+    port: 8213,
+    isHttps: false
   }
 
   t.deepEqual(parsed, expected, 'proxy url gets parsed')
@@ -50,6 +52,7 @@ test('proxyString with basic auth, without protocol', (t) => {
   const expectedParsed = {
     host: '127.0.0.1',
     port: 8213,
+    isHttps: false,
     auth: {
       username: 'foo',
       password: 'bar'
@@ -68,7 +71,8 @@ test('proxyString without auth, without protocol', (t) => {
   const expectedStringified = '127.0.0.1:8213'
   const expected = {
     host: '127.0.0.1',
-    port: 8213
+    port: 8213,
+    isHttps: false
   }
 
   t.deepEqual(parsed, expected, 'proxy url gets parsed')

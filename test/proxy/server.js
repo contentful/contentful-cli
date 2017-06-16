@@ -3,7 +3,7 @@ const net = require('net')
 const httpProxy = require('http-proxy')
 const url = require('url')
 
-var proxy = httpProxy.createServer()
+var proxy = httpProxy.createServer({ prependPath: false })
 
 var server = http.createServer(function (req, res) {
   console.log('Receiving reverse proxy request for:' + req.url)

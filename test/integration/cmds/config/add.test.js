@@ -14,6 +14,7 @@ test.cb('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
   const expectedConfig = {
     host: 'localhost',
     port: 8080,
+    isHttps: false,
     auth: {
       username: 'user',
       password: 'password'

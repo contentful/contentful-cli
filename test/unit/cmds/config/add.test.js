@@ -23,6 +23,7 @@ test('config add command', async (t) => {
   const expectedProxy = {
     host: 'host',
     port: 8080,
+    isHttps: false,
     auth: {
       username: 'user',
       password: 'password'
