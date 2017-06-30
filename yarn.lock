@@ -71,6 +71,13 @@ acorn@^3.0.4:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
 
+agent-base@2:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-2.1.1.tgz#d6de10d5af6132d5bd692427d46fc538539094c7"
+  dependencies:
+    extend "~3.0.0"
+    semver "~5.0.1"
+
 ajv-keywords@^1.0.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.5.1.tgz#314dd0a4b3368fad3dfcdc54ede6171b886daf3c"
@@ -915,6 +922,12 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bfj-node4@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/bfj-node4/-/bfj-node4-4.0.1.tgz#e3cdb3a9940460b4457e8f1bc45da061fb0974dc"
+  dependencies:
+    check-types "7.1.5"
+
 bfj@^3.1.3:
   version "3.1.4"
   resolved "https://registry.yarnpkg.com/bfj/-/bfj-3.1.4.tgz#10c3c5c2bdf3c9e872d27df0656849485e133cf6"
@@ -1331,26 +1344,29 @@ contains-path@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/contains-path/-/contains-path-0.1.0.tgz#fe8cf184ff6670b6baef01a9d4861a5cbec4120a"
 
-contentful-batch-libs@^5.9.2:
-  version "5.9.2"
-  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.9.2.tgz#c85a8a0cd3b156db85218a8557217de8d6d2efe2"
+contentful-batch-libs@^5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.10.0.tgz#9fa93487f9b71fd9b949f2581074792fcf3889a3"
   dependencies:
     bluebird "^3.3.3"
     contentful "^4.3.0"
-    contentful-management "^3.7.5"
+    contentful-management "^3.7.6"
     listr "^0.11.0"
     listr-verbose-renderer "^0.4.0"
     lodash "^4.0.1"
     npmlog "^4.0.2"
 
-contentful-export@^4.7.1:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/contentful-export/-/contentful-export-4.7.1.tgz#73cae0d62ddbc490547d952f875ab5b74f264589"
+contentful-export@^4.7.5:
+  version "4.7.5"
+  resolved "https://registry.yarnpkg.com/contentful-export/-/contentful-export-4.7.5.tgz#cca9b238bf93f3a50e83c39cbed70357def45249"
   dependencies:
+    bfj-node4 "^4.0.1"
     bluebird "^3.3.3"
     cli-table2 "^0.2.0"
-    contentful-batch-libs "^5.9.2"
+    contentful-batch-libs "^5.10.0"
     fs-extra "^2.1.2"
+    http-proxy-agent "^1.0.0"
+    https-proxy-agent "^1.0.0"
     json-stringify-safe "^5.0.1"
     listr "^0.11.0"
     listr-update-renderer "^0.2.0"
@@ -1361,20 +1377,22 @@ contentful-export@^4.7.1:
     request "^2.81.0"
     yargs "^7.0.2"
 
-contentful-import@^4.5.1:
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/contentful-import/-/contentful-import-4.5.1.tgz#a05c39d73d537e9917290ac89e722e27ea7d1c31"
+contentful-import@^4.5.4:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/contentful-import/-/contentful-import-4.5.4.tgz#1dc25900cf70d31b12282180d53dd89b918c9d46"
   dependencies:
     bluebird "^3.3.3"
     cli-table2 "^0.2.0"
-    contentful-batch-libs "^5.9.2"
+    contentful-batch-libs "^5.10.0"
+    http-proxy-agent "^1.0.0"
+    https-proxy-agent "^1.0.0"
     json-stringify-safe "^5.0.1"
     lodash "^4.0.0"
     moment "^2.18.1"
     npmlog "^4.0.0"
     yargs "^7.0.2"
 
-contentful-management@^3.7.5, contentful-management@^3.7.6:
+contentful-management@^3.7.6:
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/contentful-management/-/contentful-management-3.7.6.tgz#d550086e7069988c41bfb06d53b12d4ffdabc781"
   dependencies:
@@ -1528,17 +1546,17 @@ debug-log@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/debug-log/-/debug-log-1.0.1.tgz#2307632d4c04382b8df8a32f70b895046d52745f"
 
+debug@2, debug@^2.1.1, debug@^2.2.0, debug@^2.4.5, debug@^2.6.3:
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
+  dependencies:
+    ms "2.0.0"
+
 debug@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.2.0.tgz#f87057e995b1a1f6ae6a4960664137bc56f039da"
   dependencies:
     ms "0.7.1"
-
-debug@^2.1.1, debug@^2.2.0, debug@^2.4.5, debug@^2.6.3:
-  version "2.6.8"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
-  dependencies:
-    ms "2.0.0"
 
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
@@ -2004,7 +2022,7 @@ expand-template@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/expand-template/-/expand-template-1.0.3.tgz#6c303323177a62b1b22c070279f7861287b69b1a"
 
-extend@^3.0.0, extend@~3.0.0:
+extend@3, extend@^3.0.0, extend@~3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
@@ -2475,6 +2493,14 @@ hosted-git-info@^2.1.4:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.4.2.tgz#0076b9f46a270506ddbaaea56496897460612a67"
 
+http-proxy-agent@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/http-proxy-agent/-/http-proxy-agent-1.0.0.tgz#cc1ce38e453bf984a0f7702d2dd59c73d081284a"
+  dependencies:
+    agent-base "2"
+    debug "2"
+    extend "3"
+
 http-proxy@^1.16.2:
   version "1.16.2"
   resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742"
@@ -2489,6 +2515,14 @@ http-signature@~1.1.0:
     assert-plus "^0.2.0"
     jsprim "^1.2.2"
     sshpk "^1.7.0"
+
+https-proxy-agent@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-1.0.0.tgz#35f7da6c48ce4ddbfa264891ac593ee5ff8671e6"
+  dependencies:
+    agent-base "2"
+    debug "2"
+    extend "3"
 
 hullabaloo-config-manager@^1.0.0:
   version "1.1.1"
@@ -4571,6 +4605,10 @@ semver-diff@^2.0.0:
 "semver@2 || 3 || 4 || 5", semver@5.3.0, semver@^5.0.3, semver@^5.1.0, semver@^5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
+
+semver@~5.0.1:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.0.3.tgz#77466de589cd5d3c95f138aa78bc569a3cb5d27a"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
