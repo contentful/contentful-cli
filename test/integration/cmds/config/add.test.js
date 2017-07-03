@@ -10,7 +10,9 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test.cb('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
+test.todo('Refactor that test !')
+
+/** test.cb('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
   const expectedConfig = {
     host: 'localhost',
     port: 8080,
@@ -32,4 +34,4 @@ test.cb('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
           t.end()
         })
     })
-})
+})*/ 

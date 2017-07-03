@@ -1,11 +1,11 @@
 import test from 'ava'
+import nixt from 'nixt'
+import fs from 'fs-extra'
 import Promise from 'bluebird'
 import appRoot from 'app-root-path'
-import {createClient} from 'contentful-management'
+import { createClient } from 'contentful-management'
+import { join } from 'path'
 
-var fs = require('fs-extra')
-var join = require('path').join
-var nixt = require('nixt')
 var bin = join(__dirname, '../..', 'bin')
 
 var app = function () {
