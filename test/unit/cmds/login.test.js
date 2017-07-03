@@ -15,26 +15,29 @@ import {
 const promptStub = stub(inquirer, 'prompt')
 const opnStub = stub()
 const writeFileStub = stub()
-const statStub = stub().rejects()
+
+const enoent = new Error()
+enoent.code = 'ENOENT'
+const readFileStub = stub().rejects(enoent)
 
 test.before(() => {
   loginRewireAPI.__Rewire__('inquirer', inquirer)
   loginRewireAPI.__Rewire__('opn', opnStub)
-  contextRewireAPI.__Rewire__('stat', statStub)
+  contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
 })
 
 test.after.always(() => {
   loginRewireAPI.__ResetDependency__('inquirer')
   loginRewireAPI.__ResetDependency__('opn')
-  contextRewireAPI.__ResetDependency__('stat')
+  contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
 })
 
 test.afterEach((t) => {
   promptStub.resetHistory()
   opnStub.resetHistory()
-  statStub.resetHistory()
+  readFileStub.resetHistory()
   writeFileStub.resetHistory()
 })
 
@@ -58,7 +61,7 @@ test.serial('login - user abort', async (t) => {
   emptyContext()
   await loginHandler()
 
-  t.true(statStub.called, 'did load rc config')
+  t.true(readFileStub.called, 'did load rc config')
   t.is(promptStub.callCount, 1, 'did ask once with inquirer')
   t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
@@ -69,7 +72,7 @@ test.serial('login - already logged in', async (t) => {
   setContext({cmaToken: 'alreadyLoggedIn'})
   await loginHandler()
 
-  t.true(statStub.notCalled, 'did not try to load rc config')
+  t.true(readFileStub.notCalled, 'did not try to load rc config')
   t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
   t.true(promptStub.notCalled, 'did not show any inquirer')

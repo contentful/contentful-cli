@@ -41,7 +41,7 @@ Standalone installation on Linux or MacOS:
 - Add the download directory to path `export PATH=$PATH:~/downloaddirectory`
 - You now have the Contentful cli tool installed.
 
-Standalone installation on Windows: 
+Standalone installation on Windows:
 - Download the latest version of the `.exe`
 - Add the executeable to your Path:
     1. Open the start menu and type "Edit environment variables"
@@ -62,6 +62,26 @@ contentful --help
 # or
 contentful space --help
 ```
+
+## Using the CLI tool with a proxy
+
+You can save the proxy configuration in your `.contentfulrc.json` via:
+
+```sh
+contentful config add --proxy user:auth@host:port
+```
+
+We also respect the `http(s)_proxy` environment variables:
+
+```sh
+https_proxy=user:auth@host:port contentful
+```
+
+When multiple proxy configurations exists, precedence is taken in this form:
+
+1. `http_proxy` takes precedence over `.contentfulrc.json`
+2. `https_proxy` takes precedence over `.contentfulrc.json`
+2. `https_proxy` takes precedence over `http_proxy`
 
 ## :books: Documentation
 

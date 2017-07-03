@@ -12,7 +12,7 @@ test('proxyString with basic auth, with protocol', (t) => {
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
 
-  const expectedStringified = 'foo:bar@127.0.0.1:8213'
+  const expectedStringified = 'http://foo:bar@127.0.0.1:8213'
   const expectedParsed = {
     host: '127.0.0.1',
     port: 8213,
@@ -32,7 +32,7 @@ test('proxyString without auth, with protocol', (t) => {
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
 
-  const expectedStringified = '127.0.0.1:8213'
+  const expectedStringified = 'http://127.0.0.1:8213'
   const expected = {
     host: '127.0.0.1',
     port: 8213,
@@ -48,7 +48,7 @@ test('proxyString with basic auth, without protocol', (t) => {
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
 
-  const expectedStringified = 'foo:bar@127.0.0.1:8213'
+  const expectedStringified = 'http://foo:bar@127.0.0.1:8213'
   const expectedParsed = {
     host: '127.0.0.1',
     port: 8213,
@@ -68,7 +68,7 @@ test('proxyString without auth, without protocol', (t) => {
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
 
-  const expectedStringified = '127.0.0.1:8213'
+  const expectedStringified = 'http://127.0.0.1:8213'
   const expected = {
     host: '127.0.0.1',
     port: 8213,

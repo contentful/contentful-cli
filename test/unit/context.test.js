@@ -14,21 +14,23 @@ import {
 
 const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
 
-const statStub = stub().rejects()
+const enoent = new Error()
+enoent.code = 'ENOENT'
+const readFileStub = stub().rejects(enoent)
 const writeFileStub = stub()
 
 test.before(() => {
-  contextRewireAPI.__Rewire__('stat', statStub)
+  contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
 })
 
 test.after.always(() => {
-  contextRewireAPI.__ResetDependency__('stat')
+  contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
 })
 
 test.afterEach((t) => {
-  statStub.resetHistory()
+  readFileStub.resetHistory()
   writeFileStub.resetHistory()
 })
 
@@ -42,7 +44,7 @@ test.serial('loading, writing, setting and getting context & rc', async (t) => {
   let contextSize = Object.keys(context).length
 
   t.is(contextSize, 0, 'context is empty in the beginning')
-  t.true(statStub.calledOnce, 'tries to load runtime config')
+  t.true(readFileStub.calledOnce, 'tries to load runtime config')
 
   setContext({ newValue: true })
   context = await getContext()
@@ -62,8 +64,8 @@ test.serial('loading, writing, setting and getting context & rc', async (t) => {
 test.serial('loading existing rc config and attaching it to the context', async (t) => {
   const readFileStub = stub().resolves({ toString: () => MOCKED_RC })
   contextRewireAPI.__Rewire__('readFile', readFileStub)
-  statStub.reset()
-  statStub.resolves(MOCKED_RC)
+  readFileStub.reset()
+  readFileStub.resolves(MOCKED_RC)
   emptyContext()
 
   let context = await getContext()
@@ -72,4 +74,24 @@ test.serial('loading existing rc config and attaching it to the context', async 
   t.is(contextSize, 2, 'fresh context contains only two values')
   t.deepEqual(context, JSON.parse(MOCKED_RC), 'fresh context matches the rc file config')
   contextRewireAPI.__ResetDependency__('readFile')
+})
+
+test('loadProxyFromEnv', (t) => {
+  const loadProxyFromEnv = contextRewireAPI.__get__('loadProxyFromEnv')
+  let proxy
+
+  proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128' })
+  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: false } }, 'uses http_proxy')
+
+  proxy = loadProxyFromEnv({ https_proxy: 'https://127.0.0.1:3128' })
+  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'uses https_proxy')
+
+  proxy = loadProxyFromEnv({ HTTP_PROXY: '127.0.0.1:3128' })
+  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: false } }, 'uses HTTP_PROXY')
+
+  proxy = loadProxyFromEnv({ HTTPS_PROXY: 'https://127.0.0.1:3128' })
+  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'uses HTTPS_PROXY')
+
+  proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128', https_proxy: 'https://127.0.0.1:3128' })
+  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'prefers https_proxy')
 })

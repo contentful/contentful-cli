@@ -85,6 +85,7 @@
     "emojic": "^1.1.11",
     "fast-json-patch": "1.1.10",
     "figlet": "^1.2.0",
+    "https-proxy-agent": "^2.0.0",
     "inquirer": "^3.0.6",
     "inquirer-select-directory": "^1.1.2",
     "json": "^9.0.6",
