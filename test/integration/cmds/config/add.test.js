@@ -12,7 +12,7 @@ const app = () => {
 
 test.todo('Refactor that test !')
 
-/** test.cb('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
+test.cb.skip('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
   const expectedConfig = {
     host: 'localhost',
     port: 8080,
@@ -34,4 +34,4 @@ test.todo('Refactor that test !')
           t.end()
         })
     })
-})*/ 
+})
