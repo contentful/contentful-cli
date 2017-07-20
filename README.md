@@ -29,29 +29,8 @@ Using [yarn](https://yarnpkg.com):
 yarn global add contentful-cli
 ```
 
-Please note that for the non standalone versions you need node `=> v6` to use the CLI.
+Please note that you need node `=> v6` to use the CLI.
 
-Using Brew on MacOS:
-```sh
-brew install contentful-cli
-```
-
-Standalone installation on Linux or MacOS:
-- Download the latest version of the executeable for your OS
-- Add the download directory to path `export PATH=$PATH:~/downloaddirectory`
-- You now have the Contentful cli tool installed.
-
-Standalone installation on Windows:
-- Download the latest version of the `.exe`
-- Add the executeable to your Path:
-    1. Open the start menu and type "Edit environment variables"
-    2. Click "Edit environment variables for your account"
-    3. In the User variables box select the Path variable.
-    4. Click "Edit..."
-    5. In the new dialog, click "New"
-    6. Add the location where you downloaded the `.exe` and click OK
-    7. Restart your system
-- You now have the Contentful cli tool installed.
 
 ## :hand: Usage
 
