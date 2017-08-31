@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "6.9"
+install:
+  - npm install
+script:
+  - npm test
+  - npm run build
+  - ./test-e2e.sh
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+env:
+  global:
+  - secure: mE27aBUo8fRRCoziD/DjfGFN+a/MyOB0dE41dJPJeick+5BBQehJ9lzT51X7PdJI1XlfEkJIim8yX5J2gd0m/zCTX8jOKd/bw7l+keDBUZFmRmTmviauhxdiqwMykN4+nOID4IzJl1SHslPrEwdnzOiZsK4fzdtg7VQ1pwuZD4xDKPkEH5ga13CS9nivmsCO5O8na8/bbwHPTXaqXZ3VqSkuw0ct6BuykJ0A9EjWR+6/l7cFtodFg6tnZA4Hu7u4+UCMaWbMBE+fUuY9GLJUBNuCc5rMA4H6shD55vj/atmAj/rA2DnUKOCCIlaxcva+0kd9B6FfI53keVWT3AkUWH8kqfnLIgDtLa1OgldaLnKIM4a8Zy8KGzu7pLQjdzi/cGxacptfTLRNncscSJ6+BI/W1Xp1DvqDBpCeScDYVNIf+icM0ZhKWatzvRLFT3TL/hjiXNfjwq5tBDZGPWO8eA4kqyUEanuWyH0pTo8A/d09pWhLpZwC2ih/Vd1uI8ub+4WTo9wTuYbYE8Ti7dbZ/81+5vtOUq/z3Uc5WukRjQLm2vyzDBK2FVpf/oD6YQzteeICPOzV0QG/kdC7UDuL7Z8EcsNhM6MNlyfPWrYfKgAZKJk0gr9HCadrMzXGdDBogbibyoidC6339TU0XUD0YU8KZTy3WN05OFdXJb6veLQ=
+  - secure: jDt9uUReVwePnBFe7cxc6duFCFJVZQdtATvPX7xNbGOdpE5fkERfUBO5BPoBwO69hrnlXQKIVmcEvs0/Lc9n+TJ7xVtFVGcQeZLgVzS3Wv61ngxlSpwoouD8kRm4EkTA93guN3NzVwNrB4XSsnzhnELW+Od6cTLBcgGxev4+QAuyU4fX59H/J0uNvcER4AXSjbhfYDHMpVbv1+P8hPrB9zmCt/O/4NLHYZ/EzB5TUEP3LThovHOxKotrrP9LuQ12lOQzfvAn4In/S/AGO4IT9vmOBfEiIGCkoLoxHkdExSOa13InO3N2a8SxMesB3CFL1ICgbQTeGlRIXPEr7bxlFadpkNuxtCZTNnRYZ89fM03pfg32OaRmqqKxL2ORbY6xnKgEHV92z8yWXV/VYx4ATT8qaKmXCNRPJXopIGOk3Fi5xYcJPB6s39viO6Rijf/wSzuZ4725iW3S/bN2LHGsCz05/T3tNJgx57/M/ZiN1EJpwHpgju79+l1dFBZK4I6qzCuy6amdswCaOIApXmNAY+5j7Cp17WCge69TylTzqt74/UqZOHLrYBL4eWnMgq82lWTYJTJougmuawqMYmVhRS8m0MNl6sHT8uuxYmWW35usF4K1I96uqBll29qmqbk8lKVjNeLukIuwb/Q1GT6WWoBl6sSgP2KgbnQZvqH7cYE=

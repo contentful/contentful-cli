@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+//
+// What is this?
+//
+// A script that takes the result of running
+// `npm run build:standalone` and packages the
+// resulting binaries inside files that can
+// then be shared with the customers
+//
+
+const nodezip = require('node-zip')
+const path = require('path')
+const fs = require('fs')
+
+const packageJSON = require('../package.json')
+
+const version = packageJSON.version
+const buildpath = 'build/@contentful/'
+const files = {
+  'contentful-cli-macos': { to: 'contentful', package: 'contentful-cli-macos' },
+  'contentful-cli-linux': { to: 'contentful', package: 'contentful-cli-linux' },
+  'contentful-cli-win.exe': { to: 'contentful.exe', package: 'contentful-cli-win' }
+}
+
+console.log('Prepare zip files for each platform:\n')
+
+Object.keys(files).forEach((file) => {
+  const zip = nodezip()
+  const filename = files[file].to
+  const filepath = path.join(buildpath, file)
+  const packageName = `${files[file].package}-${version}-BETA.zip`
+
+  zip.file(filename, fs.readFileSync(filepath))
+
+  const data = zip.generate({ base64: false, compression: 'DEFLATE' })
+
+  console.log(packageName)
+  fs.writeFileSync(path.join(buildpath, packageName), data, 'binary')
+})

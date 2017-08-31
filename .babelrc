@@ -1,0 +1,25 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": 6
+      }
+    }]
+  ],
+  "plugins": [
+    "transform-object-rest-spread",
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul",
+        "rewire"
+      ]
+    }
+  }
+}

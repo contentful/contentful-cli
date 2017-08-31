@@ -1,0 +1,25 @@
+# Contentful CLI - `content-type list` command
+
+Prints the Content Types in a space
+
+## Usage
+
+```
+Usage: contentful content-type list [options]
+
+Options:
+  --space-id  Space id                                                  [string]
+```
+
+### Example
+
+```shell
+contentful content-type list --space-id xxx
+┌───────────────────┬────────────────────────┐
+│ Content Type Name │ Content Type ID        │
+├───────────────────┼────────────────────────┤
+│ Test              │ test                   │
+└───────────────────┴────────────────────────┘
+```
+
+
