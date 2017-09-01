@@ -41,7 +41,7 @@ test('wrap', (t) => {
 
   const longWords = Array(20).join('x ')
   const longWordsResult = wrap(longWords, 20)
-  t.is(longWordsResult, 'x x x x x x x x x x\nx x x x x x x x x', 'does wrap words, trims and adds linebreaks')
+  t.is(longWordsResult, 'x x x x x x x x x x \nx x x x x x x x x ', 'does wrap words, do not trim but adds linebreaks')
   t.is(wrapAnsiSpy.callCount, 1, 'wrap was called once')
 })
 
