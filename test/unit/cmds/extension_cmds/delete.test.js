@@ -1,6 +1,8 @@
 import test from 'ava'
 import { stub } from 'sinon'
 
+import { successEmoji } from '../../../../lib/utils/emojis'
+
 import {
   deleteExtension,
   __RewireAPI__ as deleteRewireAPI
@@ -8,7 +10,7 @@ import {
 
 import { ValidationError } from '../../../../lib/utils/error'
 
-const logStub = stub()
+const successStub = stub()
 
 const mockExtension = {
   delete: stub(),
@@ -24,7 +26,12 @@ test.before(() => {
   const createManagementClientStub = stub().returns(fakeClient)
 
   deleteRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  deleteRewireAPI.__Rewire__('log', logStub)
+  deleteRewireAPI.__Rewire__('success', successStub)
+})
+
+test.after.always(() => {
+  deleteRewireAPI.__ResetDependency__('createManagementClient')
+  deleteRewireAPI.__ResetDependency__('success')
 })
 
 test('Throws error if --version and --force are missing', async (t) => {
@@ -43,5 +50,5 @@ test('Throws error if wrong --version value is passed', async (t) => {
 test('Logs message if delete is successful', async (t) => {
   await deleteExtension({spaceId: 'space', id: 'test', force: true})
   t.true(mockExtension.delete.calledOnce)
-  t.true(logStub.calledWith('Successfully deleted extension with ID test'))
+  t.true(successStub.calledWith(`${successEmoji} Successfully deleted extension with ID test`))
 })

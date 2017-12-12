@@ -43,6 +43,11 @@ test.before(() => {
   rewireAPI.__Rewire__('log', logStub)
 })
 
+test.after.always(() => {
+  rewireAPI.__ResetDependency__('createManagementClient')
+  rewireAPI.__ResetDependency__('log')
+})
+
 test('Lists extensions', async (t) => {
   await handler({spaceId: 'space'})
 

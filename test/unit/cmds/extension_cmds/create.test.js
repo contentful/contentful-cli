@@ -1,6 +1,8 @@
 import test from 'ava'
 import { stub } from 'sinon'
 
+import { successEmoji } from '../../../../lib/utils/emojis'
+
 import {
   createExtension,
   __RewireAPI__ as createRewireAPI
@@ -17,6 +19,7 @@ import {
 import { ValidationError } from '../../../../lib/utils/error'
 
 const logStub = stub()
+const successStub = stub()
 
 const createUiExtensionStub = stub().resolves({
   extension: {
@@ -36,7 +39,14 @@ test.before(() => {
   const createManagementClientStub = stub().returns(fakeClient)
 
   createRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
+  createRewireAPI.__Rewire__('success', successStub)
   logRewireAPI.__Rewire__('log', logStub)
+})
+
+test.after.always(() => {
+  createRewireAPI.__ResetDependency__('createManagementClient')
+  createRewireAPI.__ResetDependency__('success')
+  logRewireAPI.__ResetDependency__('log')
 })
 
 test('Throws error if name is missing', async (t) => {
@@ -75,6 +85,8 @@ test('Creates extension from command line arguments', async (t) => {
       fieldTypes: [{type: 'Symbol'}]
     }
   }))
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })
 
 test('Logs extension data', async (t) => {
@@ -90,6 +102,8 @@ test('Logs extension data', async (t) => {
   values.forEach(value => {
     t.true(logStub.lastCall.args[0].includes(value))
   })
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })
 
 test('Creates extension with values from descriptor file', async (t) => {
@@ -112,4 +126,6 @@ test('Creates extension with values from descriptor file', async (t) => {
       fieldTypes: [{type: 'Boolean'}]
     }
   }))
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })

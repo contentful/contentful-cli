@@ -34,6 +34,11 @@ test.before(() => {
   logRewireAPI.__Rewire__('log', logStub)
 })
 
+test.after.always(() => {
+  getRewireAPI.__ResetDependency__('createManagementClient')
+  logRewireAPI.__ResetDependency__('log')
+})
+
 test('Calls getUiExtension() with ID', async (t) => {
   await handler({ spaceId: 'space1', id: 'widget1' })
 

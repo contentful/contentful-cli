@@ -1,6 +1,8 @@
 import test from 'ava'
 import { stub } from 'sinon'
 
+import { successEmoji } from '../../../../lib/utils/emojis'
+
 import {
   updateExtension,
   __RewireAPI__ as rewireAPI
@@ -10,6 +12,7 @@ import { ValidationError } from '../../../../lib/utils/error'
 
 const updateStub = stub()
 const logStub = stub()
+const successStub = stub()
 
 const extension = {
   sys: { id: '123', version: 3 },
@@ -31,6 +34,13 @@ test.before(() => {
 
   rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   rewireAPI.__Rewire__('logExtension', logStub)
+  rewireAPI.__Rewire__('success', successStub)
+})
+
+test.after.always(() => {
+  rewireAPI.__ResetDependency__('createManagementClient')
+  rewireAPI.__ResetDependency__('logExtension')
+  rewireAPI.__ResetDependency__('success')
 })
 
 test('Throws error if id is missing', async (t) => {
@@ -72,4 +82,5 @@ test('Calls update on extension', async (t) => {
 
   t.true(updateStub.calledOnce)
   t.true(logStub.calledOnce)
+  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
 })
