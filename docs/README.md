@@ -9,3 +9,4 @@
 * [config](./config) - Config related commands
 * [space](./space) - Space related commands
 * [content-type](./content-type) - Content Type related commands
+* [extension](./extension) - UI Extension related commands
