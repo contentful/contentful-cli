@@ -27,8 +27,8 @@ test.after.always(() => {
 })
 
 test.afterEach((t) => {
-  wrapAnsiSpy.reset()
-  textSyncSpy.reset()
+  wrapAnsiSpy.resetHistory()
+  textSyncSpy.resetHistory()
 })
 
 test('wrap', (t) => {
@@ -37,7 +37,7 @@ test('wrap', (t) => {
   const resultSingleWord = wrap(longSingleWord)
   t.is(resultSingleWord.length, longSingleWord.length, 'does not wrap words')
   t.is(wrapAnsiSpy.callCount, 1, 'wrap was called once')
-  wrapAnsiSpy.reset()
+  wrapAnsiSpy.resetHistory()
 
   const longWords = Array(20).join('x ')
   const longWordsResult = wrap(longWords, 20)
