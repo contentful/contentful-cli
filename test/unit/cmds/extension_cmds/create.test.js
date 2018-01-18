@@ -1,6 +1,10 @@
 import test from 'ava'
 import { stub } from 'sinon'
 
+import {
+  emptyContext,
+  setContext
+} from '../../../../lib/context'
 import { successEmoji } from '../../../../lib/utils/emojis'
 
 import {
@@ -37,6 +41,12 @@ test.before(() => {
     })
   }
   const createManagementClientStub = stub().returns(fakeClient)
+
+  emptyContext()
+  setContext({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
 
   createRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   createRewireAPI.__Rewire__('success', successStub)

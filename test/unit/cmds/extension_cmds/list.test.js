@@ -5,6 +5,10 @@ import {
   handler,
   __RewireAPI__ as rewireAPI
 } from '../../../../lib/cmds/extension_cmds/list'
+import {
+  emptyContext,
+  setContext
+} from '../../../../lib/context'
 
 const logStub = stub()
 const getSpaceStub = stub()
@@ -39,6 +43,12 @@ test.before(() => {
 
   const createManagementClientStub = stub().returns(fakeClient)
 
+  emptyContext()
+  setContext({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
+
   rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   rewireAPI.__Rewire__('log', logStub)
 })
@@ -48,7 +58,7 @@ test.after.always(() => {
   rewireAPI.__ResetDependency__('log')
 })
 
-test('Lists extensions', async (t) => {
+test.serial('Lists extensions', async (t) => {
   await handler({spaceId: 'space'})
 
   const outputValues = [ 'Widget', '123', 'Widget 2', '456' ]
@@ -58,7 +68,7 @@ test('Lists extensions', async (t) => {
   })
 })
 
-test('Displays message if list is empty', async (t) => {
+test.serial('Displays message if list is empty', async (t) => {
   await handler({spaceId: 'empty-space'})
 
   t.true(logStub.calledWith('No extensions found'))

@@ -7,7 +7,10 @@ import {
   updateExtension,
   __RewireAPI__ as rewireAPI
 } from '../../../../lib/cmds/extension_cmds/update'
-
+import {
+  emptyContext,
+  setContext
+} from '../../../../lib/context'
 import { ValidationError } from '../../../../lib/utils/error'
 
 const updateStub = stub()
@@ -31,6 +34,12 @@ test.before(() => {
     })
   }
   const createManagementClientStub = stub().returns(fakeClient)
+
+  emptyContext()
+  setContext({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
 
   rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   rewireAPI.__Rewire__('logExtension', logStub)
