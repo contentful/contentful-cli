@@ -5,7 +5,10 @@ import {
   handler,
   __RewireAPI__ as getRewireAPI
 } from '../../../../lib/cmds/extension_cmds/get'
-
+import {
+  emptyContext,
+  setContext
+} from '../../../../lib/context'
 import {
   __RewireAPI__ as logRewireAPI
 } from '../../../../lib/cmds/extension_cmds/utils/log-as-table'
@@ -29,6 +32,12 @@ test.before(() => {
     })
   }
   const createManagementClientStub = stub().returns(fakeClient)
+
+  emptyContext()
+  setContext({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
 
   getRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   logRewireAPI.__Rewire__('log', logStub)
