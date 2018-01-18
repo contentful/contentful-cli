@@ -54,7 +54,7 @@ test.todo('should create space with no org provided')
 
 test.cb('should create space with name and org provided', t => {
   app()
-    .run(`space create --name cli_test_org_space --organization-id ${process.env.ORG_ID}`)
+    .run(`space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`)
     .expect((result) => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
@@ -68,7 +68,7 @@ test.cb('should create space with name and org provided', t => {
 
 test.cb('should create space using shortcuts args', t => {
   app()
-    .run(`space create -n cli_test_org_space_sh --org ${process.env.ORG_ID}`)
+    .run(`space create -n cli_test_org_space_sh --org ${process.env.CLI_E2E_ORG_ID}`)
     .expect((result) => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
