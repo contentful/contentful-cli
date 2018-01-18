@@ -76,6 +76,5 @@ test.cb('should import space', t => {
     .stdout(/Assets +│ 0/)
     .stdout(/Locales +│ 0/)
     .stdout(/Webhooks +│ 0/)
-    .stdout(/Roles +│ 0/)
     .end(t.end)
 })
