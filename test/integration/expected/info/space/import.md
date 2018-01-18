@@ -2,8 +2,7 @@ Usage: contentful space import --content-file <file>
 
 Options:
   -h, --help                 Show help                                 [boolean]
-  --version                  Show version number                       [boolean]
-  --space-id                 space to import                            [string]
+  --space-id                 ID of the destination space                [string]
   --content-file             JSON file that contains data to be import to your
                              space                           [string] [required]
   --content-model-only       Import only content types[boolean] [default: false]
@@ -12,9 +11,14 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
+  --no-update                Skips updating entries if they already exist
+                                                      [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
-  --management-host          Management API host
+  --managementHost           Management API host
                                         [string] [default: "api.contentful.com"]
+  --proxy                    Proxy configuration in HTTP auth format:
+                             [http|https]://host:port or
+                             [http|https]://user:password@host:port     [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
