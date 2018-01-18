@@ -90,8 +90,8 @@ This may collide with your already globally installed Contentful CLI. Make sure 
 :warning: Environment variables should be set:
 
 ```
-CMA_TOKEN = <cma_auth_token>
-ORG_ID = <organization_id>
+CLI_E2E_CMA_TOKEN = <cma_auth_token>
+CLI_E2E_ORG_ID = <organization_id>
 ```
 
 #### npm:
