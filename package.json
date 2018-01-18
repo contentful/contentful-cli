@@ -60,7 +60,7 @@
     "nyc": "^11.1.0",
     "pkg": "^4.2.4",
     "rimraf": "^2.6.1",
-    "sinon": "^3.2.1",
+    "sinon": "^4.1.6",
     "stream-buffers": "^3.0.1",
     "strip-ansi": "^4.0.0",
     "trevor": "^2.3.0"

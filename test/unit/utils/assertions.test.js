@@ -23,7 +23,7 @@ test.after.always(() => {
 })
 
 test.afterEach((t) => {
-  highlightStyleSpy.reset()
+  highlightStyleSpy.resetHistory()
 })
 
 test.serial('assertLoggedIn when not logged in', async (t) => {

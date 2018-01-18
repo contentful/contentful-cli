@@ -40,12 +40,12 @@ test.after.always(() => {
 })
 
 test.afterEach((t) => {
-  infoStyleSpy.reset()
-  warningStyleSpy.reset()
-  errorStyleSpy.reset()
-  successStyleSpy.reset()
-  frameSpy.reset()
-  wrapSpy.reset()
+  infoStyleSpy.resetHistory()
+  warningStyleSpy.resetHistory()
+  errorStyleSpy.resetHistory()
+  successStyleSpy.resetHistory()
+  frameSpy.resetHistory()
+  wrapSpy.resetHistory()
 })
 
 test('log', (t) => {
