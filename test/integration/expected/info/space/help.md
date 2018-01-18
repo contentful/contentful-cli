@@ -10,4 +10,3 @@ Commands:
 
 Options:
   -h, --help  Show help                                                [boolean]
-  --version   Show version number                                      [boolean]
