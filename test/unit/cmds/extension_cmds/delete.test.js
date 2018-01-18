@@ -6,7 +6,7 @@ import { successEmoji } from '../../../../lib/utils/emojis'
 import {
   deleteExtension,
   __RewireAPI__ as deleteRewireAPI
-} from '../../../../lib/cmds/extension_cmds/Delete'
+} from '../../../../lib/cmds/extension_cmds/delete'
 
 import { ValidationError } from '../../../../lib/utils/error'
 
