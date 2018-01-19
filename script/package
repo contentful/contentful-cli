@@ -16,7 +16,7 @@ const fs = require('fs')
 const packageJSON = require('../package.json')
 
 const version = packageJSON.version
-const buildpath = 'build/@contentful/'
+const buildpath = 'build/'
 const files = {
   'contentful-cli-macos': { to: 'contentful', package: 'contentful-cli-macos' },
   'contentful-cli-linux': { to: 'contentful', package: 'contentful-cli-linux' },
