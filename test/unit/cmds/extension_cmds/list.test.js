@@ -21,14 +21,14 @@ const mockExtensions = {
         fieldTypes: [ { type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } } ],
         src: 'https://awesome.extension'
       },
-      sys: { id: '123', version: 3 }
+      sys: { id: '123', version: 7 }
     }, {
       extension: {
         name: 'Widget 2',
         fieldTypes: [ { type: 'Entry' }, { type: 'Number' } ],
         src: 'https://awesome.extension'
       },
-      sys: { id: '456', version: 1 }
+      sys: { id: '456', version: 8 }
     }
   ]
 }
@@ -61,7 +61,7 @@ test.after.always(() => {
 test.serial('Lists extensions', async (t) => {
   await handler({spaceId: 'space'})
 
-  const outputValues = [ 'Widget', '123', 'Widget 2', '456' ]
+  const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
 
   outputValues.forEach(str => {
     t.true(logStub.lastCall.args[0].includes(str))
