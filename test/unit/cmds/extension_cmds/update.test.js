@@ -1,5 +1,6 @@
 import test from 'ava'
 import { stub } from 'sinon'
+import { resolve } from 'path'
 
 import { successEmoji } from '../../../../lib/utils/emojis'
 
@@ -44,6 +45,10 @@ test.before(() => {
   rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   rewireAPI.__Rewire__('logExtension', logStub)
   rewireAPI.__Rewire__('success', successStub)
+})
+
+test.afterEach(() => {
+  updateStub.resetHistory()
 })
 
 test.after.always(() => {
@@ -91,5 +96,20 @@ test('Calls update on extension', async (t) => {
 
   t.true(updateStub.calledOnce)
   t.true(logStub.calledOnce)
+  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
+})
+
+test('Calls update on extension and reads srcdoc from disk', async (t) => {
+  await updateExtension({
+    id: '123',
+    version: 3,
+    spaceId: 'space',
+    name: 'Widget',
+    fieldTypes: ['Symbol'],
+    srcdoc: resolve(__dirname, 'sample-extension.html')
+  })
+
+  t.true(updateStub.calledOnce)
+
   t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
 })
