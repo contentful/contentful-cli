@@ -80,6 +80,13 @@ test('Throws error if both src and srcdoc are not provided', async (t) => {
   t.truthy(error.message.includes('Must contain exactly one of: src, srcdoc'))
 })
 
+test('Throws error if both src and srcdoc are at the same time', async (t) => {
+  const cmd = createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })
+  const error = await t.throws(cmd, ValidationError)
+
+  t.truthy(error.message.includes('Must contain exactly one of: src, srcdoc'))
+})
+
 test('Creates extension from command line arguments', async (t) => {
   await createExtension({
     spaceId: 'space',
