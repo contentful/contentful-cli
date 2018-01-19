@@ -1,5 +1,6 @@
 import test from 'ava'
 import { stub } from 'sinon'
+import { resolve } from 'path'
 
 import {
   emptyContext,
@@ -141,6 +142,25 @@ test('Creates extension with values from descriptor file', async (t) => {
       name: 'Test Extension',
       src: 'https://new.extension',
       fieldTypes: [{type: 'Boolean'}]
+    }
+  }))
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
+})
+
+test('Creates extension and reads srcdoc from disk', async (t) => {
+  await createExtension({
+    spaceId: 'space',
+    name: 'Widget',
+    fieldTypes: ['Symbol'],
+    srcdoc: resolve(__dirname, 'sample-extension.html')
+  })
+
+  t.true(createUiExtensionStub.calledWith({
+    extension: {
+      name: 'Widget',
+      srcdoc: '<h1>Sample Extension Content</h1>\n',
+      fieldTypes: [{type: 'Symbol'}]
     }
   }))
 
