@@ -1,0 +1,5 @@
+{
+  "name": "Sample Extension",
+  "id": "sample-extension",
+  "fieldTypes": ["Symbol", "Number"]
+}

@@ -55,10 +55,10 @@ test.cb('should exit 1 when no args', t => {
     .end(t.end)
 })
 
-test.cb('should exit when no space provided', t => {
+test.cb('should exit 1 when no space provided', t => {
   app()
     .run(`space import --content-file ${expectedDir}/export-init-space.json`)
-    .code(0)
+    .code(1)
     .stderr(/Error: You need to provide a space/)
     .end((err) => {
       t.ifError(err, 'error message or error code is incorrect')
