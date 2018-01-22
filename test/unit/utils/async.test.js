@@ -3,6 +3,18 @@ import { stub, spy } from 'sinon'
 
 import { handleAsyncError } from '../../../lib/utils/async'
 
+const exitStub = stub()
+let originalExit = null
+
+test.before(() => {
+  originalExit = global.process.exit
+  global.process.exit = exitStub
+})
+
+test.after.always(() => {
+  global.process.exit = originalExit
+})
+
 test('handleAsyncError (success)', async (t) => {
   const asyncFn = stub().resolves('value')
   const errorHandler = spy()
@@ -35,4 +47,7 @@ test('handleAsyncError (failure)', async (t) => {
 
   t.true(errorHandler.calledOnce)
   t.true(errorHandler.calledWith(error))
+
+  t.true(exitStub.calledOnce)
+  t.true(exitStub.calledWith(1))
 })
