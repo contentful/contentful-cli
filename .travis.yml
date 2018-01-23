@@ -9,3 +9,5 @@ script:
   - ./test-e2e.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+notifications:
+  email: false
