@@ -14,19 +14,21 @@ import {
 } from '../../../../lib/context'
 import { ValidationError } from '../../../../lib/utils/error'
 
-const updateStub = stub()
-const logStub = stub()
-const successStub = stub()
-
-const extension = {
+const basicExtension = {
   sys: { id: '123', version: 3 },
   extension: {
     name: 'Widget',
     fieldTypes: [ { type: 'Symbol' } ],
     src: 'https://awesome.extension'
-  },
-  update: updateStub
+  }
 }
+
+const updateStub = stub().returns(basicExtension)
+const successStub = stub()
+
+const extension = Object.assign({}, basicExtension, {
+  update: updateStub
+})
 
 test.before(() => {
   const fakeClient = {
@@ -43,7 +45,6 @@ test.before(() => {
   })
 
   rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  rewireAPI.__Rewire__('logExtension', logStub)
   rewireAPI.__Rewire__('success', successStub)
 })
 
@@ -53,7 +54,6 @@ test.afterEach(() => {
 
 test.after.always(() => {
   rewireAPI.__ResetDependency__('createManagementClient')
-  rewireAPI.__ResetDependency__('logExtension')
   rewireAPI.__ResetDependency__('success')
 })
 
@@ -91,15 +91,21 @@ test('Throws error if wrong --version value is passed', async (t) => {
   t.truthy(error.message.includes('Version provided does not match current resource version'))
 })
 
-test('Calls update on extension', async (t) => {
-  await updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', force: true })
+test.serial('Calls update on extension with no version number but force', async (t) => {
+  await updateExtension({
+    id: '123',
+    force: true,
+    spaceId: 'space',
+    name: 'Widget',
+    fieldTypes: ['Symbol'],
+    src: 'https://new.url'
+  })
 
   t.true(updateStub.calledOnce)
-  t.true(logStub.calledOnce)
   t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
 })
 
-test('Calls update on extension and reads srcdoc from disk', async (t) => {
+test.serial('Calls update on extension and reads srcdoc from disk', async (t) => {
   await updateExtension({
     id: '123',
     version: 3,
@@ -110,6 +116,5 @@ test('Calls update on extension and reads srcdoc from disk', async (t) => {
   })
 
   t.true(updateStub.calledOnce)
-
   t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
 })
