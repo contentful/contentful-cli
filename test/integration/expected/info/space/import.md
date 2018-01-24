@@ -22,4 +22,4 @@ Options:
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
-Copyright 2017 Contentful, this is a BETA release
+Copyright 2018 Contentful, this is a BETA release

@@ -15,4 +15,4 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2017 Contentful, this is a BETA release
+Copyright 2018 Contentful, this is a BETA release

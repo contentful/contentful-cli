@@ -11,4 +11,4 @@ Options:
   --srcdoc       Path to extension bundle                               [string]
   --sidebar      Render the extension in the sidebar                   [boolean]
 
-Copyright 2017 Contentful, this is a BETA release
+Copyright 2018 Contentful, this is a BETA release

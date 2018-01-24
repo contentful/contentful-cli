@@ -13,4 +13,4 @@ Options:
   --version      Current version of the extension for optimistic locking[number]
   --force        Force operation without explicit version              [boolean]
 
-Copyright 2017 Contentful, this is a BETA release
+Copyright 2018 Contentful, this is a BETA release
