@@ -19,7 +19,6 @@ const version = packageJSON.version
 const buildpath = 'build/'
 const files = {
   'contentful-cli-macos': { to: 'contentful', package: 'contentful-cli-macos' },
-  'contentful-cli-linux': { to: 'contentful', package: 'contentful-cli-linux' },
   'contentful-cli-win.exe': { to: 'contentful.exe', package: 'contentful-cli-win' }
 }
 
