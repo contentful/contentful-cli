@@ -14,7 +14,7 @@ Options:
 ### Example
 
 ```shell
-contentful-extension list --space-id xxx
+contentful extension list --space-id xxx
 
 ┌────────────────┬──────────────┬──────────────┐
 │ Extension Name │ Extension ID │ Version      │
