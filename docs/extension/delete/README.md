@@ -1,6 +1,6 @@
 # Contentful CLI - `extension delete` command
 
-Deletes an Extension
+Deletes an extension
 
 ## Usage
 

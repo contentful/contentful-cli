@@ -1,6 +1,6 @@
 # Contentful CLI - `extension list` command
 
-Prints the Extensions in a space
+Prints the extensions in a space
 
 ## Usage
 

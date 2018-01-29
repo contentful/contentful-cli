@@ -2,8 +2,8 @@
 
 ## Available subcommands:
 
-* [create](./create) - Create a new Extension
-* [update](./create) - Update an Extension
-* [delete](./create) - Delete an Extension
-* [get](./create) - Get information about one Extension
-* [list](./create) - List all available Extensions from a Space.
+* [create](./create) - Create a new extension
+* [update](./create) - Update an extension
+* [delete](./create) - Delete an extension
+* [get](./create) - Get information about one extension
+* [list](./create) - List all available extensions from a space

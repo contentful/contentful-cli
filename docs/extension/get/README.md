@@ -1,6 +1,6 @@
 # Contentful CLI - `extension get` command
 
-Prints information about the requested Extension
+Prints information about the requested extension
 
 ## Usage
 
