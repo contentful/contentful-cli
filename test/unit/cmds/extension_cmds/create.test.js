@@ -148,6 +148,30 @@ test('Creates extension with values from descriptor file', async (t) => {
   t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })
 
+test('Creates extension, descriptor src is overwritten by args srcdoc', async (t) => {
+  const descriptor = `{
+    "name": "Test Extension",
+    "fieldTypes": ["Boolean"],
+    "src": "https://new.extension"
+  }`
+
+  prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
+    Promise.resolve(descriptor)
+  ))
+
+  await createExtension({ descriptor: 'test.json', srcdoc: resolve(__dirname, 'sample-extension.html') })
+
+  t.true(createUiExtensionStub.calledWith({
+    extension: {
+      name: 'Test Extension',
+      srcdoc: '<h1>Sample Extension Content</h1>\n',
+      fieldTypes: [{type: 'Boolean'}]
+    }
+  }))
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
+})
+
 test('Creates extension and reads srcdoc from disk', async (t) => {
   await createExtension({
     spaceId: 'space',
