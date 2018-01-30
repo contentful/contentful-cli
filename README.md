@@ -13,6 +13,7 @@
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
 - Manage spaces - List, create, ...
 - Seed your space with example data
+- Manage installation of [extensions](https://github.com/contentful/extensions) in a space
 - Run a guide which introduces you to the Contentful basics.
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
 - More to come soon! 🚀
