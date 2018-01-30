@@ -1,6 +1,6 @@
 # Contentful CLI - `extension update` command
 
-Updates a UI extension
+Updates an extension
 
 ## Usage
 

@@ -1,6 +1,6 @@
 # Contentful CLI - `extension create` command
 
-Creates a UI extension
+Creates an extension
 
 ## Usage
 

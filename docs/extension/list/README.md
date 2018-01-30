@@ -1,6 +1,6 @@
 # Contentful CLI - `extension list` command
 
-Prints the Extensions in a space
+Prints the extensions in a space
 
 ## Usage
 
@@ -14,11 +14,11 @@ Options:
 ### Example
 
 ```shell
-contentful-extension list --space-id xxx
+contentful extension list --space-id xxx
 
-┌────────────────┬──────────────┐
-│ Extension Name │ Extension ID │
-├────────────────┼──────────────┤
-│ Test           │ test         │
-└────────────────┴──────────────┘
+┌────────────────┬──────────────┬──────────────┐
+│ Extension Name │ Extension ID │ Version      │
+├────────────────┼──────────────┼──────────────┤
+│ Test           │ test         │ 3            │
+└────────────────┴──────────────┴──────────────┘
 ```
