@@ -3,7 +3,6 @@ import nixt from 'nixt'
 import { join } from 'path'
 import {
   initConfig,
-  read,
   deleteSpaces,
   createSimpleSpace,
   expectedDir
@@ -34,10 +33,9 @@ test.cb('should print help message', t => {
   app()
     .run('space import --help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/space/import.md`)
-      t.is(resultText, expected, 'help data is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
@@ -46,11 +44,9 @@ test.cb('should exit 1 when no args', t => {
   app()
     .run('space import')
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stderr.trim()
-      var expected = read(`${expectedDir}/info/space/import.md`)
-      expected += '\n\nMissing required argument: content-file'
-      t.is(resultText, expected, 'wrong response in case of no args provided')
+      t.snapshot(resultText, 'wrong response in case of no args provided')
     })
     .end(t.end)
 })

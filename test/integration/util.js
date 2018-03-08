@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import { resolve } from 'path'
 import { homedir } from 'os'
 import { createClient } from 'contentful-management'
-import { readFileSync, writeFile, stat } from 'mz/fs'
+import { writeFile, stat } from 'mz/fs'
 
 export const expectedDir = `${appRoot}/test/integration/expected`
 export const tmpDir = `${appRoot}/test/integration/expected/tmp`
@@ -30,10 +30,6 @@ export async function initConfig () {
   }
 
   return writeFile(configFile, JSON.stringify({ cmaToken: process.env.CLI_E2E_CMA_TOKEN }, null, 4))
-}
-
-export function read (filepath) {
-  return readFileSync(filepath, 'utf-8').trim()
 }
 
 export async function deleteSpaces (spacesToDelete) {
