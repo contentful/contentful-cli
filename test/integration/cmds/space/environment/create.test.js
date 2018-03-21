@@ -4,7 +4,7 @@ import { join } from 'path'
 import {
   initConfig,
   deleteSpaces,
-  extractSpaceId
+  createSimpleSpace
 } from '../../../util'
 
 const bin = join(__dirname, './../../../../../', 'bin')
