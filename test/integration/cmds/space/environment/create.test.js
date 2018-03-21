@@ -13,31 +13,16 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-let spaceId = null
+const org = process.env.CLI_E2E_ORG_ID
+let space = null
 
 test.before('ensure config file exist and create space', async () => {
   await initConfig()
-
-  const createSpace = new Promise((resolve, reject) => {
-    try {
-      app()
-        .run('space create')
-        .code(0)
-        .expect(result => {
-          const resultText = result.stderr.trim()
-          spaceId = extractSpaceId(resultText)
-          console.log({result, spaceId})
-        })
-        .end(resolve)
-    } catch (err) {
-      reject(err)
-    }
-  })
-  await createSpace
+  space = await createSimpleSpace(org)
 })
 
 test.after.always('remove created spaces', t => {
-  return deleteSpaces([spaceId])
+  return deleteSpaces([space.sys.id])
 })
 
 test.cb('should exit 1 when no args', t => {
@@ -64,7 +49,7 @@ test.cb('should print help message', t => {
 
 test.cb('should create environment with id and name provided', t => {
   app()
-    .run(`space environment create --space-id ${spaceId} --environment-id staging --name Staging`)
+    .run(`space environment create --space-id ${space.sys.id} --environment-id staging --name Staging`)
     .expect((result) => {
       const resultText = result.stdout.trim()
       t.snapshot(resultText)
@@ -73,9 +58,9 @@ test.cb('should create environment with id and name provided', t => {
     .end(t.end)
 })
 
-test.cb('should create space using shortcuts args', t => {
+test.cb('should create environment using shortcuts args', t => {
   app()
-    .run(`space environment create -s ${spaceId} -e test -n test`)
+    .run(`space environment create -s ${space.sys.id} -e shortcutenvironment -n shortcutEnvironment`)
     .expect((result) => {
       const resultText = result.stdout.trim()
       t.snapshot(resultText)
