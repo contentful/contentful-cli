@@ -40,7 +40,7 @@
                 "firstPublishedAt": "2017-05-29T14:07:02.831Z",
                 "publishedAt": "2017-05-29T14:13:06.910Z"
             },
-            "displayField": "ngca",
+            "displayField": "title",
             "name": "Person",
             "description": "",
             "fields": [
@@ -197,7 +197,7 @@
                 "firstPublishedAt": "2017-05-29T14:07:03.354Z",
                 "publishedAt": "2017-05-29T14:13:07.757Z"
             },
-            "displayField": "nlnv",
+            "displayField": "title",
             "name": "Blog Post",
             "description": "",
             "fields": [
