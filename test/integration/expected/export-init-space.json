@@ -45,8 +45,7 @@
             "description": "",
             "fields": [
                 {
-                    "id": "ngca",
-                    "apiName": "name",
+                    "id": "name",
                     "name": "Name",
                     "type": "Symbol",
                     "localized": false,
@@ -56,8 +55,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "kxcq",
-                    "apiName": "title",
+                    "id": "title",
                     "name": "Title",
                     "type": "Symbol",
                     "localized": false,
@@ -67,8 +65,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "soyo",
-                    "apiName": "slogan",
+                    "id": "slogan",
                     "name": "Slogan",
                     "type": "Symbol",
                     "localized": false,
@@ -78,8 +75,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "gggo",
-                    "apiName": "company",
+                    "id": "company",
                     "name": "Company",
                     "type": "Symbol",
                     "localized": false,
@@ -89,8 +85,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "wefq",
-                    "apiName": "shortBio",
+                    "id": "shortBio",
                     "name": "Short Bio",
                     "type": "Text",
                     "localized": false,
@@ -100,8 +95,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "obci",
-                    "apiName": "email",
+                    "id": "email",
                     "name": "Email",
                     "type": "Symbol",
                     "localized": false,
@@ -111,8 +105,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "xxgd",
-                    "apiName": "phone",
+                    "id": "phone",
                     "name": "Phone",
                     "type": "Symbol",
                     "localized": false,
@@ -122,8 +115,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "aikf",
-                    "apiName": "facebook",
+                    "id": "facebook",
                     "name": "Facebook",
                     "type": "Symbol",
                     "localized": false,
@@ -133,8 +125,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "uvix",
-                    "apiName": "twitter",
+                    "id": "twitter",
                     "name": "Twitter",
                     "type": "Symbol",
                     "localized": false,
@@ -144,8 +135,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "tcen",
-                    "apiName": "github",
+                    "id": "github",
                     "name": "Github",
                     "type": "Symbol",
                     "localized": false,
@@ -155,8 +145,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "coca",
-                    "apiName": "image",
+                    "id": "image",
                     "name": "Image",
                     "type": "Link",
                     "localized": false,
@@ -213,8 +202,7 @@
             "description": "",
             "fields": [
                 {
-                    "id": "nlnv",
-                    "apiName": "title",
+                    "id": "title",
                     "name": "Title",
                     "type": "Symbol",
                     "localized": false,
@@ -224,8 +212,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "xymy",
-                    "apiName": "slug",
+                    "id": "slug",
                     "name": "Slug",
                     "type": "Symbol",
                     "localized": false,
@@ -235,8 +222,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "xelg",
-                    "apiName": "heroImage",
+                    "id": "heroImage",
                     "name": "Hero Image",
                     "type": "Link",
                     "localized": false,
@@ -247,8 +233,7 @@
                     "linkType": "Asset"
                 },
                 {
-                    "id": "hfef",
-                    "apiName": "description",
+                    "id": "description",
                     "name": "Description",
                     "type": "Text",
                     "localized": false,
@@ -258,8 +243,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "rwhy",
-                    "apiName": "body",
+                    "id": "body",
                     "name": "Body",
                     "type": "Text",
                     "localized": false,
@@ -269,8 +253,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "ymrc",
-                    "apiName": "author",
+                    "id": "author",
                     "name": "Author",
                     "type": "Link",
                     "localized": false,
@@ -287,8 +270,7 @@
                     "linkType": "Entry"
                 },
                 {
-                    "id": "feqp",
-                    "apiName": "publishDate",
+                    "id": "publishDate",
                     "name": "Publish Date",
                     "type": "Date",
                     "localized": false,
@@ -298,8 +280,7 @@
                     "omitted": false
                 },
                 {
-                    "id": "zqns",
-                    "apiName": "tags",
+                    "id": "tags",
                     "name": "tags",
                     "type": "Array",
                     "localized": false,
