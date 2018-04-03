@@ -36,11 +36,13 @@ export async function deleteSpaces (spacesToDelete) {
   const client = await createManagementClient()
   await Promise.map(spacesToDelete, (spaceId) => {
     return client.getSpace(spaceId).then((space) => {
-      return space.delete()
+      // Add delay here because there is a bug that you can't delete a space
+      // with environment that has a status of inprogress
+      return Promise.delay(1000).then(() => space.delete())
     }, (error) => {
       console.log('Can not find space to delete with id: ', spaceId, error)
     })
-  })
+  }, {concurrency: 1})
 }
 
 export function extractSpaceId (text) {
