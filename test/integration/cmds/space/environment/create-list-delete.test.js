@@ -40,10 +40,10 @@ test.cb('should create, list and delete environment', t => {
   function listEnvironments () {
     app()
       .run(`space environment list --space-id ${space.sys.id}`)
-      .expect((result) => {
-        const resultText = result.stdout.trim()
-        t.snapshot(resultText)
-      })
+      .stdout(/Environment name +|/)
+      .stdout(/Environment id +|/)
+      .stdout(/Create List Delete +|/)
+      .stdout(/master +|/)
       .code(0)
       .end(deleteEnvironment)
   }
@@ -51,10 +51,10 @@ test.cb('should create, list and delete environment', t => {
   function deleteEnvironment () {
     app()
       .run(`space environment delete --space-id ${space.sys.id} --environment-id createListDelete`)
-      .expect((result) => {
-        const resultText = result.stdout.trim()
-        t.snapshot(resultText)
-      })
+      .stdout(/Environment name +|/)
+      .stdout(/Environment id +|/)
+      .stdout(/Create List Delete +|/)
+      .stdout(/master +|/)
       .code(0)
       .end(t.end)
   }
