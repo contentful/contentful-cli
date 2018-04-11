@@ -61,10 +61,7 @@ test.cb('should create environment with id and name provided', t => {
 test.cb('should create environment using shortcuts args', t => {
   app()
     .run(`space environment create -s ${space.sys.id} -e shortcutenvironment -n shortcutEnvironment`)
-    .expect((result) => {
-      const resultText = result.stdout.trim()
-      t.snapshot(resultText)
-    })
+    .stdout(/Successfully created environment shortcutEnvironment \(shortcutenvironment\)/)
     .code(0)
     .end(t.end)
 })
