@@ -65,12 +65,6 @@ test.cb('should exit 1 when no space provided', t => {
 test.cb('should import space', t => {
   app()
     .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
-    .stdout(/Imported entities/)
-    .stdout(/Content Types +│ 2/)
-    .stdout(/Editor Interfaces +│ 2/)
-    .stdout(/Entries +│ 0/)
-    .stdout(/Assets +│ 0/)
-    .stdout(/Locales +│ 0/)
-    .stdout(/Webhooks +│ 0/)
+    .stdout(/Finished importing all data/)
     .end(t.end)
 })
