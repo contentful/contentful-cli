@@ -3,7 +3,6 @@ import nixt from 'nixt'
 import { join } from 'path'
 import {
   initConfig,
-  read,
   deleteSpaces,
   createSimpleSpace,
   expectedDir
@@ -13,7 +12,7 @@ const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true, showDiff: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 var space = null
@@ -34,10 +33,9 @@ test.cb('should print help message', t => {
   app()
     .run('space import --help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/space/import.md`)
-      t.is(resultText, expected, 'help data is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
@@ -46,11 +44,9 @@ test.cb('should exit 1 when no args', t => {
   app()
     .run('space import')
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stderr.trim()
-      var expected = read(`${expectedDir}/info/space/import.md`)
-      expected += '\n\nMissing required argument: content-file'
-      t.is(resultText, expected, 'wrong response in case of no args provided')
+      t.snapshot(resultText, 'wrong response in case of no args provided')
     })
     .end(t.end)
 })
@@ -69,12 +65,6 @@ test.cb('should exit 1 when no space provided', t => {
 test.cb('should import space', t => {
   app()
     .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
-    .stdout(/Imported entities/)
-    .stdout(/Content Types +│ 2/)
-    .stdout(/Editor Interfaces +│ 2/)
-    .stdout(/Entries +│ 0/)
-    .stdout(/Assets +│ 0/)
-    .stdout(/Locales +│ 0/)
-    .stdout(/Webhooks +│ 0/)
+    .stdout(/Finished importing all data/)
     .end(t.end)
 })

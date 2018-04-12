@@ -32,8 +32,6 @@ test('it should pass all args to contentful-import', async (t) => {
     spaceId: 'spaceId'
   }
   await importSpace(stubArgv)
-  // this is added by the import cmd
-  stubArgv.managementHeaders = {'X-Contentful-Beta-Content-Type-Migration': 'true'}
   t.deepEqual(contentfulImportStub.args[0][0], stubArgv)
   t.is(contentfulImportStub.callCount, 1)
 })

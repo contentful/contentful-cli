@@ -4,8 +4,6 @@ import { resolve } from 'path'
 import {
   initConfig,
   createSimpleSpace,
-  read,
-  expectedDir,
   deleteSpaces
 } from '../../util'
 
@@ -39,10 +37,9 @@ test.cb('should print help message', t => {
   app()
     .run('extension create --help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/extension/create.md`)
-      t.is(resultText, expected, 'help data is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })

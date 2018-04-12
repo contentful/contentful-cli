@@ -36,8 +36,6 @@ test('it should pass all args to contentful-export', async (t) => {
     managementToken: 'managementToken'
   }
   await exportSpace(stubArgv)
-  // this will be added by the export cmd
-  stubArgv.managementHeaders = {'X-Contentful-Beta-Content-Type-Migration': 'true'}
   t.deepEqual(contentfulExportStub.args[0][0], stubArgv)
   t.is(contentfulExportStub.callCount, 1)
 })

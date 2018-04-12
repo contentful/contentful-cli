@@ -1,7 +1,6 @@
 import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
-import { expectedDir, read } from '../util'
 
 const packageVersion = require('../../../package.json').version
 const bin = join(__dirname, './../../../', 'bin')
@@ -16,9 +15,7 @@ test.cb('should return code 1 when errors exist no args', t => {
     .code(1)
     .expect((result) => {
       const resultText = result.stderr.trim()
-      var expected = read(`${expectedDir}/info/help.md`)
-      expected += '\n\nPlease specify a command.'
-      t.is(resultText, expected, 'wrong response in case of no args provided')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
@@ -27,10 +24,9 @@ test.cb('should print help message', t => {
   app()
     .run('--help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/help.md`)
-      t.is(resultText, expected, 'help data or error code is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
@@ -40,10 +36,9 @@ test.cb('should print help message on shortcut', t => {
     .run('-h')
     .code(0)
     .stdout(/Usage: contentful <cmd> \[args\]/)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/help.md`)
-      t.is(resultText, expected, 'help data or error code is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
@@ -52,11 +47,9 @@ test.cb('should print help message on wrong subcommand', t => {
   app()
     .run('lolbar')
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stderr.trim()
-      var expected = read(`${expectedDir}/info/help.md`)
-      expected += '\n\nPlease specify a command.'
-      t.is(resultText, expected, 'help data or error code is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })

@@ -1,10 +1,6 @@
 import test from 'ava'
 import nixt from 'nixt'
 import { resolve } from 'path'
-import {
-  expectedDir,
-  read
-} from '../../util'
 
 const bin = resolve(__dirname, './../../../../', 'bin')
 
@@ -16,10 +12,9 @@ test.cb('should print help message', t => {
   app()
     .run('extension delete --help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/extension/delete.md`)
-      t.is(resultText, expected, 'help data is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })

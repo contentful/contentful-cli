@@ -3,10 +3,8 @@ import nixt from 'nixt'
 import { join } from 'path'
 import {
   initConfig,
-  read,
   deleteSpaces,
-  createSimpleSpace,
-  expectedDir
+  createSimpleSpace
 } from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
@@ -34,10 +32,9 @@ test.cb('should print help message', t => {
   app()
     .run('space list --help')
     .code(0)
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
-      const expected = read(`${expectedDir}/info/space/list.md`)
-      t.is(resultText, expected, 'help data is incorrect')
+      t.snapshot(resultText, 'help data is incorrect')
     })
     .end(t.end)
 })
