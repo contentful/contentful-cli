@@ -23,5 +23,5 @@ contentful space use
 
 Select and activate a specific Space:
 ```sh
-contentful space use --s a552c7cb6601
+contentful space use -s a552c7cb6601
 ```
