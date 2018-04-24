@@ -8,10 +8,16 @@ import {
   updateExtension,
   __RewireAPI__ as rewireAPI
 } from '../../../../lib/cmds/extension_cmds/update'
+
+import {
+  __RewireAPI__ as prepareDataRewireAPI
+} from '../../../../lib/cmds/extension_cmds/utils/prepare-data'
+
 import {
   emptyContext,
   setContext
 } from '../../../../lib/context'
+
 import { ValidationError } from '../../../../lib/utils/error'
 
 const basicExtension = {
@@ -114,6 +120,43 @@ test.serial('Calls update on extension and reads srcdoc from disk', async (t) =>
     fieldTypes: ['Symbol'],
     srcdoc: resolve(__dirname, 'sample-extension.html')
   })
+
+  t.true(updateStub.calledOnce)
+  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
+})
+
+test.serial('Updates an extension with parameter definitions ', async (t) => {
+  const descriptor = `{
+    "name": "Test Extension",
+    "fieldTypes": ["Boolean"],
+    "src": "https://new.extension",
+    "parameters": {
+      "instance": [{"id": "test", "type": "Symbol", "name": "Stringie"}],
+      "installation": [{"id": "flag", "type": "Boolean", "name": "Flaggie"}]
+    }
+  }`
+
+  prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
+    Promise.resolve(descriptor)
+  ))
+
+  await updateExtension({
+    id: 'extension-id',
+    descriptor: 'x.json',
+    installationParameters: JSON.stringify({flag: true}),
+    force: true
+  })
+
+  t.deepEqual(extension.extension, {
+    name: 'Test Extension',
+    src: 'https://new.extension',
+    fieldTypes: [{type: 'Boolean'}],
+    parameters: {
+      instance: [{id: 'test', type: 'Symbol', name: 'Stringie'}],
+      installation: [{id: 'flag', type: 'Boolean', name: 'Flaggie'}]
+    }
+  })
+  t.deepEqual(extension.parameters, {flag: true})
 
   t.true(updateStub.calledOnce)
   t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
