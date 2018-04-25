@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm run clean && babel lib -d dist",
-    "build:standalone": "npm run build && pkg --targets node6-macos-x64,node6-win-x64 --debug --out-dir build .",
+    "build:standalone": "npm run build && pkg --targets node8-macos-x64,node8-win-x64 --debug --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "clean": "rimraf dist",
     "dev": "nodemon --exec npm run build -w lib",
@@ -98,7 +98,7 @@
     "yargs": "^8.0.2"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "files": [
     "bin",
