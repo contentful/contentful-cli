@@ -8,7 +8,7 @@ Usage: contentful space import [options]
 
 Options:
 
-  --space-id              ID of Space with source data       [string] [required]
+  --space-id              ID of the destination space       [string] [required]
                           (if not specified it will take the context active space)
 
   --content-file             JSON file that contains data to be import to your
