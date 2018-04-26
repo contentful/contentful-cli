@@ -34,11 +34,13 @@ const createUiExtensionStub = stub().resolves({
   },
   sys: { id: '123', version: 3 }
 })
-
+const getEnvironmentStub = stub().resolves({
+  createUiExtension: createUiExtensionStub
+})
 test.before(() => {
   const fakeClient = {
-    getSpace: stub().returns({
-      createUiExtension: createUiExtensionStub
+    getSpace: stub().resolves({
+      getEnvironment: getEnvironmentStub
     })
   }
   const createManagementClientStub = stub().returns(fakeClient)
@@ -68,21 +70,21 @@ test('Throws error if name is missing', async (t) => {
 })
 
 test('Throws error if field-types is missing', async (t) => {
-  const cmd = createExtension({ spaceId: 'space', name: 'Widget', src: 'https://awesome.extension' })
+  const cmd = createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
   const error = await t.throws(cmd, ValidationError)
 
   t.truthy(error.message.includes('Missing required properties: field-types'))
 })
 
 test('Throws error if both src and srcdoc are not provided', async (t) => {
-  const cmd = createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'] })
+  const cmd = createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
   const error = await t.throws(cmd, ValidationError)
 
   t.truthy(error.message.includes('Must contain exactly one of: src, srcdoc'))
 })
 
 test('Throws error if both src and srcdoc are at the same time', async (t) => {
-  const cmd = createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })
+  const cmd = createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })
   const error = await t.throws(cmd, ValidationError)
 
   t.truthy(error.message.includes('Must contain exactly one of: src, srcdoc'))
@@ -117,6 +119,7 @@ test('Creates extension from command line arguments', async (t) => {
 test('Logs extension data', async (t) => {
   await createExtension({
     spaceId: 'space',
+    environmentId: 'master',
     name: 'Widget',
     fieldTypes: ['Symbol'],
     src: 'https://awesome.extension'
@@ -215,6 +218,7 @@ test.serial('Creates extension, descriptor src is overwritten by args srcdoc', a
 test('Creates extension and reads srcdoc from disk', async (t) => {
   await createExtension({
     spaceId: 'space',
+    environmentId: 'master',
     name: 'Widget',
     fieldTypes: ['Symbol'],
     srcdoc: resolve(__dirname, 'sample-extension.html')
