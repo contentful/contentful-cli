@@ -17,8 +17,9 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-var space = null
-var spacesToDelete = []
+let space = null
+let environment = null
+let spacesToDelete = []
 
 test.before('ensure config file exist', () => {
   return initConfig()
@@ -26,6 +27,7 @@ test.before('ensure config file exist', () => {
 
 test.before('create fresh space', async t => {
   space = await createSimpleSpace(org)
+  environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
 
@@ -101,7 +103,7 @@ test.cb('should create extension from config file', t => {
     })
     .code(0)
     .end(() => {
-      return space.getUiExtensions()
+      return environment.getUiExtensions()
         .then((result) => {
           const extension = result.items.find((item) => item.sys.id === 'sample-extension')
           if (!extension) {
@@ -144,7 +146,7 @@ test.cb('should create extension from config file with srcdoc', t => {
     })
     .code(0)
     .end(() => {
-      return space.getUiExtensions()
+      return environment.getUiExtensions()
         .then((result) => {
           const extension = result.items.find((item) => item.sys.id === 'some-other-id')
           if (!extension) {

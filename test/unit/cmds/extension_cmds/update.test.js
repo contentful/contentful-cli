@@ -39,7 +39,9 @@ const extension = Object.assign({}, basicExtension, {
 test.before(() => {
   const fakeClient = {
     getSpace: stub().returns({
-      getUiExtension: stub().resolves(extension)
+      getEnvironment: stub().resolves ({
+        getUiExtension: stub().resolves(extension)
+      })
     })
   }
   const createManagementClientStub = stub().returns(fakeClient)

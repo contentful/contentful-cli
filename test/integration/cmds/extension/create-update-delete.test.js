@@ -17,8 +17,9 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-var space = null
-var spacesToDelete = []
+let space = null
+let environment = null
+let spacesToDelete = []
 
 test.before('ensure config file exist', () => {
   return initConfig()
@@ -26,6 +27,7 @@ test.before('ensure config file exist', () => {
 
 test.before('create fresh space', async t => {
   space = await createSimpleSpace(org)
+  environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
 
@@ -47,7 +49,7 @@ test.cb('should be able to create, update and delete a extension', t => {
       })
       .code(0)
       .end(() => {
-        space.getUiExtensions()
+        environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
               t.fail('No extensions found while the sample one should show up')
@@ -105,7 +107,7 @@ test.cb('should be able to create, update and delete a extension', t => {
       })
       .code(0)
       .end(() => {
-        space.getUiExtensions()
+        environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
               t.pass()

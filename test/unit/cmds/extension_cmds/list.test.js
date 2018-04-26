@@ -11,7 +11,8 @@ import {
 } from '../../../../lib/context'
 
 const logStub = stub()
-const getSpaceStub = stub()
+const getEnvStub = stub()
+const getSpaceStub = stub().resolves({getEnvironment: getEnvStub})
 
 const mockExtensions = {
   items: [
@@ -38,8 +39,8 @@ test.before(() => {
     getSpace: getSpaceStub
   }
 
-  getSpaceStub.withArgs('space').returns({ getUiExtensions: stub().returns(mockExtensions) })
-  getSpaceStub.withArgs('empty-space').returns({ getUiExtensions: stub().returns({ items: [] }) })
+  getEnvStub.withArgs('env').resolves({ getUiExtensions: stub().resolves(mockExtensions) })
+  getEnvStub.withArgs('empty').resolves({ getUiExtensions: stub().resolves({ items: [] }) })
 
   const createManagementClientStub = stub().returns(fakeClient)
 
@@ -59,7 +60,7 @@ test.after.always(() => {
 })
 
 test.serial('Lists extensions', async (t) => {
-  await handler({spaceId: 'space'})
+  await handler({spaceId: 'space', environmentId: 'env'})
 
   const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
 
@@ -69,7 +70,7 @@ test.serial('Lists extensions', async (t) => {
 })
 
 test.serial('Displays message if list is empty', async (t) => {
-  await handler({spaceId: 'empty-space'})
+  await handler({spaceId: 'space', environmentId: 'empty'})
 
   t.true(logStub.calledWith('No extensions found'))
 })

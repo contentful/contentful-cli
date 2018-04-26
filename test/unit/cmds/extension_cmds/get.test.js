@@ -25,11 +25,12 @@ const mockExtension = {
   sys: { id: '123', version: 3 }
 }
 
+const environmentStub = stub().resolves({
+  getUiExtension: getUiExtensionStub.resolves(mockExtension)
+})
 test.before(() => {
   const fakeClient = {
-    getSpace: stub().returns({
-      getUiExtension: getUiExtensionStub.resolves(mockExtension)
-    })
+    getSpace: stub().resolves({getEnvironment: environmentStub})
   }
   const createManagementClientStub = stub().returns(fakeClient)
 
