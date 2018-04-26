@@ -88,6 +88,13 @@ test('Throws error if both src and srcdoc are at the same time', async (t) => {
   t.truthy(error.message.includes('Must contain exactly one of: src, srcdoc'))
 })
 
+test('Throws an error if installation parameters cannot be parsed', async (t) => {
+  const cmd = createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })
+  const error = await t.throws(cmd, ValidationError)
+
+  t.truthy(error.message.includes('Could not parse JSON string of installation parameter values'))
+})
+
 test('Creates extension from command line arguments', async (t) => {
   await createExtension({
     spaceId: 'space',
@@ -124,7 +131,7 @@ test('Logs extension data', async (t) => {
   t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })
 
-test('Creates extension with values from descriptor file', async (t) => {
+test.serial('Creates extension with values from descriptor file', async (t) => {
   const descriptor = `{
     "name": "Test Extension",
     "fieldTypes": ["Boolean"],
@@ -148,7 +155,40 @@ test('Creates extension with values from descriptor file', async (t) => {
   t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
 })
 
-test('Creates extension, descriptor src is overwritten by args srcdoc', async (t) => {
+test.serial('Creates an extension with parameter definitions and values', async (t) => {
+  const descriptor = `{
+    "name": "Test Extension",
+    "fieldTypes": ["Boolean"],
+    "src": "https://new.extension",
+    "parameters": {
+      "instance": [{"id": "test", "type": "Symbol", "name": "Stringie"}],
+      "installation": [{"id": "flag", "type": "Boolean", "name": "Flaggie"}]
+    }
+  }`
+
+  prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
+    Promise.resolve(descriptor)
+  ))
+
+  await createExtension({ descriptor: 'x.json', installationParameters: JSON.stringify({flag: true}) })
+
+  t.true(createUiExtensionStub.calledWith({
+    extension: {
+      name: 'Test Extension',
+      src: 'https://new.extension',
+      fieldTypes: [{type: 'Boolean'}],
+      parameters: {
+        instance: [{id: 'test', type: 'Symbol', name: 'Stringie'}],
+        installation: [{id: 'flag', type: 'Boolean', name: 'Flaggie'}]
+      }
+    },
+    parameters: {flag: true}
+  }))
+
+  t.true(successStub.calledWith(`${successEmoji} Successfully created extension:\n`))
+})
+
+test.serial('Creates extension, descriptor src is overwritten by args srcdoc', async (t) => {
   const descriptor = `{
     "name": "Test Extension",
     "fieldTypes": ["Boolean"],
