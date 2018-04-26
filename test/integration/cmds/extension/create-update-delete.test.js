@@ -79,7 +79,7 @@ test.cb('should be able to create, update and delete a extension', t => {
       })
       .code(0)
       .end(() => {
-        space.getUiExtensions()
+        environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
               t.fail('No extensions found while the sample one should show up')
