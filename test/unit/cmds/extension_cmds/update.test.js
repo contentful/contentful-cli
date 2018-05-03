@@ -39,7 +39,7 @@ const extension = Object.assign({}, basicExtension, {
 test.before(() => {
   const fakeClient = {
     getSpace: stub().returns({
-      getEnvironment: stub().resolves ({
+      getEnvironment: stub().resolves({
         getUiExtension: stub().resolves(extension)
       })
     })
