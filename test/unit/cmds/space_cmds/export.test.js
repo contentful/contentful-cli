@@ -24,6 +24,7 @@ test.after(() => {
 test('it should pass all args to contentful-export', async (t) => {
   const stubArgv = {
     spaceId: 'spaceId',
+    host: 'api.contentful.com',
     includeDrafts: false,
     skipRoles: false,
     skipContentModel: false,
