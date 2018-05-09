@@ -26,6 +26,7 @@ test('it should pass all args to contentful-import', async (t) => {
   const stubArgv = {
     skipContentModel: false,
     skipLocales: false,
+    host: 'api.contentful.com',
     skipContentPublishing: false,
     managementToken: 'managementToken',
     managementApplication: `contentful.cli/${version}`,
