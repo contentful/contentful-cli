@@ -15,6 +15,7 @@
 - Export your space to a JSON file.
 - Import your space from a JSON file.
 - Execute migration scripts written in the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/master/README.md#reference-documentation)
+- Generate migration scripts for the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/master/README.md#reference-documentation) from existing spaces.
 - Seed your space with example data.
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
 - Run a guide which introduces you to the Contentful basics.
