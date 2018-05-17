@@ -1,6 +1,5 @@
 import test from 'ava'
 import recast from 'recast'
-import _ from 'lodash'
 import { stub } from 'sinon'
 import { __RewireAPI__ as contextRewireAPI } from '../../../../../lib/context'
 
@@ -11,8 +10,6 @@ import {
   createContentType,
   createField,
   changeEditorInterface,
-  getContentTypes,
-  generateContentTypeMigration,
   generateMigrationScript,
   generateFileName,
   generateMigration,
@@ -49,22 +46,24 @@ const editorInterface = {
   ]
 }
 
+const EditorInterfaceNotFoundErrorMock = function () {
+  this.name = 'NotFound'
+}
+
 const environmentMock = {
-  getContentTypes: function() {
+  getContentTypes: function () {
     return {
       items: [simpleContentType]
     }
   },
-  getContentType: function(ctId) {
+  getContentType: function (ctId) {
     return simpleContentType
   },
   getEditorInterfaceForContentType: function (ctId) {
     if (ctId === 'foo') {
       return editorInterface
     } else {
-      throw {
-        name: 'NotFound'
-      }
+      throw new EditorInterfaceNotFoundErrorMock()
     }
   }
 }
@@ -106,7 +105,7 @@ test('it does require escape when name starts with number', async (t) => {
   t.is(ctNameNeedsEscaping('3asd'), true)
 })
 
-test('it does require escape when name is reserved word', async(t) => {
+test('it does require escape when name is reserved word', async (t) => {
   t.is(ctNameNeedsEscaping('class'), true)
 })
 
@@ -118,31 +117,31 @@ test('it does escape when name starts with number', async (t) => {
   t.is(ctVariableEscape('3asd'), '_3asd')
 })
 
-test('it does escape when name is reserved word', async(t) => {
+test('it does escape when name is reserved word', async (t) => {
   t.is(ctVariableEscape('class'), '_class')
 })
 
-test('it wraps the program', async(t) => {
-  const program_stub = b.blockStatement([])
+test('it wraps the program', async (t) => {
+  const programStub = b.blockStatement([])
 
-  const expected = "module.exports = function(migration) {};"
+  const expected = 'module.exports = function(migration) {};'
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(program_stub)).code, expected)
+  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
 })
 
-test('it creates the content type', async(t) => {
-  const program_stub = b.blockStatement([createContentType(simpleContentType)])
+test('it creates the content type', async (t) => {
+  const programStub = b.blockStatement([createContentType(simpleContentType)])
 
   const expected =
 `module.exports = function(migration) {
     const foo = migration.createContentType("foo").name("Foo").description("some content type").displayField("name");
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(program_stub)).code, expected)
+  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
 })
 
-test('it creates the content type fields', async(t) => {
-  const program_stub = b.blockStatement([
+test('it creates the content type fields', async (t) => {
+  const programStub = b.blockStatement([
     b.expressionStatement(
       createField(simpleContentType.sys.id, simpleContentType.fields[0])
     )
@@ -153,11 +152,11 @@ test('it creates the content type fields', async(t) => {
     foo.createField("name").name("Name").type("Symbol");
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(program_stub)).code, expected)
+  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
 })
 
 test('it creates the editor interface', async (t) => {
-  const program_stub = b.blockStatement([
+  const programStub = b.blockStatement([
     b.expressionStatement(
       changeEditorInterface(
         simpleContentType.sys.id,
@@ -175,7 +174,7 @@ test('it creates the editor interface', async (t) => {
     });
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(program_stub)).code, expected)
+  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
 })
 
 test('it creates the full migration script', async (t) => {
@@ -202,7 +201,7 @@ test('it creates the full migration script', async (t) => {
   t.is(result, expected)
 })
 
-test('it generates the filename when content type is present', async(t) => {
+test('it generates the filename when content type is present', async (t) => {
   const filenameRegex = /^(\w+)-(\w+)-(\w+)-\d+.js$/
   const filename = generateFileName('fooSpace', 'master', 'fooCT')
 
@@ -213,7 +212,7 @@ test('it generates the filename when content type is present', async(t) => {
   t.is(matches[3], 'fooCT')
 })
 
-test('it generates the filename without content type', async(t) => {
+test('it generates the filename without content type', async (t) => {
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
   const filename = generateFileName('fooSpace', 'master')
 
@@ -223,7 +222,7 @@ test('it generates the filename without content type', async(t) => {
   t.is(matches[2], 'master')
 })
 
-test('it generates the migration and writes to disk', async(t) => {
+test('it generates the migration and writes to disk', async (t) => {
   await generateMigration({
     spaceId: 'fooSpace',
     environmentId: 'fooEnv'
