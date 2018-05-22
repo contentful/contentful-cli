@@ -8,3 +8,4 @@
 * [seed](./seed) - Seed a predefined template to a Space
 * [import](./import) - Import data to your Space, which got exported by [export](./export)
 * [export](./export) - Export data from a Space, which can be later imported via [import](./import)
+* [generate](./generate) - Auto-generate files related to your space. For example, migration scripts. 
