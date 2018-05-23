@@ -14,7 +14,12 @@ import { PreconditionFailedError } from '../../../../../lib/utils/error'
 const environmentData = {
   name: 'environment name',
   sys: {
-    id: 'environmentId'
+    id: 'environmentId',
+    status: {
+      sys: {
+        id: 'ready'
+      }
+    }
   }
 }
 
