@@ -11,6 +11,8 @@ Options:
   --id                       ID                                    [string]
   --name                     Name                       [string] [required]
   --space-id                 Space ID                   [string] [required]
+  --environment-id'          Environment id             [string] [default:master]
+
   --field-types              Field types                 [array] [required]
   --descriptor               Path of descriptor file               [string]
   --src                      Src                                   [string]
