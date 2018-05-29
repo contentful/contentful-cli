@@ -8,7 +8,8 @@ Prints the extensions in a space
 Usage: contentful extension list [options]
 
 Options:
-  --space-id  Space id                                                  [string]
+  --space-id                 Space id                   [string]
+  --environment-id'          Environment id             [string] [default:master]
 ```
 
 ### Example
