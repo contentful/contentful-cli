@@ -8,10 +8,16 @@ Current it supports the following seed template:
 ## Usage
 
 ```
+Usage: contentful space seed --template blog
+
 Options:
-  --template, -t  The template to apply on your Space
-                                                    [required] [choices: "blog"]
-  --space-id, -s   ID of the Space to seed the data to
+  -h, --help          Show help                                        [boolean]
+  --template, -t      The template to apply on your Space. All possible options
+                      are listed here:
+                      https://github.com/contentful/content-models    [required]
+  --space-id, -s      ID of the Space to seed the data to
+  --management-token  Contentful management API token                   [string]
+  --yes               Skip the confirmation question            [default: false]
 ```
 
 ### Example

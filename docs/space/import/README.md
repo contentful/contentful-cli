@@ -11,6 +11,7 @@ Options:
   --space-id                 ID of the destination space                [string]
   --environment-id           ID the environment in the destination space
                                                     [string] [default: "master"]
+  --management-token         Contentful management API token            [string]
   --content-file             JSON file that contains data to be import to your
                              space                           [string] [required]
   --content-model-only       Import only content types[boolean] [default: false]
@@ -29,10 +30,6 @@ Options:
                              [http|https]://user:password@host:port     [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
-
-Copyright 2018 Contentful, this is a BETA release
-
-
 ```
 
 ### Example
