@@ -7,7 +7,7 @@ To import your exported data, please refer to the [import](../import) command.
 ## Usage
 
 ```
-contentful.js space export
+contentful space export
 
 export a space data to a json file
 
