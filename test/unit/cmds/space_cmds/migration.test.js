@@ -26,7 +26,8 @@ test('it should pass all args to the migration', async (t) => {
   const stubArgv = {
     accessToken: 'managementToken',
     managementApplication: `contentful.cli/${version}`,
-    spaceId: 'spaceId'
+    spaceId: 'spaceId',
+    managementFeature: 'space-migration'
   }
   await migration(stubArgv)
   t.deepEqual(migrationStub.args[0][0], stubArgv)

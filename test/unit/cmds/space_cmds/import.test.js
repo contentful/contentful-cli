@@ -30,7 +30,8 @@ test('it should pass all args to contentful-import', async (t) => {
     skipContentPublishing: false,
     managementToken: 'managementToken',
     managementApplication: `contentful.cli/${version}`,
-    spaceId: 'spaceId'
+    spaceId: 'spaceId',
+    managementFeature: 'space-import'
   }
   await importSpace(stubArgv)
   t.deepEqual(contentfulImportStub.args[0][0], stubArgv)
