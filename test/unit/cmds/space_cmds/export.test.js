@@ -34,7 +34,8 @@ test('it should pass all args to contentful-export', async (t) => {
     saveFile: true,
     useVerboseRenderer: false,
     managementApplication: `contentful.cli/${version}`,
-    managementToken: 'managementToken'
+    managementToken: 'managementToken',
+    managementFeature: 'space-export'
   }
   await exportSpace(stubArgv)
   t.deepEqual(contentfulExportStub.args[0][0], stubArgv)
