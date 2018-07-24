@@ -2,6 +2,7 @@ import test from 'ava'
 import { stub } from 'sinon'
 import { resolve } from 'path'
 import { homedir } from 'os'
+import { sync } from 'find-up'
 
 import {
   getConfigPath,
@@ -36,7 +37,15 @@ test.afterEach((t) => {
 
 test('locates correct config file path', (t) => {
   const configPath = getConfigPath()
+  t.is(configPath, resolve(sync('.contentfulrc.json')))
+})
+
+test.only('uses home directory as config file path if none is found', (t) => {
+  const syncStub = stub().returns(null)
+  contextRewireAPI.__Rewire__('sync', syncStub)
+  const configPath = getConfigPath()
   t.is(configPath, resolve(homedir(), '.contentfulrc.json'))
+  contextRewireAPI.__ResetDependency__('sync')
 })
 
 test.serial('loading, writing, setting and getting context & rc', async (t) => {
