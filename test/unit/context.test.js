@@ -2,7 +2,7 @@ import test from 'ava'
 import { stub } from 'sinon'
 import { resolve } from 'path'
 import { homedir } from 'os'
-import { sync } from 'find-up'
+import { writeFile, unlink } from 'mz/fs'
 
 import {
   getConfigPath,
@@ -35,17 +35,19 @@ test.afterEach((t) => {
   writeFileStub.resetHistory()
 })
 
-test('locates correct config file path', (t) => {
-  const configPath = getConfigPath()
-  t.is(configPath, resolve(sync('.contentfulrc.json')))
+test('locates correct config file path', async (t) => {
+  const testFilePath = process.cwd() + '/.contentfulrc.json'
+  await writeFile(testFilePath, 'test rc file')
+  t.is(await getConfigPath(), testFilePath)
+  return unlink(testFilePath)
 })
 
-test.only('uses home directory as config file path if none is found', (t) => {
-  const syncStub = stub().returns(null)
-  contextRewireAPI.__Rewire__('sync', syncStub)
-  const configPath = getConfigPath()
+test('uses home directory as config file path if none is found', async (t) => {
+  const findUpStub = stub().returns(null)
+  contextRewireAPI.__Rewire__('findUp', findUpStub)
+  const configPath = await getConfigPath()
   t.is(configPath, resolve(homedir(), '.contentfulrc.json'))
-  contextRewireAPI.__ResetDependency__('sync')
+  contextRewireAPI.__ResetDependency__('findUp')
 })
 
 test.serial('loading, writing, setting and getting context & rc', async (t) => {
@@ -63,10 +65,10 @@ test.serial('loading, writing, setting and getting context & rc', async (t) => {
   }, 'new value is present in context')
 
   setContext(JSON.parse(MOCKED_RC))
-  storeRuntimeConfig()
+  await storeRuntimeConfig()
 
   t.true(writeFileStub.calledOnce, 'tries to write runtime config')
-  t.is(writeFileStub.args[0][0], getConfigPath(), 'writes to correct file location')
+  t.is(writeFileStub.args[0][0], await getConfigPath(), 'writes to correct file location')
   t.is(writeFileStub.args[0][1], MOCKED_RC, 'updated rc file only contains relevant content')
 })
 
