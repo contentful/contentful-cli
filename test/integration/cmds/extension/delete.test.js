@@ -30,7 +30,7 @@ test.cb('should exit 1 when no args given except space id', t => {
     .end(t.end)
 })
 
-test.cb('should exit 1 when everything required is given except space id', t => {
+test.serial.cb('should exit 1 when everything required is given except space id', t => {
   app()
     .run('extension delete --id some-id')
     .code(1)
