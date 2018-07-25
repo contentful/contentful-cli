@@ -35,7 +35,7 @@ test.afterEach((t) => {
   writeFileStub.resetHistory()
 })
 
-test('locates correct config file path', async (t) => {
+test.serial('locates correct config file path', async (t) => {
   const testFilePath = process.cwd() + '/.contentfulrc.json'
   await writeFile(testFilePath, 'test rc file')
   t.is(await getConfigPath(), testFilePath)
@@ -45,6 +45,7 @@ test('locates correct config file path', async (t) => {
 test('uses home directory as config file path if none is found', async (t) => {
   const findUpStub = stub().returns(null)
   contextRewireAPI.__Rewire__('findUp', findUpStub)
+  contextRewireAPI.__Rewire__('configPath', null)
   const configPath = await getConfigPath()
   t.is(configPath, resolve(homedir(), '.contentfulrc.json'))
   contextRewireAPI.__ResetDependency__('findUp')
