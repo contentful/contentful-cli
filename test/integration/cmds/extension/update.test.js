@@ -21,7 +21,7 @@ test.cb('should print help message', t => {
     .end(t.end)
 })
 
-test.serial.cb('should exit 1 when no args given', t => {
+test.cb('should exit 1 when no args given', t => {
   app()
     .run('extension update')
     .code(1)
