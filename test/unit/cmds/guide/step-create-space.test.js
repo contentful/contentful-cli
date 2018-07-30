@@ -33,7 +33,7 @@ test.serial('creates space on successful user confirmation', async (t) => {
   await createSpaceStep(guideContext)
   t.true(confirmationStub.calledOnce, 'confirmation called')
   t.true(spaceCreateStub.calledOnce, 'spaceCreate called')
-  t.true(spaceCreateStub.calledWith({name: guideContext.activeGuide.name}), 'spaceCreate called with proper args')
+  t.true(spaceCreateStub.calledWith({name: guideContext.activeGuide.name, feature: 'guide'}), 'spaceCreate called with proper args')
 })
 
 test.serial('guideContext stepCount incremented', async (t) => {
