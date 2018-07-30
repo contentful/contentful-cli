@@ -14,11 +14,18 @@ const guideContext = {
 }
 const successStub = stub()
 const readFileStub = stub().resolves('resolved')
+const environmentStub = stub().resolves({getEntries: stub().resolves({items: []})})
+const clientStub = {
+  getSpace: stub().resolves({getEnvironment: environmentStub})
+}
+const createManagementClientStub = stub().resolves(clientStub)
 
 test.before(() => {
   finishStepRewireApi.__Rewire__('log', stub())
+  finishStepRewireApi.__Rewire__('wrappedLog', stub())
   finishStepRewireApi.__Rewire__('success', successStub)
   finishStepRewireApi.__Rewire__('readFile', readFileStub)
+  finishStepRewireApi.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
 test.afterEach(() => {
@@ -29,8 +36,10 @@ test.afterEach(() => {
 
 test.after.always(() => {
   finishStepRewireApi.__ResetDependency__('log')
+  finishStepRewireApi.__ResetDependency__('wrappedLog')
   finishStepRewireApi.__ResetDependency__('success')
   finishStepRewireApi.__ResetDependency__('readFile')
+  finishStepRewireApi.__ResetDependency__('createManagementClient')
 })
 
 test.serial('calls success and reads whats-next.md', async (t) => {

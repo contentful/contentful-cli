@@ -41,7 +41,8 @@ test.serial('seeds space on successful user confirmation', async (t) => {
   t.true(spaceSeedStub.calledWith({
     template: seed,
     spaceId,
-    yes: true
+    yes: true,
+    feature: 'guide'
   }), 'spaceSeed called with proper args')
 })
 

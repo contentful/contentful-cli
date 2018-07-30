@@ -8,7 +8,6 @@ const promptStub = stub().resolves({directoryName: 'test', directoryPath: 'test-
 const githubReleaseStub = stub().resolves()
 const accessTokenCreateStub = stub().resolves({accessToken: 'abc123'})
 const execaStub = stub().resolves(true)
-const commandExistsStub = stub().resolves(true)
 const getContextStub = stub().resolves({cmaToken: 'abc124'})
 const setupConfigStub = stub().resolves()
 
@@ -28,13 +27,11 @@ test.before(() => {
   setupStepRewireApi.__Rewire__('getLatestGitHubRelease', githubReleaseStub)
   setupStepRewireApi.__Rewire__('accessTokenCreate', accessTokenCreateStub)
   setupStepRewireApi.__Rewire__('execa', execaStub)
-  setupStepRewireApi.__Rewire__('commandExists', commandExistsStub)
   setupStepRewireApi.__Rewire__('getContext', getContextStub)
 })
 
 test.afterEach(() => {
   guideContext.stepCount = 0
-  commandExistsStub.resetHistory()
   execaStub.resetHistory()
   accessTokenCreateStub.resetHistory()
   getContextStub.resetHistory()
@@ -42,7 +39,7 @@ test.afterEach(() => {
 })
 
 test.after.always(() => {
-  ['inquirer', 'getLatestGitHubRelease', 'accessTokenCreate', 'execa', 'commandExists', 'getContext'].map(stub => {
+  ['inquirer', 'getLatestGitHubRelease', 'accessTokenCreate', 'execa', 'getContext'].map(stub => {
     setupStepRewireApi.__ResetDependency__(stub)
   })
   setupStepRewireApi.__ResetDependency__('log')
@@ -64,8 +61,6 @@ test.serial('guideContext stepCount incremented', async (t) => {
 
 test.serial('checks for yarn, execa installs, creates cda token', async (t) => {
   await setupStep(guideContext)
-  t.true(commandExistsStub.calledOnce)
-  t.true(commandExistsStub.args[0][0] === 'yarn')
   t.true(execaStub.calledOnce)
   t.true(accessTokenCreateStub.calledOnce)
 })
