@@ -21,7 +21,7 @@ test.after.always('remove created spaces', t => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.cb('should be already loged in', t => {
+test.cb('should be already logged in and run all steps', t => {
   app()
     .run('guide')
     // step 2 createSpace
@@ -35,11 +35,20 @@ test.cb('should be already loged in', t => {
       spacesToDelete.push(matches[1])
     })
     // step 3 seedContent
-
-    .expect(console.log)
-    // .code(0)
-    // .stdout(/Looks like you already stored a CMA token on your system\./)
-    // .stdout(/Your CMA token:/)
-    // .stdout(/Maybe you want to contentful logout\?/)
+    .on(/Populate the Content model to your Space now?/)
+    .respond('\n')
+    .stdout(/(The Content model was applied to your .* Space\.)/)
+    // step 4 setup
+    .on(/The directory should be called:/)
+    .respond('contentful-e2e-starter-DELETE-ME\n')
+    .on(/Where should the '.*' directory be located?/)
+    .respond('\n')
+    .stdout(/Setting up project configuration file which includes your Contentful Delivery API token/)
+    // step 5 run dev server
+    .on(/Run Gatsby Starter Blog locally in development mode now?/)
+    .respond('\n')
+    .on(/You can now view .* in the browser./).respond('Q')
+    .stdout(/The guide is now completed/)
+    .code(0)
     .end(t.end)
 })
