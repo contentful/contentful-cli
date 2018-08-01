@@ -19,9 +19,11 @@ const writeFileStub = stub()
 const enoent = new Error()
 enoent.code = 'ENOENT'
 const readFileStub = stub().rejects(enoent)
+const confirmationStub = stub().resolves(true)
 
 test.before(() => {
   loginRewireAPI.__Rewire__('inquirer', inquirer)
+  loginRewireAPI.__Rewire__('confirmation', confirmationStub)
   loginRewireAPI.__Rewire__('opn', opnStub)
   contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
@@ -29,12 +31,14 @@ test.before(() => {
 
 test.after.always(() => {
   loginRewireAPI.__ResetDependency__('inquirer')
+  loginRewireAPI.__ResetDependency__('confirmation')
   loginRewireAPI.__ResetDependency__('opn')
   contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
 })
 
 test.afterEach((t) => {
+  confirmationStub.resetHistory()
   promptStub.resetHistory()
   opnStub.resetHistory()
   readFileStub.resetHistory()
@@ -42,8 +46,7 @@ test.afterEach((t) => {
 })
 
 test.serial('login - without error', async (t) => {
-  promptStub.onCall(0).returns({ready: true})
-  promptStub.onCall(1).returns({cmaToken: 'mockedToken'})
+  promptStub.returns({cmaToken: 'mockedToken'})
 
   emptyContext()
   await loginHandler()
@@ -52,17 +55,18 @@ test.serial('login - without error', async (t) => {
   const mockedRcConfig = {
     cmaToken: 'mockedToken'
   }
+  t.true(confirmationStub.calledOnce, 'called confirmation')
   t.is(writeFileStub.args[0][1], JSON.stringify(mockedRcConfig, null, 2) + '\n', 'stores entered token')
 })
 
 test.serial('login - user abort', async (t) => {
-  promptStub.onCall(0).returns({ready: false})
+  confirmationStub.resolves(false)
 
   emptyContext()
   await loginHandler()
 
   t.true(readFileStub.called, 'did load rc config')
-  t.is(promptStub.callCount, 1, 'did ask once with inquirer')
+  t.is(confirmationStub.callCount, 1, 'did ask once with confirmation')
   t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
 })
