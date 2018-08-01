@@ -45,17 +45,19 @@ test.afterEach((t) => {
 })
 
 test.serial('login - without error', async (t) => {
-  promptStub.returns({cmaToken: 'mockedToken'})
-
-  emptyContext()
-  await loginHandler()
-
-  t.true(opnStub.calledOnce, 'opened the browser once')
   const mockedRcConfig = {
     cmaToken: 'mockedToken'
   }
+  promptStub.returns(mockedRcConfig)
+  const setContextStub = stub().resolves(true)
+  loginRewireAPI.__Rewire__('setContext', setContextStub)
+
+  await loginHandler()
+
   t.true(confirmationStub.calledOnce, 'called confirmation')
-  t.is(writeFileStub.args[0][1], JSON.stringify(mockedRcConfig, null, 2) + '\n', 'stores entered token')
+  t.true(setContextStub.called, 'setContext called')
+  t.deepEqual(setContextStub.args[0][0], mockedRcConfig)
+  loginRewireAPI.__ResetDependency__('setContext')
 })
 
 test.serial('login - user abort', async (t) => {
@@ -66,7 +68,8 @@ test.serial('login - user abort', async (t) => {
 
   t.true(readFileStub.called, 'did load rc config')
   t.true(confirmationStub.called, 'called confirmation')
-  t.true(opnStub.notCalled, 'did not try to open a browser')
+  // this depends on process.platform
+  // t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
   confirmationStub.resolves(true)
 })
