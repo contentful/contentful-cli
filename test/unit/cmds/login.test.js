@@ -8,7 +8,6 @@ import {
 } from '../../../lib/cmds/login'
 import {
   emptyContext,
-  setContext,
   __RewireAPI__ as contextRewireAPI
 } from '../../../lib/context'
 
@@ -66,18 +65,19 @@ test.serial('login - user abort', async (t) => {
   await loginHandler()
 
   t.true(readFileStub.called, 'did load rc config')
-  t.is(confirmationStub.callCount, 1, 'did ask once with confirmation')
+  t.true(confirmationStub.called, 'called confirmation')
   t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
+  confirmationStub.resolves(true)
 })
 
 test.serial('login - already logged in', async (t) => {
-  emptyContext()
-  setContext({cmaToken: 'alreadyLoggedIn'})
+  loginRewireAPI.__Rewire__('getContext', stub().resolves({cmaToken: 'alreadyLoggedIn'}))
   await loginHandler()
 
   t.true(readFileStub.notCalled, 'did not try to load rc config')
   t.true(opnStub.notCalled, 'did not try to open a browser')
   t.true(writeFileStub.notCalled, 'did not try to store rc')
   t.true(promptStub.notCalled, 'did not show any inquirer')
+  loginRewireAPI.__ResetDependency__('getContext')
 })
