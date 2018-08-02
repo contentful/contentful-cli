@@ -1,12 +1,17 @@
+import { homedir } from 'os'
+import { join, resolve } from 'path'
+
 import test from 'ava'
 import nixt from 'nixt'
-import { join } from 'path'
+import rimraf from 'rimraf'
+
 import {
   initConfig,
   deleteSpaces
 } from '../util'
 
 const bin = join(__dirname, './../../../', 'bin')
+const projectDirectoryName = 'contentful-e2e-starter-DELETE-ME'
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
@@ -40,7 +45,7 @@ test.cb('should be already logged in and run all steps', t => {
     .stdout(/(The Content model was applied to your .* Space\.)/)
     // step 4 setup
     .on(/The directory should be called:/)
-    .respond('contentful-e2e-starter-DELETE-ME\n')
+    .respond(`${projectDirectoryName}\n`)
     .on(/Where should the '.*' directory be located?/)
     .respond('\n')
     .stdout(/Setting up project configuration file which includes your Contentful Delivery API token/)
@@ -50,5 +55,7 @@ test.cb('should be already logged in and run all steps', t => {
     .on(/You can now view .* in the browser./).respond('Q')
     .stdout(/The guide is now completed/)
     .code(0)
-    .end(t.end)
+    .end(() => {
+      rimraf(resolve(homedir(), projectDirectoryName), t.end)
+    })
 })
