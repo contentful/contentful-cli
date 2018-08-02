@@ -2,7 +2,7 @@ import test from 'ava'
 import { stub } from 'sinon'
 
 import loginStep,
-{ __RewireAPI__ as loginStepRewireApi } from '../../../../lib/cmds/guide/step-login'
+{ __RewireAPI__ as loginStepRewireApi } from '../../../lib/guide/step-login'
 
 const loginStub = stub().resolves()
 const getContextStub = stub().resolves({cmaToken: 'blah'})

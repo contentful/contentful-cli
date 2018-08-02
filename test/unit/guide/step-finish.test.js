@@ -1,7 +1,7 @@
 import test from 'ava'
 import { stub } from 'sinon'
 import finishStep,
-{ __RewireAPI__ as finishStepRewireApi } from '../../../../lib/cmds/guide/step-finish'
+{ __RewireAPI__ as finishStepRewireApi } from '../../../lib/guide/step-finish'
 import { join } from 'path'
 
 const guideContext = {
