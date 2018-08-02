@@ -1,7 +1,7 @@
 import test from 'ava'
 import { stub } from 'sinon'
 import setupStep,
-{ __RewireAPI__ as setupStepRewireApi } from '../../../../lib/cmds/guide/step-setup'
+{ __RewireAPI__ as setupStepRewireApi } from '../../../lib/guide/step-setup'
 import { join } from 'path'
 
 const promptStub = stub().resolves({directoryName: 'test', directoryPath: 'test-path'})

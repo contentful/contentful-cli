@@ -1,8 +1,8 @@
 import test from 'ava'
 import { stub } from 'sinon'
-import { AbortedError } from '../../../../lib/cmds/guide/helpers'
+import { AbortedError } from '../../../lib/guide/helpers'
 import createSpaceStep,
-{ __RewireAPI__ as createSpaceStepRewireApi} from '../../../../lib/cmds/guide/step-create-space'
+{ __RewireAPI__ as createSpaceStepRewireApi} from '../../../lib/guide/step-create-space'
 
 const guideContext = {stepCount: 0, activeGuide: {name: 'test'}}
 const fakeSpace = {sys: {id: '100abc'}}

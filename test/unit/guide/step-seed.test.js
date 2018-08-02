@@ -1,8 +1,8 @@
 import test from 'ava'
 import { stub } from 'sinon'
-import { AbortedError } from '../../../../lib/cmds/guide/helpers'
+import { AbortedError } from '../../../lib/guide/helpers'
 import seedStep,
-{ __RewireAPI__ as seedStepRewireApi} from '../../../../lib/cmds/guide/step-seed'
+{ __RewireAPI__ as seedStepRewireApi} from '../../../lib/guide/step-seed'
 
 const guideContext = {
   stepCount: 0,

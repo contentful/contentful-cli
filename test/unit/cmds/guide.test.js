@@ -4,8 +4,8 @@ import { stub } from 'sinon'
 import {
   guide,
   __RewireAPI__ as guideRewireApi
-} from '../../../../lib/cmds/guide'
-import { AbortedError } from '../../../../lib/cmds/guide/helpers'
+} from '../../../lib/cmds/guide'
+import { AbortedError } from '../../../lib/guide/helpers'
 
 const loginStepStub = stub().returns(Promise.resolve())
 const createSpaceStepStub = stub().returns(Promise.resolve())
