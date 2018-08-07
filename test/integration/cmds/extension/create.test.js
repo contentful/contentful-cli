@@ -131,7 +131,7 @@ test('should create extension from config file', done => {
           console.error(err)
           done.fail()
         })
-        .then(done);
+        .then(done)
     })
 })
 
@@ -174,6 +174,6 @@ test('should create extension from config file with srcdoc', done => {
           console.error(err)
           done.fail()
         })
-        .then(done);
+        .then(done)
     })
 })

@@ -28,8 +28,11 @@ afterEach(() => {
 test('assertLoggedIn when not logged in', async () => {
   await emptyContext()
   await setContext({})
-  const error = await expect(assertLoggedIn()).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+  try {
+    await expect(assertLoggedIn()).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+  }
 })
 
 test('assertLoggedIn when logged in', async () => {
@@ -37,13 +40,13 @@ test('assertLoggedIn when logged in', async () => {
   await setContext({
     cmaToken: 'mocked token'
   })
-  await expect(assertLoggedIn()).not.toThrowError('does not throw error ')
+  await expect(assertLoggedIn).not.toThrowError('does not throw error ')
 })
 
 test('assertSpaceIdProvided when provided via args', async () => {
   await emptyContext()
   await setContext({})
-  await expect(assertSpaceIdProvided({
+  await expect(() => assertSpaceIdProvided({
     spaceId: 'mocked spaceId'
   })).not.toThrowError('does not throw error ')
 })
@@ -53,12 +56,15 @@ test('assertSpaceIdProvided when provided via context', async () => {
   await setContext({
     activeSpaceId: 'mocked spaceId'
   })
-  await expect(assertSpaceIdProvided({})).not.toThrowError('does not throw error ')
+  await expect(assertSpaceIdProvided).not.toThrowError('does not throw error ')
 })
 
 test('assertSpaceIdProvided when not provided at all', async () => {
   await emptyContext()
   await setContext({})
-  const error = await expect(assertSpaceIdProvided({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  try {
+    await expect(assertSpaceIdProvided({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  }
 })

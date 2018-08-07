@@ -65,41 +65,47 @@ afterAll(() => {
 })
 
 test('Throws error if id is missing', async () => {
-  const cmd = updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Missing required properties: id')).toBeTruthy()
+  try {
+    await expect(updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: id')).toBeTruthy()
+  }
 })
 
 test('Throws error if name is missing', async () => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Missing required properties: name')).toBeTruthy()
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: name')).toBeTruthy()
+  }
 })
 
 test('Throws error if field-types is missing', async () => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
+  }
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  const cmd = updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(
-    error.message.includes('Please provide current version or use the --force flag')
-  ).toBeTruthy()
+  try {
+    await expect(updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Please provide current version or use the --force flag')
+    ).toBeTruthy()
+  }
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
-  const error = await expect(cmd).toThrowError(ValidationError)
-  expect(
-    error.message.includes('Version provided does not match current resource version')
-  ).toBeTruthy()
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Version provided does not match current resource version')
+    ).toBeTruthy
+  }
 })
 
 test(

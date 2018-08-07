@@ -62,40 +62,45 @@ afterAll(() => {
 })
 
 test('Throws error if name is missing', async () => {
-  const cmd = createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Missing required properties: name')).toBeTruthy()
+  try {
+    await expect(createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: name')).toBeTruthy()
+  }
 })
 
 test('Throws error if field-types is missing', async () => {
-  const cmd = createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
+  try {
+    await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
+  }
 })
 
 test('Throws error if both src and srcdoc are not provided', async () => {
-  const cmd = createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
+  try {
+    expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
+  }
 })
 
 test('Throws error if both src and srcdoc are at the same time', async () => {
-  const cmd = createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
+  try {
+    await expect(createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
+  }
 })
 
 test('Throws an error if installation parameters cannot be parsed', async () => {
-  const cmd = createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(
-    error.message.includes('Could not parse JSON string of installation parameter values')
-  ).toBeTruthy()
+  try {
+    await expect(createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Could not parse JSON string of installation parameter values')
+    ).toBeTruthy()
+  }
 })
 
 test('Creates extension from command line arguments', async () => {

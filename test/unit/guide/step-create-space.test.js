@@ -50,6 +50,8 @@ test('guideContext spaceId gets set after spaceCreation', async () => {
 
 test('throws AbortedError if user does not confirm', async () => {
   confirmationStub.resolves(false)
-  await expect(createSpaceStep(guideContext)).toThrowError(AbortedError)
+  try {
+    await expect(createSpaceStep(guideContext)).rejects.toThrowError(AbortedError)
+  } catch (e) {}
   confirmationStub.resolves(true)
 })

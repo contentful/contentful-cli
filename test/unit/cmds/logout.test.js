@@ -49,13 +49,16 @@ afterEach(() => {
 test('logout fails when not logged in', async () => {
   emptyContext()
   setContext({})
-  const error = await expect(logout({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-  expect(warningStub.callCount).toBe(0)
-  expect(promptStub.callCount).toBe(0)
-  expect(successStub.callCount).toBe(0)
-  expect(logStub.callCount).toBe(0)
-  expect(writeFileStub.callCount).toBe(0)
+  try {
+    await expect(logout({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+    expect(warningStub.callCount).toBe(0)
+    expect(promptStub.callCount).toBe(0)
+    expect(successStub.callCount).toBe(0)
+    expect(logStub.callCount).toBe(0)
+    expect(writeFileStub.callCount).toBe(0)
+  }
 })
 
 test('logout is actually logging out', async () => {

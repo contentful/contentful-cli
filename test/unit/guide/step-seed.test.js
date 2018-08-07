@@ -53,6 +53,6 @@ test('guideContext stepCount incremented', async () => {
 
 test('throws AbortedError if user does not confirm', async () => {
   confirmationStub.resolves(false)
-  await expect(seedStep(guideContext)).toThrowError(AbortedError)
+  await expect(seedStep(guideContext)).rejects.toThrowError(AbortedError)
   confirmationStub.resolves(true)
 })

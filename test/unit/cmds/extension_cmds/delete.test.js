@@ -46,20 +46,24 @@ afterAll(() => {
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  const cmd = deleteExtension({spaceId: 'space', id: 'test'})
-  const error = await expect(cmd).toThrowError(ValidationError)
-
-  expect(
-    error.message.includes('Please provide current version or use the --force flag')
-  ).toBeTruthy()
+  try {
+    await expect(deleteExtension({spaceId: 'space', id: 'test'})).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    console.log(error)
+    expect(
+      error.message.includes('Please provide current version or use the --force flag')
+    ).toBeTruthy()
+  }
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  const cmd = deleteExtension({spaceId: 'space', id: 'test', version: 4})
-  const error = await expect(cmd).toThrowError(ValidationError)
-  expect(
-    error.message.includes('Version provided does not match current resource version')
-  ).toBeTruthy()
+  try {
+    await expect(deleteExtension({spaceId: 'space', id: 'test', version: 4})).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Version provided does not match current resource version')
+    ).toBeTruthy()
+  }
 })
 
 test('Logs message if delete is successful', async () => {

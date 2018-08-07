@@ -128,10 +128,13 @@ test('create space - fails when not logged in', async () => {
   setContext({
     cmaToken: null
   })
-  const error = await expect(spaceCreate({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-  expect(createManagementClientStub.notCalled).toBe(true)
-  expect(promptStub.notCalled).toBe(true)
+  try {
+    await expect(spaceCreate({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(promptStub.notCalled).toBe(true)
+  }
 })
 
 test('create space - throws error when sth goes wrong', async () => {
@@ -142,7 +145,7 @@ test('create space - throws error when sth goes wrong', async () => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  await expect(spaceCreate({})).toThrowError(errorMessage)
+  await expect(spaceCreate({})).rejects.toThrowError(errorMessage)
   expect(fakeClient.createSpace.calledOnce).toBe(true)
   expect(promptStub.notCalled).toBe(true)
 })

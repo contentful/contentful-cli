@@ -47,43 +47,51 @@ test('guide cmd calls every step', async () => {
 
 test('handles errors correctly in loginStep', async () => {
   loginStepStub.rejects(new AbortedError())
-  await expect(guide()).not.toThrow()
+  await expect(guide).not.toThrow()
   loginStepStub.rejects(randomError)
-  await expect(guide()).toThrow()
+  await expect(guide()).rejects.toThrow()
   loginStepStub.resolves()
 })
 
 test('handles errors correctly in createSpaceStep', async () => {
   createSpaceStepStub.rejects(new AbortedError())
-  await expect(guide()).not.toThrow()
+  await expect(guide).not.toThrow()
   createSpaceStepStub.rejects(randomError)
-  await expect(guide()).toThrow()
+  try {
+    await expect(guide()).rejects.toThrow()
+  } catch (e) {}
   createSpaceStepStub.resolves()
 })
 
 test('handles errors correctly in seedStep', async () => {
   seedStepStub.rejects(new AbortedError())
-  await expect(guide()).not.toThrow()
+  await expect(guide).not.toThrow()
   seedStepStub.rejects(randomError)
-  await expect(guide()).toThrow()
+  try {
+    await expect(guide()).rejects.toThrow()
+  } catch (e) {}
   seedStepStub.resolves()
 })
 
 test('handles errors correctly in setupStep', async () => {
   setupStepStub.rejects(new AbortedError())
-  await expect(guide()).not.toThrow()
+  await expect(guide).not.toThrow()
   setupStepStub.rejects(randomError)
-  await expect(guide()).toThrow()
+  try {
+    await expect(guide()).rejects.toThrow()
+  } catch (e) {}
   setupStepStub.resolves()
 })
 
 test('handles errors correctly in devServerStep', async () => {
   devServerStepStub.rejects(new AbortedError())
-  await expect(guide()).not.toThrow()
+  expect(await guide()).resolves
   expect(finishStepStub.calledOnce).toBe(true)
   finishStepStub.resetHistory()
   devServerStepStub.rejects(randomError)
-  await expect(guide()).toThrow()
+  try {
+    await expect(guide()).rejects.toThrow()
+  } catch (e) {}
   expect(finishStepStub.calledOnce).toBeFalsy()
   devServerStepStub.resolves()
 })

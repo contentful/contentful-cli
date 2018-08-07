@@ -85,12 +85,15 @@ test('create access token - fails when not logged in', async () => {
   setContext({
     cmaToken: null
   })
-  const error = await expect(accessTokenCreate({
-    spaceId: 'some-space-id'
-  })).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-  expect(createManagementClientStub.notCalled).toBe(true)
-  expect(createApiKeyStub.notCalled).toBe(true)
+  try {
+    await expect(accessTokenCreate({
+      spaceId: 'some-space-id'
+    })).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(createApiKeyStub.notCalled).toBe(true)
+  }
 })
 
 test('create access token - requires space id', async () => {
@@ -101,10 +104,13 @@ test('create access token - requires space id', async () => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await expect(accessTokenCreate({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-  expect(createManagementClientStub.notCalled).toBe(true)
-  expect(createApiKeyStub.notCalled).toBe(true)
+  try {
+    await expect(accessTokenCreate({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (e) {
+    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(createApiKeyStub.notCalled).toBe(true)
+  }
 })
 
 test('create access token - throws error when sth goes wrong', async () => {
@@ -115,9 +121,11 @@ test('create access token - throws error when sth goes wrong', async () => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  await expect(accessTokenCreate({
-    spaceId: 'some-space-id'
-  })).toThrowError(errorMessage)
+  try {
+    await expect(accessTokenCreate({
+      spaceId: 'some-space-id'
+    })).rejects.toThrowError(errorMessage)
+  } catch (e) {}
   expect(createManagementClientStub.calledOnce).toBe(true)
   expect(fakeClient.getSpace.calledOnce).toBe(true)
   expect(createApiKeyStub.called).toBe(false)

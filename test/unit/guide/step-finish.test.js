@@ -50,6 +50,6 @@ test('calls success and reads whats-next.md', async () => {
 
 test('catches errors and does nothing', async () => {
   readFileStub.rejects(new Error('random'))
-  await expect(finishStep(guideContext)).not.toThrow()
+  await expect(() => finishStep(guideContext)).not.toThrow()
   readFileStub.resolves(true)
 })

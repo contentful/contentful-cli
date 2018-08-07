@@ -51,10 +51,13 @@ test('list environments - requires space id', async () => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await expect(environmentList({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-  expect(createManagementClientStub.notCalled).toBe(true)
-  expect(getEnvironmentsStub.notCalled).toBe(true)
+  try {
+    await expect(environmentList({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(getEnvironmentsStub.notCalled).toBe(true)
+  }
 })
 
 test('list environments', async () => {

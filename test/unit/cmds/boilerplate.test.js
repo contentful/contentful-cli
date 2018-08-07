@@ -118,16 +118,22 @@ test('requires login', async () => {
   setContext({
     cmaToken: null
   })
-  const error = await expect(downloadBoilerplate({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+  try {
+    await expect(downloadBoilerplate({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+  }
 })
 
 test('requires spaceId and fails without', async () => {
   setContext({
     cmaToken: 'mocked'
   })
-  const error = await expect(downloadBoilerplate({})).toThrowError(PreconditionFailedError)
-  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  try {
+    await expect(downloadBoilerplate({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  }
 })
 
 test('requires spaceId and accepts it from context', async () => {
@@ -135,14 +141,14 @@ test('requires spaceId and accepts it from context', async () => {
     cmaToken: 'mocked',
     activeSpaceId: 'mocked'
   })
-  await expect(downloadBoilerplate({})).not.toThrowError('works with space id provided via context')
+  await expect(downloadBoilerplate).not.toThrowError('works with space id provided via context')
 })
 
 test('requires spaceId and accepts it from argv arguments', async () => {
   setContext({
     cmaToken: 'mocked'
   })
-  await expect(downloadBoilerplate({
+  await expect(() => downloadBoilerplate({
     spaceId: 'mocked'
   })).not.toThrowError('works with space id provided via arguments')
 })
