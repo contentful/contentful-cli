@@ -106,7 +106,7 @@ test('create access token - requires space id', async () => {
   })
   try {
     await expect(accessTokenCreate({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (e) {
+  } catch (error) {
     expect(error.message.includes('You need to provide a space id')).toBeTruthy()
     expect(createManagementClientStub.notCalled).toBe(true)
     expect(createApiKeyStub.notCalled).toBe(true)

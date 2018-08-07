@@ -6,8 +6,7 @@ import {
 } from '../../../../../lib/cmds/space_cmds/environment_cmds/delete'
 import {
   emptyContext,
-  setContext,
-  getContext
+  setContext
 } from '../../../../../lib/context'
 import { PreconditionFailedError } from '../../../../../lib/utils/error'
 
