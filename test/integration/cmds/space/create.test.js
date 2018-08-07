@@ -44,7 +44,7 @@ test('should print help message', done => {
     .end(done)
 })
 
-test('TODO: should create space with no org provided')
+test.skip('TODO: should create space with no org provided')
 
 test('should create space with name and org provided', done => {
   app()

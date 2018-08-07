@@ -9,7 +9,7 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test('TODO: Refactor that test !')
+test.skip('TODO: Refactor that test !')
 
 test.skip('Should save the correct proxy to ~/.contentfulrc.json', done => {
   const expectedConfig = {

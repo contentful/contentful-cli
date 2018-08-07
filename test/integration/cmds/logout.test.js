@@ -24,6 +24,6 @@ test('should not logout', done => {
     .end(done)
 })
 
-test('TODO: should successfully logout')
+test.skip('TODO: should successfully logout', () => {})
 
-test('TODO: [logged-out] should exit when not logged in')
+test.skip('TODO: [logged-out] should exit when not logged in', () => {})

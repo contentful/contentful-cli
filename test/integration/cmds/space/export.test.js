@@ -8,4 +8,4 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test('TODO: should successfully export space')
+test.skip('TODO: should successfully export space')
