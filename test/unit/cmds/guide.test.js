@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -17,7 +16,7 @@ const finishStepStub = stub().returns(Promise.resolve())
 const steps = ['loginStep', 'createSpaceStep', 'seedStep', 'setupStep', 'devServerStep', 'finishStep']
 const stubs = [loginStepStub, createSpaceStepStub, seedStepStub, setupStepStub, devServerStepStub, finishStepStub]
 const randomError = new Error('random error')
-test.before(() => {
+beforeAll(() => {
   guideRewireApi.__Rewire__('loginStep', loginStepStub)
   guideRewireApi.__Rewire__('createSpaceStep', createSpaceStepStub)
   guideRewireApi.__Rewire__('seedStep', seedStepStub)
@@ -27,64 +26,64 @@ test.before(() => {
   guideRewireApi.__Rewire__('log', stub())
 })
 
-test.afterEach.always(() => {
+afterEach(() => {
   stubs.map((stub) => stub.resetHistory())
 })
 
-test.after(() => {
+afterAll(() => {
   steps.map((step) => {
     guideRewireApi.__ResetDependency__(step)
   })
   guideRewireApi.__ResetDependency__('log')
 })
 
-test.serial('guide cmd calls every step', async (t) => {
+test('guide cmd calls every step', async () => {
   await guide()
   stubs.map((stub) => {
-    t.true(stub.calledOnce, `${stub} was called once`)
-    t.truthy(stub.getCall(0).args[0].activeGuide, `${stub} called with guideContext with activeGuide key`)
+    expect(stub.calledOnce).toBe(true)
+    expect(stub.getCall(0).args[0].activeGuide).toBeTruthy()
   })
 })
 
-test.serial('handles errors correctly in loginStep', async (t) => {
+test('handles errors correctly in loginStep', async () => {
   loginStepStub.rejects(new AbortedError())
-  await t.notThrows(guide())
+  await expect(guide()).not.toThrow()
   loginStepStub.rejects(randomError)
-  await t.throws(guide())
+  await expect(guide()).toThrow()
   loginStepStub.resolves()
 })
 
-test.serial('handles errors correctly in createSpaceStep', async (t) => {
+test('handles errors correctly in createSpaceStep', async () => {
   createSpaceStepStub.rejects(new AbortedError())
-  await t.notThrows(guide())
+  await expect(guide()).not.toThrow()
   createSpaceStepStub.rejects(randomError)
-  await t.throws(guide())
+  await expect(guide()).toThrow()
   createSpaceStepStub.resolves()
 })
 
-test.serial('handles errors correctly in seedStep', async (t) => {
+test('handles errors correctly in seedStep', async () => {
   seedStepStub.rejects(new AbortedError())
-  await t.notThrows(guide())
+  await expect(guide()).not.toThrow()
   seedStepStub.rejects(randomError)
-  await t.throws(guide())
+  await expect(guide()).toThrow()
   seedStepStub.resolves()
 })
 
-test.serial('handles errors correctly in setupStep', async (t) => {
+test('handles errors correctly in setupStep', async () => {
   setupStepStub.rejects(new AbortedError())
-  await t.notThrows(guide())
+  await expect(guide()).not.toThrow()
   setupStepStub.rejects(randomError)
-  await t.throws(guide())
+  await expect(guide()).toThrow()
   setupStepStub.resolves()
 })
 
-test.serial('handles errors correctly in devServerStep', async (t) => {
+test('handles errors correctly in devServerStep', async () => {
   devServerStepStub.rejects(new AbortedError())
-  await t.notThrows(guide())
-  t.true(finishStepStub.calledOnce, 'finish step still called after devServerStep aborted by user')
+  await expect(guide()).not.toThrow()
+  expect(finishStepStub.calledOnce).toBe(true)
   finishStepStub.resetHistory()
   devServerStepStub.rejects(randomError)
-  await t.throws(guide())
-  t.falsy(finishStepStub.calledOnce, 'finish step not called after devServerStep aborted with random error')
+  await expect(guide()).toThrow()
+  expect(finishStepStub.calledOnce).toBeFalsy()
   devServerStepStub.resolves()
 })

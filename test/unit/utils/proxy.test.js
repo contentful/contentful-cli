@@ -1,4 +1,3 @@
-import test from 'ava'
 import {
   proxyStringToObject,
   proxyObjectToString,
@@ -7,7 +6,7 @@ import {
 
 const parseAuth = getUnexported('parseAuth')
 
-test('proxyString with basic auth, with protocol', (t) => {
+test('proxyString with basic auth, with protocol', () => {
   const proxyString = 'http://foo:bar@127.0.0.1:8213'
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
@@ -23,11 +22,11 @@ test('proxyString with basic auth, with protocol', (t) => {
     }
   }
 
-  t.deepEqual(parsed, expectedParsed, 'proxy url gets parsed')
-  t.deepEqual(stringified, expectedStringified, 'serializes back to input')
+  expect(parsed).toEqual(expectedParsed)
+  expect(stringified).toEqual(expectedStringified)
 })
 
-test('proxyString without auth, with protocol', (t) => {
+test('proxyString without auth, with protocol', () => {
   const proxyString = 'http://127.0.0.1:8213'
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
@@ -39,11 +38,11 @@ test('proxyString without auth, with protocol', (t) => {
     isHttps: false
   }
 
-  t.deepEqual(parsed, expected, 'proxy url gets parsed')
-  t.deepEqual(stringified, expectedStringified, 'serializes back to input')
+  expect(parsed).toEqual(expected)
+  expect(stringified).toEqual(expectedStringified)
 })
 
-test('proxyString with basic auth, without protocol', (t) => {
+test('proxyString with basic auth, without protocol', () => {
   const proxyString = 'foo:bar@127.0.0.1:8213'
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
@@ -59,11 +58,11 @@ test('proxyString with basic auth, without protocol', (t) => {
     }
   }
 
-  t.deepEqual(parsed, expectedParsed, 'proxy url gets parsed')
-  t.deepEqual(stringified, expectedStringified, 'serializes back to input')
+  expect(parsed).toEqual(expectedParsed)
+  expect(stringified).toEqual(expectedStringified)
 })
 
-test('proxyString without auth, without protocol', (t) => {
+test('proxyString without auth, without protocol', () => {
   const proxyString = '127.0.0.1:8213'
   const parsed = proxyStringToObject(proxyString)
   const stringified = proxyObjectToString(parsed)
@@ -75,24 +74,24 @@ test('proxyString without auth, without protocol', (t) => {
     isHttps: false
   }
 
-  t.deepEqual(parsed, expected, 'proxy url gets parsed')
-  t.deepEqual(stringified, expectedStringified, 'serializes back to input')
+  expect(parsed).toEqual(expected)
+  expect(stringified).toEqual(expectedStringified)
 })
 
-test('parseAuth with null (empty auth in url.parse)', (t) => {
+test('parseAuth with null (empty auth in url.parse)', () => {
   const { username, password } = parseAuth(null)
-  t.falsy(username)
-  t.falsy(password)
+  expect(username).toBeFalsy()
+  expect(password).toBeFalsy()
 })
 
-test('parseAuth with username', (t) => {
+test('parseAuth with username', () => {
   const { username, password } = parseAuth('user')
-  t.is(username, 'user')
-  t.falsy(password)
+  expect(username).toBe('user')
+  expect(password).toBeFalsy()
 })
 
-test('parseAuth with username & password', (t) => {
+test('parseAuth with username & password', () => {
   const { username, password } = parseAuth('user:53cr37')
-  t.is(username, 'user')
-  t.is(password, '53cr37')
+  expect(username).toBe('user')
+  expect(password).toBe('53cr37')
 })

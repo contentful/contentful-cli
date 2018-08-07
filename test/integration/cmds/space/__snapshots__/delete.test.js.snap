@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should exit 1 when no args: help data is incorrect 1`] = `
+"🚨  Error: You need to provide a space id. You can pass it via the --space-id 
+parameter or by running contentful space use"
+`;
+
+exports[`should print help message: help data is incorrect 1`] = `
+"Usage: contentful space delete
+
+Options:
+  -h, --help          Show help                                        [boolean]
+  --space-id, -s      ID of the space to delete
+  --management-token  Contentful management API token                   [string]
+  --yes               Skip the confirmation question            [default: false]
+
+Copyright 2018 Contentful, this is a BETA release"
+`;

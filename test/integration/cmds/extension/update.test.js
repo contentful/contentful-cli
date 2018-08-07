@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { resolve } from 'path'
 
@@ -10,68 +9,71 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('extension update --help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when no args given', t => {
+test('should exit 1 when no args given', done => {
   app()
     .run('extension update')
     .code(1)
     .expect((result) => {
       const regex = /You need to provide a space id./
-      t.regex(result.stderr.trim(), regex)
+      expect(result.stderr.trim()).toMatch(regex)
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when only space id is given', t => {
+test('should exit 1 when only space id is given', done => {
   app()
     .run('extension delete --space-id some-id')
     .code(1)
     .expect((result) => {
       const regex = /Missing required argument:\s+id/
-      t.regex(result.stderr.trim(), regex)
+      expect(result.stderr.trim()).toMatch(regex)
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when only id is given', t => {
+test('should exit 1 when only id is given', done => {
   app()
     .run('extension update --space-id some-id --id sample-extension')
     .code(1)
     .expect((result) => {
       const regex = /Missing required properties:\s+name, field-types/
-      t.regex(result.stderr.trim(), regex)
+      expect(result.stderr.trim()).toMatch(regex)
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when src and srcdoc are omitted', t => {
+test('should exit 1 when src and srcdoc are omitted', done => {
   app()
     .run('extension update  --space-id some-id --id sample-extension --name foo --field-types Symbol')
     .code(1)
     .expect((result) => {
       const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
-      t.regex(result.stderr.trim(), regex)
+      expect(result.stderr.trim()).toMatch(regex)
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when descriptor given but src and srcdoc still missing', t => {
-  app()
-    .run(`extension update --space-id some-id --descriptor ${configPath}`)
-    .code(1)
-    .expect((result) => {
-      const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
-      t.regex(result.stderr.trim(), regex)
-    })
-    .end(t.end)
-})
+test(
+  'should exit 1 when descriptor given but src and srcdoc still missing',
+  done => {
+    app()
+      .run(`extension update --space-id some-id --descriptor ${configPath}`)
+      .code(1)
+      .expect((result) => {
+        const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
+        expect(result.stderr.trim()).toMatch(regex)
+      })
+      .end(done)
+  }
+)

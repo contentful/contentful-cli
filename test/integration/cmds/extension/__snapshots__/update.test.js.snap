@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should print help message: help data is incorrect 1`] = `
+"contentful.js extension update
+
+Update an extension
+
+Options:
+  -h, --help                 Show help                                 [boolean]
+  --id                       Extension id                               [string]
+  --name                     Extension name                             [string]
+  --space-id                 Space id                                   [string]
+  --environment-id           Environment id         [string] [default: \\"master\\"]
+  --field-types              Field types                                 [array]
+  --descriptor               Path to an extension descriptor file       [string]
+  --src                      URL to extension bundle                    [string]
+  --srcdoc                   Path to extension bundle                   [string]
+  --sidebar                  Render the extension in the sidebar       [boolean]
+  --version                  Current version of the extension for optimistic
+                             locking                                    [number]
+  --force                    Force operation without explicit version  [boolean]
+  --installation-parameters  JSON string of installation parameter key-value
+                             pairs                                      [string]
+
+Copyright 2018 Contentful, this is a BETA release"
+`;

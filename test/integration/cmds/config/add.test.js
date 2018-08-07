@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { resolve, join } from 'path'
 import { homedir } from 'os'
@@ -10,9 +9,9 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test.todo('Refactor that test !')
+test('TODO: Refactor that test !')
 
-test.cb.skip('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
+test.skip('Should save the correct proxy to ~/.contentfulrc.json', done => {
   const expectedConfig = {
     host: 'localhost',
     port: 8080,
@@ -30,8 +29,8 @@ test.cb.skip('Should save the correct proxy to ~/.contentfulrc.json', (t) => {
       readFile(resolve(homedir(), '.contentfulrc.json'))
         .then(JSON.parse)
         .then((config) => {
-          t.deepEqual(config.proxy, expectedConfig)
-          t.end()
+          expect(config.proxy).toEqual(expectedConfig)
+          done()
         })
     })
 })

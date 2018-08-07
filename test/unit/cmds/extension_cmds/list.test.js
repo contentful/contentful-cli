@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -34,7 +33,7 @@ const mockExtensions = {
   ]
 }
 
-test.before(() => {
+beforeAll(() => {
   const fakeClient = {
     getSpace: getSpaceStub
   }
@@ -54,23 +53,23 @@ test.before(() => {
   rewireAPI.__Rewire__('log', logStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   rewireAPI.__ResetDependency__('createManagementClient')
   rewireAPI.__ResetDependency__('log')
 })
 
-test.serial('Lists extensions', async (t) => {
+test('Lists extensions', async () => {
   await handler({spaceId: 'space', environmentId: 'env'})
 
   const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
 
   outputValues.forEach(str => {
-    t.true(logStub.lastCall.args[0].includes(str))
+    expect(logStub.lastCall.args[0].includes(str)).toBe(true)
   })
 })
 
-test.serial('Displays message if list is empty', async (t) => {
+test('Displays message if list is empty', async () => {
   await handler({spaceId: 'space', environmentId: 'empty'})
 
-  t.true(logStub.calledWith('No extensions found'))
+  expect(logStub.calledWith('No extensions found')).toBe(true)
 })

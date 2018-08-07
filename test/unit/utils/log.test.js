@@ -1,4 +1,3 @@
-import test from 'ava'
 import { spy } from 'sinon'
 
 import {
@@ -21,7 +20,7 @@ const successStyleSpy = spy(successStyle)
 const frameSpy = spy(frame)
 const wrapSpy = spy(wrap)
 
-test.before(() => {
+beforeAll(() => {
   logRewireAPI.__Rewire__('infoStyle', infoStyleSpy)
   logRewireAPI.__Rewire__('warningStyle', warningStyleSpy)
   logRewireAPI.__Rewire__('errorStyle', errorStyleSpy)
@@ -30,7 +29,7 @@ test.before(() => {
   logRewireAPI.__Rewire__('wrap', wrapSpy)
 })
 
-test.after.always(() => {
+afterAll(() => {
   logRewireAPI.__ResetDependency__('infoStyle')
   logRewireAPI.__ResetDependency__('warningStyle')
   logRewireAPI.__ResetDependency__('errorStyle')
@@ -39,7 +38,7 @@ test.after.always(() => {
   logRewireAPI.__ResetDependency__('wrap')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   infoStyleSpy.resetHistory()
   warningStyleSpy.resetHistory()
   errorStyleSpy.resetHistory()
@@ -48,90 +47,90 @@ test.afterEach((t) => {
   wrapSpy.resetHistory()
 })
 
-test('log', (t) => {
+test('log', () => {
   log('arg1', 'arg2')
-  t.is(infoStyleSpy.callCount, 0, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 0, 'warningStyle was not applied')
-  t.is(errorStyleSpy.callCount, 0, 'errorStyle was not applied')
-  t.is(successStyleSpy.callCount, 0, 'successStyle was not applied')
-  t.is(wrapSpy.callCount, 0, 'content was not wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
+  expect(infoStyleSpy.callCount).toBe(0)
+  expect(warningStyleSpy.callCount).toBe(0)
+  expect(errorStyleSpy.callCount).toBe(0)
+  expect(successStyleSpy.callCount).toBe(0)
+  expect(wrapSpy.callCount).toBe(0)
+  expect(frameSpy.callCount).toBe(0)
 })
 
-test('wrappedLog', (t) => {
+test('wrappedLog', () => {
   wrappedLog('arg1')
-  t.is(infoStyleSpy.callCount, 0, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 0, 'warningStyle was not applied')
-  t.is(errorStyleSpy.callCount, 0, 'errorStyle was not applied')
-  t.is(successStyleSpy.callCount, 0, 'successStyle was not applied')
-  t.is(wrapSpy.callCount, 1, 'content was wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
+  expect(infoStyleSpy.callCount).toBe(0)
+  expect(warningStyleSpy.callCount).toBe(0)
+  expect(errorStyleSpy.callCount).toBe(0)
+  expect(successStyleSpy.callCount).toBe(0)
+  expect(wrapSpy.callCount).toBe(1)
+  expect(frameSpy.callCount).toBe(0)
 
   wrappedLog('arg1', 10)
-  t.is(wrapSpy.callCount, 2, 'content was wrapped again')
-  t.true(wrapSpy.calledWith('arg1', 10), 'content was wrapped with given length')
+  expect(wrapSpy.callCount).toBe(2)
+  expect(wrapSpy.calledWith('arg1', 10)).toBe(true)
 })
 
-test('warning', (t) => {
+test('warning', () => {
   warning('arg1', 'arg2')
-  t.is(infoStyleSpy.callCount, 0, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 2, 'warningStyle was applied twice')
-  t.is(errorStyleSpy.callCount, 0, 'errorStyle was not applied')
-  t.is(successStyleSpy.callCount, 0, 'successStyle was not applied')
-  t.is(wrapSpy.callCount, 0, 'content was not wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
+  expect(infoStyleSpy.callCount).toBe(0)
+  expect(warningStyleSpy.callCount).toBe(2)
+  expect(errorStyleSpy.callCount).toBe(0)
+  expect(successStyleSpy.callCount).toBe(0)
+  expect(wrapSpy.callCount).toBe(0)
+  expect(frameSpy.callCount).toBe(0)
 })
 
-test('error', (t) => {
+test('error', () => {
   error('arg1', 'arg2')
-  t.is(infoStyleSpy.callCount, 0, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 0, 'warningStyle was not applied')
-  t.is(errorStyleSpy.callCount, 2, 'errorStyle was applied twice')
-  t.is(successStyleSpy.callCount, 0, 'successStyle was not applied')
-  t.is(wrapSpy.callCount, 0, 'content was not wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
+  expect(infoStyleSpy.callCount).toBe(0)
+  expect(warningStyleSpy.callCount).toBe(0)
+  expect(errorStyleSpy.callCount).toBe(2)
+  expect(successStyleSpy.callCount).toBe(0)
+  expect(wrapSpy.callCount).toBe(0)
+  expect(frameSpy.callCount).toBe(0)
 })
 
-test('success', (t) => {
+test('success', () => {
   success('arg1', 'arg2')
-  t.is(infoStyleSpy.callCount, 0, 'infoStyle was not applied')
-  t.is(warningStyleSpy.callCount, 0, 'warningStyle was not applied')
-  t.is(errorStyleSpy.callCount, 0, 'errorStyle was not applied')
-  t.is(successStyleSpy.callCount, 2, 'successStyle was applied twice')
-  t.is(wrapSpy.callCount, 0, 'content was not wrapped')
-  t.is(frameSpy.callCount, 0, 'content was not framed')
+  expect(infoStyleSpy.callCount).toBe(0)
+  expect(warningStyleSpy.callCount).toBe(0)
+  expect(errorStyleSpy.callCount).toBe(0)
+  expect(successStyleSpy.callCount).toBe(2)
+  expect(wrapSpy.callCount).toBe(0)
+  expect(frameSpy.callCount).toBe(0)
 })
 
-test('logError - SDK error', (t) => {
+test('logError - SDK error', () => {
   const error = new Error()
   error.message = JSON.stringify({message: 'Some error from the SDK', data: { foo: { bar: ['some', 'data'] } }})
   logError(error)
-  t.is(errorStyleSpy.callCount, 1, 'error message was styled as an error')
-  t.is(wrapSpy.callCount, 1, 'error message was wrapped')
-  t.is(frameSpy.callCount, 1, 'error was output in a frame')
+  expect(errorStyleSpy.callCount).toBe(1)
+  expect(wrapSpy.callCount).toBe(1)
+  expect(frameSpy.callCount).toBe(1)
 })
 
-test('logError - non SDK error', (t) => {
+test('logError - non SDK error', () => {
   const error = new Error('Some non SDK error without stack')
   delete error.stack
   logError(error)
-  t.is(errorStyleSpy.callCount, 1, 'error message was styled as an error')
-  t.is(wrapSpy.callCount, 1, 'error message was wrapped')
-  t.is(frameSpy.callCount, 0, 'error was output in a frame')
+  expect(errorStyleSpy.callCount).toBe(1)
+  expect(wrapSpy.callCount).toBe(1)
+  expect(frameSpy.callCount).toBe(0)
 })
 
-test('logError - runtime error', (t) => {
+test('logError - runtime error', () => {
   const error = new Error('Some runtime error')
   logError(error)
-  t.is(errorStyleSpy.callCount, 1, 'error message was styled as an error')
-  t.is(wrapSpy.callCount, 1, 'error message was wrapped')
-  t.is(frameSpy.callCount, 1, 'error was output in a frame')
+  expect(errorStyleSpy.callCount).toBe(1)
+  expect(wrapSpy.callCount).toBe(1)
+  expect(frameSpy.callCount).toBe(1)
 })
 
-test('logError - precondition failed', (t) => {
+test('logError - precondition failed', () => {
   const error = new PreconditionFailedError('Some precondition error')
   logError(error)
-  t.is(errorStyleSpy.callCount, 1, 'error message was styled as an error')
-  t.is(wrapSpy.callCount, 1, 'error message was wrapped')
-  t.is(frameSpy.callCount, 0, 'error was output in a frame')
+  expect(errorStyleSpy.callCount).toBe(1)
+  expect(wrapSpy.callCount).toBe(1)
+  expect(frameSpy.callCount).toBe(0)
 })

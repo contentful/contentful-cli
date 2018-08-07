@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 import {
@@ -17,34 +16,34 @@ const app = () => {
 var space = null
 var spacesToDelete = []
 
-test.before('ensure config file exist', () => {
+beforeAll('ensure config file exist', () => {
   return initConfig()
 })
-test.before('create fresh space', async t => {
+beforeAll('create fresh space', async () => {
   space = await createSimpleSpace(org)
   spacesToDelete.push(space.sys.id)
 })
-test.after.always('remove created spaces', t => {
+test('remove created spaces', () => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('space list --help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should list created space', t => {
+test('should list created space', done => {
   app()
     .run('space list')
     .code(0)
     .stdout(/(Space name)|(Space id)/)
     .stdout(RegExp(space.sys.id))
     .stdout(RegExp(space.name))
-    .end(t.end)
+    .end(done)
 })

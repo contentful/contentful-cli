@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -26,32 +25,32 @@ const fakeClient = {
 }
 const createManagementClientStub = stub().returns(fakeClient)
 
-test.before(() => {
+beforeAll(() => {
   environmentCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   environmentCreateRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.afterEach.always((t) => {
+afterEach(() => {
   fakeClient.getSpace.resetHistory()
   createManagementClientStub.resetHistory()
   createEnvironmentWithIdStub.resetHistory()
 })
 
-test.serial('create environment - requires space id', async (t) => {
+test('create environment - requires space id', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await t.throws(environmentCreate({}), PreconditionFailedError, 'throws error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'throws space id required in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(createEnvironmentWithIdStub.notCalled, 'did not try to create environment with id')
+  const error = await expect(environmentCreate({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  expect(createManagementClientStub.notCalled).toBe(true)
+  expect(createEnvironmentWithIdStub.notCalled).toBe(true)
 })
 
-test.serial('create new environment with id', async (t) => {
+test('create new environment with id', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
@@ -60,15 +59,15 @@ test.serial('create new environment with id', async (t) => {
     spaceId: 'someSpaceID',
     environmentId: 'test'
   })
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.true(createEnvironmentWithIdStub.calledOnce, 'did try to create environment with id')
-  t.is(createEnvironmentWithIdStub.args[0][0], 'test', 'with correct payload')
-  t.deepEqual(createEnvironmentWithIdStub.args[0][1], {}, 'with correct payload')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(createEnvironmentWithIdStub.calledOnce).toBe(true)
+  expect(createEnvironmentWithIdStub.args[0][0]).toBe('test')
+  expect(createEnvironmentWithIdStub.args[0][1]).toEqual({})
 })
 
-test.serial('create new environment with id and name', async (t) => {
+test('create new environment with id and name', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
@@ -78,10 +77,10 @@ test.serial('create new environment with id and name', async (t) => {
     environmentId: 'test',
     name: 'test'
   })
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.true(createEnvironmentWithIdStub.calledOnce, 'did try to create environment with id')
-  t.is(createEnvironmentWithIdStub.args[0][0], 'test', 'with correct payload')
-  t.deepEqual(createEnvironmentWithIdStub.args[0][1], { name: 'test' }, 'with correct payload')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(createEnvironmentWithIdStub.calledOnce).toBe(true)
+  expect(createEnvironmentWithIdStub.args[0][0]).toBe('test')
+  expect(createEnvironmentWithIdStub.args[0][1]).toEqual({ name: 'test' })
 })

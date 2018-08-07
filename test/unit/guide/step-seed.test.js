@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import { AbortedError } from '../../../lib/guide/helpers'
 import seedStep,
@@ -14,46 +13,46 @@ const guideContext = {
 const confirmationStub = stub().resolves(true)
 const spaceSeedStub = stub().resolves()
 
-test.before(() => {
+beforeAll(() => {
   seedStepRewireApi.__Rewire__('log', stub())
   seedStepRewireApi.__Rewire__('wrappedLog', stub())
   seedStepRewireApi.__Rewire__('confirmation', confirmationStub)
   seedStepRewireApi.__Rewire__('spaceSeed', spaceSeedStub)
 })
 
-test.afterEach(() => {
+afterEach(() => {
   confirmationStub.resetHistory()
   guideContext.stepCount = 0
 })
 
-test.after.always(() => {
+afterAll(() => {
   seedStepRewireApi.__ResetDependency__('log')
   seedStepRewireApi.__ResetDependency__('wrappedLog')
   seedStepRewireApi.__ResetDependency__('confirmation')
   seedStepRewireApi.__ResetDependency__('spaceSeed')
 })
 
-test.serial('seeds space on successful user confirmation', async (t) => {
+test('seeds space on successful user confirmation', async () => {
   await seedStep(guideContext)
-  t.true(confirmationStub.calledOnce, 'confirmation called')
-  t.true(spaceSeedStub.calledOnce, 'spaceSeed called')
+  expect(confirmationStub.calledOnce).toBe(true)
+  expect(spaceSeedStub.calledOnce).toBe(true)
   const { spaceId, activeGuide: {seed} } = guideContext
-  t.true(spaceSeedStub.calledWith({
+  expect(spaceSeedStub.calledWith({
     template: seed,
     spaceId,
     yes: true,
     feature: 'guide'
-  }), 'spaceSeed called with proper args')
+  })).toBe(true)
 })
 
-test.serial('guideContext stepCount incremented', async (t) => {
+test('guideContext stepCount incremented', async () => {
   const stepCount = guideContext.stepCount
   await seedStep(guideContext)
-  t.is(guideContext.stepCount, stepCount + 1)
+  expect(guideContext.stepCount).toBe(stepCount + 1)
 })
 
-test.serial('throws AbortedError if user does not confirm', async (t) => {
+test('throws AbortedError if user does not confirm', async () => {
   confirmationStub.resolves(false)
-  await t.throws(seedStep(guideContext), AbortedError)
+  await expect(seedStep(guideContext)).toThrowError(AbortedError)
   confirmationStub.resolves(true)
 })

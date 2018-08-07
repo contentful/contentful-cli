@@ -1,9 +1,8 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import paginate from '../../../lib/utils/pagination'
 
-test('paginates over multi page api results', async (t) => {
+test('paginates over multi page api results', async () => {
   const exampleMethod = stub()
   exampleMethod.onCall(0).returns({
     items: [{
@@ -26,13 +25,13 @@ test('paginates over multi page api results', async (t) => {
   }
   const result = await paginate({ client, method: 'exampleMethod', limit: 1 })
 
-  t.is(result.items[0].id, 'item 1')
-  t.is(result.items[1].id, 'item 2')
-  t.is(result.items.length, 2)
-  t.is(exampleMethod.callCount, 2)
+  expect(result.items[0].id).toBe('item 1')
+  expect(result.items[1].id).toBe('item 2')
+  expect(result.items.length).toBe(2)
+  expect(exampleMethod.callCount).toBe(2)
 })
 
-test('does not paginate over single page api results', async (t) => {
+test('does not paginate over single page api results', async () => {
   const exampleMethod = stub()
   exampleMethod.returns({
     items: [{
@@ -47,7 +46,7 @@ test('does not paginate over single page api results', async (t) => {
   }
   const result = await paginate({ client, method: 'exampleMethod', limit: 1 })
 
-  t.is(result.items[0].id, 'item 1')
-  t.is(result.items.length, 1)
-  t.is(exampleMethod.callCount, 1)
+  expect(result.items[0].id).toBe('item 1')
+  expect(result.items.length).toBe(1)
+  expect(exampleMethod.callCount).toBe(1)
 })

@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -33,32 +32,32 @@ const fakeClient = {
 }
 const createManagementClientStub = stub().returns(fakeClient)
 
-test.before(() => {
+beforeAll(() => {
   environmentListRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   environmentListRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.afterEach.always((t) => {
+afterEach(() => {
   fakeClient.getSpace.resetHistory()
   createManagementClientStub.resetHistory()
   getEnvironmentsStub.resetHistory()
 })
 
-test.serial('list environments - requires space id', async (t) => {
+test('list environments - requires space id', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await t.throws(environmentList({}), PreconditionFailedError, 'throws error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'throws space id required in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(getEnvironmentsStub.notCalled, 'did not try to get environment')
+  const error = await expect(environmentList({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  expect(createManagementClientStub.notCalled).toBe(true)
+  expect(getEnvironmentsStub.notCalled).toBe(true)
 })
 
-test.serial('list environments', async (t) => {
+test('list environments', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
@@ -66,7 +65,7 @@ test.serial('list environments', async (t) => {
   await environmentList({
     spaceId: 'someSpaceID'
   })
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.true(getEnvironmentsStub.calledOnce, 'loaded environments')
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(getEnvironmentsStub.calledOnce).toBe(true)
 })

@@ -1,4 +1,3 @@
-import test from 'ava'
 import { version } from '../../../../package.json'
 import { stub } from 'sinon'
 import {
@@ -13,16 +12,16 @@ import {
 
 const contentfulImportStub = stub().returns(Promise.resolve())
 
-test.before(() => {
+beforeAll(() => {
   setContext({cmaToken: 'managementToken'})
   importRewireAPI.__Rewire__('runContentfulImport', contentfulImportStub)
 })
 
-test.after(() => {
+afterAll(() => {
   emptyContext()
   importRewireAPI.__ResetDependency__('runContentfulImport')
 })
-test('it should pass all args to contentful-import', async (t) => {
+test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
     skipContentModel: false,
     skipLocales: false,
@@ -34,6 +33,6 @@ test('it should pass all args to contentful-import', async (t) => {
     managementFeature: 'space-import'
   }
   await importSpace(stubArgv)
-  t.deepEqual(contentfulImportStub.args[0][0], stubArgv)
-  t.is(contentfulImportStub.callCount, 1)
+  expect(contentfulImportStub.args[0][0]).toEqual(stubArgv)
+  expect(contentfulImportStub.callCount).toBe(1)
 })

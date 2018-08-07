@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -26,22 +25,22 @@ const fakeClient = {
 }
 const createManagementClientStub = stub().returns(fakeClient)
 
-test.before(() => {
+beforeAll(() => {
   accessTokenCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   accessTokenCreateRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.afterEach.always((t) => {
+afterEach(() => {
   fakeClient.getSpace.resetHistory()
   createManagementClientStub.resetHistory()
   createApiKeyStub.resetHistory()
   getApiKeysStub.reset()
 })
 
-test.serial('create new access token', async (t) => {
+test('create new access token', async () => {
   getApiKeysStub.returns({
     items: []
   })
@@ -53,14 +52,14 @@ test.serial('create new access token', async (t) => {
     ...mockedAccessTokenData,
     spaceId: 'some-space-id'
   })
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.true(createApiKeyStub.calledOnce, 'created token')
-  t.deepEqual(createApiKeyStub.args[0][0], mockedAccessTokenData, 'with correct payload')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(createApiKeyStub.calledOnce).toBe(true)
+  expect(createApiKeyStub.args[0][0]).toEqual(mockedAccessTokenData)
 })
 
-test.serial('return existing access token', async (t) => {
+test('return existing access token', async () => {
   getApiKeysStub.returns({
     items: [mockedAccessTokenData]
   })
@@ -72,13 +71,13 @@ test.serial('return existing access token', async (t) => {
     ...mockedAccessTokenData,
     spaceId: 'some-space-id'
   })
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.false(createApiKeyStub.called, 'did not create new token')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(createApiKeyStub.called).toBe(false)
 })
 
-test.serial('create access token - fails when not logged in', async (t) => {
+test('create access token - fails when not logged in', async () => {
   getApiKeysStub.returns({
     items: [mockedAccessTokenData]
   })
@@ -86,15 +85,15 @@ test.serial('create access token - fails when not logged in', async (t) => {
   setContext({
     cmaToken: null
   })
-  const error = await t.throws(accessTokenCreate({
+  const error = await expect(accessTokenCreate({
     spaceId: 'some-space-id'
-  }), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(createApiKeyStub.notCalled, 'did try to create access token')
+  })).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+  expect(createManagementClientStub.notCalled).toBe(true)
+  expect(createApiKeyStub.notCalled).toBe(true)
 })
 
-test.serial('create access token - requires space id', async (t) => {
+test('create access token - requires space id', async () => {
   getApiKeysStub.returns({
     items: [mockedAccessTokenData]
   })
@@ -102,13 +101,13 @@ test.serial('create access token - requires space id', async (t) => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await t.throws(accessTokenCreate({}), PreconditionFailedError, 'throws error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'throws space id required in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(createApiKeyStub.notCalled, 'did try to create access token')
+  const error = await expect(accessTokenCreate({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+  expect(createManagementClientStub.notCalled).toBe(true)
+  expect(createApiKeyStub.notCalled).toBe(true)
 })
 
-test.serial('create access token - throws error when sth goes wrong', async (t) => {
+test('create access token - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create access token because of reasons'
   getApiKeysStub.reset()
   getApiKeysStub.throws(new Error(errorMessage))
@@ -116,10 +115,10 @@ test.serial('create access token - throws error when sth goes wrong', async (t) 
   setContext({
     cmaToken: 'mockedToken'
   })
-  await t.throws(accessTokenCreate({
+  await expect(accessTokenCreate({
     spaceId: 'some-space-id'
-  }), errorMessage, 'throws error')
-  t.true(createManagementClientStub.calledOnce, 'created client')
-  t.true(fakeClient.getSpace.calledOnce, 'tried to created space')
-  t.false(createApiKeyStub.called, 'did not try to create access token since getApiKeys already failed')
+  })).toThrowError(errorMessage)
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(createApiKeyStub.called).toBe(false)
 })

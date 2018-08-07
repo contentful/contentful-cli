@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import inquirer from 'inquirer'
 import streamBuffers from 'stream-buffers'
@@ -56,7 +55,7 @@ const statStub = stub().rejects()
 const axiosStub = stub()
 const createWriteStreamStub = stub().callsFake(() => new streamBuffers.WritableStreamBuffer())
 
-test.before(() => {
+beforeAll(() => {
   accessTokenCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   boilerplateRewireAPI.__Rewire__('inquirer', inquirer)
   boilerplateRewireAPI.__Rewire__('axios', axiosStub)
@@ -65,7 +64,7 @@ test.before(() => {
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
 })
 
-test.beforeEach(() => {
+beforeEach(() => {
   emptyContext()
   axiosStub.reset()
   axiosStub.onCall(0).resolves({
@@ -80,7 +79,7 @@ test.beforeEach(() => {
   })
 })
 
-test.after.always(() => {
+afterAll(() => {
   accessTokenCreateRewireAPI.__ResetDependency__('createClient')
   boilerplateRewireAPI.__ResetDependency__('inquirer')
   boilerplateRewireAPI.__ResetDependency__('createManagementClient')
@@ -90,7 +89,7 @@ test.after.always(() => {
   contextRewireAPI.__ResetDependency__('writeFile')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   fakeClient.getSpace.resetHistory()
   mockedSpace.getApiKeys.resetHistory()
   mockedSpace.createApiKey.resetHistory()
@@ -100,47 +99,50 @@ test.afterEach((t) => {
   writeFileStub.resetHistory()
 })
 
-test.serial('successfully downloads boilerplate and generates access token', async (t) => {
-  setContext({
-    cmaToken: 'mocked'
-  })
-  await downloadBoilerplate({
-    spaceId: mockedSpace.sys.id
-  })
-  t.is(axiosStub.callCount, 2, 'axios called twice')
-  t.is(createWriteStreamStub.callCount, 1, 'boilerplate is written to disk')
-  t.true(mockedSpace.createApiKey.called, 'did create a new access token')
-})
+test(
+  'successfully downloads boilerplate and generates access token',
+  async () => {
+    setContext({
+      cmaToken: 'mocked'
+    })
+    await downloadBoilerplate({
+      spaceId: mockedSpace.sys.id
+    })
+    expect(axiosStub.callCount).toBe(2)
+    expect(createWriteStreamStub.callCount).toBe(1)
+    expect(mockedSpace.createApiKey.called).toBe(true)
+  }
+)
 
-test.serial('requires login', async (t) => {
+test('requires login', async () => {
   setContext({
     cmaToken: null
   })
-  const error = await t.throws(downloadBoilerplate({}), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
+  const error = await expect(downloadBoilerplate({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
 })
 
-test.serial('requires spaceId and fails without', async (t) => {
+test('requires spaceId and fails without', async () => {
   setContext({
     cmaToken: 'mocked'
   })
-  const error = await t.throws(downloadBoilerplate({}), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'throws not logged in error')
+  const error = await expect(downloadBoilerplate({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
 })
 
-test.serial('requires spaceId and accepts it from context', async (t) => {
+test('requires spaceId and accepts it from context', async () => {
   setContext({
     cmaToken: 'mocked',
     activeSpaceId: 'mocked'
   })
-  await t.notThrows(downloadBoilerplate({}), 'works with space id provided via context')
+  await expect(downloadBoilerplate({})).not.toThrowError('works with space id provided via context')
 })
 
-test.serial('requires spaceId and accepts it from argv arguments', async (t) => {
+test('requires spaceId and accepts it from argv arguments', async () => {
   setContext({
     cmaToken: 'mocked'
   })
-  await t.notThrows(downloadBoilerplate({
+  await expect(downloadBoilerplate({
     spaceId: 'mocked'
-  }), 'works with space id provided via arguments')
+  })).not.toThrowError('works with space id provided via arguments')
 })

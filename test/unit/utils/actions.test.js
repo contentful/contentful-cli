@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import inquirer from 'inquirer'
 
@@ -9,28 +8,28 @@ import {
 
 const promptStub = stub(inquirer, 'prompt')
 
-test.before(() => {
+beforeAll(() => {
   actionsRewireAPI.__Rewire__('inquirer', inquirer)
 })
 
-test.after.always(() => {
+afterAll(() => {
   actionsRewireAPI.__ResetDependency__('inquirer')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   promptStub.reset()
 })
 
-test.serial('confirmation continues after user accepted', async (t) => {
+test('confirmation continues after user accepted', async () => {
   promptStub.onCall(0).resolves({ ready: true })
   const confirmationResult = await confirmation()
-  t.is(promptStub.callCount, 1, 'question was asked once')
-  t.true(confirmationResult, 'returns true when user accepted')
+  expect(promptStub.callCount).toBe(1)
+  expect(confirmationResult).toBe(true)
 })
 
-test.serial('confirmation is asked again when user denies', async (t) => {
+test('confirmation is asked again when user denies', async () => {
   promptStub.onCall(0).resolves({ ready: false })
   const confirmationResult = await confirmation()
-  t.is(promptStub.callCount, 1, 'question was asked twice')
-  t.false(confirmationResult, 'returns false when user declined')
+  expect(promptStub.callCount).toBe(1)
+  expect(confirmationResult).toBe(false)
 })

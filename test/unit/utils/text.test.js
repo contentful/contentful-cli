@@ -1,4 +1,3 @@
-import test from 'ava'
 import { spy } from 'sinon'
 import wrapAnsi from 'wrap-ansi'
 import figlet from 'figlet'
@@ -16,58 +15,58 @@ import {
 const wrapAnsiSpy = spy(wrapAnsi)
 const textSyncSpy = spy(figlet, 'textSync')
 
-test.before(() => {
+beforeAll(() => {
   textRewireAPI.__Rewire__('wrapAnsi', wrapAnsiSpy)
   textRewireAPI.__Rewire__('figlet', figlet)
 })
 
-test.after.always(() => {
+afterAll(() => {
   textRewireAPI.__ResetDependency__('wrapAnsi')
   textRewireAPI.__ResetDependency__('figlet')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   wrapAnsiSpy.resetHistory()
   textSyncSpy.resetHistory()
 })
 
-test('wrap', (t) => {
+test('wrap', () => {
   const charactersForTwoLines = (DEFAULT_COLUMNS + 1) * 2
   const longSingleWord = Array(charactersForTwoLines).join('x')
   const resultSingleWord = wrap(longSingleWord)
-  t.is(resultSingleWord.length, longSingleWord.length, 'does not wrap words')
-  t.is(wrapAnsiSpy.callCount, 1, 'wrap was called once')
+  expect(resultSingleWord.length).toBe(longSingleWord.length)
+  expect(wrapAnsiSpy.callCount).toBe(1)
   wrapAnsiSpy.resetHistory()
 
   const longWords = Array(20).join('x ')
   const longWordsResult = wrap(longWords, 20)
-  t.is(longWordsResult, 'x x x x x x x x x x \nx x x x x x x x x ', 'does wrap words, do not trim but adds linebreaks')
-  t.is(wrapAnsiSpy.callCount, 1, 'wrap was called once')
+  expect(longWordsResult).toBe('x x x x x x x x x x \nx x x x x x x x x ')
+  expect(wrapAnsiSpy.callCount).toBe(1)
 })
 
-test('frame - full width', (t) => {
+test('frame - full width', () => {
   const fullFrame = stripAnsi(frame('Foo'))
   const lines = fullFrame.split('\n')
-  t.is(lines[0].charAt(0), '┌', 'correct corner at the beginning')
-  t.is(lines[0].charAt(lines[0].length - 1), '┐', 'correct corner at the end')
-  t.is(lines[0].length, DEFAULT_COLUMNS, 'frame fills the whole line')
+  expect(lines[0].charAt(0)).toBe('┌')
+  expect(lines[0].charAt(lines[0].length - 1)).toBe('┐')
+  expect(lines[0].length).toBe(DEFAULT_COLUMNS)
 })
 
-test('frame - inline', (t) => {
+test('frame - inline', () => {
   const fullFrame = stripAnsi(frame('Foo', true))
   const lines = fullFrame.split('\n')
-  t.is(lines[0].charAt(0), '┌', 'correct corner at the beginning')
-  t.is(lines[0].charAt(lines[0].length - 1), '┐', 'correct corner at the end')
-  t.is(lines[0].length, 7, 'frame is not longer')
+  expect(lines[0].charAt(0)).toBe('┌')
+  expect(lines[0].charAt(lines[0].length - 1)).toBe('┐')
+  expect(lines[0].length).toBe(7)
 })
 
-test('asciiText', (t) => {
+test('asciiText', () => {
   asciiText('some text')
-  t.is(textSyncSpy.callCount, 1, 'text transform function was called')
-  t.is(textSyncSpy.args[0][0], 'some text', 'passed the text further to text transform function')
+  expect(textSyncSpy.callCount).toBe(1)
+  expect(textSyncSpy.args[0][0]).toBe('some text')
 })
 
-test('separator', (t) => {
+test('separator', () => {
   const sep = stripAnsi(separator())
-  t.is(sep.length, DEFAULT_COLUMNS, 'separator covers whole CLI width')
+  expect(sep.length).toBe(DEFAULT_COLUMNS)
 })

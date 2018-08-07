@@ -1,9 +1,8 @@
-import test from 'ava'
 import { removeHandler, __RewireAPI__ as removeRewire } from '../../../../lib/cmds/config_cmds/remove'
 import { stub } from 'sinon'
 
 const setContextStub = stub()
-test.beforeEach(() => {
+beforeEach(() => {
   removeRewire.__Rewire__('getContext', stub())
   removeRewire.__Rewire__('setContext', setContextStub)
   removeRewire.__Rewire__('getContext', stub().resolves({cmaToken: 'cmaToken', proxy: {}}))
@@ -11,14 +10,14 @@ test.beforeEach(() => {
   removeRewire.__Rewire__('success', stub())
 })
 
-test.afterEach(() => {
+afterEach(() => {
   removeRewire.__ResetDependency__('getContext')
   removeRewire.__ResetDependency__('setContext')
   removeRewire.__ResetDependency__('getContext')
   removeRewire.__ResetDependency__('storeRuntimeConfig')
 })
 
-test('config remove command', async (t) => {
+test('config remove command', async () => {
   await removeHandler({proxy: true})
-  t.deepEqual(setContextStub.args[0][0], {cmaToken: 'cmaToken'})
+  expect(setContextStub.args[0][0]).toEqual({cmaToken: 'cmaToken'})
 })

@@ -1,4 +1,3 @@
-import test from 'ava'
 import { version } from '../../../../package.json'
 import { stub } from 'sinon'
 import {
@@ -12,16 +11,16 @@ import {
 } from '../../../../lib/context'
 const contentfulExportStub = stub().returns(Promise.resolve())
 
-test.before(() => {
+beforeAll(() => {
   setContext({cmaToken: 'managementToken'})
   exportRewireAPI.__Rewire__('runContentfulExport', contentfulExportStub)
 })
 
-test.after(() => {
+afterAll(() => {
   emptyContext()
   exportRewireAPI.__ResetDependency__('runContentfulExport')
 })
-test('it should pass all args to contentful-export', async (t) => {
+test('it should pass all args to contentful-export', async () => {
   const stubArgv = {
     spaceId: 'spaceId',
     host: 'api.contentful.com',
@@ -38,6 +37,6 @@ test('it should pass all args to contentful-export', async (t) => {
     managementFeature: 'space-export'
   }
   await exportSpace(stubArgv)
-  t.deepEqual(contentfulExportStub.args[0][0], stubArgv)
-  t.is(contentfulExportStub.callCount, 1)
+  expect(contentfulExportStub.args[0][0]).toEqual(stubArgv)
+  expect(contentfulExportStub.callCount).toBe(1)
 })

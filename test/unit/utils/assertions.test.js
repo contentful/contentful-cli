@@ -1,4 +1,3 @@
-import test from 'ava'
 import { spy } from 'sinon'
 
 import {
@@ -14,52 +13,52 @@ import { PreconditionFailedError } from '../../../lib/utils/error'
 
 const highlightStyleSpy = spy()
 
-test.before(() => {
+beforeAll(() => {
   assertionsRewireAPI.__Rewire__('highlightStyle', highlightStyleSpy)
 })
 
-test.after.always(() => {
+afterAll(() => {
   assertionsRewireAPI.__ResetDependency__('highlightStyle')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   highlightStyleSpy.resetHistory()
 })
 
-test.serial('assertLoggedIn when not logged in', async (t) => {
+test('assertLoggedIn when not logged in', async () => {
   await emptyContext()
   await setContext({})
-  const error = await t.throws(assertLoggedIn(), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You have to be logged in to do this'), 'error message contains not logged in message')
+  const error = await expect(assertLoggedIn()).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
 })
 
-test.serial('assertLoggedIn when logged in', async (t) => {
+test('assertLoggedIn when logged in', async () => {
   await emptyContext()
   await setContext({
     cmaToken: 'mocked token'
   })
-  await t.notThrows(assertLoggedIn(), 'does not throw error ')
+  await expect(assertLoggedIn()).not.toThrowError('does not throw error ')
 })
 
-test.serial('assertSpaceIdProvided when provided via args', async (t) => {
+test('assertSpaceIdProvided when provided via args', async () => {
   await emptyContext()
   await setContext({})
-  await t.notThrows(assertSpaceIdProvided({
+  await expect(assertSpaceIdProvided({
     spaceId: 'mocked spaceId'
-  }), 'does not throw error ')
+  })).not.toThrowError('does not throw error ')
 })
 
-test.serial('assertSpaceIdProvided when provided via context', async (t) => {
+test('assertSpaceIdProvided when provided via context', async () => {
   await emptyContext()
   await setContext({
     activeSpaceId: 'mocked spaceId'
   })
-  await t.notThrows(assertSpaceIdProvided({}), 'does not throw error ')
+  await expect(assertSpaceIdProvided({})).not.toThrowError('does not throw error ')
 })
 
-test.serial('assertSpaceIdProvided when not provided at all', async (t) => {
+test('assertSpaceIdProvided when not provided at all', async () => {
   await emptyContext()
   await setContext({})
-  const error = await t.throws(assertSpaceIdProvided({}), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'error message contains space id missing text')
+  const error = await expect(assertSpaceIdProvided({})).toThrowError(PreconditionFailedError)
+  expect(error.message.includes('You need to provide a space id')).toBeTruthy()
 })

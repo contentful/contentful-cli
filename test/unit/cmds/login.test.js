@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import inquirer from 'inquirer'
 
@@ -16,7 +15,7 @@ const getContextStub = stub().resolves({cmaToken: false})
 
 const confirmationStub = stub().resolves(true)
 
-test.before(() => {
+beforeAll(() => {
   loginRewireAPI.__Rewire__('inquirer', inquirer)
   loginRewireAPI.__Rewire__('confirmation', confirmationStub)
   loginRewireAPI.__Rewire__('opn', opnStub)
@@ -25,7 +24,7 @@ test.before(() => {
   loginRewireAPI.__Rewire__('storeRuntimeConfig', stub())
 })
 
-test.after.always(() => {
+afterAll(() => {
   loginRewireAPI.__ResetDependency__('inquirer')
   loginRewireAPI.__ResetDependency__('confirmation')
   loginRewireAPI.__ResetDependency__('opn')
@@ -34,7 +33,7 @@ test.after.always(() => {
   loginRewireAPI.__ResetDependency__('storeRuntimeConfig')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   confirmationStub.resetHistory()
   promptStub.resetHistory()
   opnStub.resetHistory()
@@ -42,32 +41,32 @@ test.afterEach((t) => {
   getContextStub.resetHistory()
 })
 
-test.serial('login - without error', async (t) => {
+test('login - without error', async () => {
   await loginHandler()
 
-  t.true(confirmationStub.calledOnce, 'called confirmation')
-  t.true(setContextStub.called, 'setContext called')
-  t.deepEqual(setContextStub.args[0][0], mockedRcConfig)
+  expect(confirmationStub.calledOnce).toBe(true)
+  expect(setContextStub.called).toBe(true)
+  expect(setContextStub.args[0][0]).toEqual(mockedRcConfig)
 })
 
-test.serial('login - user abort', async (t) => {
+test('login - user abort', async () => {
   confirmationStub.resolves(false)
 
   await loginHandler()
 
-  t.true(getContextStub.called, 'did call getContext for rc')
-  t.true(confirmationStub.called, 'called confirmation')
+  expect(getContextStub.called).toBe(true)
+  expect(confirmationStub.called).toBe(true)
   // this depends on process.platform
   // t.true(opnStub.notCalled, 'did not try to open a browser')
-  t.true(setContextStub.notCalled, 'did not call setContext to store rc')
+  expect(setContextStub.notCalled).toBe(true)
   confirmationStub.resolves(true)
 })
 
-test.serial('login - already logged in', async (t) => {
+test('login - already logged in', async () => {
   getContextStub.resolves({cmaToken: 'alreadyLoggedIn'})
   await loginHandler()
 
-  t.true(opnStub.notCalled, 'did not try to open a browser')
-  t.true(setContextStub.notCalled, 'did not try to setContext to store rc')
-  t.true(promptStub.notCalled, 'did not show any inquirer')
+  expect(opnStub.notCalled).toBe(true)
+  expect(setContextStub.notCalled).toBe(true)
+  expect(promptStub.notCalled).toBe(true)
 })

@@ -54,6 +54,7 @@
     "eslint-plugin-standard": "^3.1.0",
     "http-proxy": "^1.17.0",
     "husky": "^0.14.3",
+    "jest": "^23.4.2",
     "nixt": "^0.5.0",
     "node-zip": "^1.1.1",
     "nodemon": "^1.18.3",
@@ -113,6 +114,9 @@
     "version.js",
     "README.md"
   ],
+  "jest": {
+    "testURL": "http://localhost/"
+  },
   "ava": {
     "require": [
       "babel-register"
