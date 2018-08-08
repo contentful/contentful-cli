@@ -104,9 +104,9 @@ CLI_E2E_ORG_ID = <organization_id>
 npm run test:e2e
 ```
 
-#### or using AVA:
+#### or using jest:
 ```sh
-$ ava test/integration/** --verbose --serial
+$ jest test/integration/** --verbose --serial
 ```
 
 :warning: Since the e2e tests are running in serial mode currently, you should be logged out or `rm ~/.contentfulrc.json`
