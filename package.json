@@ -37,7 +37,6 @@
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
-    "ava": "^0.25.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.26.3",
     "babel-plugin-istanbul": "^4.1.6",
@@ -116,12 +115,6 @@
   ],
   "jest": {
     "testURL": "http://localhost/"
-  },
-  "ava": {
-    "require": [
-      "babel-register"
-    ],
-    "babel": "inherit"
   },
   "nyc": {
     "check-coverage": true,
