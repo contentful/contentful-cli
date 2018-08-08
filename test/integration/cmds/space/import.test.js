@@ -66,4 +66,4 @@ test('should import space', done => {
     .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
     .stdout(/Finished importing all data/)
     .end(done)
-}, 20000)
+}, 30000)

@@ -23,29 +23,6 @@ Options:
   -h, --help  Show help                                                [boolean]"
 `;
 
-exports[`should print help message when no command provided: help data is incorrect 1`] = `
-"Commands:
-   space accesstoken  Manage and list your delivery access tokens
-                                                                   [aliases: at]
-   space create       Create a space
-   space delete       Deletes a space
-   space environment  Manage and list environments
-   space export       export a space data to a json file
-   space generate     Generate code for different tasks[aliases: g]
-   space import       import a space
-   space list         List your spaces                [aliases: ls]
-   space migration    Parses and runs a migration script on a
-                                   Contentful space
-   space seed         Seed a content model and content based on
-                                   given templates
-   space use          Sets the default space which every command
-                                   will use when the --space-id option is
-                                   skipped.                         [aliases: u]
-
-Options:
-  -h, --help  Show help                                                [boolean]"
-`;
-
 exports[`should print help message when no command provided: wrong response in case of no command provided 1`] = `
 "Commands:
    space accesstoken  Manage and list your delivery access tokens
