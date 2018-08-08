@@ -15,12 +15,12 @@ const app = () => {
 const org = process.env.CLI_E2E_ORG_ID
 let space = null
 
-beforeAll('ensure config file exist and create space', async () => {
+beforeAll(async () => {
   await initConfig()
   space = await createSimpleSpace(org)
 })
 
-test('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces([space.sys.id])
 })
 
@@ -59,4 +59,4 @@ test('should create, list and delete environment', done => {
   }
 
   createEnvironment()
-})
+}, 10000)

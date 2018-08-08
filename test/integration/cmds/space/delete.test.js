@@ -14,10 +14,10 @@ const app = () => {
 
 var space = null
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
-beforeAll('create fresh space', async () => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
 })
 

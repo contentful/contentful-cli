@@ -10,7 +10,7 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
@@ -23,5 +23,3 @@ test('should be already loged in', done => {
     .stdout(/Maybe you want to contentful logout\?/)
     .end(done)
 })
-
-test('TODO: [logged-out] should successfully login')

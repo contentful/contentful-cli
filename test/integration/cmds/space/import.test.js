@@ -17,14 +17,14 @@ const app = () => {
 var space = null
 var spacesToDelete = []
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
-beforeAll('create fresh space', async () => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
   spacesToDelete.push(space.sys.id)
 })
-test('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
@@ -66,4 +66,4 @@ test('should import space', done => {
     .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
     .stdout(/Finished importing all data/)
     .end(done)
-})
+}, 20000)

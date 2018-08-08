@@ -10,7 +10,7 @@ const app = () => {
   return nixt({ newlines: false }).cwd(bin).base('./contentful.js ').clone()
 }
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
@@ -23,7 +23,3 @@ test('should not logout', done => {
     .code(0)
     .end(done)
 })
-
-test.skip('TODO: should successfully logout', () => {})
-
-test.skip('TODO: [logged-out] should exit when not logged in', () => {})

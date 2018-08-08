@@ -17,11 +17,11 @@ const app = () => {
 }
 
 const spacesToDelete = []
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-test('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
@@ -57,4 +57,4 @@ test('should be already logged in and run all steps', done => {
     .end(() => {
       rimraf(resolve(homedir(), projectDirectoryName), done)
     })
-})
+}, 120000)

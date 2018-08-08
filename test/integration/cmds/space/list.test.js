@@ -16,14 +16,14 @@ const app = () => {
 var space = null
 var spacesToDelete = []
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
-beforeAll('create fresh space', async () => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
   spacesToDelete.push(space.sys.id)
 })
-test('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 

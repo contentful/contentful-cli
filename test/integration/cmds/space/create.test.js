@@ -14,15 +14,16 @@ const app = () => {
 
 var spacesToDelete = []
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-test('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
 test('should exit 1 when no args', done => {
+  console.log('running first test')
   app()
     .run('space create')
     .code(1)
@@ -30,7 +31,10 @@ test('should exit 1 when no args', done => {
       const resultText = result.stderr.trim()
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(done)
+    .end(() => {
+      console.log('ending first test')
+      done()
+    })
 })
 
 test('should print help message', done => {
@@ -43,8 +47,6 @@ test('should print help message', done => {
     })
     .end(done)
 })
-
-test.skip('TODO: should create space with no org provided')
 
 test('should create space with name and org provided', done => {
   app()

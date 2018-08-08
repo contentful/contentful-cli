@@ -20,17 +20,17 @@ let space = null
 let environment = null
 let spacesToDelete = []
 
-beforeAll('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-beforeAll('create fresh space', async () => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
   environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
 
-afterAll('remove created spaces', () => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
@@ -124,4 +124,4 @@ test('should be able to create, update and delete a extension', done => {
   }
 
   createExtension()
-})
+}, 20000)

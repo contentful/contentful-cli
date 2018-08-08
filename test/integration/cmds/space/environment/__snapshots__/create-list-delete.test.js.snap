@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should create, list and delete environment 1`] = `"Successfully created environment Create List Delete (createListDelete)"`;
