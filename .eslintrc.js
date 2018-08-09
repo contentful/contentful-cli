@@ -2,8 +2,12 @@ module.exports = {
   'extends': 'standard',
   'plugins': [
     'standard',
-    'promise'
+    'promise',
+    'jest'
   ],
+  'env': {
+    'jest/globals': true
+  },
   'overrides': [
     {
       'files': ['**.test.js'],
@@ -11,13 +15,5 @@ module.exports = {
         'no-unused-expressions': 'off'
       }
     }
-  ],
-  'globals': {
-    'test': true,
-    'expect': true,
-    'afterAll': true,
-    'beforeAll': true,
-    'afterEach': true,
-    'beforeEach': true
-  }
+  ]
 }
