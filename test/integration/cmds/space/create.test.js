@@ -23,7 +23,6 @@ afterAll(() => {
 }, 10000)
 
 test('should exit 1 when no args', done => {
-  console.log('running first test')
   app()
     .run('space create')
     .code(1)
@@ -32,7 +31,6 @@ test('should exit 1 when no args', done => {
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(() => {
-      console.log('ending first test')
       done()
     })
 })
