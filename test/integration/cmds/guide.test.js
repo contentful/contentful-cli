@@ -10,7 +10,7 @@ import {
 } from '../util'
 
 const bin = join(__dirname, './../../../', 'bin')
-const projectDirectoryName = 'contentful-e2e-starter-DELETE-ME'
+const projectDirectoryName = 'contentful-integration-starter-DELETE-ME'
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()

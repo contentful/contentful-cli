@@ -101,7 +101,7 @@ CLI_E2E_ORG_ID = <organization_id>
 
 #### npm:
 ```sh
-npm run test:e2e
+npm run test:integration
 ```
 
 ## :question: Support
