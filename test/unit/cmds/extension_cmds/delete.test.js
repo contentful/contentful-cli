@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -23,7 +22,7 @@ const mockExtension = {
 const environmentStub = stub().resolves({
   getUiExtension: stub().resolves(mockExtension)
 })
-test.before(() => {
+beforeAll(() => {
   const fakeClient = {
     getSpace: stub().resolves({
       getEnvironment: environmentStub
@@ -41,26 +40,36 @@ test.before(() => {
   deleteRewireAPI.__Rewire__('success', successStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   deleteRewireAPI.__ResetDependency__('createManagementClient')
   deleteRewireAPI.__ResetDependency__('success')
 })
 
-test('Throws error if --version and --force are missing', async (t) => {
-  const cmd = deleteExtension({spaceId: 'space', id: 'test'})
-  const error = await t.throws(cmd, ValidationError)
-
-  t.truthy(error.message.includes('Please provide current version or use the --force flag'))
+test('Throws error if --version and --force are missing', async () => {
+  try {
+    await expect(deleteExtension({spaceId: 'space', id: 'test'})).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    console.log(error)
+    expect(
+      error.message.includes('Please provide current version or use the --force flag')
+    ).toBeTruthy()
+  }
 })
 
-test('Throws error if wrong --version value is passed', async (t) => {
-  const cmd = deleteExtension({spaceId: 'space', id: 'test', version: 4})
-  const error = await t.throws(cmd, ValidationError)
-  t.truthy(error.message.includes('Version provided does not match current resource version'))
+test('Throws error if wrong --version value is passed', async () => {
+  try {
+    await expect(deleteExtension({spaceId: 'space', id: 'test', version: 4})).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Version provided does not match current resource version')
+    ).toBeTruthy()
+  }
 })
 
-test('Logs message if delete is successful', async (t) => {
+test('Logs message if delete is successful', async () => {
   await deleteExtension({spaceId: 'space', id: 'test', force: true})
-  t.true(mockExtension.delete.calledOnce)
-  t.true(successStub.calledWith(`${successEmoji} Successfully deleted extension with ID test`))
+  expect(mockExtension.delete.calledOnce).toBe(true)
+  expect(
+    successStub.calledWith(`${successEmoji} Successfully deleted extension with ID test`)
+  ).toBe(true)
 })

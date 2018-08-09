@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import { resolve } from 'path'
 
@@ -36,7 +35,7 @@ const extension = Object.assign({}, basicExtension, {
   update: updateStub
 })
 
-test.before(() => {
+beforeAll(() => {
   const fakeClient = {
     getSpace: stub().returns({
       getEnvironment: stub().resolves({
@@ -56,64 +55,79 @@ test.before(() => {
   rewireAPI.__Rewire__('success', successStub)
 })
 
-test.afterEach(() => {
+afterEach(() => {
   updateStub.resetHistory()
 })
 
-test.after.always(() => {
+afterAll(() => {
   rewireAPI.__ResetDependency__('createManagementClient')
   rewireAPI.__ResetDependency__('success')
 })
 
-test('Throws error if id is missing', async (t) => {
-  const cmd = updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
-  const error = await t.throws(cmd, ValidationError)
-
-  t.truthy(error.message.includes('Missing required properties: id'))
+test('Throws error if id is missing', async () => {
+  try {
+    await expect(updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: id')).toBeTruthy()
+  }
 })
 
-test('Throws error if name is missing', async (t) => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
-  const error = await t.throws(cmd, ValidationError)
-
-  t.truthy(error.message.includes('Missing required properties: name'))
+test('Throws error if name is missing', async () => {
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: name')).toBeTruthy()
+  }
 })
 
-test('Throws error if field-types is missing', async (t) => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })
-  const error = await t.throws(cmd, ValidationError)
-
-  t.truthy(error.message.includes('Missing required properties: field-types'))
+test('Throws error if field-types is missing', async () => {
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
+  }
 })
 
-test('Throws error if --version and --force are missing', async (t) => {
-  const cmd = updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
-  const error = await t.throws(cmd, ValidationError)
-
-  t.truthy(error.message.includes('Please provide current version or use the --force flag'))
+test('Throws error if --version and --force are missing', async () => {
+  try {
+    await expect(updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Please provide current version or use the --force flag')
+    ).toBeTruthy()
+  }
 })
 
-test('Throws error if wrong --version value is passed', async (t) => {
-  const cmd = updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
-  const error = await t.throws(cmd, ValidationError)
-  t.truthy(error.message.includes('Version provided does not match current resource version'))
+test('Throws error if wrong --version value is passed', async () => {
+  try {
+    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })).rejects.toThrowError(ValidationError)
+  } catch (error) {
+    expect(
+      error.message.includes('Version provided does not match current resource version')
+    ).toBeTruthy
+  }
 })
 
-test.serial('Calls update on extension with no version number but force', async (t) => {
-  await updateExtension({
-    id: '123',
-    force: true,
-    spaceId: 'space',
-    name: 'Widget',
-    fieldTypes: ['Symbol'],
-    src: 'https://new.url'
-  })
+test(
+  'Calls update on extension with no version number but force',
+  async () => {
+    await updateExtension({
+      id: '123',
+      force: true,
+      spaceId: 'space',
+      name: 'Widget',
+      fieldTypes: ['Symbol'],
+      src: 'https://new.url'
+    })
 
-  t.true(updateStub.calledOnce)
-  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
-})
+    expect(updateStub.calledOnce).toBe(true)
+    expect(
+      successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
+    ).toBe(true)
+  }
+)
 
-test.serial('Calls update on extension and reads srcdoc from disk', async (t) => {
+test('Calls update on extension and reads srcdoc from disk', async () => {
   await updateExtension({
     id: '123',
     version: 3,
@@ -123,11 +137,13 @@ test.serial('Calls update on extension and reads srcdoc from disk', async (t) =>
     srcdoc: resolve(__dirname, 'sample-extension.html')
   })
 
-  t.true(updateStub.calledOnce)
-  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
+  expect(updateStub.calledOnce).toBe(true)
+  expect(
+    successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
+  ).toBe(true)
 })
 
-test.serial('Updates an extension with parameter definitions ', async (t) => {
+test('Updates an extension with parameter definitions ', async () => {
   const descriptor = `{
     "name": "Test Extension",
     "fieldTypes": ["Boolean"],
@@ -149,7 +165,7 @@ test.serial('Updates an extension with parameter definitions ', async (t) => {
     force: true
   })
 
-  t.deepEqual(extension.extension, {
+  expect(extension.extension).toEqual({
     name: 'Test Extension',
     src: 'https://new.extension',
     fieldTypes: [{type: 'Boolean'}],
@@ -158,8 +174,10 @@ test.serial('Updates an extension with parameter definitions ', async (t) => {
       installation: [{id: 'flag', type: 'Boolean', name: 'Flaggie'}]
     }
   })
-  t.deepEqual(extension.parameters, {flag: true})
+  expect(extension.parameters).toEqual({flag: true})
 
-  t.true(updateStub.calledOnce)
-  t.true(successStub.calledWith(`${successEmoji} Successfully updated extension:\n`))
+  expect(updateStub.calledOnce).toBe(true)
+  expect(
+    successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
+  ).toBe(true)
 })

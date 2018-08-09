@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 
@@ -9,58 +8,58 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test.cb('should return code 1 when errors exist no args', t => {
+test('should return code 1 when errors exist no args', done => {
   app()
     .run('')
     .code(1)
     .expect((result) => {
       const resultText = result.stderr.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('--help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should print help message on shortcut', t => {
+test('should print help message on shortcut', done => {
   app()
     .run('-h')
     .code(0)
     .stdout(/Usage: contentful <cmd> \[args\]/)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should print help message on wrong subcommand', t => {
+test('should print help message on wrong subcommand', done => {
   app()
     .run('lolbar')
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should print version number', t => {
+test('should print version number', done => {
   app()
     .run('--version')
     .code(0)
     .stdout(packageVersion)
     .end((err) => {
-      t.ifError(err, 'wrong version number or response message')
-      t.end()
+      expect(err).toBeFalsy()
+      done()
     })
 })

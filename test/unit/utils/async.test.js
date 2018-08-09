@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub, spy } from 'sinon'
 
 import { handleAsyncError } from '../../../lib/utils/async'
@@ -6,48 +5,48 @@ import { handleAsyncError } from '../../../lib/utils/async'
 const exitStub = stub()
 let originalExit = null
 
-test.before(() => {
+beforeAll(() => {
   originalExit = global.process.exit
   global.process.exit = exitStub
 })
 
-test.after.always(() => {
+afterAll(() => {
   global.process.exit = originalExit
 })
 
-test('handleAsyncError (success)', async (t) => {
+test('handleAsyncError (success)', async () => {
   const asyncFn = stub().resolves('value')
   const errorHandler = spy()
 
   const handlerFn = handleAsyncError(asyncFn, errorHandler)
-  t.is(typeof handlerFn, 'function', 'handleAsyncError is a HOF')
+  expect(typeof handlerFn).toBe('function')
 
   const handlerValue = handlerFn({ value: 'foo' })
-  t.true(handlerValue instanceof Promise)
+  expect(handlerValue instanceof Promise).toBe(true)
 
   const returnValue = await handlerValue
-  t.is(returnValue, 'value', 'passes back promise value')
+  expect(returnValue).toBe('value')
 
-  t.true(errorHandler.notCalled)
+  expect(errorHandler.notCalled).toBe(true)
 })
 
-test('handleAsyncError (failure)', async (t) => {
+test('handleAsyncError (failure)', async () => {
   const error = new Error('error message')
   const asyncFn = stub().rejects(error)
   const errorHandler = spy()
 
   const handlerFn = handleAsyncError(asyncFn, errorHandler)
-  t.is(typeof handlerFn, 'function', 'handleAsyncError is a HOF')
+  expect(typeof handlerFn).toBe('function')
 
   const handlerValue = handlerFn({ value: 'foo' })
-  t.true(handlerValue instanceof Promise)
-  t.notThrows(handlerValue)
+  expect(() => handlerFn({ value: 'foo' })).not.toThrow()
+  expect(handlerValue instanceof Promise).toBe(true)
 
   await handlerValue
 
-  t.true(errorHandler.calledOnce)
-  t.true(errorHandler.calledWith(error))
+  expect(errorHandler.callCount > 0).toBe(true)
+  expect(errorHandler.calledWith(error)).toBe(true)
 
-  t.true(exitStub.calledOnce)
-  t.true(exitStub.calledWith(1))
+  expect(exitStub.callCount > 0).toBe(true)
+  expect(exitStub.calledWith(1)).toBe(true)
 })

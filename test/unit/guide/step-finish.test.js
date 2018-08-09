@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import finishStep,
 { __RewireAPI__ as finishStepRewireApi } from '../../../lib/guide/step-finish'
@@ -20,7 +19,7 @@ const clientStub = {
 }
 const createManagementClientStub = stub().resolves(clientStub)
 
-test.before(() => {
+beforeAll(() => {
   finishStepRewireApi.__Rewire__('log', stub())
   finishStepRewireApi.__Rewire__('wrappedLog', stub())
   finishStepRewireApi.__Rewire__('success', successStub)
@@ -28,13 +27,13 @@ test.before(() => {
   finishStepRewireApi.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
-test.afterEach(() => {
+afterEach(() => {
   successStub.resetHistory()
   readFileStub.resetHistory()
   guideContext.stepCount = 0
 })
 
-test.after.always(() => {
+afterAll(() => {
   finishStepRewireApi.__ResetDependency__('log')
   finishStepRewireApi.__ResetDependency__('wrappedLog')
   finishStepRewireApi.__ResetDependency__('success')
@@ -42,15 +41,15 @@ test.after.always(() => {
   finishStepRewireApi.__ResetDependency__('createManagementClient')
 })
 
-test.serial('calls success and reads whats-next.md', async (t) => {
+test('calls success and reads whats-next.md', async () => {
   await finishStep(guideContext)
-  t.true(readFileStub.calledOnce, 'readFile called')
-  t.is(readFileStub.args[0][0], join(guideContext.installationDirectory, 'WHATS-NEXT.MD'), 'reading correct whats-next file')
-  t.true(successStub.calledOnce, 'success called once')
+  expect(readFileStub.calledOnce).toBe(true)
+  expect(readFileStub.args[0][0]).toBe(join(guideContext.installationDirectory, 'WHATS-NEXT.MD'))
+  expect(successStub.calledOnce).toBe(true)
 })
 
-test.serial('catches errors and does nothing', async (t) => {
+test('catches errors and does nothing', async () => {
   readFileStub.rejects(new Error('random'))
-  await t.notThrows(finishStep(guideContext))
+  await expect(() => finishStep(guideContext)).not.toThrow()
   readFileStub.resolves(true)
 })

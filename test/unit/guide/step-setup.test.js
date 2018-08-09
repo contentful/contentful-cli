@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import setupStep,
 { __RewireAPI__ as setupStepRewireApi } from '../../../lib/guide/step-setup'
@@ -20,7 +19,7 @@ const guideContext = {
     setupConfig: setupConfigStub
   }
 }
-test.before(() => {
+beforeAll(() => {
   setupStepRewireApi.__Rewire__('log', stub())
   setupStepRewireApi.__Rewire__('wrappedLog', stub())
   setupStepRewireApi.__Rewire__('inquirer', {prompt: promptStub})
@@ -30,7 +29,7 @@ test.before(() => {
   setupStepRewireApi.__Rewire__('getContext', getContextStub)
 })
 
-test.afterEach(() => {
+afterEach(() => {
   guideContext.stepCount = 0
   execaStub.resetHistory()
   accessTokenCreateStub.resetHistory()
@@ -38,7 +37,7 @@ test.afterEach(() => {
   guideContext.activeGuide.setupConfig.resetHistory()
 })
 
-test.after.always(() => {
+afterAll(() => {
   ['inquirer', 'getLatestGitHubRelease', 'accessTokenCreate', 'execa', 'getContext'].map(stub => {
     setupStepRewireApi.__ResetDependency__(stub)
   })
@@ -46,32 +45,32 @@ test.after.always(() => {
   setupStepRewireApi.__ResetDependency__('wrappedLog')
 })
 
-test.serial('inquirer prompts for directory name and path', async (t) => {
+test('inquirer prompts for directory name and path', async () => {
   await setupStep(guideContext)
-  t.true(promptStub.calledTwice, 'prompt stub called twice')
-  t.is(promptStub.args[0][0][0].name, 'directoryName', 'first prompt is for directoryName')
-  t.is(promptStub.args[1][0][0].name, 'directoryPath', 'second prompt is for directoryPath')
+  expect(promptStub.calledTwice).toBe(true)
+  expect(promptStub.args[0][0][0].name).toBe('directoryName')
+  expect(promptStub.args[1][0][0].name).toBe('directoryPath')
 })
 
-test.serial('guideContext stepCount incremented', async (t) => {
+test('guideContext stepCount incremented', async () => {
   const stepCount = guideContext.stepCount
   await setupStep(guideContext)
-  t.is(guideContext.stepCount, stepCount + 1)
+  expect(guideContext.stepCount).toBe(stepCount + 1)
 })
 
-test.serial('checks for yarn, execa installs, creates cda token', async (t) => {
+test('checks for yarn, execa installs, creates cda token', async () => {
   await setupStep(guideContext)
-  t.true(execaStub.calledOnce)
-  t.true(accessTokenCreateStub.calledOnce)
+  expect(execaStub.calledOnce).toBe(true)
+  expect(accessTokenCreateStub.calledOnce).toBe(true)
 })
 
-test.serial('gets context and sets up config', async (t) => {
+test('gets context and sets up config', async () => {
   await setupStep(guideContext)
-  t.true(getContextStub.calledOnce)
-  t.true(guideContext.activeGuide.setupConfig.calledOnce)
+  expect(getContextStub.calledOnce).toBe(true)
+  expect(guideContext.activeGuide.setupConfig.calledOnce).toBe(true)
 })
 
-test.serial('sets guideContext installation directory', async (t) => {
+test('sets guideContext installation directory', async () => {
   await setupStep(guideContext)
-  t.is(guideContext.installationDirectory, join('test-path', 'test'))
+  expect(guideContext.installationDirectory).toBe(join('test-path', 'test'))
 })

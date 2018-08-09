@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 import {
@@ -15,42 +14,42 @@ const app = () => {
 
 var space = null
 
-test.before('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
-test.before('create fresh space', async t => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
 })
 
-test.cb('should exit 1 when no args', t => {
+test('should exit 1 when no args', done => {
   app()
     .run('space delete')
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('space delete --help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should delete space', t => {
+test('should delete space', done => {
   app()
     .run(`space delete --space-id ${space.sys.id} --yes`)
     .expect((result) => {
       const regex = /space was successfully deleted/
-      t.regex(result.stdout.trim(), regex)
+      expect(result.stdout.trim()).toMatch(regex)
     })
     .code(0)
-    .end(t.end)
+    .end(done)
 })

@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { resolve } from 'path'
 
@@ -8,35 +7,38 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('extension delete --help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when no args given except space id', t => {
+test('should exit 1 when no args given except space id', done => {
   app()
     .run('extension delete')
     .code(1)
     .expect((result) => {
       const regex = /Missing required argument:\s+id/
-      t.regex(result.stderr.trim(), regex)
+      expect(result.stderr.trim()).toMatch(regex)
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should exit 1 when everything required is given except space id', t => {
-  app()
-    .run('extension delete --id some-id')
-    .code(1)
-    .expect((result) => {
-      const regex = /You need to provide a space id./
-      t.regex(result.stderr.trim(), regex)
-    })
-    .end(t.end)
-})
+test(
+  'should exit 1 when everything required is given except space id',
+  done => {
+    app()
+      .run('extension delete --id some-id')
+      .code(1)
+      .expect((result) => {
+        const regex = /You need to provide a space id./
+        expect(result.stderr.trim()).toMatch(regex)
+      })
+      .end(done)
+  }
+)

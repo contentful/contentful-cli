@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { resolve } from 'path'
 import {
@@ -21,21 +20,21 @@ let space = null
 let environment = null
 let spacesToDelete = []
 
-test.before('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-test.before('create fresh space', async t => {
+beforeAll(async () => {
   space = await createSimpleSpace(org)
   environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
 
-test.after.always('remove created spaces', t => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.cb('should be able to create, update and delete a extension', t => {
+test('should be able to create, update and delete a extension', done => {
   const newSrc = 'https://new-src.example.com'
 
   function createExtension () {
@@ -44,25 +43,25 @@ test.cb('should be able to create, update and delete a extension', t => {
       .expect((result) => {
         console.log(result.stdout)
         console.log(result.stderr)
-        t.regex(result.stdout.trim(), /Successfully created extension:/)
-        t.regex(result.stdout.trim(), /ID.+sample-extension/)
+        expect(result.stdout.trim()).toMatch(/Successfully created extension:/)
+        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
       })
       .code(0)
       .end(() => {
         environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
-              t.fail('No extensions found while the sample one should show up')
-              t.end()
+              done.fail('No extensions found while the sample one should show up')
+              done()
               return
             }
-            t.is(result.items[0].sys.id, 'sample-extension')
-            t.is(result.items[0].extension.src, newSrc)
+            expect(result.items[0].sys.id).toBe('sample-extension')
+            expect(result.items[0].extension.src).toBe(newSrc)
           })
           .catch((error) => {
             console.error(error)
-            t.fail()
-            t.end()
+            done.fail()
+            done()
           })
           .then(updateExtension)
       })
@@ -74,24 +73,24 @@ test.cb('should be able to create, update and delete a extension', t => {
       .expect((result) => {
         console.log(result.stdout)
         console.log(result.stderr)
-        t.regex(result.stdout.trim(), /Successfully updated extension:/)
-        t.regex(result.stdout.trim(), /ID.+sample-extension/)
+        expect(result.stdout.trim()).toMatch(/Successfully updated extension:/)
+        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
       })
       .code(0)
       .end(() => {
         environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
-              t.fail('No extensions found while the sample one should show up')
+              done.fail('No extensions found while the sample one should show up')
               return
             }
-            t.is(result.items[0].sys.id, 'sample-extension')
-            t.is(result.items[0].extension.srcdoc, '<h1>Sample Extension Content</h1>\n')
+            expect(result.items[0].sys.id).toBe('sample-extension')
+            expect(result.items[0].extension.srcdoc).toBe('<h1>Sample Extension Content</h1>\n')
           })
           .catch((error) => {
             console.error(error)
-            t.fail()
-            t.end()
+            done.fail()
+            done()
           })
           .then(deleteExtension)
       })
@@ -103,27 +102,26 @@ test.cb('should be able to create, update and delete a extension', t => {
       .expect((result) => {
         console.log(result.stdout)
         console.log(result.stderr)
-        t.regex(result.stdout.trim(), /Successfully deleted extension with ID sample-extension/)
+        expect(result.stdout.trim()).toMatch(/Successfully deleted extension with ID sample-extension/)
       })
       .code(0)
       .end(() => {
         environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
-              t.pass()
-              t.end()
+              done()
               return
             }
-            t.fail('Extension was not deleted')
+            done.fail('Extension was not deleted')
           })
           .catch((error) => {
             console.error(error)
-            t.fail()
-            t.end()
+            done.fail()
+            done()
           })
-          .then(t.end)
+          .then(done)
       })
   }
 
   createExtension()
-})
+}, 20000)

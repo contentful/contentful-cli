@@ -22,22 +22,23 @@
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
-    "test:unit": "BABEL_ENV=test ava test/unit/** --verbose",
-    "test:unit:watch": "BABEL_ENV=test ava test/unit/** --verbose --watch",
+    "test:unit": "BABEL_ENV=test jest test/unit/** --verbose",
+    "test:unit:watch": "BABEL_ENV=test jest test/unit/** --verbose --watch",
     "config:restore": "test/integration/scripts/post-test.sh",
     "test:e2e": "npm run test:e2e:setup && npm run test:e2e:run && npm run config:restore",
+    "test:e2e:ci": "npm run test:e2e:setup && npm run test:e2e:run:ci && npm run config:restore",
     "test:e2e:fresh": "npm run test:e2e:setup && npm run test:e2e:update && npm run config:restore",
     "test:e2e:setup": "test/integration/scripts/pre-test.sh",
-    "test:e2e:run": "BABEL_ENV=test ava test/integration/cmds/** -c 1 --verbose",
-    "test:e2e:update": "BABEL_ENV=test ava test/integration/cmds/** --verbose --update-snapshots",
-    "test:e2e:watch": "BABEL_ENV=test ava test/integration/cmds/** --verbose --watch",
+    "test:e2e:run": "BABEL_ENV=test jest test/integration/cmds/** --verbose",
+    "test:e2e:run:ci": "BABEL_ENV=test jest test/integration/cmds/** --verbose --runInBand",
+    "test:e2e:update": "BABEL_ENV=test jest test/integration/cmds/** --verbose --updateSnapshot",
+    "test:e2e:watch": "BABEL_ENV=test jest test/integration/cmds/** --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",
     "prepush": "npm run test:unit"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
-    "ava": "^0.25.0",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.26.3",
     "babel-plugin-istanbul": "^4.1.6",
@@ -49,11 +50,13 @@
     "eslint": "^5.2.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jest": "^21.18.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "http-proxy": "^1.17.0",
     "husky": "^0.14.3",
+    "jest": "^23.4.2",
     "nixt": "^0.5.0",
     "node-zip": "^1.1.1",
     "nodemon": "^1.18.3",
@@ -113,11 +116,8 @@
     "version.js",
     "README.md"
   ],
-  "ava": {
-    "require": [
-      "babel-register"
-    ],
-    "babel": "inherit"
+  "jest": {
+    "testURL": "http://localhost/"
   },
   "nyc": {
     "check-coverage": true,

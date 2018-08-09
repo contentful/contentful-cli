@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import inquirer from 'inquirer'
 
@@ -27,16 +26,16 @@ const fakeClient = {
 }
 const createManagementClientStub = stub().returns(fakeClient)
 
-test.before(() => {
+beforeAll(() => {
   spaceCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
   spaceCreateRewireAPI.__Rewire__('inquirer', inquirer)
 })
 
-test.after.always(() => {
+afterAll(() => {
   spaceCreateRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.beforeEach((t) => {
+beforeEach(() => {
   getOrganizationsStub.returns({
     items: [
       {
@@ -49,14 +48,14 @@ test.beforeEach((t) => {
   })
 })
 
-test.afterEach.always((t) => {
+afterEach(() => {
   fakeClient.createSpace.resetHistory()
   createManagementClientStub.resetHistory()
   getOrganizationsStub.resetHistory()
   promptStub.resetHistory()
 })
 
-test.serial('create space with single org user', async (t) => {
+test('create space with single org user', async () => {
   const spaceData = {
     name: 'space name'
   }
@@ -65,15 +64,15 @@ test.serial('create space with single org user', async (t) => {
     cmaToken: 'mockedToken'
   })
   const result = await spaceCreate(spaceData)
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.createSpace.calledOnce, 'created space')
-  t.deepEqual(fakeClient.createSpace.args[0][0], spaceData, 'with correct payload')
-  t.is(fakeClient.createSpace.args[0][1], undefined, 'without organization id')
-  t.true(promptStub.notCalled, 'did not ask for user input')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.args[0][0]).toEqual(spaceData)
+  expect(fakeClient.createSpace.args[0][1]).toBe(undefined)
+  expect(promptStub.notCalled).toBe(true)
 })
 
-test.serial('create space with multi org user', async (t) => {
+test('create space with multi org user', async () => {
   const spaceData = {
     name: 'space name'
   }
@@ -98,15 +97,15 @@ test.serial('create space with multi org user', async (t) => {
     cmaToken: 'mockedToken'
   })
   const result = await spaceCreate(spaceData)
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.createSpace.calledOnce, 'created space')
-  t.deepEqual(fakeClient.createSpace.args[0][0], spaceData, 'with correct payload')
-  t.is(fakeClient.createSpace.args[0][1], 'mockedOrgTwo', 'with organization id')
-  t.true(promptStub.called, 'did ask for user input')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.args[0][0]).toEqual(spaceData)
+  expect(fakeClient.createSpace.args[0][1]).toBe('mockedOrgTwo')
+  expect(promptStub.called).toBe(true)
 })
 
-test.serial('create space with passed organization id', async (t) => {
+test('create space with passed organization id', async () => {
   const spaceData = {
     name: 'space name',
     organizationId: 'mockedOrganizationId'
@@ -116,26 +115,29 @@ test.serial('create space with passed organization id', async (t) => {
     cmaToken: 'mockedToken'
   })
   const result = await spaceCreate(spaceData)
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.createSpace.calledOnce, 'created space')
-  t.deepEqual(fakeClient.createSpace.args[0][0], {name: spaceData.name}, 'with correct payload')
-  t.is(fakeClient.createSpace.args[0][1], 'mockedOrganizationId', 'with passed organization id')
-  t.true(promptStub.notCalled, 'did not ask for user input')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.calledOnce).toBe(true)
+  expect(fakeClient.createSpace.args[0][0]).toEqual({name: spaceData.name})
+  expect(fakeClient.createSpace.args[0][1]).toBe('mockedOrganizationId')
+  expect(promptStub.notCalled).toBe(true)
 })
 
-test.serial('create space - fails when not logged in', async (t) => {
+test('create space - fails when not logged in', async () => {
   emptyContext()
   setContext({
     cmaToken: null
   })
-  const error = await t.throws(spaceCreate({}), PreconditionFailedError, 'throws precondition failed error')
-  t.truthy(error.message.includes('You have to be logged in to do this'), 'throws not logged in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(promptStub.notCalled, 'did not ask for user input')
+  try {
+    await expect(spaceCreate({})).rejects.toThrowError(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(promptStub.notCalled).toBe(true)
+  }
 })
 
-test.serial('create space - throws error when sth goes wrong', async (t) => {
+test('create space - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create space because of reasons'
   fakeClient.createSpace.reset()
   fakeClient.createSpace.throws(new Error(errorMessage))
@@ -143,7 +145,7 @@ test.serial('create space - throws error when sth goes wrong', async (t) => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  await t.throws(spaceCreate({}), errorMessage, 'throws error')
-  t.true(fakeClient.createSpace.calledOnce, 'tried to created space')
-  t.true(promptStub.notCalled, 'did not ask for user input')
+  await expect(spaceCreate({})).rejects.toThrowError(errorMessage)
+  expect(fakeClient.createSpace.calledOnce).toBe(true)
+  expect(promptStub.notCalled).toBe(true)
 })

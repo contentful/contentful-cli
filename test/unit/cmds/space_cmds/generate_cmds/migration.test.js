@@ -1,4 +1,3 @@
-import test from 'ava'
 import recast from 'recast'
 import { stub } from 'sinon'
 import { __RewireAPI__ as contextRewireAPI } from '../../../../../lib/context'
@@ -78,58 +77,58 @@ const fsWriteStub = {
   writeFileSync: stub()
 }
 
-test.beforeEach(() => {
+beforeEach(() => {
   contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
   generateMigrationRewireAPI.__Rewire__('getEnvironment', getEnvironmentStub)
   generateMigrationRewireAPI.__Rewire__('fs', fsWriteStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
   generateMigrationRewireAPI.__ResetDependency__('getEnvironment')
   generateMigrationRewireAPI.__ResetDependency__('fs')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   readFileStub.resetHistory()
   writeFileStub.resetHistory()
 })
 
-test('it doesnt require escape name when neither starts with number or is reserved', async (t) => {
-  t.is(ctNameNeedsEscaping('foo'), false)
+test('it doesnt require escape name when neither starts with number or is reserved', async () => {
+  expect(ctNameNeedsEscaping('foo')).toBe(false)
 })
 
-test('it does require escape when name starts with number', async (t) => {
-  t.is(ctNameNeedsEscaping('3asd'), true)
+test('it does require escape when name starts with number', async () => {
+  expect(ctNameNeedsEscaping('3asd')).toBe(true)
 })
 
-test('it does require escape when name is reserved word', async (t) => {
-  t.is(ctNameNeedsEscaping('class'), true)
+test('it does require escape when name is reserved word', async () => {
+  expect(ctNameNeedsEscaping('class')).toBe(true)
 })
 
-test('it doesnt escape name when neither starts with number or is reserved', async (t) => {
-  t.is(ctVariableEscape('foo'), 'foo')
+test('it doesnt escape name when neither starts with number or is reserved', async () => {
+  expect(ctVariableEscape('foo')).toBe('foo')
 })
 
-test('it does escape when name starts with number', async (t) => {
-  t.is(ctVariableEscape('3asd'), '_3asd')
+test('it does escape when name starts with number', async () => {
+  expect(ctVariableEscape('3asd')).toBe('_3asd')
 })
 
-test('it does escape when name is reserved word', async (t) => {
-  t.is(ctVariableEscape('class'), '_class')
+test('it does escape when name is reserved word', async () => {
+  expect(ctVariableEscape('class')).toBe('_class')
 })
 
-test('it wraps the program', async (t) => {
+test('it wraps the program', async () => {
   const programStub = b.blockStatement([])
 
   const expected = 'module.exports = function(migration) {};'
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
-test('it creates the content type', async (t) => {
+test('it creates the content type', async () => {
   const programStub = b.blockStatement([createContentType(simpleContentType)])
 
   const expected =
@@ -137,10 +136,10 @@ test('it creates the content type', async (t) => {
     const foo = migration.createContentType("foo").name("Foo").description("some content type").displayField("name");
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
-test('it creates the content type fields', async (t) => {
+test('it creates the content type fields', async () => {
   const programStub = b.blockStatement([
     b.expressionStatement(
       createField(simpleContentType.sys.id, simpleContentType.fields[0])
@@ -152,10 +151,10 @@ test('it creates the content type fields', async (t) => {
     foo.createField("name").name("Name").type("Symbol");
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
-test('it creates the editor interface', async (t) => {
+test('it creates the editor interface', async () => {
   const programStub = b.blockStatement([
     b.expressionStatement(
       changeEditorInterface(
@@ -174,10 +173,10 @@ test('it creates the editor interface', async (t) => {
     });
 };`
 
-  t.is(recast.prettyPrint(wrapMigrationWithBase(programStub)).code, expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
-test('it creates the full migration script', async (t) => {
+test('it creates the full migration script', async () => {
   const expected =
 `module.exports = function(migration) {
   const foo = migration
@@ -198,31 +197,31 @@ test('it creates the full migration script', async (t) => {
 
   const result = await generateMigrationScript(environmentMock, [simpleContentType])
 
-  t.is(result, expected)
+  expect(result).toBe(expected)
 })
 
-test('it generates the filename when content type is present', async (t) => {
+test('it generates the filename when content type is present', async () => {
   const filenameRegex = /^(\w+)-(\w+)-(\w+)-\d+.js$/
   const filename = generateFileName('fooSpace', 'master', 'fooCT')
 
   const matches = filename.match(filenameRegex)
 
-  t.is(matches[1], 'fooSpace')
-  t.is(matches[2], 'master')
-  t.is(matches[3], 'fooCT')
+  expect(matches[1]).toBe('fooSpace')
+  expect(matches[2]).toBe('master')
+  expect(matches[3]).toBe('fooCT')
 })
 
-test('it generates the filename without content type', async (t) => {
+test('it generates the filename without content type', async () => {
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
   const filename = generateFileName('fooSpace', 'master')
 
   const matches = filename.match(filenameRegex)
 
-  t.is(matches[1], 'fooSpace')
-  t.is(matches[2], 'master')
+  expect(matches[1]).toBe('fooSpace')
+  expect(matches[2]).toBe('master')
 })
 
-test('it generates the migration and writes to disk', async (t) => {
+test('it generates the migration and writes to disk', async () => {
   await generateMigration({
     spaceId: 'fooSpace',
     environmentId: 'fooEnv'
@@ -231,8 +230,8 @@ test('it generates the migration and writes to disk', async (t) => {
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
   const matches = fsWriteStub.writeFileSync.args[0][0].match(filenameRegex)
 
-  t.is(matches[1], 'fooSpace')
-  t.is(matches[2], 'fooEnv')
+  expect(matches[1]).toBe('fooSpace')
+  expect(matches[2]).toBe('fooEnv')
 
   const expectedContent =
 `module.exports = function(migration) {
@@ -251,5 +250,5 @@ test('it generates the migration and writes to disk', async (t) => {
   });
 };
 `
-  t.is(fsWriteStub.writeFileSync.args[0][1], expectedContent)
+  expect(fsWriteStub.writeFileSync.args[0][1]).toBe(expectedContent)
 })

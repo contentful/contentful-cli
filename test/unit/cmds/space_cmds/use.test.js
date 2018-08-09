@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import { __RewireAPI__ as contextRewireAPI } from '../../../../lib/context'
 
@@ -19,29 +18,29 @@ const getSpace = stub().resolves({
 })
 const createManagementClientMock = stub().returns({ getSpace })
 
-test.before(() => {
+beforeAll(() => {
   contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
   spaceUseRewireAPI.__Rewire__('createManagementClient', createManagementClientMock)
 })
 
-test.after.always(() => {
+afterAll(() => {
   contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
   spaceUseRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   readFileStub.resetHistory()
   writeFileStub.resetHistory()
 })
 
-test('it writes the enviroment id to contentfulrc.json', async (t) => {
+test('it writes the enviroment id to contentfulrc.json', async () => {
   const stubArgv = {
     spaceId: 'test',
     managementToken: 'managementToken'
   }
   await spaceUse(stubArgv)
-  t.is(JSON.parse(writeFileStub.args[0][1]).activeSpaceId, 'test')
-  t.is(JSON.parse(writeFileStub.args[0][1]).activeEnvironmentId, 'master')
+  expect(JSON.parse(writeFileStub.args[0][1]).activeSpaceId).toBe('test')
+  expect(JSON.parse(writeFileStub.args[0][1]).activeEnvironmentId).toBe('master')
 })

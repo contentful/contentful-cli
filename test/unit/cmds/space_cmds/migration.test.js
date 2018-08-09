@@ -1,4 +1,3 @@
-import test from 'ava'
 import { version } from '../../../../package.json'
 import { stub } from 'sinon'
 import {
@@ -13,16 +12,16 @@ import {
 
 const migrationStub = stub().returns(Promise.resolve())
 
-test.before(() => {
+beforeAll(() => {
   setContext({cmaToken: 'managementToken'})
   migrationRewireAPI.__Rewire__('runMigration', migrationStub)
 })
 
-test.after(() => {
+afterAll(() => {
   emptyContext()
   migrationRewireAPI.__ResetDependency__('runMigration')
 })
-test('it should pass all args to the migration', async (t) => {
+test('it should pass all args to the migration', async () => {
   const stubArgv = {
     accessToken: 'managementToken',
     managementApplication: `contentful.cli/${version}`,
@@ -30,6 +29,6 @@ test('it should pass all args to the migration', async (t) => {
     managementFeature: 'space-migration'
   }
   await migration(stubArgv)
-  t.deepEqual(migrationStub.args[0][0], stubArgv)
-  t.is(migrationStub.callCount, 1)
+  expect(migrationStub.args[0][0]).toEqual(stubArgv)
+  expect(migrationStub.callCount).toBe(1)
 })

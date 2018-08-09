@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 import { readFile, writeFile, unlink } from 'mz/fs'
@@ -34,15 +33,17 @@ async function after () {
   return writeFile(testConfigPath, oldConfigContents)
 }
 
-test.serial.cb('Should list configs from first found config file', t => {
+test('Should list configs from first found config file', done => {
   app()
     .before(before)
     .run('config list')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.true(resultText.includes(testConfig.cmaToken) && resultText.includes(testConfig.activeSpaceId), 'result should contain test values')
+      expect(
+        resultText.includes(testConfig.cmaToken) && resultText.includes(testConfig.activeSpaceId)
+      ).toBe(true)
     })
     .after(after)
-    .end(t.end)
+    .end(done)
 })

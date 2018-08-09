@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -28,34 +27,37 @@ const fakeClient = {
 }
 const createManagementClientStub = stub().returns(fakeClient)
 
-test.before(() => {
+beforeAll(() => {
   environmentDeleteRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   environmentDeleteRewireAPI.__ResetDependency__('createManagementClient')
 })
 
-test.afterEach.always((t) => {
+afterEach(() => {
   fakeClient.getSpace.resetHistory()
   createManagementClientStub.resetHistory()
   getEnvironmentStub.resetHistory()
   deleteEnvironmentStub.resetHistory()
 })
 
-test.serial('delete environment - requires space id', async (t) => {
+test('delete environment - requires space id', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
   })
-  const error = await t.throws(environmentDelete({}), PreconditionFailedError, 'throws error')
-  t.truthy(error.message.includes('You need to provide a space id'), 'throws space id required in error')
-  t.true(createManagementClientStub.notCalled, 'did not create client')
-  t.true(getEnvironmentStub.notCalled, 'did not try to get environment')
-  t.true(deleteEnvironmentStub.notCalled, 'did not try to delete environment')
+  try {
+    await expect(environmentDelete({})).rejects.toThrow(PreconditionFailedError)
+  } catch (error) {
+    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
+    expect(createManagementClientStub.notCalled).toBe(true)
+    expect(getEnvironmentStub.notCalled).toBe(true)
+    expect(deleteEnvironmentStub.notCalled).toBe(true)
+  }
 })
 
-test.serial('delete environment', async (t) => {
+test('delete environment', async () => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken'
@@ -64,10 +66,10 @@ test.serial('delete environment', async (t) => {
     spaceId: 'someSpaceID',
     environmentId: 'someEnvironmentID'
   })
-  t.truthy(result, 'returned truthy value')
-  t.true(createManagementClientStub.calledOnce, 'did create client')
-  t.true(fakeClient.getSpace.calledOnce, 'loaded space')
-  t.true(getEnvironmentStub.calledOnce, 'loaded environment')
-  t.is(getEnvironmentStub.args[0][0], 'someEnvironmentID', 'with correct environment id')
-  t.true(deleteEnvironmentStub.calledOnce, 'deleted environment')
+  expect(result).toBeTruthy()
+  expect(createManagementClientStub.calledOnce).toBe(true)
+  expect(fakeClient.getSpace.calledOnce).toBe(true)
+  expect(getEnvironmentStub.calledOnce).toBe(true)
+  expect(getEnvironmentStub.args[0][0]).toBe('someEnvironmentID')
+  expect(deleteEnvironmentStub.calledOnce).toBe(true)
 })

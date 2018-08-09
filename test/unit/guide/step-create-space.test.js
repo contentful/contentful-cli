@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import { AbortedError } from '../../../lib/guide/helpers'
 import createSpaceStep,
@@ -9,46 +8,50 @@ const fakeSpace = {sys: {id: '100abc'}}
 const confirmationStub = stub().resolves(true)
 const spaceCreateStub = stub().resolves(fakeSpace)
 
-test.before(() => {
+beforeAll(() => {
   createSpaceStepRewireApi.__Rewire__('confirmation', confirmationStub)
   createSpaceStepRewireApi.__Rewire__('spaceCreate', spaceCreateStub)
   createSpaceStepRewireApi.__Rewire__('wrappedLog', stub())
   createSpaceStepRewireApi.__Rewire__('log', stub())
 })
 
-test.afterEach(() => {
+afterEach(() => {
   confirmationStub.resetHistory()
   spaceCreateStub.resetHistory()
   guideContext.stepCount = 0
 })
 
-test.after.always(() => {
+afterAll(() => {
   createSpaceStepRewireApi.__ResetDependency__('confirmation')
   createSpaceStepRewireApi.__ResetDependency__('spaceCreate')
   createSpaceStepRewireApi.__ResetDependency__('wrappedLog')
   createSpaceStepRewireApi.__ResetDependency__('log')
 })
 
-test.serial('creates space on successful user confirmation', async (t) => {
+test('creates space on successful user confirmation', async () => {
   await createSpaceStep(guideContext)
-  t.true(confirmationStub.calledOnce, 'confirmation called')
-  t.true(spaceCreateStub.calledOnce, 'spaceCreate called')
-  t.true(spaceCreateStub.calledWith({name: guideContext.activeGuide.name, feature: 'guide'}), 'spaceCreate called with proper args')
+  expect(confirmationStub.calledOnce).toBe(true)
+  expect(spaceCreateStub.calledOnce).toBe(true)
+  expect(
+    spaceCreateStub.calledWith({name: guideContext.activeGuide.name, feature: 'guide'})
+  ).toBe(true)
 })
 
-test.serial('guideContext stepCount incremented', async (t) => {
+test('guideContext stepCount incremented', async () => {
   const stepCount = guideContext.stepCount
   await createSpaceStep(guideContext)
-  t.is(guideContext.stepCount, stepCount + 1)
+  expect(guideContext.stepCount).toBe(stepCount + 1)
 })
 
-test('guideContext spaceId gets set after spaceCreation', async (t) => {
+test('guideContext spaceId gets set after spaceCreation', async () => {
   await createSpaceStep(guideContext)
-  t.is(guideContext.spaceId, fakeSpace.sys.id)
+  expect(guideContext.spaceId).toBe(fakeSpace.sys.id)
 })
 
-test.serial('throws AbortedError if user does not confirm', async (t) => {
+test('throws AbortedError if user does not confirm', async () => {
   confirmationStub.resolves(false)
-  await t.throws(createSpaceStep(guideContext), AbortedError)
+  try {
+    await expect(createSpaceStep(guideContext)).rejects.toThrowError(AbortedError)
+  } catch (e) {}
   confirmationStub.resolves(true)
 })

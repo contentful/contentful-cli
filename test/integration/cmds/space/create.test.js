@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 import {
@@ -15,39 +14,39 @@ const app = () => {
 
 var spacesToDelete = []
 
-test.before('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-test.after.always('remove created spaces', t => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
-test.cb('should exit 1 when no args', t => {
+test('should exit 1 when no args', done => {
   app()
     .run('space create')
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(() => {
+      done()
+    })
 })
 
-test.cb('should print help message', t => {
+test('should print help message', done => {
   app()
     .run('space create --help')
     .code(0)
     .expect(result => {
       const resultText = result.stdout.trim()
-      t.snapshot(resultText, 'help data is incorrect')
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(t.end)
+    .end(done)
 })
 
-test.todo('should create space with no org provided')
-
-test.cb('should create space with name and org provided', t => {
+test('should create space with name and org provided', done => {
   app()
     .run(`space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`)
     .expect((result) => {
@@ -55,13 +54,13 @@ test.cb('should create space with name and org provided', t => {
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
       const regex = /Successfully created space cli_test_org_space/
-      t.regex(result.stdout.trim(), regex)
+      expect(result.stdout.trim()).toMatch(regex)
     })
     .code(0)
-    .end(t.end)
+    .end(done)
 })
 
-test.cb('should create space using shortcuts args', t => {
+test('should create space using shortcuts args', done => {
   app()
     .run(`space create -n cli_test_org_space_sh --org ${process.env.CLI_E2E_ORG_ID}`)
     .expect((result) => {
@@ -69,8 +68,8 @@ test.cb('should create space using shortcuts args', t => {
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
       const regex = /Successfully created space cli_test_org_space_sh/
-      t.regex(result.stdout.trim(), regex)
+      expect(result.stdout.trim()).toMatch(regex)
     })
     .code(0)
-    .end(t.end)
+    .end(done)
 })

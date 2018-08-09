@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 import { resolve } from 'path'
 import { homedir } from 'os'
@@ -20,90 +19,93 @@ enoent.code = 'ENOENT'
 const readFileStub = stub().rejects(enoent)
 const writeFileStub = stub()
 
-test.before(() => {
+beforeAll(() => {
   contextRewireAPI.__Rewire__('readFile', readFileStub)
   contextRewireAPI.__Rewire__('writeFile', writeFileStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   contextRewireAPI.__ResetDependency__('readFile')
   contextRewireAPI.__ResetDependency__('writeFile')
 })
 
-test.afterEach((t) => {
+afterEach(() => {
   readFileStub.resetHistory()
   writeFileStub.resetHistory()
 })
 
-test.serial('locates correct config file path', async (t) => {
+test('locates correct config file path', async () => {
   const testFilePath = process.cwd() + '/.contentfulrc.json'
   await writeFile(testFilePath, 'test rc file')
-  t.is(await getConfigPath(), testFilePath)
+  expect(await getConfigPath()).toBe(testFilePath)
   return unlink(testFilePath)
 })
 
-test('uses home directory as config file path if none is found', async (t) => {
+test('uses home directory as config file path if none is found', async () => {
   const findUpStub = stub().returns(null)
   contextRewireAPI.__Rewire__('findUp', findUpStub)
   contextRewireAPI.__Rewire__('configPath', null)
   const configPath = await getConfigPath()
-  t.is(configPath, resolve(homedir(), '.contentfulrc.json'))
+  expect(configPath).toBe(resolve(homedir(), '.contentfulrc.json'))
   contextRewireAPI.__ResetDependency__('findUp')
 })
 
-test.serial('loading, writing, setting and getting context & rc', async (t) => {
+test('loading, writing, setting and getting context & rc', async () => {
   let context = await getContext()
   let contextSize = Object.keys(context).length
 
-  t.is(contextSize, 0, 'context is empty in the beginning')
-  t.true(readFileStub.calledOnce, 'tries to load runtime config')
+  expect(contextSize).toBe(0)
+  expect(readFileStub.calledOnce).toBe(true)
 
   setContext({ newValue: true })
   context = await getContext()
 
-  t.deepEqual(context, {
+  expect(context).toEqual({
     newValue: true
-  }, 'new value is present in context')
+  })
 
   setContext(JSON.parse(MOCKED_RC))
   await storeRuntimeConfig()
 
-  t.true(writeFileStub.calledOnce, 'tries to write runtime config')
-  t.is(writeFileStub.args[0][0], await getConfigPath(), 'writes to correct file location')
-  t.is(writeFileStub.args[0][1], MOCKED_RC, 'updated rc file only contains relevant content')
+  expect(writeFileStub.calledOnce).toBe(true)
+  expect(writeFileStub.args[0][0]).toBe(await getConfigPath())
+  expect(writeFileStub.args[0][1]).toBe(MOCKED_RC)
 })
 
-test.serial('loading existing rc config and attaching it to the context', async (t) => {
-  const readFileStub = stub().resolves({ toString: () => MOCKED_RC })
-  contextRewireAPI.__Rewire__('readFile', readFileStub)
-  readFileStub.reset()
-  readFileStub.resolves(MOCKED_RC)
-  emptyContext()
+test(
+  'loading existing rc config and attaching it to the context',
+  async () => {
+    const readFileStub = stub().resolves({ toString: () => MOCKED_RC })
+    contextRewireAPI.__Rewire__('readFile', readFileStub)
+    readFileStub.reset()
+    readFileStub.resolves(MOCKED_RC)
+    emptyContext()
 
-  let context = await getContext()
-  let contextSize = Object.keys(context).length
+    let context = await getContext()
+    let contextSize = Object.keys(context).length
 
-  t.is(contextSize, 2, 'fresh context contains only two values')
-  t.deepEqual(context, JSON.parse(MOCKED_RC), 'fresh context matches the rc file config')
-  contextRewireAPI.__ResetDependency__('readFile')
-})
+    expect(contextSize).toBe(2)
+    expect(context).toEqual(JSON.parse(MOCKED_RC))
+    contextRewireAPI.__ResetDependency__('readFile')
+  }
+)
 
-test('loadProxyFromEnv', (t) => {
+test('loadProxyFromEnv', () => {
   const loadProxyFromEnv = contextRewireAPI.__get__('loadProxyFromEnv')
   let proxy
 
   proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128' })
-  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: false } }, 'uses http_proxy')
+  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: false } })
 
   proxy = loadProxyFromEnv({ https_proxy: 'https://127.0.0.1:3128' })
-  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'uses https_proxy')
+  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
 
   proxy = loadProxyFromEnv({ HTTP_PROXY: '127.0.0.1:3128' })
-  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: false } }, 'uses HTTP_PROXY')
+  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: false } })
 
   proxy = loadProxyFromEnv({ HTTPS_PROXY: 'https://127.0.0.1:3128' })
-  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'uses HTTPS_PROXY')
+  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
 
   proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128', https_proxy: 'https://127.0.0.1:3128' })
-  t.deepEqual(proxy, { proxy: { host: '127.0.0.1', port: 3128, isHttps: true } }, 'prefers https_proxy')
+  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
 })

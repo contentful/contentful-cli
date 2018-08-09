@@ -1,7 +1,6 @@
 import { homedir } from 'os'
 import { join, resolve } from 'path'
 
-import test from 'ava'
 import nixt from 'nixt'
 import rimraf from 'rimraf'
 
@@ -18,15 +17,15 @@ const app = () => {
 }
 
 const spacesToDelete = []
-test.before('ensure config file exist', () => {
+beforeAll(() => {
   return initConfig()
 })
 
-test.after.always('remove created spaces', t => {
+afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.cb('should be already logged in and run all steps', t => {
+test('should be already logged in and run all steps', done => {
   app()
     .run('guide')
     // step 2 createSpace
@@ -56,6 +55,6 @@ test.cb('should be already logged in and run all steps', t => {
     .stdout(/The guide is now completed/)
     .code(0)
     .end(() => {
-      rimraf(resolve(homedir(), projectDirectoryName), t.end)
+      rimraf(resolve(homedir(), projectDirectoryName), done)
     })
-})
+}, 120000)

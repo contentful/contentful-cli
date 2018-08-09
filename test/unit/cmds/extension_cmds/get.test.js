@@ -1,4 +1,3 @@
-import test from 'ava'
 import { stub } from 'sinon'
 
 import {
@@ -28,7 +27,7 @@ const mockExtension = {
 const environmentStub = stub().resolves({
   getUiExtension: getUiExtensionStub.resolves(mockExtension)
 })
-test.before(() => {
+beforeAll(() => {
   const fakeClient = {
     getSpace: stub().resolves({getEnvironment: environmentStub})
   }
@@ -44,23 +43,23 @@ test.before(() => {
   logRewireAPI.__Rewire__('log', logStub)
 })
 
-test.after.always(() => {
+afterAll(() => {
   getRewireAPI.__ResetDependency__('createManagementClient')
   logRewireAPI.__ResetDependency__('log')
 })
 
-test('Calls getUiExtension() with ID', async (t) => {
+test('Calls getUiExtension() with ID', async () => {
   await handler({ spaceId: 'space1', id: 'widget1' })
 
-  t.true(getUiExtensionStub.calledWith('widget1'))
+  expect(getUiExtensionStub.calledWith('widget1')).toBe(true)
 })
 
-test('Logs extension data', async (t) => {
+test('Logs extension data', async () => {
   await handler({ spaceId: 'space1', id: 'widget1' })
 
   const outputValues = [ '123', 'Widget', 'Symbol, Symbols', 'https://awesome.extension' ]
 
   outputValues.forEach(str => {
-    t.true(logStub.lastCall.args[0].includes(str))
+    expect(logStub.lastCall.args[0].includes(str)).toBe(true)
   })
 })

@@ -1,4 +1,3 @@
-import test from 'ava'
 import nixt from 'nixt'
 import { join } from 'path'
 import {
@@ -16,22 +15,22 @@ const app = () => {
 const org = process.env.CLI_E2E_ORG_ID
 let space = null
 
-test.before('ensure config file exist and create space', async () => {
+beforeAll(async () => {
   await initConfig()
   space = await createSimpleSpace(org)
 })
 
-test.after.always('remove created spaces', t => {
+afterAll(() => {
   return deleteSpaces([space.sys.id])
 })
 
-test.cb('should create, list and delete environment', t => {
+test('should create, list and delete environment', done => {
   function createEnvironment () {
     app()
       .run(`space environment create --space-id ${space.sys.id} --environment-id createListDelete --name "Create List Delete"`)
       .expect((result) => {
         const resultText = result.stdout.trim()
-        t.snapshot(resultText)
+        expect(resultText).toMatchSnapshot()
       })
       .code(0)
       .end(listEnvironments)
@@ -56,8 +55,8 @@ test.cb('should create, list and delete environment', t => {
       .stdout(/Create List Delete +|/)
       .stdout(/master +|/)
       .code(0)
-      .end(t.end)
+      .end(done)
   }
 
   createEnvironment()
-})
+}, 10000)
