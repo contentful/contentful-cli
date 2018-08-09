@@ -29,7 +29,7 @@
     "test:e2e:fresh": "npm run test:e2e:setup && npm run test:e2e:update && npm run config:restore",
     "test:e2e:setup": "test/integration/scripts/pre-test.sh",
     "test:e2e:run": "BABEL_ENV=test jest test/integration/cmds/** --verbose",
-    "test:e2e:update": "BABEL_ENV=test jest test/integration/cmds/** --verbose --update-snapshots",
+    "test:e2e:update": "BABEL_ENV=test jest test/integration/cmds/** --verbose --updateSnapshot",
     "test:e2e:watch": "BABEL_ENV=test jest test/integration/cmds/** --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "npm run lint",

@@ -32,7 +32,7 @@ beforeAll(async () => {
 
 afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
 test('should print help message', done => {
   app()
