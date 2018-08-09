@@ -104,14 +104,6 @@ CLI_E2E_ORG_ID = <organization_id>
 npm run test:e2e
 ```
 
-#### or using jest:
-```sh
-$ jest test/integration/** --verbose --serial
-```
-
-:warning: Since the e2e tests are running in serial mode currently, you should be logged out or `rm ~/.contentfulrc.json`
-
-
 ## :question: Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.
