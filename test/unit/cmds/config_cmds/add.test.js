@@ -1,21 +1,16 @@
-import { addHandler, __RewireAPI__ as addRewire } from '../../../../lib/cmds/config_cmds/add'
-import { stub } from 'sinon'
+import { addHandler } from '../../../../lib/cmds/config_cmds/add'
+import {
+  setContext,
+  getContext,
+  storeRuntimeConfig
+} from '../../../../lib/context'
+import { success } from '../../../../lib/utils/log'
 
-const setContextStub = stub()
-beforeEach(() => {
-  addRewire.__Rewire__('getContext', stub())
-  addRewire.__Rewire__('setContext', setContextStub)
-  addRewire.__Rewire__('getContext', stub().resolves({}))
-  addRewire.__Rewire__('storeRuntimeConfig', stub().resolves())
-  addRewire.__Rewire__('success', stub())
-})
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/log')
 
-afterEach(() => {
-  addRewire.__ResetDependency__('getContext')
-  addRewire.__ResetDependency__('setContext')
-  addRewire.__ResetDependency__('getContext')
-  addRewire.__ResetDependency__('storeRuntimeConfig')
-})
+getContext.mockResolvedValue({})
+storeRuntimeConfig.mockResolvedValue()
 
 test('config add command', async () => {
   await addHandler({proxy: 'user:password@host:8080'})
@@ -28,5 +23,6 @@ test('config add command', async () => {
       password: 'password'
     }
   }
-  expect(setContextStub.args[0][0].proxy).toEqual(expectedProxy)
+  expect(setContext.mock.calls[0][0].proxy).toEqual(expectedProxy)
+  expect(success).toHaveBeenCalledWith('✨  config added successfully')
 })

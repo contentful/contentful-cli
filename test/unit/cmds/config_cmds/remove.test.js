@@ -1,23 +1,19 @@
-import { removeHandler, __RewireAPI__ as removeRewire } from '../../../../lib/cmds/config_cmds/remove'
-import { stub } from 'sinon'
+import { removeHandler } from '../../../../lib/cmds/config_cmds/remove'
+import {
+  setContext,
+  getContext,
+  storeRuntimeConfig
+} from '../../../../lib/context'
+import { success } from '../../../../lib/utils/log'
 
-const setContextStub = stub()
-beforeEach(() => {
-  removeRewire.__Rewire__('getContext', stub())
-  removeRewire.__Rewire__('setContext', setContextStub)
-  removeRewire.__Rewire__('getContext', stub().resolves({cmaToken: 'cmaToken', proxy: {}}))
-  removeRewire.__Rewire__('storeRuntimeConfig', stub().resolves())
-  removeRewire.__Rewire__('success', stub())
-})
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/log')
 
-afterEach(() => {
-  removeRewire.__ResetDependency__('getContext')
-  removeRewire.__ResetDependency__('setContext')
-  removeRewire.__ResetDependency__('getContext')
-  removeRewire.__ResetDependency__('storeRuntimeConfig')
-})
+getContext.mockResolvedValue({ cmaToken: 'cmaToken', proxy: {} })
+storeRuntimeConfig.mockResolvedValue()
 
 test('config remove command', async () => {
   await removeHandler({proxy: true})
-  expect(setContextStub.args[0][0]).toEqual({cmaToken: 'cmaToken'})
+  expect(setContext.mock.calls[0][0]).toEqual({cmaToken: 'cmaToken'})
+  expect(success).toHaveBeenCalledWith('✨  config removed successfully')
 })
