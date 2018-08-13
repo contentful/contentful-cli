@@ -57,4 +57,4 @@ test('should be already logged in and run all steps', done => {
     .end(() => {
       rimraf(resolve(homedir(), projectDirectoryName), done)
     })
-}, 180000)
+}, 360000)
