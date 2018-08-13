@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Throws error if --version and --force are missing 1`] = `"Please provide current version or use the --force flag"`;
+
+exports[`Throws error if wrong --version value is passed 1`] = `"Version provided does not match current resource version"`;
