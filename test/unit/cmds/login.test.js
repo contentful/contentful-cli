@@ -28,7 +28,6 @@ afterEach(() => {
 
 test('login - without error', async () => {
   const result = await loginHandler()
-  console.log({result})
 
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(opn).toHaveBeenCalled()
