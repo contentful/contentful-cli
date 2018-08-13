@@ -1,31 +1,29 @@
-import { stub } from 'sinon'
+import { handler } from '../../../../lib/cmds/extension_cmds/list'
 
-import {
-  handler,
-  __RewireAPI__ as rewireAPI
-} from '../../../../lib/cmds/extension_cmds/list'
 import {
   emptyContext,
   setContext
 } from '../../../../lib/context'
 
-const logStub = stub()
-const getEnvStub = stub()
-const getSpaceStub = stub().resolves({getEnvironment: getEnvStub})
+import { log } from '../../../../lib/utils/log'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+
+jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/utils/contentful-clients')
 
 const mockExtensions = {
   items: [
     {
       extension: {
         name: 'Widget',
-        fieldTypes: [ { type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } } ],
+        fieldTypes: [{ type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } }],
         src: 'https://awesome.extension'
       },
       sys: { id: '123', version: 7 }
     }, {
       extension: {
         name: 'Widget 2',
-        fieldTypes: [ { type: 'Entry' }, { type: 'Number' } ],
+        fieldTypes: [{ type: 'Entry' }, { type: 'Number' }],
         src: 'https://awesome.extension'
       },
       sys: { id: '456', version: 8 }
@@ -33,29 +31,35 @@ const mockExtensions = {
   ]
 }
 
-beforeAll(() => {
-  const fakeClient = {
-    getSpace: getSpaceStub
+const getEnvironmentStub = jest.fn().mockImplementation((environmentId) => {
+  if (environmentId === 'env') {
+    return Promise.resolve({
+      getUiExtensions: () => Promise.resolve(mockExtensions)
+    })
   }
+  return Promise.resolve({
+    getUiExtensions: () => Promise.resolve({ items: [] })
+  })
+})
 
-  getEnvStub.withArgs('env').resolves({ getUiExtensions: stub().resolves(mockExtensions) })
-  getEnvStub.withArgs('empty').resolves({ getUiExtensions: stub().resolves({ items: [] }) })
+const fakeClient = {
+  getSpace: async () => ({
+    getEnvironment: getEnvironmentStub
+  })
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
-  const createManagementClientStub = stub().returns(fakeClient)
-
+beforeAll(() => {
   emptyContext()
   setContext({
     cmaToken: 'mockedToken',
     activeSpaceId: 'someSpaceId'
   })
-
-  rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  rewireAPI.__Rewire__('log', logStub)
 })
 
-afterAll(() => {
-  rewireAPI.__ResetDependency__('createManagementClient')
-  rewireAPI.__ResetDependency__('log')
+beforeEach(() => {
+  log.mockClear()
+  createManagementClient.mockClear()
 })
 
 test('Lists extensions', async () => {
@@ -64,12 +68,12 @@ test('Lists extensions', async () => {
   const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
 
   outputValues.forEach(str => {
-    expect(logStub.lastCall.args[0].includes(str)).toBe(true)
+    expect(log.mock.calls[0][0]).toContain(str)
   })
 })
 
 test('Displays message if list is empty', async () => {
   await handler({spaceId: 'space', environmentId: 'empty'})
 
-  expect(logStub.calledWith('No extensions found')).toBe(true)
+  expect(log).toHaveBeenCalledWith('No extensions found')
 })
