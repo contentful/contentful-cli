@@ -90,7 +90,7 @@ This may collide with your already globally installed Contentful CLI. Make sure 
 
 ## :robot: Testing
 
-### End-To-End Functional Tests
+### Integration Tests
 
 :warning: Environment variables should be set:
 
