@@ -1,5 +1,7 @@
 import { resolve } from 'path'
 
+import { createExtension } from '../../../../lib/cmds/extension_cmds/create'
+
 import {
   emptyContext,
   setContext
@@ -7,9 +9,7 @@ import {
 import { successEmoji } from '../../../../lib/utils/emojis'
 import { success, log } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
-import { createExtension } from '../../../../lib/cmds/extension_cmds/create'
 import { readFileP } from '../../../../lib/utils/fs'
-import { ValidationError } from '../../../../lib/utils/error'
 import readSrcDocFile from '../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file'
 
 jest.mock('../../../../lib/utils/log')
@@ -53,41 +53,23 @@ beforeEach(() => {
 })
 
 test('Throws error if name is missing', async () => {
-  await expect(createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
+  await expect(createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if field-types is missing', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
-  }
+  await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are not provided', async () => {
-  try {
-    expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
-  }
+  await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are at the same time', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
-  }
+  await expect(createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws an error if installation parameters cannot be parsed', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(
-      error.message.includes('Could not parse JSON string of installation parameter values')
-    ).toBeTruthy()
-  }
+  await expect(createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Creates extension from command line arguments', async () => {
