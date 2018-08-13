@@ -35,7 +35,7 @@
     "test:e2e:watch": "BABEL_ENV=test jest test/integration/cmds/** --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "lint-staged",
-    "prepush": "npm run test:unit"
+    "prepush": "jest --changedSince master"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
