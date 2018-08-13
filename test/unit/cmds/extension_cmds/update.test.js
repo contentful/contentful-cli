@@ -1,111 +1,78 @@
-import { stub } from 'sinon'
 import { resolve } from 'path'
 
-import { successEmoji } from '../../../../lib/utils/emojis'
-
-import {
-  updateExtension,
-  __RewireAPI__ as rewireAPI
-} from '../../../../lib/cmds/extension_cmds/update'
-
-import {
-  __RewireAPI__ as prepareDataRewireAPI
-} from '../../../../lib/cmds/extension_cmds/utils/prepare-data'
+import { updateExtension } from '../../../../lib/cmds/extension_cmds/update'
 
 import {
   emptyContext,
   setContext
 } from '../../../../lib/context'
 
-import { ValidationError } from '../../../../lib/utils/error'
+import { successEmoji } from '../../../../lib/utils/emojis'
+import { success, log } from '../../../../lib/utils/log'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+import { readFileP } from '../../../../lib/utils/fs'
+import readSrcDocFile from '../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file'
+
+jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/utils/contentful-clients')
+jest.mock('../../../../lib/utils/fs')
+jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file')
+
+readSrcDocFile.mockImplementation(async (extension) => { extension.srcdoc = '<h1>Sample Extension Content</h1>' })
 
 const basicExtension = {
-  sys: { id: '123', version: 3 },
-  extension: {
-    name: 'Widget',
-    fieldTypes: [ { type: 'Symbol' } ],
-    src: 'https://awesome.extension'
-  }
+  sys: { id: '123', version: 3 }
 }
 
-const updateStub = stub().returns(basicExtension)
-const successStub = stub()
+const updateStub = jest.fn().mockImplementation((extension) => extension)
 
-const extension = Object.assign({}, basicExtension, {
-  update: updateStub
-})
+const fakeClient = {
+  getSpace: async () => ({
+    getEnvironment: async () => ({
+      getUiExtension: async () => {
+        const extension = {...basicExtension}
+        extension.update = function () {
+          return updateStub(this)
+        }
+        return extension
+      }
+    })
+  })
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
 beforeAll(() => {
-  const fakeClient = {
-    getSpace: stub().returns({
-      getEnvironment: stub().resolves({
-        getUiExtension: stub().resolves(extension)
-      })
-    })
-  }
-  const createManagementClientStub = stub().returns(fakeClient)
-
   emptyContext()
   setContext({
     cmaToken: 'mockedToken',
     activeSpaceId: 'someSpaceId'
   })
-
-  rewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  rewireAPI.__Rewire__('success', successStub)
 })
 
 afterEach(() => {
-  updateStub.resetHistory()
-})
-
-afterAll(() => {
-  rewireAPI.__ResetDependency__('createManagementClient')
-  rewireAPI.__ResetDependency__('success')
+  updateStub.mockClear()
+  success.mockClear()
+  log.mockClear()
 })
 
 test('Throws error if id is missing', async () => {
-  try {
-    await expect(updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: id')).toBeTruthy()
-  }
+  await expect(updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if name is missing', async () => {
-  try {
-    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: name')).toBeTruthy()
-  }
+  await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if field-types is missing', async () => {
-  try {
-    await expect(updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
-  }
+  await expect(updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  try {
-    await expect(updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(
-      error.message.includes('Please provide current version or use the --force flag')
-    ).toBeTruthy()
-  }
+  await expect(updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  try {
-    await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(
-      error.message.includes('Version provided does not match current resource version')
-    ).toBeTruthy
-  }
+  await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test(
@@ -120,10 +87,8 @@ test(
       src: 'https://new.url'
     })
 
-    expect(updateStub.calledOnce).toBe(true)
-    expect(
-      successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
-    ).toBe(true)
+    expect(updateStub).toHaveBeenCalledTimes(1)
+    expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully updated extension:\n`)
   }
 )
 
@@ -137,10 +102,8 @@ test('Calls update on extension and reads srcdoc from disk', async () => {
     srcdoc: resolve(__dirname, 'sample-extension.html')
   })
 
-  expect(updateStub.calledOnce).toBe(true)
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
-  ).toBe(true)
+  expect(updateStub).toHaveBeenCalledTimes(1)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully updated extension:\n`)
 })
 
 test('Updates an extension with parameter definitions ', async () => {
@@ -154,9 +117,7 @@ test('Updates an extension with parameter definitions ', async () => {
     }
   }`
 
-  prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
-    Promise.resolve(descriptor)
-  ))
+  readFileP.mockResolvedValue(descriptor)
 
   await updateExtension({
     id: 'extension-id',
@@ -165,19 +126,11 @@ test('Updates an extension with parameter definitions ', async () => {
     force: true
   })
 
-  expect(extension.extension).toEqual({
-    name: 'Test Extension',
-    src: 'https://new.extension',
-    fieldTypes: [{type: 'Boolean'}],
-    parameters: {
-      instance: [{id: 'test', type: 'Symbol', name: 'Stringie'}],
-      installation: [{id: 'flag', type: 'Boolean', name: 'Flaggie'}]
-    }
-  })
-  expect(extension.parameters).toEqual({flag: true})
+  expect(log.mock.calls[0][0]).toContain('https://new.extension')
+  expect(log.mock.calls[0][0]).toContain('Boolean')
+  expect(log.mock.calls[0][0]).toContain('Instance: 1')
+  expect(log.mock.calls[0][0]).toContain('Installation: 1')
 
-  expect(updateStub.calledOnce).toBe(true)
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully updated extension:\n`)
-  ).toBe(true)
+  expect(updateStub).toHaveBeenCalledTimes(1)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully updated extension:\n`)
 })
