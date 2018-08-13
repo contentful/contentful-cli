@@ -1,72 +1,65 @@
-import { stub } from 'sinon'
 import inquirer from 'inquirer'
+import opn from 'opn'
 
-import {
-  handler as loginHandler,
-  __RewireAPI__ as loginRewireAPI
-} from '../../../lib/cmds/login'
+import { handler as loginHandler } from '../../../lib/cmds/login'
+import { getContext, setContext } from '../../../lib/context'
+import { confirmation } from '../../../lib/utils/actions'
+
+jest.mock('inquirer')
+jest.mock('opn')
+jest.mock('../../../lib/utils/actions')
+jest.mock('../../../lib/context')
+
 const mockedRcConfig = {
   cmaToken: 'mockedToken'
 }
-const promptStub = stub(inquirer, 'prompt').returns(mockedRcConfig)
-const opnStub = stub()
-const setContextStub = stub().resolves(true)
-const getContextStub = stub().resolves({cmaToken: false})
-
-const confirmationStub = stub().resolves(true)
-
-beforeAll(() => {
-  loginRewireAPI.__Rewire__('inquirer', inquirer)
-  loginRewireAPI.__Rewire__('confirmation', confirmationStub)
-  loginRewireAPI.__Rewire__('opn', opnStub)
-  loginRewireAPI.__Rewire__('setContext', setContextStub)
-  loginRewireAPI.__Rewire__('getContext', getContextStub)
-  loginRewireAPI.__Rewire__('storeRuntimeConfig', stub())
-})
-
-afterAll(() => {
-  loginRewireAPI.__ResetDependency__('inquirer')
-  loginRewireAPI.__ResetDependency__('confirmation')
-  loginRewireAPI.__ResetDependency__('opn')
-  loginRewireAPI.__ResetDependency__('setContext')
-  loginRewireAPI.__ResetDependency__('getContext')
-  loginRewireAPI.__ResetDependency__('storeRuntimeConfig')
-})
+inquirer.prompt.mockResolvedValue(mockedRcConfig)
+setContext.mockResolvedValue(true)
+getContext.mockResolvedValue({ cmaToken: false })
+confirmation.mockResolvedValue(true)
 
 afterEach(() => {
-  confirmationStub.resetHistory()
-  promptStub.resetHistory()
-  opnStub.resetHistory()
-  setContextStub.resetHistory()
-  getContextStub.resetHistory()
+  inquirer.prompt.mockClear()
+  opn.mockClear()
+  confirmation.mockClear()
+  setContext.mockClear()
+  getContext.mockClear()
 })
 
 test('login - without error', async () => {
-  await loginHandler()
+  const result = await loginHandler()
+  console.log({result})
 
-  expect(confirmationStub.calledOnce).toBe(true)
-  expect(setContextStub.called).toBe(true)
-  expect(setContextStub.args[0][0]).toEqual(mockedRcConfig)
+  if (['win32', 'darwin'].includes(process.platform)) {
+    expect(opn).toHaveBeenCalled()
+  }
+  expect(confirmation).toHaveBeenCalledTimes(1)
+  expect(inquirer.prompt).toHaveBeenCalledTimes(1)
+  expect(setContext).toHaveBeenCalledTimes(1)
+  expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)
+  expect(result).toBe(mockedRcConfig.cmaToken)
 })
 
 test('login - user abort', async () => {
-  confirmationStub.resolves(false)
+  confirmation.mockResolvedValueOnce(false)
 
   await loginHandler()
 
-  expect(getContextStub.called).toBe(true)
-  expect(confirmationStub.called).toBe(true)
-  // this depends on process.platform
-  // t.true(opnStub.notCalled, 'did not try to open a browser')
-  expect(setContextStub.notCalled).toBe(true)
-  confirmationStub.resolves(true)
+  expect(getContext).toHaveBeenCalled()
+  expect(confirmation).toHaveBeenCalled()
+  if (['win32', 'darwin'].includes(process.platform)) {
+    expect(opn).not.toHaveBeenCalled()
+  }
+  expect(setContext).not.toHaveBeenCalled()
+  expect(inquirer.prompt).not.toHaveBeenCalled()
 })
 
 test('login - already logged in', async () => {
-  getContextStub.resolves({cmaToken: 'alreadyLoggedIn'})
+  getContext.mockResolvedValueOnce({ cmaToken: 'alreadyLoggedIn' })
+
   await loginHandler()
 
-  expect(opnStub.notCalled).toBe(true)
-  expect(setContextStub.notCalled).toBe(true)
-  expect(promptStub.notCalled).toBe(true)
+  expect(opn).not.toHaveBeenCalled()
+  expect(setContext).not.toHaveBeenCalled()
+  expect(inquirer.prompt).not.toHaveBeenCalled()
 })
