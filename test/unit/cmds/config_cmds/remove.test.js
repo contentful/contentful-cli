@@ -5,6 +5,7 @@ import {
   storeRuntimeConfig
 } from '../../../../lib/context'
 import { success } from '../../../../lib/utils/log'
+import { successEmoji } from '../../../../lib/utils/emojis'
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
@@ -15,5 +16,5 @@ storeRuntimeConfig.mockResolvedValue()
 test('config remove command', async () => {
   await removeHandler({proxy: true})
   expect(setContext.mock.calls[0][0]).toEqual({cmaToken: 'cmaToken'})
-  expect(success).toHaveBeenCalledWith('✨  config removed successfully')
+  expect(success).toHaveBeenCalledWith(`${successEmoji} config removed successfully`)
 })

@@ -5,6 +5,7 @@ import {
   storeRuntimeConfig
 } from '../../../../lib/context'
 import { success } from '../../../../lib/utils/log'
+import { successEmoji } from '../../../../lib/utils/emojis'
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
@@ -24,5 +25,5 @@ test('config add command', async () => {
     }
   }
   expect(setContext.mock.calls[0][0].proxy).toEqual(expectedProxy)
-  expect(success).toHaveBeenCalledWith('✨  config added successfully')
+  expect(success).toHaveBeenCalledWith(`${successEmoji} config removed successfully`)
 })
