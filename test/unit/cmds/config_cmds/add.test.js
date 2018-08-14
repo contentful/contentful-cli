@@ -25,5 +25,5 @@ test('config add command', async () => {
     }
   }
   expect(setContext.mock.calls[0][0].proxy).toEqual(expectedProxy)
-  expect(success).toHaveBeenCalledWith(`${successEmoji} config removed successfully`)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} config added successfully`)
 })
