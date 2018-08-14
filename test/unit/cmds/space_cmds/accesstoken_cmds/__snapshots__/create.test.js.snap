@@ -2,8 +2,8 @@
 
 exports[`create access token - fails when not logged in 1`] = `
 "You have to be logged in to do this.
-You can log in via [36mcontentful login[39m
+You can log in via contentful login
 Or provide a managementToken via --management-Token argument"
 `;
 
-exports[`create access token - requires space id 1`] = `"You need to provide a space id. You can pass it via the [36m--space-id[39m parameter or by running [36mcontentful space use[39m"`;
+exports[`create access token - requires space id 1`] = `"You need to provide a space id. You can pass it via the --space-id parameter or by running contentful space use"`;
