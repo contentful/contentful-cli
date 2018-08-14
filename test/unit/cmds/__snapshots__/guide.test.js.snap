@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handles errors correctly in createSpaceStep 1`] = `"Something broke"`;
+
+exports[`handles errors correctly in devServerStep 1`] = `"Something broke"`;
+
+exports[`handles errors correctly in loginStep 1`] = `"Something broke"`;
+
+exports[`handles errors correctly in seedStep 1`] = `"Something broke"`;
+
+exports[`handles errors correctly in setupStep 1`] = `"Something broke"`;
