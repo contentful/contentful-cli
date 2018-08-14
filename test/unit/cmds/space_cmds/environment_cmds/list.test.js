@@ -1,19 +1,18 @@
-import { stub } from 'sinon'
-
-import {
-  environmentList,
-  __RewireAPI__ as environmentListRewireAPI
-} from '../../../../../lib/cmds/space_cmds/environment_cmds/list'
+import { environmentList } from '../../../../../lib/cmds/space_cmds/environment_cmds/list'
 import {
   emptyContext,
   setContext
 } from '../../../../../lib/context'
-import { PreconditionFailedError } from '../../../../../lib/utils/error'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+import { log } from '../../../../../lib/utils/log'
+
+jest.mock('../../../../../lib/utils/contentful-clients')
+jest.mock('../../../../../lib/utils/log')
 
 const environmentData = {
-  name: 'environment name',
+  name: 'mocked environment name',
   sys: {
-    id: 'environmentId',
+    id: 'mockedEnvironmentId',
     status: {
       sys: {
         id: 'ready'
@@ -22,28 +21,21 @@ const environmentData = {
   }
 }
 
-const getEnvironmentsStub = stub().returns({
+const getEnvironmentsStub = jest.fn().mockResolvedValue({
   items: [environmentData]
 })
+
 const fakeClient = {
-  getSpace: stub().returns({
+  getSpace: async () => ({
     getEnvironments: getEnvironmentsStub
   })
 }
-const createManagementClientStub = stub().returns(fakeClient)
-
-beforeAll(() => {
-  environmentListRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-})
-
-afterAll(() => {
-  environmentListRewireAPI.__ResetDependency__('createManagementClient')
-})
+createManagementClient.mockResolvedValue(fakeClient)
 
 afterEach(() => {
-  fakeClient.getSpace.resetHistory()
-  createManagementClientStub.resetHistory()
-  getEnvironmentsStub.resetHistory()
+  createManagementClient.mockClear()
+  getEnvironmentsStub.mockClear()
+  log.mockClear()
 })
 
 test('list environments - requires space id', async () => {
@@ -51,13 +43,9 @@ test('list environments - requires space id', async () => {
   setContext({
     cmaToken: 'mockedToken'
   })
-  try {
-    await expect(environmentList({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-    expect(createManagementClientStub.notCalled).toBe(true)
-    expect(getEnvironmentsStub.notCalled).toBe(true)
-  }
+  await expect(environmentList({})).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(getEnvironmentsStub).not.toHaveBeenCalled()
 })
 
 test('list environments', async () => {
@@ -68,7 +56,9 @@ test('list environments', async () => {
   await environmentList({
     spaceId: 'someSpaceID'
   })
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(getEnvironmentsStub.calledOnce).toBe(true)
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(getEnvironmentsStub).toHaveBeenCalledTimes(1)
+  expect(log.mock.calls[0][0]).toContain(environmentData.name)
+  expect(log.mock.calls[0][0]).toContain(environmentData.sys.id)
+  expect(log.mock.calls[0][0]).toContain(environmentData.sys.status.sys.id)
 })
