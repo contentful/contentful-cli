@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assertLoggedIn when not logged in 1`] = `
+"You have to be logged in to do this.
+You can log in via undefined
+Or provide a managementToken via --management-Token argument"
+`;
+
+exports[`assertSpaceIdProvided when not provided at all 1`] = `"You need to provide a space id. You can pass it via the undefined parameter or by running undefined"`;
