@@ -63,7 +63,6 @@
     "nyc": "^12.0.2",
     "pkg": "^4.3.3",
     "rimraf": "^2.6.1",
-    "sinon": "^6.1.4",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^4.0.0",
     "trevor": "^2.3.0"
