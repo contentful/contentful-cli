@@ -34,8 +34,8 @@
     "test:integration:update": "BABEL_ENV=test jest test/integration/cmds/** --verbose --updateSnapshot",
     "test:integration:watch": "BABEL_ENV=test jest test/integration/cmds/** --verbose --watch",
     "test:simulate-ci": "trevor",
-    "precommit": "npm run lint",
-    "prepush": "npm run test:unit"
+    "precommit": "lint-staged",
+    "prepush": "jest --changedSince master"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
@@ -57,6 +57,7 @@
     "http-proxy": "^1.17.0",
     "husky": "^0.14.3",
     "jest": "^23.4.2",
+    "lint-staged": "^7.2.2",
     "nixt": "^0.5.0",
     "node-zip": "^1.1.1",
     "nodemon": "^1.18.3",
@@ -142,5 +143,8 @@
     "assets": [
       "./node_modules/figlet/fonts/Standard.flf"
     ]
+  },
+  "lint-staged": {
+    "*.js": ["eslint --fix", "git add"]
   }
 }
