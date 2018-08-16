@@ -6,7 +6,7 @@ install:
 script:
   - npm test
   - npm run build
-  - ./test-e2e.sh
+  - ./test-integration.sh
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 notifications:

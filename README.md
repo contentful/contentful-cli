@@ -90,7 +90,7 @@ This may collide with your already globally installed Contentful CLI. Make sure 
 
 ## :robot: Testing
 
-### End-To-End Functional Tests
+### Integration Tests
 
 :warning: Environment variables should be set:
 
@@ -101,7 +101,7 @@ CLI_E2E_ORG_ID = <organization_id>
 
 #### npm:
 ```sh
-npm run test:e2e
+npm run test:integration
 ```
 
 ## :question: Support
