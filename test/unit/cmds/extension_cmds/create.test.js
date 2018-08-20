@@ -48,23 +48,46 @@ beforeEach(() => {
 })
 
 test('Throws error if name is missing', async () => {
-  await expect(createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if field-types is missing', async () => {
-  await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are not provided', async () => {
-  await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are at the same time', async () => {
-  await expect(createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    createExtension({
+      spaceId: 'space',
+      name: 'Widget',
+      environmentId: 'master',
+      fieldTypes: ['Symbol'],
+      src: 'https://awesome.extension',
+      srcdoc: './awesome-extension.html'
+    })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws an error if installation parameters cannot be parsed', async () => {
-  await expect(createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    createExtension({
+      spaceId: 'space',
+      name: 'Widget',
+      fieldTypes: ['Symbol'],
+      src: 'https://awesome.extension',
+      installationParameters: '{"test": lol}'
+    })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Creates extension from command line arguments', async () => {

@@ -10,7 +10,12 @@ import { infoStyle, warningStyle, errorStyle, successStyle } from '../../../lib/
 import { frame, wrap } from '../../../lib/utils/text'
 import { PreconditionFailedError } from '../../../lib/utils/error'
 
-jest.mock('../../../lib/utils/styles', () => ({ infoStyle: jest.fn(), warningStyle: jest.fn(), errorStyle: jest.fn(), successStyle: jest.fn() }))
+jest.mock('../../../lib/utils/styles', () => ({
+  infoStyle: jest.fn(),
+  warningStyle: jest.fn(),
+  errorStyle: jest.fn(),
+  successStyle: jest.fn()
+}))
 jest.mock('../../../lib/utils/text')
 
 afterEach(() => {

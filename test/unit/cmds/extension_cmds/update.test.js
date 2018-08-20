@@ -51,23 +51,33 @@ afterEach(() => {
 })
 
 test('Throws error if id is missing', async () => {
-  await expect(updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if name is missing', async () => {
-  await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if field-types is missing', async () => {
-  await expect(updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    updateExtension({ id: '123', spaceId: 'space', name: 'Widget', src: 'https://awesome.extension', force: true })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  await expect(updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  await expect(updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(
+    updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test(
