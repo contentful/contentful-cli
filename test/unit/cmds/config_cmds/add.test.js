@@ -13,6 +13,13 @@ jest.mock('../../../../lib/utils/log')
 getContext.mockResolvedValue({})
 storeRuntimeConfig.mockResolvedValue()
 
+afterEach(() => {
+  setContext.mockClear()
+  getContext.mockClear()
+  storeRuntimeConfig.mockClear()
+  success.mockClear()
+})
+
 test('config add command', async () => {
   await addHandler({proxy: 'user:password@host:8080'})
   const expectedProxy = {
