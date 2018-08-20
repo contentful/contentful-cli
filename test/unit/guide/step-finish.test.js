@@ -7,6 +7,7 @@ import { createManagementClient } from '../../../lib/utils/contentful-clients'
 
 jest.mock('../../../lib/utils/log')
 jest.mock('../../../lib/utils/contentful-clients')
+jest.spyOn(fs, 'readFileSync')
 
 const guideContext = {
   stepCount: 0,
@@ -27,11 +28,8 @@ createManagementClient.mockResolvedValue({
   })
 })
 
-fs.readFileSync = jest.fn()
-
 afterEach(() => {
   success.mockClear()
-  fs.readFileSync.mockClear()
   guideContext.stepCount = 0
 })
 

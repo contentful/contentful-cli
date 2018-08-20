@@ -208,7 +208,8 @@ test('it generates the filename without content type', async () => {
 })
 
 test('it generates the migration and writes to disk', async () => {
-  fs.writeFileSync = jest.fn()
+  const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync')
+
   getContext.mockResolvedValue({
     cmaToken: 'mockedToken'
   })
@@ -218,7 +219,7 @@ test('it generates the migration and writes to disk', async () => {
   })
 
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
-  const matches = fs.writeFileSync.mock.calls[0][0].match(filenameRegex)
+  const matches = writeFileSyncMock.mock.calls[0][0].match(filenameRegex)
 
   expect(matches[1]).toBe('fooSpace')
   expect(matches[2]).toBe('fooEnv')
@@ -240,5 +241,5 @@ test('it generates the migration and writes to disk', async () => {
   });
 };
 `
-  expect(fs.writeFileSync.mock.calls[0][1]).toBe(expectedContent)
+  expect(writeFileSyncMock.mock.calls[0][1]).toBe(expectedContent)
 })

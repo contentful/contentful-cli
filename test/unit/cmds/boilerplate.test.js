@@ -48,7 +48,8 @@ createManagementClient.mockImplementation(() => ({
 }))
 
 inquirer.prompt.mockResolvedValue({boilerplate: 'mockedBoilerplateId'})
-fs.createWriteStream = jest.fn().mockReturnValue(new streamBuffers.WritableStreamBuffer())
+const createWriteStreamMock = jest.spyOn(fs, 'createWriteStream')
+createWriteStreamMock.mockImplementation(() => new streamBuffers.WritableStreamBuffer())
 
 beforeEach(() => {
   const mockedBoilerplateStream = new streamBuffers.ReadableStreamBuffer()
@@ -78,7 +79,7 @@ test(
       spaceId: mockedSpace.sys.id
     })
     expect(axios.mock.calls).toHaveLength(2)
-    expect(fs.createWriteStream.mock.calls).toHaveLength(1)
+    expect(createWriteStreamMock.mock.calls).toHaveLength(1)
     expect(mockedSpace.createApiKey).toHaveBeenCalled()
   }
 )
