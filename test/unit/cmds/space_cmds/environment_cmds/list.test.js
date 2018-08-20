@@ -1,11 +1,9 @@
 import { environmentList } from '../../../../../lib/cmds/space_cmds/environment_cmds/list'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
+import { getContext } from '../../../../../lib/context'
 import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 import { log } from '../../../../../lib/utils/log'
 
+jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')
 jest.mock('../../../../../lib/utils/log')
 
@@ -32,6 +30,10 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
+})
+
 afterEach(() => {
   createManagementClient.mockClear()
   getEnvironmentsStub.mockClear()
@@ -39,20 +41,12 @@ afterEach(() => {
 })
 
 test('list environments - requires space id', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await expect(environmentList({})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(getEnvironmentsStub).not.toHaveBeenCalled()
 })
 
 test('list environments', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await environmentList({
     spaceId: 'someSpaceID'
   })

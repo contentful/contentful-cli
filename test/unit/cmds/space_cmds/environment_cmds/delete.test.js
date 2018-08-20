@@ -1,10 +1,8 @@
 import { environmentDelete } from '../../../../../lib/cmds/space_cmds/environment_cmds/delete'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
+import { getContext } from '../../../../../lib/context'
 import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 
+jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')
 
 const deleteEnvironmentStub = jest.fn()
@@ -24,6 +22,10 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
+})
+
 afterEach(() => {
   createManagementClient.mockClear()
   createManagementClient.mockClear()
@@ -31,10 +33,6 @@ afterEach(() => {
   deleteEnvironmentStub.mockClear()
 })
 test('delete environment - requires space id', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await expect(environmentDelete({})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(getEnvironmentStub).not.toHaveBeenCalled()
@@ -42,10 +40,6 @@ test('delete environment - requires space id', async () => {
 })
 
 test('delete environment', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await environmentDelete({
     spaceId: 'someSpaceID',
     environmentId: 'someEnvironmentID'

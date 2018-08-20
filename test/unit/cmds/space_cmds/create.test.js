@@ -1,14 +1,11 @@
 import inquirer from 'inquirer'
 
 import { spaceCreate } from '../../../../lib/cmds/space_cmds/create'
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
+import { getContext } from '../../../../lib/context'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
-import { PreconditionFailedError } from '../../../../lib/utils/error'
 
 jest.mock('inquirer')
+jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/contentful-clients')
 
 const getOrganizationsStub = jest.fn().mockResolvedValue({
@@ -34,6 +31,10 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
+})
+
 afterEach(() => {
   fakeClient.createSpace.mockClear()
   createManagementClient.mockClear()
@@ -45,10 +46,6 @@ test('create space with single org user', async () => {
   const spaceData = {
     name: 'space name'
   }
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await spaceCreate(spaceData)
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
@@ -78,10 +75,6 @@ test('create space with multi org user', async () => {
       }
     ]
   })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await spaceCreate(spaceData)
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
@@ -96,10 +89,6 @@ test('create space with passed organization id', async () => {
     name: 'space name',
     organizationId: 'mockedOrganizationId'
   }
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await spaceCreate(spaceData)
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
@@ -110,26 +99,17 @@ test('create space with passed organization id', async () => {
 })
 
 test('create space - fails when not logged in', async () => {
-  emptyContext()
-  setContext({
+  getContext.mockResolvedValueOnce({
     cmaToken: null
   })
-  try {
-    await expect(spaceCreate({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-    expect(createManagementClient).not.toHaveBeenCalled()
-    expect(inquirer.prompt).not.toHaveBeenCalled()
-  }
+  await expect(spaceCreate({})).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(inquirer.prompt).not.toHaveBeenCalled()
 })
 
 test('create space - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create space because of reasons'
   createSpaceStub.mockRejectedValueOnce(new Error(errorMessage))
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await expect(spaceCreate({})).rejects.toThrowError(errorMessage)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
   expect(inquirer.prompt).not.toHaveBeenCalled()

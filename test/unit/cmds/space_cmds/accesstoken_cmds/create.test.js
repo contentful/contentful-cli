@@ -1,10 +1,8 @@
 import { accessTokenCreate } from '../../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
+import { getContext } from '../../../../../lib/context'
 import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 
+jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')
 
 const mockedAccessTokenData = {
@@ -22,6 +20,10 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
+})
+
 afterEach(() => {
   createApiKeyStub.mockClear()
   getApiKeysStub.mockClear()
@@ -31,10 +33,6 @@ afterEach(() => {
 test('create new access token', async () => {
   getApiKeysStub.mockResolvedValue({
     items: []
-  })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
   })
   const result = await accessTokenCreate({
     ...mockedAccessTokenData,
@@ -50,10 +48,6 @@ test('return existing access token', async () => {
   getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
   })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await accessTokenCreate({
     ...mockedAccessTokenData,
     spaceId: 'some-space-id'
@@ -67,8 +61,7 @@ test('create access token - fails when not logged in', async () => {
   getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
   })
-  emptyContext()
-  setContext({
+  getContext.mockResolvedValueOnce({
     cmaToken: null
   })
   await expect(accessTokenCreate({
@@ -82,10 +75,6 @@ test('create access token - requires space id', async () => {
   getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
   })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await expect(accessTokenCreate({})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(createApiKeyStub).not.toHaveBeenCalled()
@@ -94,10 +83,6 @@ test('create access token - requires space id', async () => {
 test('create access token - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create access token because of reasons'
   getApiKeysStub.mockRejectedValueOnce(new Error(errorMessage))
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   await expect(accessTokenCreate({
     spaceId: 'some-space-id'
   })).rejects.toThrowError(errorMessage)

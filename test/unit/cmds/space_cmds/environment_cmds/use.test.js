@@ -56,5 +56,4 @@ test('it writes the environment id to contentfulrc.json', async () => {
   }
   await environmentUse(stubArgv)
   expect(setContext.mock.calls[0][0]).toEqual({ 'activeEnvironmentId': 'test' })
-  // expect(JSON.parse(writeFileStub.mock.calls[0][1]).activeEnvironmentId).toBe('test')
 })

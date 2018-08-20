@@ -2,10 +2,7 @@ import { resolve } from 'path'
 
 import { updateExtension } from '../../../../lib/cmds/extension_cmds/update'
 
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
+import { getContext } from '../../../../lib/context'
 
 import { successEmoji } from '../../../../lib/utils/emojis'
 import { success, log } from '../../../../lib/utils/log'
@@ -13,6 +10,7 @@ import { createManagementClient } from '../../../../lib/utils/contentful-clients
 import { readFileP } from '../../../../lib/utils/fs'
 import readSrcDocFile from '../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file'
 
+jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
 jest.mock('../../../../lib/utils/contentful-clients')
 jest.mock('../../../../lib/utils/fs')
@@ -41,12 +39,9 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
-beforeAll(() => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId'
-  })
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken',
+  activeSpaceId: 'someSpaceId'
 })
 
 afterEach(() => {

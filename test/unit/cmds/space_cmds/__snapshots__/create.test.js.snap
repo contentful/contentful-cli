@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create space - fails when not logged in 1`] = `
+"You have to be logged in to do this.
+You can log in via contentful login
+Or provide a managementToken via --management-Token argument"
+`;

@@ -4,11 +4,12 @@ import streamBuffers from 'stream-buffers'
 import axios from 'axios'
 
 import { downloadBoilerplate } from '../../../lib/cmds/boilerplate'
-import { emptyContext, setContext } from '../../../lib/context'
+import { getContext } from '../../../lib/context'
 import { PreconditionFailedError } from '../../../lib/utils/error'
 
 import {createManagementClient} from '../../../lib/utils/contentful-clients'
 
+jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/contentful-clients')
 jest.mock('axios')
 jest.mock('inquirer')
@@ -65,14 +66,13 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  emptyContext()
   axios.mockClear()
 })
 
 test(
   'successfully downloads boilerplate and generates access token',
   async () => {
-    setContext({
+    getContext.mockResolvedValue({
       cmaToken: 'mocked'
     })
     await downloadBoilerplate({
@@ -85,7 +85,7 @@ test(
 )
 
 test('requires login', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: null
   })
   try {
@@ -96,7 +96,7 @@ test('requires login', async () => {
 })
 
 test('requires spaceId and fails without', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked'
   })
   try {
@@ -107,7 +107,7 @@ test('requires spaceId and fails without', async () => {
 })
 
 test('requires spaceId and accepts it from context', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked',
     activeSpaceId: 'mocked'
   })
@@ -115,7 +115,7 @@ test('requires spaceId and accepts it from context', async () => {
 })
 
 test('requires spaceId and accepts it from argv arguments', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked'
   })
   await expect(() => downloadBoilerplate({
