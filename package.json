@@ -65,6 +65,7 @@
     "rimraf": "^2.6.1",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^4.0.0",
+    "talkback": "^1.6.0",
     "trevor": "^2.3.0"
   },
   "dependencies": {
@@ -85,6 +86,7 @@
     "execa": "^0.10.0",
     "figlet": "^1.2.0",
     "find-up": "^3.0.0",
+    "http-proxy-agent": "^2.1.0",
     "https-proxy-agent": "^2.2.1",
     "inquirer": "^6.0.0",
     "inquirer-select-directory": "^1.1.2",
