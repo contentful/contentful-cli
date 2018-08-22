@@ -12,6 +12,7 @@ Options:
   --name, -n                Name of the space to create               [required]
   --management-token        Contentful management API token             [string]
   --organization-id, --org  Organization owning the new space
+  --default-locale, -l      The default locale of the new space         [string]
 ```
 
 ### Example
