@@ -1,7 +1,12 @@
-import { stub } from 'sinon'
+import seedStep from '../../../lib/guide/step-seed'
+
 import { AbortedError } from '../../../lib/guide/helpers'
-import seedStep,
-{ __RewireAPI__ as seedStepRewireApi} from '../../../lib/guide/step-seed'
+import { confirmation } from '../../../lib/utils/actions'
+import { spaceSeed } from '../../../lib/cmds/space_cmds/seed'
+
+jest.mock('../../../lib/utils/log')
+jest.mock('../../../lib/utils/actions')
+jest.mock('../../../lib/cmds/space_cmds/seed')
 
 const guideContext = {
   stepCount: 0,
@@ -10,39 +15,25 @@ const guideContext = {
     seed: 'test'
   }
 }
-const confirmationStub = stub().resolves(true)
-const spaceSeedStub = stub().resolves()
-
-beforeAll(() => {
-  seedStepRewireApi.__Rewire__('log', stub())
-  seedStepRewireApi.__Rewire__('wrappedLog', stub())
-  seedStepRewireApi.__Rewire__('confirmation', confirmationStub)
-  seedStepRewireApi.__Rewire__('spaceSeed', spaceSeedStub)
-})
+confirmation.mockResolvedValue(true)
 
 afterEach(() => {
-  confirmationStub.resetHistory()
+  confirmation.mockClear()
+  spaceSeed.mockClear()
   guideContext.stepCount = 0
-})
-
-afterAll(() => {
-  seedStepRewireApi.__ResetDependency__('log')
-  seedStepRewireApi.__ResetDependency__('wrappedLog')
-  seedStepRewireApi.__ResetDependency__('confirmation')
-  seedStepRewireApi.__ResetDependency__('spaceSeed')
 })
 
 test('seeds space on successful user confirmation', async () => {
   await seedStep(guideContext)
-  expect(confirmationStub.calledOnce).toBe(true)
-  expect(spaceSeedStub.calledOnce).toBe(true)
+  expect(confirmation).toHaveBeenCalledTimes(1)
+  expect(spaceSeed).toHaveBeenCalledTimes(1)
   const { spaceId, activeGuide: {seed} } = guideContext
-  expect(spaceSeedStub.calledWith({
+  expect(spaceSeed).toHaveBeenCalledWith({
     template: seed,
     spaceId,
     yes: true,
     feature: 'guide'
-  })).toBe(true)
+  })
 })
 
 test('guideContext stepCount incremented', async () => {
@@ -52,7 +43,7 @@ test('guideContext stepCount incremented', async () => {
 })
 
 test('throws AbortedError if user does not confirm', async () => {
-  confirmationStub.resolves(false)
+  confirmation.mockResolvedValue(false)
   await expect(seedStep(guideContext)).rejects.toThrowError(AbortedError)
-  confirmationStub.resolves(true)
+  confirmation.mockResolvedValue(true)
 })

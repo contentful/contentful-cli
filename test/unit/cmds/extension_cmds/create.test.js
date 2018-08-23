@@ -1,31 +1,23 @@
-import { stub } from 'sinon'
 import { resolve } from 'path'
 
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
+import { createExtension } from '../../../../lib/cmds/extension_cmds/create'
+
+import { getContext } from '../../../../lib/context'
 import { successEmoji } from '../../../../lib/utils/emojis'
+import { success, log } from '../../../../lib/utils/log'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+import { readFileP } from '../../../../lib/utils/fs'
+import readSrcDocFile from '../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file'
 
-import {
-  createExtension,
-  __RewireAPI__ as createRewireAPI
-} from '../../../../lib/cmds/extension_cmds/create'
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/utils/fs')
+jest.mock('../../../../lib/utils/contentful-clients')
+jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file')
 
-import {
-  __RewireAPI__ as logRewireAPI
-} from '../../../../lib/cmds/extension_cmds/utils/log-as-table'
+readSrcDocFile.mockImplementation(async (extension) => { extension.srcdoc = '<h1>Sample Extension Content</h1>' })
 
-import {
-  __RewireAPI__ as prepareDataRewireAPI
-} from '../../../../lib/cmds/extension_cmds/utils/prepare-data'
-
-import { ValidationError } from '../../../../lib/utils/error'
-
-const logStub = stub()
-const successStub = stub()
-
-const createUiExtensionStub = stub().resolves({
+const createUiExtensionStub = jest.fn().mockResolvedValue({
   extension: {
     name: 'Widget',
     fieldTypes: [ { type: 'Symbol' } ],
@@ -33,74 +25,69 @@ const createUiExtensionStub = stub().resolves({
   },
   sys: { id: '123', version: 3 }
 })
-const getEnvironmentStub = stub().resolves({
-  createUiExtension: createUiExtensionStub
-})
-beforeAll(() => {
-  const fakeClient = {
-    getSpace: stub().resolves({
-      getEnvironment: getEnvironmentStub
+
+const fakeClient = {
+  getSpace: async () => ({
+    getEnvironment: async () => ({
+      createUiExtension: createUiExtensionStub
     })
-  }
-  const createManagementClientStub = stub().returns(fakeClient)
-
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId'
   })
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
-  createRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  createRewireAPI.__Rewire__('success', successStub)
-  logRewireAPI.__Rewire__('log', logStub)
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken',
+  activeSpaceId: 'someSpaceId'
 })
 
-afterAll(() => {
-  createRewireAPI.__ResetDependency__('createManagementClient')
-  createRewireAPI.__ResetDependency__('success')
-  logRewireAPI.__ResetDependency__('log')
+beforeEach(() => {
+  success.mockClear()
+  log.mockClear()
+  createManagementClient.mockClear()
+  readFileP.mockClear()
 })
 
 test('Throws error if name is missing', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: name')).toBeTruthy()
-  }
+  await expect(
+    createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if field-types is missing', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Missing required properties: field-types')).toBeTruthy()
-  }
+  await expect(
+    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are not provided', async () => {
-  try {
-    expect(createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
-  }
+  await expect(
+    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are at the same time', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', name: 'Widget', environmentId: 'master', fieldTypes: ['Symbol'], src: 'https://awesome.extension', srcdoc: './awesome-extension.html' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(error.message.includes('Must contain exactly one of: src, srcdoc')).toBeTruthy()
-  }
+  await expect(
+    createExtension({
+      spaceId: 'space',
+      name: 'Widget',
+      environmentId: 'master',
+      fieldTypes: ['Symbol'],
+      src: 'https://awesome.extension',
+      srcdoc: './awesome-extension.html'
+    })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws an error if installation parameters cannot be parsed', async () => {
-  try {
-    await expect(createExtension({ spaceId: 'space', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension', installationParameters: '{"test": lol}' })).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(
-      error.message.includes('Could not parse JSON string of installation parameter values')
-    ).toBeTruthy()
-  }
+  await expect(
+    createExtension({
+      spaceId: 'space',
+      name: 'Widget',
+      fieldTypes: ['Symbol'],
+      src: 'https://awesome.extension',
+      installationParameters: '{"test": lol}'
+    })
+  ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Creates extension from command line arguments', async () => {
@@ -111,17 +98,15 @@ test('Creates extension from command line arguments', async () => {
     src: 'https://awesome.extension'
   })
 
-  expect(createUiExtensionStub.calledWith({
+  expect(createUiExtensionStub).toHaveBeenCalledWith({
     extension: {
       name: 'Widget',
       src: 'https://awesome.extension',
       fieldTypes: [{type: 'Symbol'}]
     }
-  })).toBe(true)
-
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-  ).toBe(true)
+  })
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
+  expect(log).toHaveBeenCalledTimes(1)
 })
 
 test('Logs extension data', async () => {
@@ -136,12 +121,10 @@ test('Logs extension data', async () => {
   const values = [ '123', 'Widget', 'Symbol', 'https://awesome.extension' ]
 
   values.forEach(value => {
-    expect(logStub.lastCall.args[0].includes(value)).toBe(true)
+    expect(log.mock.calls[0][0]).toContain(value)
   })
 
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-  ).toBe(true)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
 })
 
 test('Creates extension with values from descriptor file', async () => {
@@ -151,23 +134,19 @@ test('Creates extension with values from descriptor file', async () => {
     "src": "https://new.extension"
   }`
 
-  prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
-    Promise.resolve(descriptor)
-  ))
+  readFileP.mockResolvedValue(descriptor)
 
   await createExtension({ descriptor: 'test.json' })
 
-  expect(createUiExtensionStub.calledWith({
+  expect(createUiExtensionStub).toHaveBeenCalledWith({
     extension: {
       name: 'Test Extension',
       src: 'https://new.extension',
       fieldTypes: [{type: 'Boolean'}]
     }
-  })).toBe(true)
+  })
 
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-  ).toBe(true)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
 })
 
 test(
@@ -183,13 +162,11 @@ test(
       }
     }`
 
-    prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
-      Promise.resolve(descriptor)
-    ))
+    readFileP.mockResolvedValue(descriptor)
 
     await createExtension({ descriptor: 'x.json', installationParameters: JSON.stringify({flag: true}) })
 
-    expect(createUiExtensionStub.calledWith({
+    expect(createUiExtensionStub).toHaveBeenCalledWith({
       extension: {
         name: 'Test Extension',
         src: 'https://new.extension',
@@ -200,11 +177,9 @@ test(
         }
       },
       parameters: {flag: true}
-    })).toBe(true)
+    })
 
-    expect(
-      successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-    ).toBe(true)
+    expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
   }
 )
 
@@ -217,23 +192,19 @@ test(
       "src": "https://new.extension"
     }`
 
-    prepareDataRewireAPI.__Rewire__('readFileP', stub().returns(
-      Promise.resolve(descriptor)
-    ))
+    readFileP.mockResolvedValue(descriptor)
 
     await createExtension({ descriptor: 'test.json', srcdoc: resolve(__dirname, 'sample-extension.html') })
 
-    expect(createUiExtensionStub.calledWith({
+    expect(createUiExtensionStub).toHaveBeenCalledWith({
       extension: {
         name: 'Test Extension',
-        srcdoc: '<h1>Sample Extension Content</h1>\n',
+        srcdoc: '<h1>Sample Extension Content</h1>',
         fieldTypes: [{type: 'Boolean'}]
       }
-    })).toBe(true)
+    })
 
-    expect(
-      successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-    ).toBe(true)
+    expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
   }
 )
 
@@ -246,15 +217,13 @@ test('Creates extension and reads srcdoc from disk', async () => {
     srcdoc: resolve(__dirname, 'sample-extension.html')
   })
 
-  expect(createUiExtensionStub.calledWith({
+  expect(createUiExtensionStub).toHaveBeenCalledWith({
     extension: {
       name: 'Widget',
-      srcdoc: '<h1>Sample Extension Content</h1>\n',
+      srcdoc: '<h1>Sample Extension Content</h1>',
       fieldTypes: [{type: 'Symbol'}]
     }
-  })).toBe(true)
+  })
 
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully created extension:\n`)
-  ).toBe(true)
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
 })

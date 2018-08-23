@@ -1,6 +1,4 @@
 import recast from 'recast'
-import { stub } from 'sinon'
-import { __RewireAPI__ as contextRewireAPI } from '../../../../../lib/context'
 
 import {
   ctNameNeedsEscaping,
@@ -11,9 +9,14 @@ import {
   changeEditorInterface,
   generateMigrationScript,
   generateFileName,
-  generateMigration,
-  __RewireAPI__ as generateMigrationRewireAPI
+  generateMigration
 } from '../../../../../lib/cmds/space_cmds/generate_cmds/migration'
+import fs from 'fs'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+import { getContext } from '../../../../../lib/context'
+
+jest.mock('../../../../../lib/utils/contentful-clients')
+jest.mock('../../../../../lib/context')
 
 const b = recast.types.builders
 
@@ -67,33 +70,16 @@ const environmentMock = {
   }
 }
 
-const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
+const getEnvironmentStub = jest.fn().mockResolvedValue(environmentMock)
 
-const readFileStub = stub().resolves(MOCKED_RC)
-const writeFileStub = stub()
-const getEnvironmentStub = stub().resolves(environmentMock)
-
-const fsWriteStub = {
-  writeFileSync: stub()
-}
-
-beforeEach(() => {
-  contextRewireAPI.__Rewire__('readFile', readFileStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-  generateMigrationRewireAPI.__Rewire__('getEnvironment', getEnvironmentStub)
-  generateMigrationRewireAPI.__Rewire__('fs', fsWriteStub)
-})
-
-afterAll(() => {
-  contextRewireAPI.__ResetDependency__('readFile')
-  contextRewireAPI.__ResetDependency__('writeFile')
-  generateMigrationRewireAPI.__ResetDependency__('getEnvironment')
-  generateMigrationRewireAPI.__ResetDependency__('fs')
+createManagementClient.mockReturnValue({
+  getSpace: async () => ({
+    getEnvironment: getEnvironmentStub
+  })
 })
 
 afterEach(() => {
-  readFileStub.resetHistory()
-  writeFileStub.resetHistory()
+  getEnvironmentStub.mockClear()
 })
 
 test('it doesnt require escape name when neither starts with number or is reserved', async () => {
@@ -222,13 +208,18 @@ test('it generates the filename without content type', async () => {
 })
 
 test('it generates the migration and writes to disk', async () => {
+  const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync')
+
+  getContext.mockResolvedValue({
+    cmaToken: 'mockedToken'
+  })
   await generateMigration({
     spaceId: 'fooSpace',
     environmentId: 'fooEnv'
   })
 
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
-  const matches = fsWriteStub.writeFileSync.args[0][0].match(filenameRegex)
+  const matches = writeFileSyncMock.mock.calls[0][0].match(filenameRegex)
 
   expect(matches[1]).toBe('fooSpace')
   expect(matches[2]).toBe('fooEnv')
@@ -250,5 +241,5 @@ test('it generates the migration and writes to disk', async () => {
   });
 };
 `
-  expect(fsWriteStub.writeFileSync.args[0][1]).toBe(expectedContent)
+  expect(writeFileSyncMock.mock.calls[0][1]).toBe(expectedContent)
 })

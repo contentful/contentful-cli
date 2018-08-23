@@ -1,90 +1,64 @@
-import { stub } from 'sinon'
-import inquirer from 'inquirer'
-
+import { logout } from '../../../lib/cmds/logout'
 import {
-  logout,
-  __RewireAPI__ as logoutRewireAPI
-} from '../../../lib/cmds/logout'
-import {
-  __RewireAPI__ as actionsRewireAPI
-} from '../../../lib/utils/actions'
-import {
-  emptyContext,
-  setContext,
-  getContext,
-  __RewireAPI__ as contextRewireAPI
+  storeRuntimeConfig,
+  setContext
 } from '../../../lib/context'
+import { assertLoggedIn } from '../../../lib/utils/assertions'
+import { confirmation } from '../../../lib/utils/actions'
+import { log, warning, success } from '../../../lib/utils/log'
 import { PreconditionFailedError } from '../../../lib/utils/error'
 
-const promptStub = stub(inquirer, 'prompt')
-const writeFileStub = stub()
-const logStub = stub()
-const warningStub = stub()
-const successStub = stub()
+jest.mock('../../../lib/context')
+jest.mock('../../../lib/utils/actions')
+jest.mock('../../../lib/utils/log')
+jest.mock('../../../lib/utils/assertions')
 
-beforeAll(() => {
-  actionsRewireAPI.__Rewire__('inquirer', inquirer)
-  logoutRewireAPI.__Rewire__('log', logStub)
-  logoutRewireAPI.__Rewire__('success', successStub)
-  logoutRewireAPI.__Rewire__('warning', warningStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-})
-
-afterAll(() => {
-  actionsRewireAPI.__ResetDependency__('inquirer')
-  logoutRewireAPI.__ResetDependency__('log')
-  logoutRewireAPI.__ResetDependency__('success')
-  logoutRewireAPI.__ResetDependency__('warning')
-  contextRewireAPI.__ResetDependency__('writeFile')
-})
+assertLoggedIn.mockResolvedValue(true)
+setContext.mockResolvedValue(true)
+confirmation.mockResolvedValue(true)
 
 afterEach(() => {
-  promptStub.resetHistory()
-  logStub.resetHistory()
-  successStub.resetHistory()
-  warningStub.resetHistory()
-  writeFileStub.resetHistory()
+  log.mockClear()
+  success.mockClear()
+  warning.mockClear()
+  confirmation.mockClear()
+  setContext.mockClear()
+  assertLoggedIn.mockClear()
+  storeRuntimeConfig.mockClear()
 })
 
 test('logout fails when not logged in', async () => {
-  emptyContext()
-  setContext({})
-  try {
-    await expect(logout({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-    expect(warningStub.callCount).toBe(0)
-    expect(promptStub.callCount).toBe(0)
-    expect(successStub.callCount).toBe(0)
-    expect(logStub.callCount).toBe(0)
-    expect(writeFileStub.callCount).toBe(0)
-  }
+  assertLoggedIn.mockRejectedValueOnce(new PreconditionFailedError())
+  await expect(logout({})).rejects.toThrowError(PreconditionFailedError)
+  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
+  expect(warning).not.toHaveBeenCalled()
+  expect(success).not.toHaveBeenCalled()
+  expect(log).not.toHaveBeenCalled()
+  expect(setContext).not.toHaveBeenCalled()
+  expect(storeRuntimeConfig).not.toHaveBeenCalled()
 })
 
 test('logout is actually logging out', async () => {
-  promptStub.onCall(0).returns({ready: true})
-  emptyContext()
-  setContext({ cmaToken: 'mockedToken' })
+  confirmation.mockResolvedValueOnce(true)
   await logout({})
-  const context = await getContext()
-  expect(warningStub.callCount).toBe(1)
-  expect(promptStub.callCount).toBe(1)
-  expect(successStub.callCount).toBe(1)
-  expect(logStub.callCount).toBe(0)
-  expect(context.cmaToken).toBeFalsy()
-  expect(writeFileStub.args[0][1]).toBe(JSON.stringify({ cmaToken: null }, null, 2) + '\n')
+  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
+  expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
+  expect(confirmation).toHaveBeenCalledTimes(1)
+  expect(success).toHaveBeenCalledWith('Successfully logged you out.')
+  expect(log).not.toHaveBeenCalled()
+  expect(setContext).toHaveBeenCalledTimes(1)
+  expect(setContext.mock.calls[0][0]).toMatchObject({ cmaToken: null })
+  expect(storeRuntimeConfig).toHaveBeenCalledTimes(1)
 })
 
 test('logout is abortable', async () => {
-  promptStub.onCall(0).returns({ready: false})
-  emptyContext()
-  setContext({ cmaToken: 'mockedToken' })
+  confirmation.mockResolvedValueOnce(false)
   await logout({})
-  const context = await getContext()
-  expect(warningStub.callCount).toBe(1)
-  expect(promptStub.callCount).toBe(1)
-  expect(successStub.callCount).toBe(0)
-  expect(writeFileStub.callCount).toBe(0)
-  expect(logStub.callCount).toBe(1)
-  expect(context.cmaToken).toBeTruthy()
+  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
+  expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
+  expect(confirmation).toHaveBeenCalledTimes(1)
+  expect(log).toHaveBeenCalledWith('Log out aborted by user.')
+  expect(success).not.toHaveBeenCalled()
+  expect(setContext).not.toHaveBeenCalled()
+  expect(storeRuntimeConfig).not.toHaveBeenCalled()
 })

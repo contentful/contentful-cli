@@ -1,40 +1,29 @@
-import { stub } from 'sinon'
 import { AbortedError } from '../../../lib/guide/helpers'
-import createSpaceStep,
-{ __RewireAPI__ as createSpaceStepRewireApi} from '../../../lib/guide/step-create-space'
+import createSpaceStep from '../../../lib/guide/step-create-space'
+import { confirmation } from '../../../lib/utils/actions'
+import { spaceCreate } from '../../../lib/cmds/space_cmds/create'
+
+jest.mock('../../../lib/utils/log')
+jest.mock('../../../lib/utils/actions')
+jest.mock('../../../lib/cmds/space_cmds/create')
 
 const guideContext = {stepCount: 0, activeGuide: {name: 'test'}}
 const fakeSpace = {sys: {id: '100abc'}}
-const confirmationStub = stub().resolves(true)
-const spaceCreateStub = stub().resolves(fakeSpace)
 
-beforeAll(() => {
-  createSpaceStepRewireApi.__Rewire__('confirmation', confirmationStub)
-  createSpaceStepRewireApi.__Rewire__('spaceCreate', spaceCreateStub)
-  createSpaceStepRewireApi.__Rewire__('wrappedLog', stub())
-  createSpaceStepRewireApi.__Rewire__('log', stub())
-})
+confirmation.mockResolvedValue(true)
+spaceCreate.mockResolvedValue(fakeSpace)
 
 afterEach(() => {
-  confirmationStub.resetHistory()
-  spaceCreateStub.resetHistory()
+  confirmation.mockClear()
+  spaceCreate.mockClear()
   guideContext.stepCount = 0
-})
-
-afterAll(() => {
-  createSpaceStepRewireApi.__ResetDependency__('confirmation')
-  createSpaceStepRewireApi.__ResetDependency__('spaceCreate')
-  createSpaceStepRewireApi.__ResetDependency__('wrappedLog')
-  createSpaceStepRewireApi.__ResetDependency__('log')
 })
 
 test('creates space on successful user confirmation', async () => {
   await createSpaceStep(guideContext)
-  expect(confirmationStub.calledOnce).toBe(true)
-  expect(spaceCreateStub.calledOnce).toBe(true)
-  expect(
-    spaceCreateStub.calledWith({name: guideContext.activeGuide.name, feature: 'guide'})
-  ).toBe(true)
+  expect(confirmation).toHaveBeenCalledTimes(1)
+  expect(spaceCreate).toHaveBeenCalledTimes(1)
+  expect(spaceCreate).toHaveBeenCalledWith({ name: guideContext.activeGuide.name, feature: 'guide' })
 })
 
 test('guideContext stepCount incremented', async () => {
@@ -49,9 +38,6 @@ test('guideContext spaceId gets set after spaceCreation', async () => {
 })
 
 test('throws AbortedError if user does not confirm', async () => {
-  confirmationStub.resolves(false)
-  try {
-    await expect(createSpaceStep(guideContext)).rejects.toThrowError(AbortedError)
-  } catch (e) {}
-  confirmationStub.resolves(true)
+  confirmation.mockResolvedValueOnce(false)
+  await expect(createSpaceStep(guideContext)).rejects.toThrowError(AbortedError)
 })

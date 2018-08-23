@@ -42,7 +42,6 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.26.3",
     "babel-plugin-istanbul": "^4.1.6",
-    "babel-plugin-rewire": "^1.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.24.1",
@@ -64,7 +63,6 @@
     "nyc": "^12.0.2",
     "pkg": "^4.3.3",
     "rimraf": "^2.6.1",
-    "sinon": "^6.1.4",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^4.0.0",
     "trevor": "^2.3.0"

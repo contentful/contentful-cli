@@ -1,8 +1,6 @@
-import { stub, spy } from 'sinon'
-
 import { handleAsyncError } from '../../../lib/utils/async'
 
-const exitStub = stub()
+const exitStub = jest.fn()
 let originalExit = null
 
 beforeAll(() => {
@@ -15,38 +13,35 @@ afterAll(() => {
 })
 
 test('handleAsyncError (success)', async () => {
-  const asyncFn = stub().resolves('value')
-  const errorHandler = spy()
+  const asyncFn = jest.fn().mockResolvedValue('value')
+  const errorHandler = jest.fn()
 
   const handlerFn = handleAsyncError(asyncFn, errorHandler)
   expect(typeof handlerFn).toBe('function')
 
   const handlerValue = handlerFn({ value: 'foo' })
-  expect(handlerValue instanceof Promise).toBe(true)
 
   const returnValue = await handlerValue
   expect(returnValue).toBe('value')
 
-  expect(errorHandler.notCalled).toBe(true)
+  expect(errorHandler).not.toHaveBeenCalled()
 })
 
 test('handleAsyncError (failure)', async () => {
   const error = new Error('error message')
-  const asyncFn = stub().rejects(error)
-  const errorHandler = spy()
+  const asyncFn = jest.fn().mockRejectedValue(error)
+  const errorHandler = jest.fn()
 
   const handlerFn = handleAsyncError(asyncFn, errorHandler)
   expect(typeof handlerFn).toBe('function')
 
   const handlerValue = handlerFn({ value: 'foo' })
-  expect(() => handlerFn({ value: 'foo' })).not.toThrow()
-  expect(handlerValue instanceof Promise).toBe(true)
 
   await handlerValue
 
-  expect(errorHandler.callCount > 0).toBe(true)
-  expect(errorHandler.calledWith(error)).toBe(true)
+  expect(errorHandler).toHaveBeenCalled()
+  expect(errorHandler).toHaveBeenCalledWith(error)
 
-  expect(exitStub.callCount > 0).toBe(true)
-  expect(exitStub.calledWith(1)).toBe(true)
+  expect(exitStub).toHaveBeenCalled()
+  expect(exitStub).toHaveBeenCalledWith(1)
 })

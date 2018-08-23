@@ -1,61 +1,47 @@
-import { stub } from 'sinon'
 import { resolve } from 'path'
 import { homedir } from 'os'
-import { writeFile, unlink } from 'mz/fs'
 
-import {
-  getConfigPath,
-  getContext,
-  setContext,
-  emptyContext,
-  storeRuntimeConfig,
-  __RewireAPI__ as contextRewireAPI
-} from '../../lib/context'
-
+const customConfigPath = resolve(process.cwd(), '.contentfulrc.json')
+const homeConfigPath = resolve(homedir(), '.contentfulrc.json')
 const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
-
 const enoent = new Error()
 enoent.code = 'ENOENT'
-const readFileStub = stub().rejects(enoent)
-const writeFileStub = stub()
 
-beforeAll(() => {
-  contextRewireAPI.__Rewire__('readFile', readFileStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-})
-
-afterAll(() => {
-  contextRewireAPI.__ResetDependency__('readFile')
-  contextRewireAPI.__ResetDependency__('writeFile')
-})
-
-afterEach(() => {
-  readFileStub.resetHistory()
-  writeFileStub.resetHistory()
+beforeEach(() => {
+  jest.resetModules()
 })
 
 test('locates correct config file path', async () => {
-  const testFilePath = process.cwd() + '/.contentfulrc.json'
-  await writeFile(testFilePath, 'test rc file')
-  expect(await getConfigPath()).toBe(testFilePath)
-  return unlink(testFilePath)
+  jest.mock('find-up')
+  const { getConfigPath } = require('../../lib/context')
+  const findUp = require('find-up')
+  findUp.mockResolvedValueOnce(customConfigPath)
+
+  const configPath = await getConfigPath()
+  expect(configPath).toBe(customConfigPath)
 })
 
 test('uses home directory as config file path if none is found', async () => {
-  const findUpStub = stub().returns(null)
-  contextRewireAPI.__Rewire__('findUp', findUpStub)
-  contextRewireAPI.__Rewire__('configPath', null)
+  jest.mock('find-up')
+  const { getConfigPath } = require('../../lib/context')
+
   const configPath = await getConfigPath()
-  expect(configPath).toBe(resolve(homedir(), '.contentfulrc.json'))
-  contextRewireAPI.__ResetDependency__('findUp')
+  expect(configPath).toBe(homeConfigPath)
 })
 
 test('loading, writing, setting and getting context & rc', async () => {
+  jest.mock('find-up')
+  jest.mock('mz/fs')
+  const { readFile, writeFile } = require('mz/fs')
+  readFile.mockRejectedValue(enoent)
+
+  const { getContext, setContext, storeRuntimeConfig } = require('../../lib/context')
+
   let context = await getContext()
   let contextSize = Object.keys(context).length
 
   expect(contextSize).toBe(0)
-  expect(readFileStub.calledOnce).toBe(true)
+  expect(readFile).toHaveBeenCalledTimes(1)
 
   setContext({ newValue: true })
   context = await getContext()
@@ -67,45 +53,67 @@ test('loading, writing, setting and getting context & rc', async () => {
   setContext(JSON.parse(MOCKED_RC))
   await storeRuntimeConfig()
 
-  expect(writeFileStub.calledOnce).toBe(true)
-  expect(writeFileStub.args[0][0]).toBe(await getConfigPath())
-  expect(writeFileStub.args[0][1]).toBe(MOCKED_RC)
+  expect(writeFile).toHaveBeenCalledTimes(1)
+  expect(writeFile.mock.calls[0][0]).toBe(homeConfigPath)
+  expect(writeFile.mock.calls[0][1]).toBe(MOCKED_RC)
 })
 
 test(
   'loading existing rc config and attaching it to the context',
   async () => {
-    const readFileStub = stub().resolves({ toString: () => MOCKED_RC })
-    contextRewireAPI.__Rewire__('readFile', readFileStub)
-    readFileStub.reset()
-    readFileStub.resolves(MOCKED_RC)
-    emptyContext()
+    jest.mock('find-up')
+    jest.mock('mz/fs')
+    const { readFile } = require('mz/fs')
+    readFile.mockResolvedValue({ toString: () => MOCKED_RC })
+
+    const { getContext } = require('../../lib/context')
 
     let context = await getContext()
     let contextSize = Object.keys(context).length
 
     expect(contextSize).toBe(2)
     expect(context).toEqual(JSON.parse(MOCKED_RC))
-    contextRewireAPI.__ResetDependency__('readFile')
   }
 )
 
-test('loadProxyFromEnv', () => {
-  const loadProxyFromEnv = contextRewireAPI.__get__('loadProxyFromEnv')
-  let proxy
+test('loadProxyFromEnv', async () => {
+  jest.mock('mz/fs')
+  const { readFile } = require('mz/fs')
+  const { emptyContext, getContext } = require('../../lib/context')
+  readFile.mockResolvedValue({ toString: () => MOCKED_RC })
+  let context
 
-  proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128' })
-  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: false } })
+  function resetEnv () {
+    emptyContext()
+    delete process.env.http_proxy
+    delete process.env.https_proxy
+    delete process.env.HTTP_PROXY
+    delete process.env.HTTPS_PROXY
+  }
 
-  proxy = loadProxyFromEnv({ https_proxy: 'https://127.0.0.1:3128' })
-  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
+  resetEnv()
+  process.env.http_proxy = '127.0.0.1:3128'
+  context = await getContext()
+  expect(context.proxy).toEqual({ host: '127.0.0.1', port: 3128, isHttps: false })
 
-  proxy = loadProxyFromEnv({ HTTP_PROXY: '127.0.0.1:3128' })
-  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: false } })
+  resetEnv()
+  process.env.https_proxy = 'https://127.0.0.1:3128'
+  context = await getContext()
+  expect(context.proxy).toEqual({ host: '127.0.0.1', port: 3128, isHttps: true })
 
-  proxy = loadProxyFromEnv({ HTTPS_PROXY: 'https://127.0.0.1:3128' })
-  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
+  resetEnv()
+  process.env.HTTP_PROXY = '127.0.0.1:3128'
+  context = await getContext()
+  expect(context.proxy).toEqual({ host: '127.0.0.1', port: 3128, isHttps: false })
 
-  proxy = loadProxyFromEnv({ http_proxy: '127.0.0.1:3128', https_proxy: 'https://127.0.0.1:3128' })
-  expect(proxy).toEqual({ proxy: { host: '127.0.0.1', port: 3128, isHttps: true } })
+  resetEnv()
+  process.env.HTTPS_PROXY = 'https://127.0.0.1:3128'
+  context = await getContext()
+  expect(context.proxy).toEqual({ host: '127.0.0.1', port: 3128, isHttps: true })
+
+  resetEnv()
+  process.env.http_proxy = '127.0.0.1:3128'
+  process.env.https_proxy = 'https://127.0.0.1:3128'
+  context = await getContext()
+  expect(context.proxy).toEqual({ host: '127.0.0.1', port: 3128, isHttps: true })
 })

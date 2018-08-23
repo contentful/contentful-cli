@@ -1,14 +1,9 @@
-import { stub } from 'sinon'
+import { environmentCreate } from '../../../../../lib/cmds/space_cmds/environment_cmds/create'
+import { getContext } from '../../../../../lib/context'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 
-import {
-  environmentCreate,
-  __RewireAPI__ as environmentCreateRewireAPI
-} from '../../../../../lib/cmds/space_cmds/environment_cmds/create'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
-import { PreconditionFailedError } from '../../../../../lib/utils/error'
+jest.mock('../../../../../lib/context')
+jest.mock('../../../../../lib/utils/contentful-clients')
 
 const environmentData = {
   name: 'environment name',
@@ -17,73 +12,51 @@ const environmentData = {
   }
 }
 
-const createEnvironmentWithIdStub = stub().returns(environmentData)
+const createEnvironmentWithIdStub = jest.fn().mockResolvedValue(environmentData)
+
 const fakeClient = {
-  getSpace: stub().returns({
+  getSpace: async () => ({
     createEnvironmentWithId: createEnvironmentWithIdStub
   })
 }
-const createManagementClientStub = stub().returns(fakeClient)
+createManagementClient.mockResolvedValue(fakeClient)
 
-beforeAll(() => {
-  environmentCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-})
-
-afterAll(() => {
-  environmentCreateRewireAPI.__ResetDependency__('createManagementClient')
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
 })
 
 afterEach(() => {
-  fakeClient.getSpace.resetHistory()
-  createManagementClientStub.resetHistory()
-  createEnvironmentWithIdStub.resetHistory()
+  createEnvironmentWithIdStub.mockClear()
+  createManagementClient.mockClear()
 })
 
 test('create environment - requires space id', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
-  try {
-    await expect(environmentCreate({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-    expect(createManagementClientStub.notCalled).toBe(true)
-    expect(createEnvironmentWithIdStub.notCalled).toBe(true)
-  }
+  await expect(environmentCreate({})).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(createEnvironmentWithIdStub).not.toHaveBeenCalled()
 })
 
 test('create new environment with id', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await environmentCreate({
     spaceId: 'someSpaceID',
     environmentId: 'test'
   })
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(createEnvironmentWithIdStub.calledOnce).toBe(true)
-  expect(createEnvironmentWithIdStub.args[0][0]).toBe('test')
-  expect(createEnvironmentWithIdStub.args[0][1]).toEqual({})
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createEnvironmentWithIdStub).toHaveBeenCalledTimes(1)
+  expect(createEnvironmentWithIdStub.mock.calls[0][0]).toBe('test')
+  expect(createEnvironmentWithIdStub.mock.calls[0][1]).toEqual({})
 })
 
 test('create new environment with id and name', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await environmentCreate({
     spaceId: 'someSpaceID',
     environmentId: 'test',
     name: 'test'
   })
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(createEnvironmentWithIdStub.calledOnce).toBe(true)
-  expect(createEnvironmentWithIdStub.args[0][0]).toBe('test')
-  expect(createEnvironmentWithIdStub.args[0][1]).toEqual({ name: 'test' })
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createEnvironmentWithIdStub).toHaveBeenCalledTimes(1)
+  expect(createEnvironmentWithIdStub.mock.calls[0][0]).toBe('test')
+  expect(createEnvironmentWithIdStub.mock.calls[0][1]).toEqual({ name: 'test' })
 })

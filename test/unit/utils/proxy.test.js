@@ -1,10 +1,7 @@
 import {
   proxyStringToObject,
-  proxyObjectToString,
-  __get__ as getUnexported
+  proxyObjectToString
 } from '../../../lib/utils/proxy'
-
-const parseAuth = getUnexported('parseAuth')
 
 test('proxyString with basic auth, with protocol', () => {
   const proxyString = 'http://foo:bar@127.0.0.1:8213'
@@ -79,19 +76,26 @@ test('proxyString without auth, without protocol', () => {
 })
 
 test('parseAuth with null (empty auth in url.parse)', () => {
-  const { username, password } = parseAuth(null)
-  expect(username).toBeFalsy()
-  expect(password).toBeFalsy()
+  const proxyString = '127.0.0.1:8213'
+  const parsed = proxyStringToObject(proxyString)
+
+  expect(parsed).not.toHaveProperty('auth')
 })
 
 test('parseAuth with username', () => {
-  const { username, password } = parseAuth('user')
-  expect(username).toBe('user')
-  expect(password).toBeFalsy()
+  const proxyString = 'user@127.0.0.1:8213'
+  const parsed = proxyStringToObject(proxyString)
+
+  expect(parsed).toHaveProperty('auth')
+  expect(parsed.auth.username).toBe('user')
+  expect(parsed.auth.password).toBe(undefined)
 })
 
 test('parseAuth with username & password', () => {
-  const { username, password } = parseAuth('user:53cr37')
-  expect(username).toBe('user')
-  expect(password).toBe('53cr37')
+  const proxyString = 'user:53cr37@127.0.0.1:8213'
+  const parsed = proxyStringToObject(proxyString)
+
+  expect(parsed).toHaveProperty('auth')
+  expect(parsed.auth.username).toBe('user')
+  expect(parsed.auth.password).toBe('53cr37')
 })

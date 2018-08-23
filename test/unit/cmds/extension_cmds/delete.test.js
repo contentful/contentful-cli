@@ -1,75 +1,48 @@
-import { stub } from 'sinon'
+import { deleteExtension } from '../../../../lib/cmds/extension_cmds/delete'
 
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
+import { getContext } from '../../../../lib/context'
 import { successEmoji } from '../../../../lib/utils/emojis'
+import { success } from '../../../../lib/utils/log'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
-import {
-  deleteExtension,
-  __RewireAPI__ as deleteRewireAPI
-} from '../../../../lib/cmds/extension_cmds/delete'
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/utils/contentful-clients')
 
-import { ValidationError } from '../../../../lib/utils/error'
+const deleteStub = jest.fn()
 
-const successStub = stub()
-
-const mockExtension = {
-  delete: stub(),
-  sys: { id: '123', version: 3 }
-}
-const environmentStub = stub().resolves({
-  getUiExtension: stub().resolves(mockExtension)
-})
-beforeAll(() => {
-  const fakeClient = {
-    getSpace: stub().resolves({
-      getEnvironment: environmentStub
+const fakeClient = {
+  getSpace: async () => ({
+    getEnvironment: async () => ({
+      getUiExtension: async () => ({
+        delete: deleteStub,
+        sys: { id: '123', version: 3 }
+      })
     })
-  }
-  const createManagementClientStub = stub().returns(fakeClient)
-
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId'
   })
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
-  deleteRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  deleteRewireAPI.__Rewire__('success', successStub)
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken',
+  activeSpaceId: 'someSpaceId'
 })
 
-afterAll(() => {
-  deleteRewireAPI.__ResetDependency__('createManagementClient')
-  deleteRewireAPI.__ResetDependency__('success')
+beforeEach(() => {
+  success.mockClear()
+  createManagementClient.mockClear()
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  try {
-    await expect(deleteExtension({spaceId: 'space', id: 'test'})).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    console.log(error)
-    expect(
-      error.message.includes('Please provide current version or use the --force flag')
-    ).toBeTruthy()
-  }
+  await expect(deleteExtension({ spaceId: 'space', id: 'test' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  try {
-    await expect(deleteExtension({spaceId: 'space', id: 'test', version: 4})).rejects.toThrowError(ValidationError)
-  } catch (error) {
-    expect(
-      error.message.includes('Version provided does not match current resource version')
-    ).toBeTruthy()
-  }
+  await expect(deleteExtension({ spaceId: 'space', id: 'test', version: 4 })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Logs message if delete is successful', async () => {
   await deleteExtension({spaceId: 'space', id: 'test', force: true})
-  expect(mockExtension.delete.calledOnce).toBe(true)
-  expect(
-    successStub.calledWith(`${successEmoji} Successfully deleted extension with ID test`)
-  ).toBe(true)
+  expect(deleteStub).toHaveBeenCalledTimes(1)
+  expect(success).toHaveBeenLastCalledWith(`${successEmoji} Successfully deleted extension with ID test`)
 })

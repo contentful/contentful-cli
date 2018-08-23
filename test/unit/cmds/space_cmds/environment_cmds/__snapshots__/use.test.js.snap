@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`active space is required 1`] = `"No active space. Please select a space via contentful space use before selecting an active environment."`;
+
+exports[`login is required 1`] = `
+"You have to be logged in to do this.
+You can log in via contentful login
+Or provide a managementToken via --management-Token argument"
+`;

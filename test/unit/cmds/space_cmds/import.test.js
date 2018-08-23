@@ -1,26 +1,14 @@
+import { importSpace } from '../../../../lib/cmds/space_cmds/import'
+
 import { version } from '../../../../package.json'
-import { stub } from 'sinon'
-import {
-  importSpace,
-  __RewireAPI__ as importRewireAPI
-} from '../../../../lib/cmds/space_cmds/import'
+import { getContext } from '../../../../lib/context'
+import contentfulImport from 'contentful-import'
 
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
+jest.mock('../../../../lib/context')
+jest.mock('contentful-import')
 
-const contentfulImportStub = stub().returns(Promise.resolve())
+getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
-beforeAll(() => {
-  setContext({cmaToken: 'managementToken'})
-  importRewireAPI.__Rewire__('runContentfulImport', contentfulImportStub)
-})
-
-afterAll(() => {
-  emptyContext()
-  importRewireAPI.__ResetDependency__('runContentfulImport')
-})
 test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
     skipContentModel: false,
@@ -33,6 +21,6 @@ test('it should pass all args to contentful-import', async () => {
     managementFeature: 'space-import'
   }
   await importSpace(stubArgv)
-  expect(contentfulImportStub.args[0][0]).toEqual(stubArgv)
-  expect(contentfulImportStub.callCount).toBe(1)
+  expect(contentfulImport.mock.calls[0][0]).toEqual(stubArgv)
+  expect(contentfulImport).toHaveBeenCalledTimes(1)
 })

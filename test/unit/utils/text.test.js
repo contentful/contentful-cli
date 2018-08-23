@@ -1,6 +1,5 @@
-import { spy } from 'sinon'
 import wrapAnsi from 'wrap-ansi'
-import figlet from 'figlet'
+import { textSync } from 'figlet'
 import stripAnsi from 'strip-ansi'
 
 import {
@@ -8,26 +7,18 @@ import {
   frame,
   asciiText,
   separator,
-  DEFAULT_COLUMNS,
-  __RewireAPI__ as textRewireAPI
+  DEFAULT_COLUMNS
 } from '../../../lib/utils/text'
 
-const wrapAnsiSpy = spy(wrapAnsi)
-const textSyncSpy = spy(figlet, 'textSync')
-
-beforeAll(() => {
-  textRewireAPI.__Rewire__('wrapAnsi', wrapAnsiSpy)
-  textRewireAPI.__Rewire__('figlet', figlet)
-})
-
-afterAll(() => {
-  textRewireAPI.__ResetDependency__('wrapAnsi')
-  textRewireAPI.__ResetDependency__('figlet')
-})
+jest.mock('figlet')
+jest.mock('wrap-ansi', () => jest.fn().mockImplementation((...args) => {
+  const wrapAnsi = require.requireActual('wrap-ansi')
+  return wrapAnsi(...args)
+}))
 
 afterEach(() => {
-  wrapAnsiSpy.resetHistory()
-  textSyncSpy.resetHistory()
+  wrapAnsi.mockClear()
+  textSync.mockClear()
 })
 
 test('wrap', () => {
@@ -35,13 +26,13 @@ test('wrap', () => {
   const longSingleWord = Array(charactersForTwoLines).join('x')
   const resultSingleWord = wrap(longSingleWord)
   expect(resultSingleWord.length).toBe(longSingleWord.length)
-  expect(wrapAnsiSpy.callCount).toBe(1)
-  wrapAnsiSpy.resetHistory()
+  expect(wrapAnsi).toHaveBeenCalledTimes(1)
+  wrapAnsi.mockClear()
 
   const longWords = Array(20).join('x ')
   const longWordsResult = wrap(longWords, 20)
   expect(longWordsResult).toBe('x x x x x x x x x x \nx x x x x x x x x ')
-  expect(wrapAnsiSpy.callCount).toBe(1)
+  expect(wrapAnsi).toHaveBeenCalledTimes(1)
 })
 
 test('frame - full width', () => {
@@ -62,8 +53,8 @@ test('frame - inline', () => {
 
 test('asciiText', () => {
   asciiText('some text')
-  expect(textSyncSpy.callCount).toBe(1)
-  expect(textSyncSpy.args[0][0]).toBe('some text')
+  expect(textSync).toHaveBeenCalledTimes(1)
+  expect(textSync.mock.calls[0][0]).toBe('some text')
 })
 
 test('separator', () => {

@@ -1,25 +1,14 @@
+import { exportSpace } from '../../../../lib/cmds/space_cmds/export'
+
 import { version } from '../../../../package.json'
-import { stub } from 'sinon'
-import {
-  exportSpace,
-  __RewireAPI__ as exportRewireAPI
-} from '../../../../lib/cmds/space_cmds/export'
+import { getContext } from '../../../../lib/context'
+import contentfulExport from 'contentful-export'
 
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
-const contentfulExportStub = stub().returns(Promise.resolve())
+jest.mock('../../../../lib/context')
+jest.mock('contentful-export')
 
-beforeAll(() => {
-  setContext({cmaToken: 'managementToken'})
-  exportRewireAPI.__Rewire__('runContentfulExport', contentfulExportStub)
-})
+getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
-afterAll(() => {
-  emptyContext()
-  exportRewireAPI.__ResetDependency__('runContentfulExport')
-})
 test('it should pass all args to contentful-export', async () => {
   const stubArgv = {
     spaceId: 'spaceId',
@@ -37,6 +26,6 @@ test('it should pass all args to contentful-export', async () => {
     managementFeature: 'space-export'
   }
   await exportSpace(stubArgv)
-  expect(contentfulExportStub.args[0][0]).toEqual(stubArgv)
-  expect(contentfulExportStub.callCount).toBe(1)
+  expect(contentfulExport.mock.calls[0][0]).toEqual(stubArgv)
+  expect(contentfulExport).toHaveBeenCalledTimes(1)
 })

@@ -1,35 +1,23 @@
-import { stub } from 'sinon'
-import inquirer from 'inquirer'
+import { confirmation } from '../../../lib/utils/actions'
 
-import {
-  confirmation,
-  __RewireAPI__ as actionsRewireAPI
-} from '../../../lib/utils/actions'
+import { prompt } from 'inquirer'
 
-const promptStub = stub(inquirer, 'prompt')
-
-beforeAll(() => {
-  actionsRewireAPI.__Rewire__('inquirer', inquirer)
-})
-
-afterAll(() => {
-  actionsRewireAPI.__ResetDependency__('inquirer')
-})
+jest.mock('inquirer')
 
 afterEach(() => {
-  promptStub.reset()
+  prompt.mockClear()
 })
 
 test('confirmation continues after user accepted', async () => {
-  promptStub.onCall(0).resolves({ ready: true })
+  prompt.mockResolvedValue({ ready: true })
   const confirmationResult = await confirmation()
-  expect(promptStub.callCount).toBe(1)
+  expect(prompt).toHaveBeenCalledTimes(1)
   expect(confirmationResult).toBe(true)
 })
 
 test('confirmation is asked again when user denies', async () => {
-  promptStub.onCall(0).resolves({ ready: false })
+  prompt.mockResolvedValue({ ready: false })
   const confirmationResult = await confirmation()
-  expect(promptStub.callCount).toBe(1)
+  expect(prompt).toHaveBeenCalledTimes(1)
   expect(confirmationResult).toBe(false)
 })

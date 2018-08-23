@@ -1,20 +1,18 @@
-import { stub } from 'sinon'
+import fs from 'fs'
 import inquirer from 'inquirer'
 import streamBuffers from 'stream-buffers'
+import axios from 'axios'
 
-import {
-  downloadBoilerplate,
-  __RewireAPI__ as boilerplateRewireAPI
-} from '../../../lib/cmds/boilerplate'
-import {
-  __RewireAPI__ as accessTokenCreateRewireAPI
-} from '../../../lib/cmds/space_cmds/accesstoken_cmds/create'
-import {
-  emptyContext,
-  setContext,
-  __RewireAPI__ as contextRewireAPI
-} from '../../../lib/context'
+import { downloadBoilerplate } from '../../../lib/cmds/boilerplate'
+import { getContext } from '../../../lib/context'
 import { PreconditionFailedError } from '../../../lib/utils/error'
+
+import {createManagementClient} from '../../../lib/utils/contentful-clients'
+
+jest.mock('../../../lib/context')
+jest.mock('../../../lib/utils/contentful-clients')
+jest.mock('axios')
+jest.mock('inquirer')
 
 const mockedBoilerplate = {
   sys: {
@@ -33,89 +31,61 @@ const mockedSpace = {
   sys: {
     id: 'mockedSpaceId'
   },
-  getApiKeys: stub().returns({
+  getApiKeys: jest.fn().mockImplementation(() => ({
     items: [
       mockedApiKey
     ]
-  }),
-  createApiKey: stub().returns(mockedApiKey)
+  })),
+  createApiKey: jest.fn().mockImplementation(() => mockedApiKey)
 }
-const fakeClient = {
-  getSpace: stub().returns(mockedSpace),
-  getApiKeys: stub().returns([{
+
+createManagementClient.mockImplementation(() => ({
+  getSpace: jest.fn(() => mockedSpace),
+  getApiKeys: jest.fn(() => [{
     name: 'Mocked access token',
     description: 'Mocked access token',
     accessToken: 'mockedaccesstoken'
   }])
-}
-const createManagementClientStub = stub().returns(fakeClient)
-const promptStub = stub(inquirer, 'prompt').returns({boilerplate: mockedBoilerplate.sys.id})
-const writeFileStub = stub()
-const statStub = stub().rejects()
-const axiosStub = stub()
-const createWriteStreamStub = stub().callsFake(() => new streamBuffers.WritableStreamBuffer())
+}))
 
-beforeAll(() => {
-  accessTokenCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  boilerplateRewireAPI.__Rewire__('inquirer', inquirer)
-  boilerplateRewireAPI.__Rewire__('axios', axiosStub)
-  boilerplateRewireAPI.__Rewire__('createWriteStream', createWriteStreamStub)
-  contextRewireAPI.__Rewire__('stat', statStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-})
+inquirer.prompt.mockResolvedValue({boilerplate: 'mockedBoilerplateId'})
+const createWriteStreamMock = jest.spyOn(fs, 'createWriteStream')
+createWriteStreamMock.mockImplementation(() => new streamBuffers.WritableStreamBuffer())
 
 beforeEach(() => {
-  emptyContext()
-  axiosStub.reset()
-  axiosStub.onCall(0).resolves({
+  const mockedBoilerplateStream = new streamBuffers.ReadableStreamBuffer()
+  mockedBoilerplateStream.stop()
+  axios.mockResolvedValueOnce({
     data: {
       items: [mockedBoilerplate]
     }
   })
-  const mockedBoilerplateStream = new streamBuffers.ReadableStreamBuffer()
-  mockedBoilerplateStream.stop()
-  axiosStub.onCall(1).resolves({
+  axios.mockResolvedValueOnce({
     data: mockedBoilerplateStream
   })
 })
 
-afterAll(() => {
-  accessTokenCreateRewireAPI.__ResetDependency__('createClient')
-  boilerplateRewireAPI.__ResetDependency__('inquirer')
-  boilerplateRewireAPI.__ResetDependency__('createManagementClient')
-  boilerplateRewireAPI.__ResetDependency__('axios')
-  boilerplateRewireAPI.__ResetDependency__('createWriteStream')
-  contextRewireAPI.__ResetDependency__('stat')
-  contextRewireAPI.__ResetDependency__('writeFile')
-})
-
 afterEach(() => {
-  fakeClient.getSpace.resetHistory()
-  mockedSpace.getApiKeys.resetHistory()
-  mockedSpace.createApiKey.resetHistory()
-  axiosStub.resetHistory()
-  promptStub.resetHistory()
-  statStub.resetHistory()
-  writeFileStub.resetHistory()
+  axios.mockClear()
 })
 
 test(
   'successfully downloads boilerplate and generates access token',
   async () => {
-    setContext({
+    getContext.mockResolvedValue({
       cmaToken: 'mocked'
     })
     await downloadBoilerplate({
       spaceId: mockedSpace.sys.id
     })
-    expect(axiosStub.callCount).toBe(2)
-    expect(createWriteStreamStub.callCount).toBe(1)
-    expect(mockedSpace.createApiKey.called).toBe(true)
+    expect(axios.mock.calls).toHaveLength(2)
+    expect(createWriteStreamMock.mock.calls).toHaveLength(1)
+    expect(mockedSpace.createApiKey).toHaveBeenCalled()
   }
 )
 
 test('requires login', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: null
   })
   try {
@@ -126,7 +96,7 @@ test('requires login', async () => {
 })
 
 test('requires spaceId and fails without', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked'
   })
   try {
@@ -137,7 +107,7 @@ test('requires spaceId and fails without', async () => {
 })
 
 test('requires spaceId and accepts it from context', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked',
     activeSpaceId: 'mocked'
   })
@@ -145,7 +115,7 @@ test('requires spaceId and accepts it from context', async () => {
 })
 
 test('requires spaceId and accepts it from argv arguments', async () => {
-  setContext({
+  getContext.mockResolvedValue({
     cmaToken: 'mocked'
   })
   await expect(() => downloadBoilerplate({

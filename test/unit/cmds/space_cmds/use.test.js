@@ -1,39 +1,23 @@
-import { stub } from 'sinon'
-import { __RewireAPI__ as contextRewireAPI } from '../../../../lib/context'
+import { spaceUse } from '../../../../lib/cmds/space_cmds/use'
 
-import {
-  spaceUse,
-  __RewireAPI__ as spaceUseRewireAPI
-} from '../../../../lib/cmds/space_cmds/use'
+import { getContext, setContext } from '../../../../lib/context'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
-const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/contentful-clients')
 
-const readFileStub = stub().resolves(MOCKED_RC)
-const writeFileStub = stub()
-const getSpace = stub().resolves({
+getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+
+const getSpaceStub = jest.fn().mockResolvedValue({
   sys: {
     id: 'test'
   },
   name: 'mocked'
 })
-const createManagementClientMock = stub().returns({ getSpace })
-
-beforeAll(() => {
-  contextRewireAPI.__Rewire__('readFile', readFileStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-  spaceUseRewireAPI.__Rewire__('createManagementClient', createManagementClientMock)
-})
-
-afterAll(() => {
-  contextRewireAPI.__ResetDependency__('readFile')
-  contextRewireAPI.__ResetDependency__('writeFile')
-  spaceUseRewireAPI.__ResetDependency__('createManagementClient')
-})
-
-afterEach(() => {
-  readFileStub.resetHistory()
-  writeFileStub.resetHistory()
-})
+const fakeClient = {
+  getSpace: getSpaceStub
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
 test('it writes the enviroment id to contentfulrc.json', async () => {
   const stubArgv = {
@@ -41,6 +25,8 @@ test('it writes the enviroment id to contentfulrc.json', async () => {
     managementToken: 'managementToken'
   }
   await spaceUse(stubArgv)
-  expect(JSON.parse(writeFileStub.args[0][1]).activeSpaceId).toBe('test')
-  expect(JSON.parse(writeFileStub.args[0][1]).activeEnvironmentId).toBe('master')
+  expect(setContext).toHaveBeenCalledWith({
+    'activeEnvironmentId': 'master',
+    'activeSpaceId': 'test'
+  })
 })

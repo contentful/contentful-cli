@@ -1,57 +1,46 @@
-import { stub } from 'sinon'
+import { handler } from '../../../../lib/cmds/extension_cmds/get'
 
-import {
-  handler,
-  __RewireAPI__ as getRewireAPI
-} from '../../../../lib/cmds/extension_cmds/get'
-import {
-  emptyContext,
-  setContext
-} from '../../../../lib/context'
-import {
-  __RewireAPI__ as logRewireAPI
-} from '../../../../lib/cmds/extension_cmds/utils/log-as-table'
+import { getContext } from '../../../../lib/context'
 
-const logStub = stub()
-const getUiExtensionStub = stub()
+import { log } from '../../../../lib/utils/log'
+import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
-const mockExtension = {
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/utils/contentful-clients')
+
+const getUiExtensionStub = jest.fn().mockResolvedValue({
   extension: {
     name: 'Widget',
-    fieldTypes: [ { type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } } ],
+    fieldTypes: [{ type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } }],
     src: 'https://awesome.extension'
   },
   sys: { id: '123', version: 3 }
-}
-
-const environmentStub = stub().resolves({
-  getUiExtension: getUiExtensionStub.resolves(mockExtension)
 })
-beforeAll(() => {
-  const fakeClient = {
-    getSpace: stub().resolves({getEnvironment: environmentStub})
-  }
-  const createManagementClientStub = stub().returns(fakeClient)
 
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId'
+const fakeClient = {
+  getSpace: async () => ({
+    getEnvironment: async () => ({
+      getUiExtension: getUiExtensionStub
+    })
   })
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
-  getRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-  logRewireAPI.__Rewire__('log', logStub)
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken',
+  activeSpaceId: 'someSpaceId'
 })
 
-afterAll(() => {
-  getRewireAPI.__ResetDependency__('createManagementClient')
-  logRewireAPI.__ResetDependency__('log')
+beforeEach(() => {
+  log.mockClear()
+  createManagementClient.mockClear()
 })
 
 test('Calls getUiExtension() with ID', async () => {
   await handler({ spaceId: 'space1', id: 'widget1' })
 
-  expect(getUiExtensionStub.calledWith('widget1')).toBe(true)
+  expect(getUiExtensionStub).toHaveBeenCalledWith('widget1')
 })
 
 test('Logs extension data', async () => {
@@ -60,6 +49,6 @@ test('Logs extension data', async () => {
   const outputValues = [ '123', 'Widget', 'Symbol, Symbols', 'https://awesome.extension' ]
 
   outputValues.forEach(str => {
-    expect(logStub.lastCall.args[0].includes(str)).toBe(true)
+    expect(log.mock.calls[0][0]).toContain(str)
   })
 })

@@ -1,16 +1,11 @@
-import { stub } from 'sinon'
+import { environmentDelete } from '../../../../../lib/cmds/space_cmds/environment_cmds/delete'
+import { getContext } from '../../../../../lib/context'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 
-import {
-  environmentDelete,
-  __RewireAPI__ as environmentDeleteRewireAPI
-} from '../../../../../lib/cmds/space_cmds/environment_cmds/delete'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
-import { PreconditionFailedError } from '../../../../../lib/utils/error'
+jest.mock('../../../../../lib/context')
+jest.mock('../../../../../lib/utils/contentful-clients')
 
-const deleteEnvironmentStub = stub()
+const deleteEnvironmentStub = jest.fn()
 const environmentData = {
   name: 'environment name',
   sys: {
@@ -18,58 +13,40 @@ const environmentData = {
   },
   delete: deleteEnvironmentStub
 }
+const getEnvironmentStub = jest.fn().mockResolvedValue(environmentData)
 
-const getEnvironmentStub = stub().returns(environmentData)
 const fakeClient = {
-  getSpace: stub().returns({
+  getSpace: async () => ({
     getEnvironment: getEnvironmentStub
   })
 }
-const createManagementClientStub = stub().returns(fakeClient)
+createManagementClient.mockResolvedValue(fakeClient)
 
-beforeAll(() => {
-  environmentDeleteRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-})
-
-afterAll(() => {
-  environmentDeleteRewireAPI.__ResetDependency__('createManagementClient')
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
 })
 
 afterEach(() => {
-  fakeClient.getSpace.resetHistory()
-  createManagementClientStub.resetHistory()
-  getEnvironmentStub.resetHistory()
-  deleteEnvironmentStub.resetHistory()
+  createManagementClient.mockClear()
+  createManagementClient.mockClear()
+  getEnvironmentStub.mockClear()
+  deleteEnvironmentStub.mockClear()
 })
-
 test('delete environment - requires space id', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
-  try {
-    await expect(environmentDelete({})).rejects.toThrow(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-    expect(createManagementClientStub.notCalled).toBe(true)
-    expect(getEnvironmentStub.notCalled).toBe(true)
-    expect(deleteEnvironmentStub.notCalled).toBe(true)
-  }
+  await expect(environmentDelete({})).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(getEnvironmentStub).not.toHaveBeenCalled()
+  expect(deleteEnvironmentStub).not.toHaveBeenCalled()
 })
 
 test('delete environment', async () => {
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await environmentDelete({
     spaceId: 'someSpaceID',
     environmentId: 'someEnvironmentID'
   })
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(getEnvironmentStub.calledOnce).toBe(true)
-  expect(getEnvironmentStub.args[0][0]).toBe('someEnvironmentID')
-  expect(deleteEnvironmentStub.calledOnce).toBe(true)
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(getEnvironmentStub).toHaveBeenCalledTimes(1)
+  expect(getEnvironmentStub.mock.calls[0][0]).toBe('someEnvironmentID')
+  expect(deleteEnvironmentStub).toHaveBeenCalledTimes(1)
 })

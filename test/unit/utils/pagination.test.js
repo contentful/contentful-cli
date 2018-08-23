@@ -1,10 +1,8 @@
-import { stub } from 'sinon'
-
 import paginate from '../../../lib/utils/pagination'
 
 test('paginates over multi page api results', async () => {
-  const exampleMethod = stub()
-  exampleMethod.onCall(0).returns({
+  const exampleMethod = jest.fn()
+  exampleMethod.mockReturnValueOnce({
     items: [{
       id: 'item 1'
     }],
@@ -12,7 +10,7 @@ test('paginates over multi page api results', async () => {
     limit: 1,
     total: 2
   })
-  exampleMethod.onCall(1).returns({
+  exampleMethod.mockReturnValueOnce({
     items: [{
       id: 'item 2'
     }],
@@ -28,12 +26,12 @@ test('paginates over multi page api results', async () => {
   expect(result.items[0].id).toBe('item 1')
   expect(result.items[1].id).toBe('item 2')
   expect(result.items.length).toBe(2)
-  expect(exampleMethod.callCount).toBe(2)
+  expect(exampleMethod).toHaveBeenCalledTimes(2)
 })
 
 test('does not paginate over single page api results', async () => {
-  const exampleMethod = stub()
-  exampleMethod.returns({
+  const exampleMethod = jest.fn()
+  exampleMethod.mockReturnValue({
     items: [{
       id: 'item 1'
     }],
@@ -48,5 +46,5 @@ test('does not paginate over single page api results', async () => {
 
   expect(result.items[0].id).toBe('item 1')
   expect(result.items.length).toBe(1)
-  expect(exampleMethod.callCount).toBe(1)
+  expect(exampleMethod).toHaveBeenCalledTimes(1)
 })

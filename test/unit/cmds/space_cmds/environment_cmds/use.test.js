@@ -1,53 +1,59 @@
-import { stub } from 'sinon'
-import { __RewireAPI__ as contextRewireAPI } from '../../../../../lib/context'
+import { environmentUse } from '../../../../../lib/cmds/space_cmds/environment_cmds/use'
 
-import {
-  environmentUse,
-  __RewireAPI__ as environmentUseRewireAPI
-} from '../../../../../lib/cmds/space_cmds/environment_cmds/use'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+import { setContext, getContext } from '../../../../../lib/context'
 
-const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
+jest.mock('../../../../../lib/utils/contentful-clients')
+jest.mock('../../../../../lib/context')
 
-const readFileStub = stub().resolves(MOCKED_RC)
-const writeFileStub = stub()
-const getEnvironment = stub().resolves({
+const getEnvironment = jest.fn().mockResolvedValue({
   sys: {
     id: 'test'
   },
   name: 'test'
 })
-const getSpace = stub().resolves({
-  sys: {
-    id: 'mocked'
-  },
-  name: 'mocked',
-  getEnvironment
-})
-const createManagementClientMock = stub().returns({ getSpace })
 
-beforeAll(() => {
-  contextRewireAPI.__Rewire__('readFile', readFileStub)
-  contextRewireAPI.__Rewire__('writeFile', writeFileStub)
-  environmentUseRewireAPI.__Rewire__('createManagementClient', createManagementClientMock)
-})
-
-afterAll(() => {
-  contextRewireAPI.__ResetDependency__('readFile')
-  contextRewireAPI.__ResetDependency__('writeFile')
-  environmentUseRewireAPI.__ResetDependency__('createManagementClient')
+createManagementClient.mockReturnValue({
+  getSpace: jest.fn().mockResolvedValue({
+    sys: {
+      id: 'mocked'
+    },
+    name: 'mocked',
+    getEnvironment
+  })
 })
 
 afterEach(() => {
-  readFileStub.resetHistory()
-  writeFileStub.resetHistory()
+  getContext.mockClear()
+  setContext.mockClear()
 })
 
-test('it writes the enviroment id to contentfulrc.json', async () => {
+test('login is required', async () => {
+  getContext.mockResolvedValue({})
   const stubArgv = {
-    environmentId: 'test',
-    managementToken: 'managementToken',
-    spaceId: 'spaceId'
+    environmentId: 'test'
+  }
+  await expect(environmentUse(stubArgv)).rejects.toThrowErrorMatchingSnapshot()
+  expect(setContext).not.toHaveBeenCalled()
+})
+
+test('active space is required', async () => {
+  getContext.mockResolvedValue({ cmaToken: 'foo' })
+  const stubArgv = {
+    environmentId: 'test'
+  }
+  await expect(environmentUse(stubArgv)).rejects.toThrowErrorMatchingSnapshot()
+  expect(setContext).not.toHaveBeenCalled()
+})
+
+test('it writes the environment id to contentfulrc.json', async () => {
+  getContext.mockResolvedValue({
+    cmaToken: 'managementToken',
+    activeSpaceId: 'spaceId'
+  })
+  const stubArgv = {
+    environmentId: 'test'
   }
   await environmentUse(stubArgv)
-  expect(JSON.parse(writeFileStub.args[0][1]).activeEnvironmentId).toBe('test')
+  expect(setContext.mock.calls[0][0]).toEqual({ 'activeEnvironmentId': 'test' })
 })

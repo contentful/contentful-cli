@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list environments - requires space id 1`] = `"You need to provide a space id. You can pass it via the --space-id parameter or by running contentful space use"`;

@@ -1,132 +1,91 @@
-import { stub } from 'sinon'
+import { accessTokenCreate } from '../../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
+import { getContext } from '../../../../../lib/context'
+import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
 
-import {
-  accessTokenCreate,
-  __RewireAPI__ as accessTokenCreateRewireAPI
-} from '../../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
-import {
-  emptyContext,
-  setContext
-} from '../../../../../lib/context'
-import { PreconditionFailedError } from '../../../../../lib/utils/error'
+jest.mock('../../../../../lib/context')
+jest.mock('../../../../../lib/utils/contentful-clients')
 
 const mockedAccessTokenData = {
   name: 'access token name',
   description: 'some example description'
 }
+const createApiKeyStub = jest.fn().mockResolvedValue(mockedAccessTokenData)
+const getApiKeysStub = jest.fn()
 
-const createApiKeyStub = stub().returns(mockedAccessTokenData)
-const getApiKeysStub = stub()
 const fakeClient = {
-  getSpace: stub().returns({
+  getSpace: async () => ({
     createApiKey: createApiKeyStub,
     getApiKeys: getApiKeysStub
   })
 }
-const createManagementClientStub = stub().returns(fakeClient)
+createManagementClient.mockResolvedValue(fakeClient)
 
-beforeAll(() => {
-  accessTokenCreateRewireAPI.__Rewire__('createManagementClient', createManagementClientStub)
-})
-
-afterAll(() => {
-  accessTokenCreateRewireAPI.__ResetDependency__('createManagementClient')
+getContext.mockResolvedValue({
+  cmaToken: 'mockedToken'
 })
 
 afterEach(() => {
-  fakeClient.getSpace.resetHistory()
-  createManagementClientStub.resetHistory()
-  createApiKeyStub.resetHistory()
-  getApiKeysStub.reset()
+  createApiKeyStub.mockClear()
+  getApiKeysStub.mockClear()
+  createManagementClient.mockClear()
 })
 
 test('create new access token', async () => {
-  getApiKeysStub.returns({
+  getApiKeysStub.mockResolvedValue({
     items: []
-  })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
   })
   const result = await accessTokenCreate({
     ...mockedAccessTokenData,
     spaceId: 'some-space-id'
   })
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(createApiKeyStub.calledOnce).toBe(true)
-  expect(createApiKeyStub.args[0][0]).toEqual(mockedAccessTokenData)
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub.mock.calls[0][0]).toEqual(mockedAccessTokenData)
 })
 
 test('return existing access token', async () => {
-  getApiKeysStub.returns({
+  getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
-  })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
   })
   const result = await accessTokenCreate({
     ...mockedAccessTokenData,
     spaceId: 'some-space-id'
   })
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(createApiKeyStub.called).toBe(false)
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub).not.toHaveBeenCalled()
 })
 
 test('create access token - fails when not logged in', async () => {
-  getApiKeysStub.returns({
+  getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
   })
-  emptyContext()
-  setContext({
+  getContext.mockResolvedValueOnce({
     cmaToken: null
   })
-  try {
-    await expect(accessTokenCreate({
-      spaceId: 'some-space-id'
-    })).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-    expect(createManagementClientStub.notCalled).toBe(true)
-    expect(createApiKeyStub.notCalled).toBe(true)
-  }
+  await expect(accessTokenCreate({
+    spaceId: 'some-space-id'
+  })).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(createApiKeyStub).not.toHaveBeenCalled()
 })
 
 test('create access token - requires space id', async () => {
-  getApiKeysStub.returns({
+  getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
   })
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
-  try {
-    await expect(accessTokenCreate({})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-    expect(createManagementClientStub.notCalled).toBe(true)
-    expect(createApiKeyStub.notCalled).toBe(true)
-  }
+  await expect(accessTokenCreate({})).rejects.toThrowErrorMatchingSnapshot()
+  expect(createManagementClient).not.toHaveBeenCalled()
+  expect(createApiKeyStub).not.toHaveBeenCalled()
 })
 
 test('create access token - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create access token because of reasons'
-  getApiKeysStub.reset()
-  getApiKeysStub.throws(new Error(errorMessage))
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
-  try {
-    await expect(accessTokenCreate({
-      spaceId: 'some-space-id'
-    })).rejects.toThrowError(errorMessage)
-  } catch (e) {}
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.getSpace.calledOnce).toBe(true)
-  expect(createApiKeyStub.called).toBe(false)
+  getApiKeysStub.mockRejectedValueOnce(new Error(errorMessage))
+  await expect(accessTokenCreate({
+    spaceId: 'some-space-id'
+  })).rejects.toThrowError(errorMessage)
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub).not.toHaveBeenCalled()
 })
