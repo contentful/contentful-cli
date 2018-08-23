@@ -1,0 +1,32 @@
+version: 2.0
+jobs:
+  linux:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - run: node --version
+      - run: npm --version
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm run build:standalone
+      - run: npm run test:e2e
+  osx:
+    macos:
+      xcode: "9.0"
+    steps:
+      - run: node --version
+      - run: npm --version
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm run build:standalone
+      - run: npm run test:e2e
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - linux
+      - osx
