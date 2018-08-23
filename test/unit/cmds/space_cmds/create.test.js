@@ -120,15 +120,10 @@ test('create space - accepts default locale', async () => {
     name: 'space name',
     defaultLocale: 'de-DE'
   }
-  emptyContext()
-  setContext({
-    cmaToken: 'mockedToken'
-  })
   const result = await spaceCreate(spaceData)
   expect(result).toBeTruthy()
-  expect(createManagementClientStub.calledOnce).toBe(true)
-  expect(fakeClient.createSpace.calledOnce).toBe(true)
-  expect(fakeClient.createSpace.args[0][0]).toEqual(spaceData)
-  expect(fakeClient.createSpace.args[0][1]).toBe(undefined)
-  expect(promptStub.notCalled).toBe(true)
+  expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
+  expect(fakeClient.createSpace.mock.calls[0][0]).toEqual(spaceData)
+  expect(fakeClient.createSpace.mock.calls[0][1]).toBe(undefined)
+  expect(inquirer.prompt).not.toHaveBeenCalled()
 })

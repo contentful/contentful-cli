@@ -35,7 +35,7 @@
     "test:integration:watch": "BABEL_ENV=test jest test/integration/cmds/** --verbose --watch",
     "test:simulate-ci": "trevor",
     "precommit": "lint-staged",
-    "prepush": "jest --changedSince master"
+    "prepush": "BABEL_ENV=test jest --changedSince master test/unit/**"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
