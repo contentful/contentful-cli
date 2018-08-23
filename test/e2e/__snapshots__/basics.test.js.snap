@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should print help message 1`] = `
+"
+Usage: contentful <cmd> [args]
+
+Commands:
+   completion    generate bash completion script
+   boilerplate   Download a boilerplate
+   config        Manage and list your configs
+   content-type  Manage and list your space content types
+                                                                   [aliases: ct]
+   extension     Manage and list your extensions
+   guide         A guide introducing basic concepts of working with
+                              Contentful
+   login         Login to Contentful
+   logout        Logout from Contentful
+   space         Manage and list your spaces
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show current version                                  [boolean]
+
+Copyright 2018 Contentful, this is a BETA release"
+`;
+
+exports[`should print help message on shortcut 1`] = `
+"
+Usage: contentful <cmd> [args]
+
+Commands:
+   completion    generate bash completion script
+   boilerplate   Download a boilerplate
+   config        Manage and list your configs
+   content-type  Manage and list your space content types
+                                                                   [aliases: ct]
+   extension     Manage and list your extensions
+   guide         A guide introducing basic concepts of working with
+                              Contentful
+   login         Login to Contentful
+   logout        Logout from Contentful
+   space         Manage and list your spaces
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show current version                                  [boolean]
+
+Copyright 2018 Contentful, this is a BETA release"
+`;
+
+exports[`should print help message on wrong subcommand 1`] = `
+"
+Usage: contentful <cmd> [args]
+
+Commands:
+   completion    generate bash completion script
+   boilerplate   Download a boilerplate
+   config        Manage and list your configs
+   content-type  Manage and list your space content types
+                                                                   [aliases: ct]
+   extension     Manage and list your extensions
+   guide         A guide introducing basic concepts of working with
+                              Contentful
+   login         Login to Contentful
+   logout        Logout from Contentful
+   space         Manage and list your spaces
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show current version                                  [boolean]
+
+Copyright 2018 Contentful, this is a BETA release
+Please specify a command.
+"
+`;
+
+exports[`should return code 1 when errors exist no args 1`] = `
+"
+Usage: contentful <cmd> [args]
+
+Commands:
+   completion    generate bash completion script
+   boilerplate   Download a boilerplate
+   config        Manage and list your configs
+   content-type  Manage and list your space content types
+                                                                   [aliases: ct]
+   extension     Manage and list your extensions
+   guide         A guide introducing basic concepts of working with
+                              Contentful
+   login         Login to Contentful
+   logout        Logout from Contentful
+   space         Manage and list your spaces
+
+Options:
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show current version                                  [boolean]
+
+Copyright 2018 Contentful, this is a BETA release
+Please specify a command.
+"
+`;
