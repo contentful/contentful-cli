@@ -46,14 +46,14 @@ test('should print help message', done => {
     .end(done)
 })
 
-test('should create space with name and org provided', done => {
+test('should create space', done => {
   app()
     .run(`space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`)
     .expect((result) => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
-      const regex = /Successfully created space cli_test_org_space/
+      const regex = /Successfully created space .*/ // name doesn't matter because response is replayed
       expect(result.stdout.trim()).toMatch(regex)
     })
     .code(0)
@@ -67,7 +67,7 @@ test('should create space using shortcuts args', done => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
-      const regex = /Successfully created space cli_test_org_space_sh/
+      const regex = /Successfully created space .*/ // name doesn't matter because response is replayed
       expect(result.stdout.trim()).toMatch(regex)
     })
     .code(0)

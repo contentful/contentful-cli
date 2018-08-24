@@ -2,7 +2,7 @@ import nixt from 'nixt'
 import { join } from 'path'
 import {
   initConfig,
-  deleteSpaces,
+  // deleteSpaces,
   createSimpleSpace,
   expectedDir
 } from '../../util'
@@ -24,9 +24,9 @@ beforeAll(async () => {
   space = await createSimpleSpace(org)
   spacesToDelete.push(space.sys.id)
 })
-afterAll(() => {
-  return deleteSpaces(spacesToDelete)
-})
+// afterAll(() => {
+//   // return deleteSpaces(spacesToDelete)
+// })
 
 test('should print help message', done => {
   app()
@@ -61,7 +61,7 @@ test('should exit 1 when no space provided', done => {
     })
 })
 
-test('should import space', done => {
+test.skip('should import space', done => {
   app()
     .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
     .stdout(/Finished importing all data/)

@@ -1,0 +1,105 @@
+{
+    meta: {
+        createdAt: '2018-08-24T15:01:59.549Z',
+        host: '',
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/',
+        method: 'POST',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+            'x-contentful-organization': '1aFpYrKtFPzNxXxUyJorz4',
+        },
+        body: 'eyJuYW1lIjoiU2ltcGxlU3BhY2VfMTUzNTEyMjkxOTUzMiJ9',
+    },
+    res: {
+        status: 201,
+        headers: {
+            'accept-ranges': [
+                'bytes',
+            ],
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cache-control': [
+                'max-age=0',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Fri, 24 Aug 2018 15:02:00 GMT',
+            ],
+            etag: [
+                'W/"82841399baf899622dc26079dac36cfb"',
+            ],
+            location: [
+                'https://api.contentful.com/spaces/o5e3fhe8rgrp',
+            ],
+            'referrer-policy': [
+                'strict-origin-when-cross-origin',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-request-id': [
+                '38a34727343d0e035fc5fc9888dbbdb8',
+            ],
+            'x-download-options': [
+                'noopen',
+            ],
+            'x-frame-options': [
+                'ALLOWALL',
+            ],
+            'x-permitted-cross-domain-policies': [
+                'none',
+            ],
+            'x-xss-protection': [
+                '1; mode=block',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=MOC1WUhARaClwm/GEYsbeegdgFsAAAAAQUIPAAAAAABeTJgy7HoD9AvXNIYWtryW; expires=Fri, 23 Aug 2019 15:09:52 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=tCGiNX3j1jmpPOGN6lKYhQAAAACtOsprRzNksDHrILFtDNDo; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=eumVIC+K8jwn9AhG0C0oDOgdgFsAAAAAIHe1QEdoQJrUyZJkNjB8JQ==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '10-16502755-16502759 NNNN CT(0 0 0) RT(1535122919251 51) q(0 0 0 -1) r(9 9) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+        },
+        body: 'H4sIAAAAAAAA/81OvQ6CMBDeeQrSWRJarEI3NUYjbmhMXEwjpzYKNC2aIOHdLRUSHdyd7u77u692XBflPAPEUCIyeYNE8iMcMA0oJiTCEQ0IGrQqXWnEarOZvaykdbRayxpMpAYpKASnC4TqrGRPPEBpUeSI4Q44KuAlpNOqz/tO//ywFvm1y7HwzdybN7XVoD4p+x/z+ZJXi3gl9rtZFOfJc1zqEepUjZ3Nd41JaXzEx6Hnhx4ZbjBlPmY02vf97zL9h7pdjd91ndbROM4LFnnZO9QBAAA=',
+    },
+}
