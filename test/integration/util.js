@@ -2,19 +2,12 @@ import appRoot from 'app-root-path'
 import Promise from 'bluebird'
 import { resolve } from 'path'
 import { homedir } from 'os'
-import { createClient } from 'contentful-management'
 import { writeFile, stat } from 'mz/fs'
+import { createManagementClient } from '../../lib/utils/contentful-clients'
 
 export const expectedDir = `${appRoot}/test/integration/expected`
 export const tmpDir = `${appRoot}/test/integration/expected/tmp`
 export const configFile = resolve(homedir(), '.contentfulrc.json')
-
-async function createManagementClient () {
-  const config = require(configFile)
-  return createClient({
-    accessToken: config.cmaToken
-  })
-}
 
 export async function initConfig () {
   try {
@@ -33,7 +26,7 @@ export async function initConfig () {
 }
 
 export async function deleteSpaces (spacesToDelete) {
-  const client = await createManagementClient()
+  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
   await Promise.map(spacesToDelete, (spaceId) => {
     return client.getSpace(spaceId).then((space) => {
       // Add delay here because there is a bug that you can't delete a space
@@ -52,14 +45,14 @@ export function extractSpaceId (text) {
 }
 
 export async function createSimpleSpace (organization) {
-  const client = await createManagementClient()
+  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
   return client.createSpace({
     name: 'SimpleSpace_' + Date.now()
   }, organization)
 }
 
 export async function addNewCT (spaceId, name, fields) {
-  const client = await createManagementClient()
+  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
   var space = await client.getSpace(spaceId)
   var contentType = await space.createContentType({
     name: name,
