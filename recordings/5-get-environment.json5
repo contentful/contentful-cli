@@ -1,0 +1,122 @@
+{
+    meta: {
+        createdAt: '2018-08-27T14:03:11.296Z',
+        host: '',
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/7luxtk3kiaxj/environments/createListDelete',
+        method: 'GET',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+        },
+        body: '',
+    },
+    res: {
+        status: 200,
+        headers: {
+            'accept-ranges': [
+                'bytes',
+            ],
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cache-control': [
+                'max-age=0',
+            ],
+            'cf-organization-id': [
+                '1aFpYrKtFPzNxXxUyJorz4',
+            ],
+            'cf-space-id': [
+                '7luxtk3kiaxj',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Mon, 27 Aug 2018 14:03:11 GMT',
+            ],
+            etag: [
+                'W/"f3ed1a85ab97d2e9036340a29d5bf270"',
+            ],
+            'referrer-policy': [
+                'strict-origin-when-cross-origin',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-ratelimit-hour-limit': [
+                '36000',
+            ],
+            'x-contentful-ratelimit-hour-remaining': [
+                '35785',
+            ],
+            'x-contentful-ratelimit-reset': [
+                '0',
+            ],
+            'x-contentful-ratelimit-second-limit': [
+                '10',
+            ],
+            'x-contentful-ratelimit-second-remaining': [
+                '9',
+            ],
+            'x-contentful-request-id': [
+                '775b4a4c43eee9b18e77e471eeea1d67',
+            ],
+            'x-download-options': [
+                'noopen',
+            ],
+            'x-frame-options': [
+                'ALLOWALL',
+            ],
+            'x-permitted-cross-domain-policies': [
+                'none',
+            ],
+            'x-xss-protection': [
+                '1; mode=block',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=03Nv2GksRcyaL1U0tHo6iJ8EhFsAAAAAQUIPAAAAAAAwjxSqf20xsgGEexFkQfJd; expires=Mon, 26 Aug 2019 15:09:54 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=HELmUsUp/Vak4a+h6lKYhQAAAAAGaKBvkXm0WJThKzpI3BKB; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=O+cBIJJ/QRZzcklJ0C0oDJ8EhFsAAAAAtiE6K1x/Br7HU7eg8q5eRQ==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '14-150415543-150415551 NNNN CT(0 0 0) RT(1535378590929 28) q(0 0 0 -1) r(2 2) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+        },
+        body: 'H4sIAAAAAAAA/82ROw+CMBSFd34F6awJqBHs5isadVNjwtbIHSpYCb0Yq+G/Wwok+FxcnHp7z+35TtubZdtEsCMQSsYpMAR7xSXaE4gBgbQKWSpJ6E1XukaVFKNTcebpSRxBoJnRCg91f28sCoeGgRbPkEp+EoT2q4ZM2B5q10dGk7PiIqo8TDvW+00prY1DQzMBvDi7YNSNOLscSKXlZs1rMjLM5G/o0uKZre8eqvfQ8l3CkfqJu5WQvlBdNp0zNVsueLAbD5ZiffVQ9r/GGKI+13Fcv+347Y63cXvU6VLHD+rvypLwH+JWMT7EHQTFqdzKLesOfEfCJcYCAAA=',
+    },
+}
