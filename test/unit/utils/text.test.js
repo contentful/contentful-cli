@@ -1,6 +1,7 @@
 import wrapAnsi from 'wrap-ansi'
 import { textSync } from 'figlet'
 import stripAnsi from 'strip-ansi'
+import chalk from 'chalk'
 
 import {
   wrap,
@@ -11,6 +12,10 @@ import {
 } from '../../../lib/utils/text'
 
 jest.mock('figlet')
+jest.mock('chalk', () => ({
+  dim: jest.fn((val) => val),
+  bold: jest.fn((val) => val)
+}))
 jest.mock('wrap-ansi', () => jest.fn().mockImplementation((...args) => {
   const wrapAnsi = require.requireActual('wrap-ansi')
   return wrapAnsi(...args)
@@ -52,9 +57,19 @@ test('frame - inline', () => {
 })
 
 test('asciiText', () => {
+  process.stdout.columns = 80
   asciiText('some text')
   expect(textSync).toHaveBeenCalledTimes(1)
   expect(textSync.mock.calls[0][0]).toBe('some text')
+  expect(chalk.bold).not.toHaveBeenCalled()
+})
+
+test('asciiText fallback', () => {
+  process.stdout.columns = 70
+  asciiText('some fallback text')
+  expect(chalk.bold).toHaveBeenCalledTimes(1)
+  expect(chalk.bold.mock.calls[0][0]).toBe('some fallback text')
+  expect(textSync).not.toHaveBeenCalled()
 })
 
 test('separator', () => {
