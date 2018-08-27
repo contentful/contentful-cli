@@ -25,13 +25,14 @@ afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
-test('should be already logged in and run all steps', done => {
+test.skip('should be already logged in and run all steps', done => {
   app()
     .run('guide')
     // step 2 createSpace
     .on(/Create your new Space now?/)
     .respond('\n')
     .expect(({stdout}) => {
+      console.log({stdout})
       const matches = /Successfully created space .+ \((.+)\)/.exec(stdout)
       if (!matches) {
         return new Error('Can\'t extract space id')
@@ -57,4 +58,4 @@ test('should be already logged in and run all steps', done => {
     .end(() => {
       rimraf(resolve(homedir(), projectDirectoryName), done)
     })
-}, 360000)
+}, 600000)

@@ -44,10 +44,10 @@ export function extractSpaceId (text) {
   return found[1]
 }
 
-export async function createSimpleSpace (organization) {
+export async function createSimpleSpace (organization, spaceName) {
   const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
   return client.createSpace({
-    name: 'SimpleSpace_' + Date.now()
+    name: 'IntegrationTest_' + spaceName
   }, organization)
 }
 
