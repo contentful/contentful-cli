@@ -23,7 +23,9 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm install
       - run: npm run build
-      - run: npm run test:integration:ci
+      - run:
+          command: npm run test:integration:ci
+          no_output_timeout: 20m
   linux:
     docker:
       - image: circleci/node:8
