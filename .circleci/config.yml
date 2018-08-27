@@ -1,5 +1,29 @@
 version: 2.0
 jobs:
+  unit:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - run: node --version
+      - run: npm --version
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm test
+      - run: bash <(curl -s https://codecov.io/bash)
+  integration:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - run: node --version
+      - run: npm --version
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm run build
+      - run: npm run test:integration:ci
   linux:
     docker:
       - image: circleci/node:8
@@ -28,5 +52,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
+      - unit
+      - integration
       - linux
       - osx
