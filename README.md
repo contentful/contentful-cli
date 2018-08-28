@@ -75,6 +75,15 @@ When multiple proxy configurations exists, precedence is taken in this form:
 2. `https_proxy` takes precedence over `.contentfulrc.json`
 2. `https_proxy` takes precedence over `http_proxy`
 
+
+## :rescue_worker_helmet: Troubleshooting
+
+* Unable to connect to Contentful through your Proxy? Try settings `rawProxy: true` in your `.contentfulrc.json` via:
+
+```sh
+contentful config add --raw-proxy
+```
+
 ## :books: Documentation
 
 More detailed documentation for every command can be found in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
