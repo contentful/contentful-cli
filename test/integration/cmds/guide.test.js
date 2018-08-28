@@ -32,7 +32,6 @@ test('should be already logged in and run all steps', done => {
     .on(/Create your new Space now?/)
     .respond('\n')
     .expect(({stdout}) => {
-      console.log({stdout})
       const matches = /Successfully created space .+ \((.+)\)/.exec(stdout)
       if (!matches) {
         return new Error('Can\'t extract space id')
