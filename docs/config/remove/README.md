@@ -6,13 +6,14 @@ Removes a config from `~/.contentfulrc.json`
 ```
 Options:
   -h, --help                Show help                                  [boolean]
-  --version                 Show version number                        [boolean]
   --management-token, --mt  Remove the API management token from the config
                                                       [boolean] [default: false]
   --active-space-id, --as   Remove the active space id form the config
                                                       [boolean] [default: false]
   --proxy, -p               Remove the proxy from the config
                                                       [boolean] [default: false]
+  --raw-proxy, --rp         Pass proxy config as raw config instead of creating
+                            a httpsAgent                               [boolean]
   --all                     Remove all the things from the config
                                                       [boolean] [default: false]
 
@@ -22,5 +23,5 @@ Examples:
 
 ### Example
 ```sh
-contentful config remove --proxy 
+contentful config remove --proxy
 ```
