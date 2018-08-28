@@ -35,7 +35,7 @@
     "prepush": "BABEL_ENV=test jest --changedSince master test/unit/**",
     "add-talkback-proxy": "./bin/contentful.js config add --proxy http://localhost:3333",
     "remove-talkback-proxy": "./bin/contentful.js config remove --proxy",
-    "run-talkback-proxy": "node test/proxy.js false"
+    "run-talkback-proxy": "node test/proxy.js"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
