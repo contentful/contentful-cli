@@ -1,0 +1,104 @@
+{
+    meta: {
+        createdAt: '2018-08-28T12:26:36.012Z',
+        host: '',
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/',
+        method: 'POST',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+        },
+        body: 'eyJuYW1lIjoiR2F0c2J5IFN0YXJ0ZXIgQmxvZyJ9',
+    },
+    res: {
+        status: 201,
+        headers: {
+            'accept-ranges': [
+                'bytes',
+            ],
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cache-control': [
+                'max-age=0',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Tue, 28 Aug 2018 12:26:36 GMT',
+            ],
+            etag: [
+                'W/"6a3564f3823cec4405dedc42e889cf69"',
+            ],
+            location: [
+                'https://api.contentful.com/spaces/8f1c9kf6vo6w',
+            ],
+            'referrer-policy': [
+                'strict-origin-when-cross-origin',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-request-id': [
+                '4431d8a01edf928ee46996631ba5a878',
+            ],
+            'x-download-options': [
+                'noopen',
+            ],
+            'x-frame-options': [
+                'ALLOWALL',
+            ],
+            'x-permitted-cross-domain-policies': [
+                'none',
+            ],
+            'x-xss-protection': [
+                '1; mode=block',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=1hVueHdqSxKJlUkCFIxNmXw/hVsAAAAAQUIPAAAAAAD9jlq+cpndN/04PyBQ7zDl; expires=Wed, 28 Aug 2019 07:36:07 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=nXwtanUGTXXLhcVN6lKYhQAAAAAM+GCNRbC4Qwpg5ovDsYsY; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=K1QAbMVmVl9cdt2V0i0oDHw/hVsAAAAAZcns5uflnWM6uRd81tl/0A==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '14-6064290-6064297 NNNN CT(0 0 0) RT(1535459195266 21) q(0 0 0 -1) r(10 10) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+        },
+        body: 'H4sIAAAAAAAA/82OMQ+CMBCFd34F6SwJrUmFbmIMRtzAmLBVKIaAQNqKqYT/bkFIcHB3urv37t59nWGaoKJ3BgjwqRRXZYaScsm46ZX1DawGXygBSKc73UvVDLthQxM2ulrLU604GUzcIsNtjZ+z0TIu8roCBE5CwhmVLPXUnPedvvxwyqtiyhnlUs/RxzoLxpfW+B/S/YEqPzjm8WXnBlX42kiBwbTVj7X/xthKfYds6Fi2YyEngoggTNY4nvkfTfoPuBPGb1xjuOgN4w3xWkRKzgEAAA==',
+    },
+}
