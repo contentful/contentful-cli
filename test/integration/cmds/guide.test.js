@@ -25,7 +25,7 @@ afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.skip('should be already logged in and run all steps', done => {
+test('should be already logged in and run all steps', done => {
   app()
     .run('guide')
     // step 2 createSpace
