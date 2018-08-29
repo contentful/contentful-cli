@@ -100,17 +100,30 @@ This may collide with your already globally installed Contentful CLI. Make sure 
 ## :robot: Testing
 
 ### Integration Tests
+We are using [talkback](https://github.com/ijpiantanida/talkback) proxy to record and playback http requests in our integration tests. To run tests with the talkback proxy and recordings, simply run
 
-:warning: Environment variables should be set:
+```sh
+npm run test:integration
+```
+
+For development, it might be easier to run the talkback proxy in one shell and run tests ad-hoc (or with a `--watch` flag) using jest commands in another shell. This flow might look like this:
+
+```
+npm run pretest:integration // ensure config is set up correctly for tests
+npm run run-talkback-proxy // start proxy in one shell
+
+// open another shell
+
+jest test/integration/cmds/space/* --watch // run tests using jest in another shell
+```
+See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
+
+
+:warning: Environment variables for integration tests must be set:
 
 ```
 CLI_E2E_CMA_TOKEN = <cma_auth_token>
 CLI_E2E_ORG_ID = <organization_id>
-```
-
-#### npm:
-```sh
-npm run test:integration
 ```
 
 ## :question: Support
