@@ -21,7 +21,7 @@ beforeAll(() => {
   return initConfig()
 })
 beforeAll(async () => {
-  space = await createSimpleSpace(org)
+  space = await createSimpleSpace(org, 'space-import')
   spacesToDelete.push(space.sys.id)
 })
 afterAll(() => {

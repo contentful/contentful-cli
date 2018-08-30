@@ -25,7 +25,7 @@ beforeAll(() => {
 })
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org)
+  space = await createSimpleSpace(org, 'ext-create')
   environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
@@ -105,9 +105,8 @@ test('should create extension from config file', done => {
     })
     .code(0)
     .end(() => {
-      return environment.getUiExtensions()
-        .then((result) => {
-          const extension = result.items.find((item) => item.sys.id === 'sample-extension')
+      return environment.getUiExtension('sample-extension')
+        .then((extension) => {
           if (!extension) {
             done.fail('Extension not found via CMA')
             return

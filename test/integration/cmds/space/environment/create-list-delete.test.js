@@ -14,14 +14,16 @@ const app = () => {
 
 const org = process.env.CLI_E2E_ORG_ID
 let space = null
+const spacesToDelete = []
 
 beforeAll(async () => {
   await initConfig()
-  space = await createSimpleSpace(org)
+  space = await createSimpleSpace(org, 'space-env')
+  spacesToDelete.push(space.sys.id)
 })
 
 afterAll(() => {
-  return deleteSpaces([space.sys.id])
+  return deleteSpaces(spacesToDelete)
 })
 
 test('should create, list and delete environment', done => {

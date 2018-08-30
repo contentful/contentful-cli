@@ -1,0 +1,106 @@
+{
+    meta: {
+        createdAt: '2018-08-27T13:08:13.827Z',
+        host: '',
+        tag: 'create-space'
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/',
+        method: 'POST',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+            'x-contentful-organization': '1aFpYrKtFPzNxXxUyJorz4',
+        },
+        body: 'eyJuYW1lIjoiY2xpX3Rlc3Rfb3JnX3NwYWNlIn0=',
+    },
+    res: {
+        status: 201,
+        headers: {
+            'accept-ranges': [
+                'bytes',
+            ],
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cache-control': [
+                'max-age=0',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Mon, 27 Aug 2018 13:08:15 GMT',
+            ],
+            etag: [
+                'W/"5311e3b8fc5207a8e9ffb3dd9043869b"',
+            ],
+            location: [
+                'https://api.contentful.com/spaces/j7asobq0c796',
+            ],
+            'referrer-policy': [
+                'strict-origin-when-cross-origin',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-request-id': [
+                'ba4af4054b35d70da013511d3f8b9ef7',
+            ],
+            'x-download-options': [
+                'noopen',
+            ],
+            'x-frame-options': [
+                'ALLOWALL',
+            ],
+            'x-permitted-cross-domain-policies': [
+                'none',
+            ],
+            'x-xss-protection': [
+                '1; mode=block',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=mddwOXm7REaXSW7Y+YXEpr73g1sAAAAAQUIPAAAAAAByyJtq3uxtCkKTlE/o/3sQ; expires=Mon, 26 Aug 2019 15:09:55 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=+V3vTXcYJn3t/R+v6lKYhQAAAACJcXhqfVPJEw9zx+od3D/y; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=x8L9cfGcYD917jxJ0C0oDL73g1sAAAAAHPo7s8ZEe6vk9pRnrCowRA==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '10-26112119-26112121 NNNN CT(87 184 0) RT(1535375293529 49) q(0 0 3 -1) r(12 12) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+        },
+        body: 'H4sIAAAAAAAA/82OPw+CMBDFdz4F6SxJi4Y/3dQYjbiBMWEhFRpTxYJtNUHCd7cgGBncne7uvbt3v9owTcDJlQIM0pwlikqVFOKUyJKkFExaW1YS4Fp3uldV2a6GH1drLNPK2SWyON5g6vrOYDyokKzgAKNeSAUlimaLasgbp39/2DF+6XM6Oddz9Lb2kopvq/uPyGpDqnWwZfFh6Qc8fLpKOqDfarrajDHmSt/ZEHkW9CzbjdAUQw+jWTzw38vsH3B7jN+4RnvRGMYLroBu4s0BAAA=',
+    },
+}

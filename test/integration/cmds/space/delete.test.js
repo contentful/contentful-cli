@@ -18,7 +18,7 @@ beforeAll(() => {
   return initConfig()
 })
 beforeAll(async () => {
-  space = await createSimpleSpace(org)
+  space = await createSimpleSpace(org, 'space-delete')
 })
 
 test('should exit 1 when no args', done => {

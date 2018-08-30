@@ -25,7 +25,7 @@ beforeAll(() => {
 })
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org)
+  space = await createSimpleSpace(org, 'ext-crud')
   environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
@@ -51,17 +51,10 @@ test('should be able to create, update and delete a extension', done => {
         environment.getUiExtensions()
           .then((result) => {
             if (!result.items.length) {
-              done.fail('No extensions found while the sample one should show up')
-              done()
-              return
+              throw new Error('No extensions found while the sample one should show up')
             }
             expect(result.items[0].sys.id).toBe('sample-extension')
             expect(result.items[0].extension.src).toBe(newSrc)
-          })
-          .catch((error) => {
-            console.error(error)
-            done.fail()
-            done()
           })
           .then(updateExtension)
       })
@@ -77,50 +70,19 @@ test('should be able to create, update and delete a extension', done => {
         expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
       })
       .code(0)
-      .end(() => {
-        environment.getUiExtensions()
-          .then((result) => {
-            if (!result.items.length) {
-              done.fail('No extensions found while the sample one should show up')
-              return
-            }
-            expect(result.items[0].sys.id).toBe('sample-extension')
-            expect(result.items[0].extension.srcdoc).toBe('<h1>Sample Extension Content</h1>\n')
-          })
-          .catch((error) => {
-            console.error(error)
-            done.fail()
-            done()
-          })
-          .then(deleteExtension)
-      })
+      .end(deleteExtension)
   }
 
   function deleteExtension () {
     app()
-      .run(`extension delete --id sample-extension --space-id ${space.sys.id} --version 2`)
+      .run(`extension delete --id sample-extension --space-id ${space.sys.id} --version 1`)
       .expect((result) => {
         console.log(result.stdout)
         console.log(result.stderr)
         expect(result.stdout.trim()).toMatch(/Successfully deleted extension with ID sample-extension/)
       })
       .code(0)
-      .end(() => {
-        environment.getUiExtensions()
-          .then((result) => {
-            if (!result.items.length) {
-              done()
-              return
-            }
-            done.fail('Extension was not deleted')
-          })
-          .catch((error) => {
-            console.error(error)
-            done.fail()
-            done()
-          })
-          .then(done)
-      })
+      .end(done)
   }
 
   createExtension()

@@ -1,0 +1,99 @@
+{
+    meta: {
+        createdAt: '2018-08-27T14:20:52.525Z',
+        host: '',
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/5veyr2eppqxt/environments/master/content_types/blogPost/editor_interface',
+        method: 'PUT',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+            'x-contentful-version': '1',
+        },
+        body: 'eyJjb250cm9scyI6W3siZmllbGRJZCI6InRpdGxlIiwid2lkZ2V0SWQiOiJzaW5nbGVMaW5lIn0seyJmaWVsZElkIjoic2x1ZyIsIndpZGdldElkIjoic2x1Z0VkaXRvciJ9LHsiZmllbGRJZCI6Imhlcm9JbWFnZSIsIndpZGdldElkIjoiYXNzZXRMaW5rRWRpdG9yIn0seyJmaWVsZElkIjoiZGVzY3JpcHRpb24iLCJ3aWRnZXRJZCI6Im1hcmtkb3duIn0seyJmaWVsZElkIjoiYm9keSIsIndpZGdldElkIjoibWFya2Rvd24ifSx7ImZpZWxkSWQiOiJhdXRob3IiLCJ3aWRnZXRJZCI6ImVudHJ5TGlua0VkaXRvciJ9LHsiZmllbGRJZCI6InB1Ymxpc2hEYXRlIiwid2lkZ2V0SWQiOiJkYXRlUGlja2VyIiwic2V0dGluZ3MiOnsiZm9ybWF0IjoidGltZVoiLCJhbXBtIjoiMjQifX0seyJmaWVsZElkIjoidGFncyIsIndpZGdldElkIjoidGFnRWRpdG9yIn1dfQ==',
+    },
+    res: {
+        status: 200,
+        headers: {
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cf-space-id': [
+                '5veyr2eppqxt',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Mon, 27 Aug 2018 14:20:52 GMT',
+            ],
+            etag: [
+                'W/"983863c61459fc662a9ac436d15d2958"',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-ratelimit-hour-limit': [
+                '36000',
+            ],
+            'x-contentful-ratelimit-hour-remaining': [
+                '35712',
+            ],
+            'x-contentful-ratelimit-reset': [
+                '0',
+            ],
+            'x-contentful-ratelimit-second-limit': [
+                '10',
+            ],
+            'x-contentful-ratelimit-second-remaining': [
+                '7',
+            ],
+            'x-contentful-request-id': [
+                'd7803e3b2211ecce7eac326eb7ec51ee',
+            ],
+            'content-length': [
+                '473',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=4NT3vL0oQj+Sidyjb02aYcQIhFsAAAAAQUIPAAAAAAA8WTak3XlerkVUn0CbngWu; expires=Mon, 26 Aug 2019 15:09:55 GMT; path=/; Domain=.contentful.com',
+                'nlbi_673446=+qF8fG22yR7u81z86lKYhQAAAAC15tF38SAt/8RuB6yRPXPy; path=/; Domain=.contentful.com',
+                'incap_ses_876_673446=tJYuFESFbGHaeU1J0C0oDMQIhFsAAAAA11ImVpjkkFvBnuVRDjrA4w==; path=/; Domain=.contentful.com',
+            ],
+            'x-iinfo': [
+                '2-31486711-31486712 NNNN CT(1 0 0) RT(1535379652162 15) q(0 0 0 -1) r(3 3) U5',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+        },
+        body: 'H4sIAAAAAAAAA6VUXU/CMBR951csfVYDEwV584Mo6gOJGhOMD2W9jIaunW2HTsN/93YfMJIhI76QlNOde865Z/tpeR4JlLRaCUMG3huePe8n+0VkxkGwEUOAWG4FkKMS+eQsBJtDhstQwCOXQDJ4ld+qYzEiCXeQIDJk3Cq9l2QOWo0iGu6QQ40Bi2oWDekYmEDz2HIl66VFVC+Y+pR7hU0VS/9JQRM7xwhqcwZcU3qAsTiZCm7mN9TuSIohMubBAioDMTuL+3RlKBfoiqB0RG3egwgma30I0SiOHOB383xw//taYCny11pEZGtryPTuLhKTbhQRnjWSwYwmwhZExKYxuL/z50fSgp7RoHROTOwOG1NbjFnZc9azJaTahzj++CqpM7Skd/lX7Qs8Pxejn7IZxSuylQJZgjauYAPPz42TQAPGzy6zVP12p3/c7h/7vedOd+C3B2f+Sbt7WgZdXr5KGzjo0OEdTW8f7vnk9friQT5996w5r2pu4uXFYCtqrSSx680fws/7/lp4cXmP8MaCytKs17XDbK1w953Dd6jY1vrzVK1WpQhTocKxMgeX4LoypVYGyCXXSkYopcE2I2qwyYdub1iZsS0CT6vWqvUL/yf1nvkFAAA=',
+    },
+}
