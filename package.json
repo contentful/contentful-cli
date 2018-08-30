@@ -32,7 +32,6 @@
     "test:integration": "BABEL_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest\" --success first --kill-others",
     "test:integration:ci": "BABEL_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --runInBand\" --success first --kill-others",
     "test:integration:update": "npm run test:integration -- --updateSnapshot",
-    "test:e2e": "cross-env BABEL_ENV=test jest test/e2e/** --verbose",
     "test:e2e": "cross-env BABEL_ENV=test jest --testPathPattern=test/e2e --verbose",
     "test:simulate-ci": "trevor",
     "precommit": "lint-staged",
