@@ -1,9 +1,10 @@
 const fs = require('mz/fs')
 const path = require('path')
 const os = require('os')
+const context = require('../../../dist/context')
 
 const teardown = async () => {
-  const configPath = path.join(os.homedir(), '.contentfulrc.json')
+  const configPath = await context.getConfigPath()
   const backupPath = path.join(os.homedir(), '.contentfulrc.json.backup')
   try {
     const configContent = await fs.readFile(backupPath)
