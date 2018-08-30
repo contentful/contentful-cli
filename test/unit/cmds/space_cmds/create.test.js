@@ -3,10 +3,14 @@ import inquirer from 'inquirer'
 import { spaceCreate } from '../../../../lib/cmds/space_cmds/create'
 import { getContext } from '../../../../lib/context'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+import { confirmation } from '../../../../lib/utils/actions'
 
 jest.mock('inquirer')
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/contentful-clients')
+jest.mock('../../../../lib/utils/actions')
+
+confirmation.mockResolvedValue(true)
 
 const getOrganizationsStub = jest.fn().mockResolvedValue({
   items: [
@@ -18,6 +22,7 @@ const getOrganizationsStub = jest.fn().mockResolvedValue({
     }
   ]
 })
+
 inquirer.prompt.mockResolvedValue({ organizationId: 'mockedOrgTwo' })
 const createSpaceStub = jest.fn().mockResolvedValue({
   name: 'Mocked space name',
@@ -40,6 +45,7 @@ afterEach(() => {
   createManagementClient.mockClear()
   getOrganizationsStub.mockClear()
   inquirer.prompt.mockClear()
+  confirmation.mockClear()
 })
 
 test('create space with single org user', async () => {
@@ -126,4 +132,13 @@ test('create space - accepts default locale', async () => {
   expect(fakeClient.createSpace.mock.calls[0][0]).toEqual(spaceData)
   expect(fakeClient.createSpace.mock.calls[0][1]).toBe(undefined)
   expect(inquirer.prompt).not.toHaveBeenCalled()
+})
+
+test('abort space creation when saying no', async () => {
+  const spaceData = {
+    name: 'space name'
+  }
+  confirmation.mockResolvedValue(false)
+  const result = await spaceCreate(spaceData)
+  expect(result).toBeFalsy()
 })
