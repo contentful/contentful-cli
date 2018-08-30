@@ -31,6 +31,8 @@ test('should be already logged in and run all steps', done => {
     // step 2 createSpace
     .on(/Create your new Space now?/)
     .respond('\n')
+    .on(/Do you want to confirm the space creation?/)
+    .respond('\n')
     .expect(({stdout}) => {
       const matches = /Successfully created space .+ \((.+)\)/.exec(stdout)
       if (!matches) {
