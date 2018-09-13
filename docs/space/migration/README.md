@@ -1,6 +1,6 @@
 # Contentful CLI - `space migration` command
 
-This command parses and runs a migration script on a Contentful space.
+This command parses and runs a migration script based on [Contentful's migration tooling](https://github.com/contentful/contentful-migration) on a Contentful space.
 
 ## Usage
 
