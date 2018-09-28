@@ -47,14 +47,6 @@ contentful --help
 contentful space --help
 ```
 
-### Enable bash-completion
-
-To enable bash-completion for available commands use the `completion` command and concat the generated script to your .bashrc or .bash_profile.
-
-```sh
-contentful completion
-```
-
 ## Using the CLI tool with a proxy
 
 You can save the proxy configuration in your `.contentfulrc.json` via:

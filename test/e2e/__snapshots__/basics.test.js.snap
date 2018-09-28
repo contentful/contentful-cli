@@ -5,7 +5,6 @@ exports[`should print help message 1`] = `
 Usage: contentful <cmd> [args]
 
 Commands:
-   completion    generate bash completion script
    boilerplate   Download a boilerplate
    config        Manage and list your configs
    content-type  Manage and list your space content types
@@ -29,7 +28,6 @@ exports[`should print help message on shortcut 1`] = `
 Usage: contentful <cmd> [args]
 
 Commands:
-   completion    generate bash completion script
    boilerplate   Download a boilerplate
    config        Manage and list your configs
    content-type  Manage and list your space content types
@@ -53,7 +51,6 @@ exports[`should print help message on wrong subcommand 1`] = `
 Usage: contentful <cmd> [args]
 
 Commands:
-   completion    generate bash completion script
    boilerplate   Download a boilerplate
    config        Manage and list your configs
    content-type  Manage and list your space content types
@@ -79,7 +76,6 @@ exports[`should return code 1 when errors exist no args 1`] = `
 Usage: contentful <cmd> [args]
 
 Commands:
-   completion    generate bash completion script
    boilerplate   Download a boilerplate
    config        Manage and list your configs
    content-type  Manage and list your space content types
