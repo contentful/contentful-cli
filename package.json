@@ -38,6 +38,7 @@
     "test:simulate-ci": "trevor",
     "precommit": "lint-staged",
     "prepush": "BABEL_ENV=test jest --changedSince master test/unit/**",
+    "prepublish": "npm run clean && npm run build",
     "run-talkback-proxy": "node test/proxy.js"
   },
   "devDependencies": {
