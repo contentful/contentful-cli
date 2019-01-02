@@ -13,6 +13,7 @@ Options:
                                                                         [string]
   --await-processing, -w  Wait until the environment is processed and ready
                                                       [boolean] [default: false]
+  --management-token      Contentful management API token               [string]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/
@@ -32,6 +33,7 @@ Options:
                                                                         [string]
   --await-processing, -w  Wait until the environment is processed and ready
                                                       [boolean] [default: false]
+  --management-token      Contentful management API token               [string]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/
