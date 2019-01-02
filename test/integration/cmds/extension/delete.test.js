@@ -33,7 +33,7 @@ test(
   'should exit 1 when everything required is given except space id',
   done => {
     app()
-      .run('extension delete --id some-id')
+      .run('extension delete --id some-id --management-token sdfsdfsdf')
       .code(1)
       .expect((result) => {
         const regex = /You need to provide a space id./
