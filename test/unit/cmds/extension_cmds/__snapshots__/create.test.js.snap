@@ -6,6 +6,4 @@ exports[`Throws error if both src and srcdoc are at the same time 1`] = `"Must c
 
 exports[`Throws error if both src and srcdoc are not provided 1`] = `"Must contain exactly one of: src, srcdoc"`;
 
-exports[`Throws error if field-types is missing 1`] = `"Missing required properties: field-types"`;
-
 exports[`Throws error if name is missing 1`] = `"Missing required properties: name"`;

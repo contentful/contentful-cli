@@ -53,12 +53,6 @@ test('Throws error if name is missing', async () => {
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
-test('Throws error if field-types is missing', async () => {
-  await expect(
-    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
-  ).rejects.toThrowErrorMatchingSnapshot()
-})
-
 test('Throws error if both src and srcdoc are not provided', async () => {
   await expect(
     createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
@@ -88,6 +82,23 @@ test('Throws an error if installation parameters cannot be parsed', async () => 
       installationParameters: '{"test": lol}'
     })
   ).rejects.toThrowErrorMatchingSnapshot()
+})
+
+test('Creates extension if field-types is missing', async () => {
+  await createExtension({
+    spaceId: 'space',
+    name: 'Widget',
+    src: 'https://awesome.extension'
+  })
+
+  expect(createUiExtensionStub).toHaveBeenCalledWith({
+    extension: {
+      name: 'Widget',
+      src: 'https://awesome.extension'
+    }
+  })
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
+  expect(log).toHaveBeenCalledTimes(1)
 })
 
 test('Creates extension from command line arguments', async () => {
