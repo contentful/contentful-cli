@@ -61,7 +61,7 @@ test('should exit 1 everything except space id is given', done => {
     .run(`extension create --space-id ${space.sys.id}`)
     .code(1)
     .expect((result) => {
-      const regex = /Missing required properties:\s+name, field-types/
+      const regex = /Missing required properties:\s+name/
       expect(result.stderr.trim()).toMatch(regex)
     })
     .end(done)
