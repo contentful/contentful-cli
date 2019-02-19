@@ -61,7 +61,7 @@ test('create new environment with id and name', async () => {
   expect(createEnvironmentWithIdStub.mock.calls[0][1]).toEqual({ name: 'test' })
 })
 
-test.only('create new environment with id and name and source', async () => {
+test('create new environment with id and name and source', async () => {
   const result = await environmentCreate({
     spaceId: 'someSpaceID',
     environmentId: 'test',
