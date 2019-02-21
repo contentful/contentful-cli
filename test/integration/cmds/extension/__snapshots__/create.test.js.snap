@@ -9,7 +9,7 @@ Options:
   -h, --help                 Show help                                 [boolean]
   --id                       Extension id                               [string]
   --name                     Extension name                             [string]
-  --management-token         Contentful management API token            [string]
+  --management-token, --mt   Contentful management API token            [string]
   --space-id                 Space id                                   [string]
   --environment-id           Environment id         [string] [default: \\"master\\"]
   --field-types              Field types                                 [array]
