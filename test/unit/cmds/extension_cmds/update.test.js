@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { updateExtension } from '../../../../lib/cmds/extension_cmds/update'
+import { updateExtensionHandler } from '../../../../lib/cmds/extension_cmds/update'
 
 import { getContext } from '../../../../lib/context'
 
@@ -52,32 +52,32 @@ afterEach(() => {
 
 test('Throws error if id is missing', async () => {
   await expect(
-    updateExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+    updateExtensionHandler({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if name is missing', async () => {
   await expect(
-    updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+    updateExtensionHandler({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if --version and --force are missing', async () => {
   await expect(
-    updateExtension({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
+    updateExtensionHandler({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
   await expect(
-    updateExtension({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
+    updateExtensionHandler({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test(
   'Calls update on extension with no version number but force',
   async () => {
-    await updateExtension({
+    await updateExtensionHandler({
       id: '123',
       force: true,
       spaceId: 'space',
@@ -91,7 +91,7 @@ test(
 )
 
 test('Calls update on extension and reads srcdoc from disk', async () => {
-  await updateExtension({
+  await updateExtensionHandler({
     id: '123',
     version: 3,
     spaceId: 'space',
@@ -117,7 +117,7 @@ test('Updates an extension with parameter definitions ', async () => {
 
   readFileP.mockResolvedValue(descriptor)
 
-  await updateExtension({
+  await updateExtensionHandler({
     id: 'extension-id',
     descriptor: 'x.json',
     installationParameters: JSON.stringify({flag: true}),
