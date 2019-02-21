@@ -59,6 +59,7 @@ test('create new environment with id and name', async () => {
   expect(createEnvironmentWithIdStub).toHaveBeenCalledTimes(1)
   expect(createEnvironmentWithIdStub.mock.calls[0][0]).toBe('test')
   expect(createEnvironmentWithIdStub.mock.calls[0][1]).toEqual({ name: 'test' })
+  expect(createEnvironmentWithIdStub.mock.calls[0].length).toEqual(2) // should not send source param
 })
 
 test('create new environment with id and name and source', async () => {
