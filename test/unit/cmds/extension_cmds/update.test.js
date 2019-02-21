@@ -9,12 +9,16 @@ import { success, log } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 import { readFileP } from '../../../../lib/utils/fs'
 import readSrcDocFile from '../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file'
+import { createExtension } from '../../../../lib/cmds/extension_cmds/create'
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
 jest.mock('../../../../lib/utils/contentful-clients')
 jest.mock('../../../../lib/utils/fs')
 jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file')
+jest.mock('../../../../lib/cmds/extension_cmds/create', () => ({
+  createExtension: jest.fn()
+}), { virtual: true })
 
 readSrcDocFile.mockImplementation(async (extension) => { extension.srcdoc = '<h1>Sample Extension Content</h1>' })
 
@@ -22,32 +26,39 @@ const basicExtension = {
   sys: { id: '123', version: 3 }
 }
 
-const updateStub = jest.fn().mockImplementation((extension) => extension)
-
-const fakeClient = {
-  getSpace: async () => ({
-    getEnvironment: async () => ({
-      getUiExtension: async () => {
-        const extension = {...basicExtension}
-        extension.update = function () {
-          return updateStub(this)
-        }
-        return extension
-      }
-    })
-  })
-}
-createManagementClient.mockResolvedValue(fakeClient)
+let updateStub
+let fakeClient
 
 getContext.mockResolvedValue({
   cmaToken: 'mockedToken',
   activeSpaceId: 'someSpaceId'
 })
 
+beforeEach(() => {
+  updateStub = jest.fn().mockImplementation((extension) => extension)
+
+  fakeClient = {
+    getSpace: async () => ({
+      getEnvironment: async () => ({
+        getUiExtension: async () => {
+          const extension = {...basicExtension}
+          extension.update = function () {
+            return updateStub(this)
+          }
+          return extension
+        }
+      })
+    })
+  }
+  createManagementClient.mockResolvedValue(fakeClient)
+})
+
 afterEach(() => {
+  createManagementClient.mockClear()
   updateStub.mockClear()
   success.mockClear()
   log.mockClear()
+  createExtension.mockClear()
 })
 
 test('Throws error if id is missing', async () => {
@@ -72,6 +83,46 @@ test('Throws error if wrong --version value is passed', async () => {
   await expect(
     updateExtensionHandler({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
   ).rejects.toThrowErrorMatchingSnapshot()
+})
+
+test('Creates an extension with there is no one and force flag is present', async () => {
+  fakeClient = {
+    getSpace: async () => ({
+      getEnvironment: async () => ({
+        getUiExtension: () => {
+          throw Error('extension does not exist')
+        }
+      })
+    })
+  }
+
+  createManagementClient.mockClear()
+  createManagementClient.mockResolvedValue(fakeClient)
+  createExtension.mockResolvedValue({
+    sys: { id: '123' },
+    extension: {name: 'Widget', src: 'https://new.url'}
+  })
+
+  await updateExtensionHandler({
+    id: '123',
+    force: true,
+    spaceId: 'space',
+    name: 'Widget',
+    src: 'https://new.url'
+  })
+
+  expect(createExtension).toHaveBeenCalledTimes(1)
+
+  await expect(
+    updateExtensionHandler({
+      id: '123',
+      spaceId: 'space',
+      name: 'Widget',
+      src: 'https://new.url'
+    })
+  ).rejects.toThrowErrorMatchingSnapshot()
+
+  expect(createExtension).toHaveBeenCalledTimes(1)
 })
 
 test(
