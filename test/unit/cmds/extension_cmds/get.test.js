@@ -48,7 +48,9 @@ test('Logs extension data', async () => {
 
   const outputValues = [ '123', 'Widget', 'Symbol, Symbols', 'https://awesome.extension' ]
 
+  expect(log.mock.calls[0][0]).toContain('Space: space1')
+  expect(log.mock.calls[1][0]).toContain('Your extension: https://app.contentful.com/spaces/space1/settings/extensions/123')
   outputValues.forEach(str => {
-    expect(log.mock.calls[0][0]).toContain(str)
+    expect(log.mock.calls[2][0]).toContain(str)
   })
 })

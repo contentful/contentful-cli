@@ -98,7 +98,7 @@ test('Creates extension if field-types is missing', async () => {
     }
   })
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
-  expect(log).toHaveBeenCalledTimes(1)
+  expect(log).toHaveBeenCalledTimes(3)
 })
 
 test('Creates extension from command line arguments', async () => {
@@ -117,7 +117,7 @@ test('Creates extension from command line arguments', async () => {
     }
   })
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
-  expect(log).toHaveBeenCalledTimes(1)
+  expect(log).toHaveBeenCalledTimes(3)
 })
 
 test('Logs extension data', async () => {
@@ -131,8 +131,10 @@ test('Logs extension data', async () => {
 
   const values = [ '123', 'Widget', 'Symbol', 'https://awesome.extension' ]
 
+  expect(log.mock.calls[0][0]).toContain('Space: space')
+  expect(log.mock.calls[1][0]).toContain('Your extension: https://app.contentful.com/spaces/space/settings/extensions/123')
   values.forEach(value => {
-    expect(log.mock.calls[0][0]).toContain(value)
+    expect(log.mock.calls[2][0]).toContain(value)
   })
 
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
