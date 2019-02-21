@@ -1,6 +1,6 @@
 {
   "name": "contentful-cli",
-  "version": "0.19.1",
+  "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI tool",
   "main": "bin/contentful.js",
   "bin": {
@@ -39,7 +39,8 @@
     "precommit": "lint-staged",
     "prepush": "BABEL_ENV=test jest --changedSince master test/unit/**",
     "prepublish": "npm run clean && npm run build",
-    "run-talkback-proxy": "node test/proxy.js"
+    "run-talkback-proxy": "node test/proxy.js",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
@@ -70,6 +71,7 @@
     "nyc": "^12.0.2",
     "pkg": "^4.3.3",
     "rimraf": "^2.6.1",
+    "semantic-release": "^15.13.3",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^4.0.0",
     "talkback": "^1.6.0",

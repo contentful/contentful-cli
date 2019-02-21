@@ -50,6 +50,14 @@ jobs:
       - run: npm install
       - run: npm run build:standalone
       - run: npm run test:e2e
+  release:
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
+      - run: npm run semantic-release
 workflows:
   version: 2
   build_and_test:
@@ -58,3 +66,9 @@ workflows:
       - integration
       - linux
       - osx
+      - release:
+          requires:
+            - unit
+            - integration
+            - linux
+            - osx
