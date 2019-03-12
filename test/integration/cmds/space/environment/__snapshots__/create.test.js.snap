@@ -9,6 +9,8 @@ Options:
   -h, --help                Show help                                  [boolean]
   --environment-id, -e      Id of the environment to create           [required]
   --name, -n                Name of the environment to create         [required]
+  --source, --src           ID of the source environment to create the new
+                            environment from                            [string]
   --space-id, -s            ID of the space that the environment will belong to
                                                                         [string]
   --await-processing, -w    Wait until the environment is processed and ready
@@ -29,6 +31,8 @@ Options:
   -h, --help                Show help                                  [boolean]
   --environment-id, -e      Id of the environment to create           [required]
   --name, -n                Name of the environment to create         [required]
+  --source, --src           ID of the source environment to create the new
+                            environment from                            [string]
   --space-id, -s            ID of the space that the environment will belong to
                                                                         [string]
   --await-processing, -w    Wait until the environment is processed and ready
