@@ -6,13 +6,14 @@ exports[`should print help message: help data is incorrect 1`] = `
 Delete an extension
 
 Options:
-  -h, --help        Show help                                          [boolean]
-  --id              Extension id                             [string] [required]
-  --space-id        Space id                                            [string]
-  --environment-id  Environment id                  [string] [default: \\"master\\"]
-  --version         Current version of the extension for optimistic locking
-                                                                        [number]
-  --force           Force operation without explicit version           [boolean]
+  -h, --help                Show help                                  [boolean]
+  --id                      Extension id                     [string] [required]
+  --management-token, --mt  Contentful management API token             [string]
+  --space-id                Space id                                    [string]
+  --environment-id          Environment id          [string] [default: \\"master\\"]
+  --version                 Current version of the extension for optimistic
+                            locking                                     [number]
+  --force                   Force operation without explicit version   [boolean]
 
 Copyright 2018 Contentful, this is a BETA release"
 `;

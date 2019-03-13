@@ -9,10 +9,10 @@ exports[`should print help message: help data is incorrect 1`] = `
 "Usage: contentful space delete
 
 Options:
-  -h, --help          Show help                                        [boolean]
-  --space-id, -s      ID of the space to delete
-  --management-token  Contentful management API token                   [string]
-  --yes               Skip the confirmation question            [default: false]
+  -h, --help                Show help                                  [boolean]
+  --space-id, -s            ID of the space to delete
+  --management-token, --mt  Contentful management API token             [string]
+  --yes                     Skip the confirmation question      [default: false]
 
 Copyright 2018 Contentful, this is a BETA release"
 `;

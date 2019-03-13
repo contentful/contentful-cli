@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Throws error if --version and --force are missing 1`] = `"Please provide current version or use the --force flag"`;
+exports[`Creates an extension with there is no one and force flag is present 1`] = `"extension does not exist"`;
 
-exports[`Throws error if field-types is missing 1`] = `"Missing required properties: field-types"`;
+exports[`Throws error if --version and --force are missing 1`] = `"Please provide current version or use the --force flag"`;
 
 exports[`Throws error if id is missing 1`] = `"Missing required properties: id"`;
 

@@ -118,6 +118,28 @@ CLI_E2E_CMA_TOKEN = <cma_auth_token>
 CLI_E2E_ORG_ID = <organization_id>
 ```
 
+### Updating Snapshots
+You might need to update snapshots and it's challenging with the recordings.
+
+Tip: run tests without recordings to update the snapshots.
+
+```
+jest test/integration/cmds/<path to the affected test file> --updateSnapshot
+``
+
+If running `jest` alone, not from an npm script, you'll need to make sure your local config is set up correctly for the tests.
+
+```
+npm run pretest:integration // this backs up your current config and puts in integration test config
+./bin/contentful.js config list // check what's in there if you're curious
+./bin/contentful.js config remove --proxy // remove proxy config since you're not using talkback recordings
+./bin/contentful.js config remove --raw-proxy
+
+npm run posttest:integration // after running your tests, this restores your config to how it was before
+```
+
+
+
 ## :question: Support
 
 If you have a problem with this tool, please file an [issue](https://github.com/contentful/contentful-cli/issues/new) here on Github.

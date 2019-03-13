@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import { createExtension } from '../../../../lib/cmds/extension_cmds/create'
+import { createExtensionHandler } from '../../../../lib/cmds/extension_cmds/create'
 
 import { getContext } from '../../../../lib/context'
 import { successEmoji } from '../../../../lib/utils/emojis'
@@ -49,25 +49,19 @@ beforeEach(() => {
 
 test('Throws error if name is missing', async () => {
   await expect(
-    createExtension({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
-  ).rejects.toThrowErrorMatchingSnapshot()
-})
-
-test('Throws error if field-types is missing', async () => {
-  await expect(
-    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', src: 'https://awesome.extension' })
+    createExtensionHandler({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are not provided', async () => {
   await expect(
-    createExtension({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
+    createExtensionHandler({ spaceId: 'space', environmentId: 'master', name: 'Widget', fieldTypes: ['Symbol'] })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if both src and srcdoc are at the same time', async () => {
   await expect(
-    createExtension({
+    createExtensionHandler({
       spaceId: 'space',
       name: 'Widget',
       environmentId: 'master',
@@ -80,7 +74,7 @@ test('Throws error if both src and srcdoc are at the same time', async () => {
 
 test('Throws an error if installation parameters cannot be parsed', async () => {
   await expect(
-    createExtension({
+    createExtensionHandler({
       spaceId: 'space',
       name: 'Widget',
       fieldTypes: ['Symbol'],
@@ -90,8 +84,25 @@ test('Throws an error if installation parameters cannot be parsed', async () => 
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
+test('Creates extension if field-types is missing', async () => {
+  await createExtensionHandler({
+    spaceId: 'space',
+    name: 'Widget',
+    src: 'https://awesome.extension'
+  })
+
+  expect(createUiExtensionStub).toHaveBeenCalledWith({
+    extension: {
+      name: 'Widget',
+      src: 'https://awesome.extension'
+    }
+  })
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
+  expect(log).toHaveBeenCalledTimes(3)
+})
+
 test('Creates extension from command line arguments', async () => {
-  await createExtension({
+  await createExtensionHandler({
     spaceId: 'space',
     name: 'Widget',
     fieldTypes: ['Symbol'],
@@ -106,11 +117,11 @@ test('Creates extension from command line arguments', async () => {
     }
   })
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
-  expect(log).toHaveBeenCalledTimes(1)
+  expect(log).toHaveBeenCalledTimes(3)
 })
 
 test('Logs extension data', async () => {
-  await createExtension({
+  await createExtensionHandler({
     spaceId: 'space',
     environmentId: 'master',
     name: 'Widget',
@@ -120,8 +131,10 @@ test('Logs extension data', async () => {
 
   const values = [ '123', 'Widget', 'Symbol', 'https://awesome.extension' ]
 
+  expect(log.mock.calls[0][0]).toContain('Space: space')
+  expect(log.mock.calls[1][0]).toContain('Your extension: https://app.contentful.com/spaces/space/settings/extensions/123')
   values.forEach(value => {
-    expect(log.mock.calls[0][0]).toContain(value)
+    expect(log.mock.calls[2][0]).toContain(value)
   })
 
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
@@ -136,7 +149,7 @@ test('Creates extension with values from descriptor file', async () => {
 
   readFileP.mockResolvedValue(descriptor)
 
-  await createExtension({ descriptor: 'test.json' })
+  await createExtensionHandler({ descriptor: 'test.json' })
 
   expect(createUiExtensionStub).toHaveBeenCalledWith({
     extension: {
@@ -164,7 +177,7 @@ test(
 
     readFileP.mockResolvedValue(descriptor)
 
-    await createExtension({ descriptor: 'x.json', installationParameters: JSON.stringify({flag: true}) })
+    await createExtensionHandler({ descriptor: 'x.json', installationParameters: JSON.stringify({flag: true}) })
 
     expect(createUiExtensionStub).toHaveBeenCalledWith({
       extension: {
@@ -194,7 +207,7 @@ test(
 
     readFileP.mockResolvedValue(descriptor)
 
-    await createExtension({ descriptor: 'test.json', srcdoc: resolve(__dirname, 'sample-extension.html') })
+    await createExtensionHandler({ descriptor: 'test.json', srcdoc: resolve(__dirname, 'sample-extension.html') })
 
     expect(createUiExtensionStub).toHaveBeenCalledWith({
       extension: {
@@ -209,7 +222,7 @@ test(
 )
 
 test('Creates extension and reads srcdoc from disk', async () => {
-  await createExtension({
+  await createExtensionHandler({
     spaceId: 'space',
     environmentId: 'master',
     name: 'Widget',

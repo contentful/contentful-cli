@@ -10,3 +10,4 @@
 * [export](./export) - Export data from a Space, which can be later imported via [import](./import)
 * [migration](./migration) - Parses and runs a migration script on a Contentful space.
 * [generate](./generate) - Auto-generate files related to your space. For example, migration scripts. 
+* [environment](./environment) - List, create, and delete space environments.

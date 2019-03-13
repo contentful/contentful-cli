@@ -47,7 +47,7 @@ test('should exit 1 when only id is given', done => {
     .run('extension update --space-id some-id --id sample-extension')
     .code(1)
     .expect((result) => {
-      const regex = /Missing required properties:\s+name, field-types/
+      const regex = /Missing required properties:\s+name/
       expect(result.stderr.trim()).toMatch(regex)
     })
     .end(done)
