@@ -35,12 +35,12 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
-getContext.mockResolvedValue({
-  cmaToken: 'mockedToken',
-  activeSpaceId: 'someSpaceId'
-})
-
 beforeEach(() => {
+  getContext.mockReset()
+  getContext.mockResolvedValue({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
   success.mockClear()
   log.mockClear()
   createManagementClient.mockClear()
@@ -98,7 +98,7 @@ test('Creates extension if field-types is missing', async () => {
     }
   })
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
-  expect(log).toHaveBeenCalledTimes(3)
+  expect(log).toHaveBeenCalledTimes(4)
 })
 
 test('Creates extension from command line arguments', async () => {
@@ -117,7 +117,7 @@ test('Creates extension from command line arguments', async () => {
     }
   })
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
-  expect(log).toHaveBeenCalledTimes(3)
+  expect(log).toHaveBeenCalledTimes(4)
 })
 
 test('Logs extension data', async () => {
@@ -132,9 +132,39 @@ test('Logs extension data', async () => {
   const values = [ '123', 'Widget', 'Symbol', 'https://awesome.extension' ]
 
   expect(log.mock.calls[0][0]).toContain('Space: space')
-  expect(log.mock.calls[1][0]).toContain('Your extension: https://app.contentful.com/spaces/space/settings/extensions/123')
+  expect(log.mock.calls[1][0]).toContain('Environment: master')
+  expect(log.mock.calls[2][0]).toContain('Your extension: https://app.contentful.com/spaces/space/settings/extensions/123')
   values.forEach(value => {
-    expect(log.mock.calls[2][0]).toContain(value)
+    expect(log.mock.calls[3][0]).toContain(value)
+  })
+
+  expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
+})
+
+test('Uses activeEnvironmentId if environmentId is not specified', async () => {
+  getContext.mockReset()
+  getContext.mockResolvedValue({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId',
+    activeEnvironmentId: 'test'
+  })
+
+  await createExtensionHandler({
+    spaceId: 'space',
+    name: 'Widget',
+    fieldTypes: ['Symbol'],
+    src: 'https://awesome.extension'
+  })
+
+  const values = [ '123', 'Widget', 'Symbol', 'https://awesome.extension' ]
+
+  expect(log.mock.calls[0][0]).toContain('Space: space')
+  expect(log.mock.calls[1][0]).toContain('Environment: test')
+  expect(log.mock.calls[2][0]).toContain(
+    'Your extension: https://app.contentful.com/spaces/space/environments/test/settings/extensions/123'
+  )
+  values.forEach(value => {
+    expect(log.mock.calls[3][0]).toContain(value)
   })
 
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully created extension:\n`)
