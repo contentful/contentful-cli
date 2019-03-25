@@ -10,7 +10,7 @@ Options:
   --id                      Extension id                     [string] [required]
   --management-token, --mt  Contentful management API token             [string]
   --space-id                Space id                                    [string]
-  --environment-id          Environment id          [string] [default: \\"master\\"]
+  --environment-id          Environment id                              [string]
   --version                 Current version of the extension for optimistic
                             locking                                     [number]
   --force                   Force operation without explicit version   [boolean]

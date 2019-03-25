@@ -29,12 +29,12 @@ const basicExtension = {
 let updateStub
 let fakeClient
 
-getContext.mockResolvedValue({
-  cmaToken: 'mockedToken',
-  activeSpaceId: 'someSpaceId'
-})
-
 beforeEach(() => {
+  getContext.mockResolvedValue({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId'
+  })
+
   updateStub = jest.fn().mockImplementation((extension) => extension)
 
   fakeClient = {
@@ -59,6 +59,7 @@ afterEach(() => {
   success.mockClear()
   log.mockClear()
   createExtension.mockClear()
+  getContext.mockReset()
 })
 
 test('Throws error if id is missing', async () => {
@@ -156,6 +157,13 @@ test('Calls update on extension and reads srcdoc from disk', async () => {
 })
 
 test('Updates an extension with parameter definitions ', async () => {
+  getContext.mockReset()
+  getContext.mockResolvedValue({
+    cmaToken: 'mockedToken',
+    activeSpaceId: 'someSpaceId',
+    activeEnvironmentId: 'someEnvironmentId'
+  })
+
   const descriptor = `{
     "name": "Test Extension",
     "fieldTypes": ["Boolean"],
@@ -176,11 +184,14 @@ test('Updates an extension with parameter definitions ', async () => {
   })
 
   expect(log.mock.calls[0][0]).toContain('Space: someSpaceId')
-  expect(log.mock.calls[1][0]).toContain('Your extension: https://app.contentful.com/spaces/someSpaceId/settings/extensions/123')
-  expect(log.mock.calls[2][0]).toContain('https://new.extension')
-  expect(log.mock.calls[2][0]).toContain('Boolean')
-  expect(log.mock.calls[2][0]).toContain('Instance: 1')
-  expect(log.mock.calls[2][0]).toContain('Installation: 1')
+  expect(log.mock.calls[1][0]).toContain('Environment: someEnvironmentId')
+  expect(log.mock.calls[2][0]).toContain(
+    'Your extension: https://app.contentful.com/spaces/someSpaceId/environments/someEnvironmentId/settings/extensions/123'
+  )
+  expect(log.mock.calls[3][0]).toContain('https://new.extension')
+  expect(log.mock.calls[3][0]).toContain('Boolean')
+  expect(log.mock.calls[3][0]).toContain('Instance: 1')
+  expect(log.mock.calls[3][0]).toContain('Installation: 1')
 
   expect(updateStub).toHaveBeenCalledTimes(1)
   expect(success).toHaveBeenCalledWith(`${successEmoji} Successfully updated extension:\n`)

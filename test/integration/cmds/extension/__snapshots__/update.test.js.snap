@@ -11,7 +11,7 @@ Options:
   --name                     Extension name                             [string]
   --management-token, --mt   Contentful management API token            [string]
   --space-id                 Space id                                   [string]
-  --environment-id           Environment id         [string] [default: \\"master\\"]
+  --environment-id           Environment id                             [string]
   --field-types              Field types                                 [array]
   --descriptor               Path to an extension descriptor file       [string]
   --src                      URL to extension bundle                    [string]
