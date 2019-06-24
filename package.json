@@ -22,7 +22,7 @@
     "test": "npm run test:coverage",
     "test:coverage": "BABEL_ENV=test nyc npm run test:unit",
     "test:html-coverage": "BABEL_ENV=test nyc --reporter=html npm run test:unit",
-    "test:unit": "BABEL_ENV=test jest test/unit/** --verbose",
+    "test:unit": "BABEL_ENV=test jest --maxWorkers=2 test/unit/** --verbose",
     "test:unit:watch": "BABEL_ENV=test jest test/unit/** --verbose --watch",
     "pretest:integration": "node test/integration/scripts/pre-test.js",
     "pretest:integration:ci": "npm run pretest:integration",
