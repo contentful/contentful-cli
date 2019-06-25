@@ -41,7 +41,6 @@ test('logout fails when not logged in', async () => {
 test('logout is actually logging out', async () => {
   confirmation.mockResolvedValueOnce(true)
   await logout({})
-  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
   expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(success).toHaveBeenCalledWith('Successfully logged you out.')
@@ -54,7 +53,6 @@ test('logout is actually logging out', async () => {
 test('logout is abortable', async () => {
   confirmation.mockResolvedValueOnce(false)
   await logout({})
-  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
   expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(log).toHaveBeenCalledWith('Log out aborted by user.')

@@ -1,6 +1,5 @@
 import { deleteExtension } from '../../../../lib/cmds/extension_cmds/delete'
 
-import { getContext } from '../../../../lib/context'
 import { successEmoji } from '../../../../lib/utils/emojis'
 import { success } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
@@ -23,22 +22,17 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
-getContext.mockResolvedValue({
-  cmaToken: 'mockedToken',
-  activeSpaceId: 'someSpaceId'
-})
-
 beforeEach(() => {
   success.mockClear()
   createManagementClient.mockClear()
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  await expect(deleteExtension({ spaceId: 'space', id: 'test' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(deleteExtension({ context: { activeSpaceId: 'space' }, id: 'test' })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  await expect(deleteExtension({ spaceId: 'space', id: 'test', version: 4 })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(deleteExtension({context: {activeSpaceId: 'space'}, id: 'test', version: 4})).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Logs message if delete is successful', async () => {

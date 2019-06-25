@@ -41,7 +41,9 @@ test('delete environment - requires space id', async () => {
 
 test('delete environment', async () => {
   const result = await environmentDelete({
-    spaceId: 'someSpaceID',
+    context: {
+      activeSpaceId: 'someSpaceID'
+    },
     environmentId: 'someEnvironmentID'
   })
   expect(result).toBeTruthy()

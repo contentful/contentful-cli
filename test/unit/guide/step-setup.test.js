@@ -58,7 +58,7 @@ test('checks for yarn, execa installs, creates cda token', async () => {
 
 test('gets context and sets up config', async () => {
   await setupStep(guideContext)
-  expect(getContext).toHaveBeenCalledTimes(1)
+  expect(getContext).toHaveBeenCalledTimes(2)
   expect(guideContext.activeGuide.setupConfig).toHaveBeenCalledTimes(1)
 })
 

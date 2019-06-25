@@ -1,7 +1,5 @@
 import { handler } from '../../../../lib/cmds/extension_cmds/get'
 
-import { getContext } from '../../../../lib/context'
-
 import { log } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
@@ -27,11 +25,6 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
-getContext.mockResolvedValue({
-  cmaToken: 'mockedToken',
-  activeSpaceId: 'someSpaceId'
-})
-
 beforeEach(() => {
   log.mockClear()
   createManagementClient.mockClear()
@@ -44,7 +37,7 @@ test('Calls getUiExtension() with ID', async () => {
 })
 
 test('Logs extension data', async () => {
-  await handler({ spaceId: 'space1', id: 'widget1' })
+  await handler({ context: { activeSpaceId: 'space1', id: 'widget1' } })
 
   const outputValues = [ '123', 'Widget', 'Symbol, Symbols', 'https://awesome.extension' ]
 
