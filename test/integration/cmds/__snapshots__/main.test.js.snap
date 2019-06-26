@@ -4,16 +4,14 @@ exports[`should print help message on shortcut: help data is incorrect 1`] = `
 "Usage: contentful <cmd> [args]
 
 Commands:
-   boilerplate   Download a boilerplate
-   config        Manage and list your configs
-   content-type  Manage and list your space content types
-                                                                   [aliases: ct]
-   extension     Manage and list your extensions
-   guide         A guide introducing basic concepts of working with
-                              Contentful
-   login         Login to Contentful
-   logout        Logout from Contentful
-   space         Manage and list your spaces
+  boilerplate   Download a boilerplate
+  config        Manage and list your configs
+  content-type  Manage and list your space content types           [aliases: ct]
+  extension     Manage and list your extensions
+  guide         A guide introducing basic concepts of working with Contentful
+  login         Login to Contentful
+  logout        Logout from Contentful
+  space         Manage and list your spaces
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -26,16 +24,14 @@ exports[`should print help message on wrong subcommand: help data is incorrect 1
 "Usage: contentful <cmd> [args]
 
 Commands:
-   boilerplate   Download a boilerplate
-   config        Manage and list your configs
-   content-type  Manage and list your space content types
-                                                                   [aliases: ct]
-   extension     Manage and list your extensions
-   guide         A guide introducing basic concepts of working with
-                              Contentful
-   login         Login to Contentful
-   logout        Logout from Contentful
-   space         Manage and list your spaces
+  boilerplate   Download a boilerplate
+  config        Manage and list your configs
+  content-type  Manage and list your space content types           [aliases: ct]
+  extension     Manage and list your extensions
+  guide         A guide introducing basic concepts of working with Contentful
+  login         Login to Contentful
+  logout        Logout from Contentful
+  space         Manage and list your spaces
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -49,16 +45,14 @@ exports[`should print help message: help data is incorrect 1`] = `
 "Usage: contentful <cmd> [args]
 
 Commands:
-   boilerplate   Download a boilerplate
-   config        Manage and list your configs
-   content-type  Manage and list your space content types
-                                                                   [aliases: ct]
-   extension     Manage and list your extensions
-   guide         A guide introducing basic concepts of working with
-                              Contentful
-   login         Login to Contentful
-   logout        Logout from Contentful
-   space         Manage and list your spaces
+  boilerplate   Download a boilerplate
+  config        Manage and list your configs
+  content-type  Manage and list your space content types           [aliases: ct]
+  extension     Manage and list your extensions
+  guide         A guide introducing basic concepts of working with Contentful
+  login         Login to Contentful
+  logout        Logout from Contentful
+  space         Manage and list your spaces
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -71,16 +65,14 @@ exports[`should return code 1 when errors exist no args: help data is incorrect 
 "Usage: contentful <cmd> [args]
 
 Commands:
-   boilerplate   Download a boilerplate
-   config        Manage and list your configs
-   content-type  Manage and list your space content types
-                                                                   [aliases: ct]
-   extension     Manage and list your extensions
-   guide         A guide introducing basic concepts of working with
-                              Contentful
-   login         Login to Contentful
-   logout        Logout from Contentful
-   space         Manage and list your spaces
+  boilerplate   Download a boilerplate
+  config        Manage and list your configs
+  content-type  Manage and list your space content types           [aliases: ct]
+  extension     Manage and list your extensions
+  guide         A guide introducing basic concepts of working with Contentful
+  login         Login to Contentful
+  logout        Logout from Contentful
+  space         Manage and list your spaces
 
 Options:
   -h, --help     Show help                                             [boolean]
