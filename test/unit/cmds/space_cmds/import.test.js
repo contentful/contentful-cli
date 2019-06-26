@@ -7,13 +7,13 @@ import contentfulImport from 'contentful-import'
 jest.mock('../../../../lib/context')
 jest.mock('contentful-import')
 
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
     context: {
       activeSpaceId: 'spaceId',
-      cmaToken: 'managementToken'
+      managementToken: 'managementToken'
     },
     skipContentModel: false,
     skipLocales: false,

@@ -46,7 +46,7 @@ test('logout is actually logging out', async () => {
   expect(success).toHaveBeenCalledWith('Successfully logged you out.')
   expect(log).not.toHaveBeenCalled()
   expect(setContext).toHaveBeenCalledTimes(1)
-  expect(setContext.mock.calls[0][0]).toMatchObject({ cmaToken: null })
+  expect(setContext.mock.calls[0][0]).toMatchObject({ managementToken: null })
   expect(storeRuntimeConfig).toHaveBeenCalledTimes(1)
 })
 

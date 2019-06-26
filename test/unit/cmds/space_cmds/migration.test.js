@@ -7,12 +7,12 @@ import runMigration from 'contentful-migration/built/bin/cli'
 jest.mock('../../../../lib/context')
 jest.mock('contentful-migration/built/bin/cli')
 
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to the migration', async () => {
   const stubArgv = {
     context: {
-      cmaToken: 'managementToken',
+      managementToken: 'managementToken',
       activeEnvironmentId: 'master',
       activeSpaceId: 'spaceId'
     },

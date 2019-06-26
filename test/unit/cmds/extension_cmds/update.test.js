@@ -26,7 +26,7 @@ const basicExtension = {
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'someSpaceId',
     activeEnvironmentId: 'someEnvironmentId'
   }

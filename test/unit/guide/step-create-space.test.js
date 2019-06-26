@@ -12,7 +12,7 @@ jest.mock('../../../lib/cmds/space_cmds/create')
 const guideContext = {stepCount: 0, activeGuide: {name: 'test'}}
 const fakeSpace = {sys: {id: '100abc'}}
 
-getContext.mockResolvedValue({ cmaToken: 'cmaToken', activeEnvironmentId: 'master' })
+getContext.mockResolvedValue({ managementToken: 'managementToken', activeEnvironmentId: 'master' })
 confirmation.mockResolvedValue(true)
 spaceCreate.mockResolvedValue(fakeSpace)
 
@@ -27,7 +27,7 @@ test('creates space on successful user confirmation', async () => {
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(spaceCreate).toHaveBeenCalledTimes(1)
   expect(spaceCreate).toHaveBeenCalledWith({
-    context: { activeEnvironmentId: 'master', cmaToken: 'cmaToken' },
+    context: { activeEnvironmentId: 'master', managementToken: 'managementToken' },
     name: guideContext.activeGuide.name,
     feature: 'guide'
   })

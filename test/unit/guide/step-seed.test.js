@@ -10,7 +10,7 @@ jest.mock('../../../lib/utils/actions')
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/cmds/space_cmds/seed')
 
-getContext.mockResolvedValue({ cmaToken: 'cmaToken', activeEnvironmentId: 'master' })
+getContext.mockResolvedValue({ managementToken: 'managementToken', activeEnvironmentId: 'master' })
 
 const guideContext = {
   stepCount: 0,
@@ -33,7 +33,7 @@ test('seeds space on successful user confirmation', async () => {
   expect(spaceSeed).toHaveBeenCalledTimes(1)
   const { activeGuide: {seed} } = guideContext
   expect(spaceSeed).toHaveBeenCalledWith({
-    context: { cmaToken: 'cmaToken', activeEnvironmentId: 'master', activeSpaceId: guideContext.spaceId },
+    context: { managementToken: 'managementToken', activeEnvironmentId: 'master', activeSpaceId: guideContext.spaceId },
     template: seed,
     yes: true,
     feature: 'guide'

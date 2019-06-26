@@ -42,18 +42,18 @@ test('useFlagsIfAvailable set activeSpaceId (from context)', async () => {
 
 test('useFlagsIfAvailable set managementToken (overwrite context)', async () => {
   getContext.mockResolvedValueOnce({
-    cmaToken: 'cmaToken'
+    managementToken: 'managementToken'
   })
   const result = await buildContext({managementToken: 'managementToken'})
-  expect(result).toEqual({context: {...defaults.context, cmaToken: 'managementToken'}})
+  expect(result).toEqual({context: {...defaults.context, managementToken: 'managementToken'}})
 })
 
 test('useFlagsIfAvailable set managementToken (from context)', async () => {
   getContext.mockResolvedValueOnce({
-    cmaToken: 'cmaToken'
+    managementToken: 'managementToken'
   })
   const result = await buildContext({})
-  expect(result).toEqual({context: {...defaults.context, cmaToken: 'cmaToken'}})
+  expect(result).toEqual({context: {...defaults.context, managementToken: 'managementToken'}})
 })
 
 test('useFlagsIfAvailable set activeEnvironmentId (overwrite context)', async () => {

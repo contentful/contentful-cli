@@ -21,7 +21,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -66,7 +66,7 @@ test('create access token - fails when not logged in', async () => {
     items: [mockedAccessTokenData]
   })
   getContext.mockResolvedValueOnce({
-    cmaToken: null
+    managementToken: null
   })
   await expect(accessTokenCreate({
     context: {

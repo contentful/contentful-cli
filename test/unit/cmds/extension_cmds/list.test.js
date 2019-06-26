@@ -29,7 +29,7 @@ const mockExtensions = {
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'space',
     activeEnvironmentId: 'env'
   }

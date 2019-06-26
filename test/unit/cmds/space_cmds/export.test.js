@@ -7,7 +7,7 @@ import contentfulExport from 'contentful-export'
 jest.mock('../../../../lib/context')
 jest.mock('contentful-export')
 
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to contentful-export', async () => {
   const stubArgv = {
@@ -15,7 +15,7 @@ test('it should pass all args to contentful-export', async () => {
       activeSpaceId: 'spaceId',
       activeEnvironmentId: 'master',
       host: 'api.contentful.com',
-      cmaToken: 'managementToken'
+      managementToken: 'managementToken'
     },
     includeDrafts: false,
     skipRoles: false,

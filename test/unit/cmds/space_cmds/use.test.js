@@ -20,7 +20,7 @@ createManagementClient.mockResolvedValue(fakeClient)
 test('it writes the enviroment id to contentfulrc.json', async () => {
   const stubArgv = {
     context: {
-      cmaToken: 'managementToken',
+      managementToken: 'managementToken',
       activeEnvironmentId: 'master'
     },
     spaceId: 'test'

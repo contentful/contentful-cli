@@ -18,7 +18,7 @@ const setup = async () => {
   try {
     console.log('Writing test config...')
     const testConfig = {
-      cmaToken: process.env.CLI_E2E_CMA_TOKEN,
+      managementToken: process.env.CLI_E2E_CMA_TOKEN,
       proxy: {
         host: 'localhost',
         port: 3333,

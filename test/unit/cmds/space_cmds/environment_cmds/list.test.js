@@ -31,7 +31,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {

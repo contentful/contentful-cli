@@ -64,7 +64,7 @@ afterEach(() => {
 test('List content types from default environment, "master"', async () => {
   await handler({
     context: {
-      cmaToken: 'mockedToken',
+      managementToken: 'mockedToken',
       activeSpaceId: 'someSpaceId',
       activeEnvironmentId: 'master'
     }
@@ -90,7 +90,7 @@ test('List content types from default environment, "master"', async () => {
 test('List content types based on active environment if available', async () => {
   await handler({
     context: {
-      cmaToken: 'mockedToken',
+      managementToken: 'mockedToken',
       activeSpaceId: 'someSpaceId',
       activeEnvironmentId: 'develop'
     }
@@ -116,7 +116,7 @@ test('List content types based on active environment if available', async () => 
 test('List content types based on environment passed if --environment-id option is used', async () => {
   const stubArgv = {
     context: {
-      cmaToken: 'mockedToken',
+      managementToken: 'mockedToken',
       activeSpaceId: 'someSpaceId',
       activeEnvironmentId: 'test'
     }

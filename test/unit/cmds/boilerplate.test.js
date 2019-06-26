@@ -41,7 +41,7 @@ const mockedSpace = {
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'space',
     activeEnvironmentId: 'master'
   }
@@ -81,7 +81,7 @@ test(
   'successfully downloads boilerplate and generates access token',
   async () => {
     getContext.mockResolvedValue({
-      cmaToken: 'mocked',
+      managementToken: 'mocked',
       spaceId: mockedSpace.sys.id
     })
     await downloadBoilerplate({
@@ -95,7 +95,7 @@ test(
 
 test('requires login', async () => {
   getContext.mockResolvedValue({
-    cmaToken: null
+    managementToken: null
   })
   try {
     await expect(downloadBoilerplate({context: {}})).rejects.toThrowError(PreconditionFailedError)
@@ -106,10 +106,10 @@ test('requires login', async () => {
 
 test('requires spaceId and fails without', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked'
+    managementToken: 'mocked'
   })
   try {
-    await expect(downloadBoilerplate({context: {cmaToken: 'management-token'}})).rejects.toThrowError(PreconditionFailedError)
+    await expect(downloadBoilerplate({context: {managementToken: 'management-token'}})).rejects.toThrowError(PreconditionFailedError)
   } catch (error) {
     expect(error.message.includes('You need to provide a space id')).toBeTruthy()
   }
@@ -117,7 +117,7 @@ test('requires spaceId and fails without', async () => {
 
 test('requires spaceId and accepts it from context', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked',
+    managementToken: 'mocked',
     activeSpaceId: 'mocked'
   })
   await expect(downloadBoilerplate).not.toThrowError('works with space id provided via context')
@@ -125,7 +125,7 @@ test('requires spaceId and accepts it from context', async () => {
 
 test('requires spaceId and accepts it from argv arguments', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked'
+    managementToken: 'mocked'
   })
   await expect(() => downloadBoilerplate(defaults)).not.toThrowError('works with space id provided via arguments')
 })

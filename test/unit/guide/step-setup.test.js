@@ -15,7 +15,7 @@ jest.mock('inquirer')
 
 prompt.mockResolvedValue({directoryName: 'test', directoryPath: 'test-path'})
 accessTokenCreate.mockResolvedValue({accessToken: 'abc123'})
-getContext.mockResolvedValue({cmaToken: 'abc124'})
+getContext.mockResolvedValue({managementToken: 'abc124'})
 const setupConfig = jest.fn().mockResolvedValue()
 
 const guideContext = {

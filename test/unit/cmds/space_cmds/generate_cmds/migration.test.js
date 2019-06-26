@@ -211,7 +211,7 @@ test('it generates the migration and writes to disk', async () => {
 
   await generateMigration({
     context: {
-      cmaToken: 'cmaToken',
+      managementToken: 'managementToken',
       activeSpaceId: 'fooSpace',
       activeEnvironmentId: 'fooEnv'
     }

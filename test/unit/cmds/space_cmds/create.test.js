@@ -27,7 +27,7 @@ const getOrganizationsStub = jest.fn().mockResolvedValue({
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'space',
     activeEnvironmentId: 'master'
   }
@@ -47,7 +47,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -119,7 +119,7 @@ test('create space with passed organization id', async () => {
 
 test('create space - fails when not logged in', async () => {
   getContext.mockResolvedValueOnce({
-    cmaToken: null
+    managementToken: null
   })
   await expect(spaceCreate({context: {}})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
@@ -130,7 +130,7 @@ test('create space - fails when not logged in', async () => {
 test('create space - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create space because of reasons'
   createSpaceStub.mockRejectedValueOnce(new Error(errorMessage))
-  await expect(spaceCreate({context: {cmaToken: 'management-token'}})).rejects.toThrowError(errorMessage)
+  await expect(spaceCreate({context: {managementToken: 'management-token'}})).rejects.toThrowError(errorMessage)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
   expect(inquirer.prompt).not.toHaveBeenCalled()
   expect(spaceUse).not.toHaveBeenCalled()

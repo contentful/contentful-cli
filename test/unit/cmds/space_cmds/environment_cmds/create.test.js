@@ -14,7 +14,7 @@ const environmentData = {
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'someSpaceID'
   },
   environmentId: 'test'
@@ -30,7 +30,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -39,7 +39,7 @@ afterEach(() => {
 })
 
 test('create environment - requires space id', async () => {
-  await expect(environmentCreate({context: {cmaToken: 'management-token'}})).rejects.toThrowErrorMatchingSnapshot()
+  await expect(environmentCreate({context: {managementToken: 'management-token'}})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(createEnvironmentWithIdStub).not.toHaveBeenCalled()
 })

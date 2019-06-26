@@ -7,7 +7,7 @@ jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/styles')
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -33,7 +33,7 @@ test('assertSpaceIdProvided when provided via args', async () => {
 test('assertSpaceIdProvided when provided via context', async () => {
   getContext.mockResolvedValueOnce({
     activeSpaceId: 'space id',
-    cmaToken: 'mockedToken'
+    managementToken: 'mockedToken'
   })
   await assertSpaceIdProvided()
 })

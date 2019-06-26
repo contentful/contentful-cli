@@ -27,7 +27,7 @@ const createUiExtensionStub = jest.fn().mockResolvedValue({
 
 const defaults = {
   context: {
-    cmaToken: 'management-token',
+    managementToken: 'management-token',
     activeSpaceId: 'space',
     activeEnvironmentId: 'master'
   }
