@@ -27,7 +27,15 @@ const mockExtensions = {
   ]
 }
 
-const getEnvironmentStub = jest.fn().mockImplementation((environmentId) => {
+const defaults = {
+  context: {
+    cmaToken: 'management-token',
+    activeSpaceId: 'space',
+    activeEnvironmentId: 'env'
+  }
+}
+
+const getEnvironmentStub = jest.fn().mockImplementation(environmentId => {
   if (environmentId === 'env') {
     return Promise.resolve({
       getUiExtensions: () => Promise.resolve(mockExtensions)
@@ -51,7 +59,7 @@ beforeEach(() => {
 })
 
 test('Lists extensions', async () => {
-  await handler({context: {activeSpaceId: 'space', activeEnvironmentId: 'env'}})
+  await handler(defaults)
 
   const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
 
@@ -61,7 +69,7 @@ test('Lists extensions', async () => {
 })
 
 test('Displays message if list is empty', async () => {
-  await handler({context: {activeSpaceId: 'space', activeEnvironmentId: 'empty'}})
+  await handler({ context: { ...defaults.context, activeEnvironmentId: 'empty' } })
 
   expect(log).toHaveBeenCalledWith('No extensions found')
 })

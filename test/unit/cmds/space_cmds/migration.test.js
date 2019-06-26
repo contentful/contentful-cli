@@ -11,10 +11,12 @@ getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
 test('it should pass all args to the migration', async () => {
   const stubArgv = {
-    cmaToken: 'managementToken',
+    context: {
+      cmaToken: 'managementToken',
+      activeEnvironmentId: 'master',
+      activeSpaceId: 'spaceId'
+    },
     managementApplication: `contentful.cli/${version}`,
-    activeSpaceId: 'spaceId',
-    activeEnvironmentId: 'master',
     managementFeature: 'space-migration'
   }
   await migration(stubArgv)

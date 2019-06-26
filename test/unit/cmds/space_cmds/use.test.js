@@ -1,12 +1,10 @@
 import { spaceUse } from '../../../../lib/cmds/space_cmds/use'
 
-import { getContext, setContext } from '../../../../lib/context'
+import { setContext } from '../../../../lib/context'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/contentful-clients')
-
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
 const getSpaceStub = jest.fn().mockResolvedValue({
   sys: {
@@ -21,9 +19,11 @@ createManagementClient.mockResolvedValue(fakeClient)
 
 test('it writes the enviroment id to contentfulrc.json', async () => {
   const stubArgv = {
-    activeSpaceId: 'test',
-    activeEnvironmentId: 'master',
-    managementToken: 'managementToken'
+    context: {
+      cmaToken: 'managementToken',
+      activeEnvironmentId: 'master'
+    },
+    spaceId: 'test'
   }
   await spaceUse(stubArgv)
   expect(setContext).toHaveBeenCalledWith({

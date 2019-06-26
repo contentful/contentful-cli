@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 test('login - without error', async () => {
-  const result = await loginHandler()
+  const result = await loginHandler({context: {}})
 
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(opn).toHaveBeenCalled()
@@ -42,9 +42,8 @@ test('login - without error', async () => {
 test('login - user abort', async () => {
   confirmation.mockResolvedValueOnce(false)
 
-  await loginHandler()
+  await loginHandler({context: {}})
 
-  expect(getContext).toHaveBeenCalled()
   expect(confirmation).toHaveBeenCalled()
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(opn).not.toHaveBeenCalled()
@@ -56,7 +55,7 @@ test('login - user abort', async () => {
 test('login - already logged in', async () => {
   getContext.mockResolvedValueOnce({ cmaToken: 'alreadyLoggedIn' })
 
-  await loginHandler()
+  await loginHandler({context: {cmaToken: 'token'}})
 
   expect(opn).not.toHaveBeenCalled()
   expect(setContext).not.toHaveBeenCalled()

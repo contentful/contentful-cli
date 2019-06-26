@@ -11,10 +11,12 @@ getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
 test('it should pass all args to contentful-export', async () => {
   const stubArgv = {
-    activeSpaceId: 'spaceId',
-    activeEnvironmentId: 'master',
-    cmaToken: 'managementToken',
-    host: 'api.contentful.com',
+    context: {
+      activeSpaceId: 'spaceId',
+      activeEnvironmentId: 'master',
+      host: 'api.contentful.com',
+      cmaToken: 'managementToken'
+    },
     includeDrafts: false,
     skipRoles: false,
     skipContentModel: false,
@@ -24,7 +26,6 @@ test('it should pass all args to contentful-export', async () => {
     saveFile: true,
     useVerboseRenderer: false,
     managementApplication: `contentful.cli/${version}`,
-    managementToken: 'managementToken',
     managementFeature: 'space-export'
   }
   await exportSpace(stubArgv)

@@ -31,13 +31,13 @@ beforeEach(() => {
 })
 
 test('Calls getUiExtension() with ID', async () => {
-  await handler({ spaceId: 'space1', id: 'widget1' })
+  await handler({ context: { activeSpaceId: 'space1', activeEnvironmentId: 'master', cmaToken: 'token' }, id: 'widget1' })
 
   expect(getUiExtensionStub).toHaveBeenCalledWith('widget1')
 })
 
 test('Logs extension data', async () => {
-  await handler({ context: { activeSpaceId: 'space1', id: 'widget1' } })
+  await handler({ context: { activeSpaceId: 'space1', activeEnvironmentId: 'master', cmaToken: 'token' }, id: 'widget1' })
 
   const outputValues = [ '123', 'Widget', 'Symbol, Symbols', 'https://awesome.extension' ]
 

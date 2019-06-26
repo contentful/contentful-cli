@@ -69,7 +69,9 @@ test('create access token - fails when not logged in', async () => {
     cmaToken: null
   })
   await expect(accessTokenCreate({
-    spaceId: 'some-space-id'
+    context: {
+      spaceId: 'some-space-id'
+    }
   })).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(createApiKeyStub).not.toHaveBeenCalled()

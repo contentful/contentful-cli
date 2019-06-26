@@ -11,8 +11,10 @@ getContext.mockResolvedValue({ cmaToken: 'managementToken' })
 
 test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
-    activeSpaceId: 'spaceId',
-    cmaToken: 'managementToken',
+    context: {
+      activeSpaceId: 'spaceId',
+      cmaToken: 'managementToken'
+    },
     skipContentModel: false,
     skipLocales: false,
     host: 'api.contentful.com',

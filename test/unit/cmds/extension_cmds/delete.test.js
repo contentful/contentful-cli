@@ -28,15 +28,28 @@ beforeEach(() => {
 })
 
 test('Throws error if --version and --force are missing', async () => {
-  await expect(deleteExtension({ context: { activeSpaceId: 'space' }, id: 'test' })).rejects.toThrowErrorMatchingSnapshot()
+  await expect(deleteExtension({
+    context: {
+      cmaToken: 'cmaToken',
+      activeSpaceId: 'space'
+    },
+    id: 'test'
+  })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
-  await expect(deleteExtension({context: {activeSpaceId: 'space'}, id: 'test', version: 4})).rejects.toThrowErrorMatchingSnapshot()
+  await expect(deleteExtension({
+    context: {
+      cmaToken: 'cmaToken',
+      activeSpaceId: 'space'
+    },
+    id: 'test',
+    version: 4
+  })).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Logs message if delete is successful', async () => {
-  await deleteExtension({spaceId: 'space', id: 'test', force: true})
+  await deleteExtension({ context: { cmaToken: 'cmaToken', activeSpaceId: 'space' }, id: 'test', force: true })
   expect(deleteStub).toHaveBeenCalledTimes(1)
   expect(success).toHaveBeenLastCalledWith(`${successEmoji} Successfully deleted extension with ID test`)
 })

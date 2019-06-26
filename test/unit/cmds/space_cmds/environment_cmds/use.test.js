@@ -52,6 +52,10 @@ test('it writes the environment id to contentfulrc.json', async () => {
     activeSpaceId: 'spaceId'
   })
   const stubArgv = {
+    context: {
+      cmaToken: 'managementToken',
+      activeSpaceId: 'spaceId'
+    },
     environmentId: 'test'
   }
   await environmentUse(stubArgv)

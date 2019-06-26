@@ -33,7 +33,7 @@ afterEach(() => {
   deleteEnvironmentStub.mockClear()
 })
 test('delete environment - requires space id', async () => {
-  await expect(environmentDelete({})).rejects.toThrowErrorMatchingSnapshot()
+  await expect(environmentDelete({context: {}})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(getEnvironmentStub).not.toHaveBeenCalled()
   expect(deleteEnvironmentStub).not.toHaveBeenCalled()

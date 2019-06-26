@@ -1,15 +1,18 @@
 import { AbortedError } from '../../../lib/guide/helpers'
 import createSpaceStep from '../../../lib/guide/step-create-space'
 import { confirmation } from '../../../lib/utils/actions'
+import { getContext } from '../../../lib/context'
 import { spaceCreate } from '../../../lib/cmds/space_cmds/create'
 
 jest.mock('../../../lib/utils/log')
 jest.mock('../../../lib/utils/actions')
+jest.mock('../../../lib/context')
 jest.mock('../../../lib/cmds/space_cmds/create')
 
 const guideContext = {stepCount: 0, activeGuide: {name: 'test'}}
 const fakeSpace = {sys: {id: '100abc'}}
 
+getContext.mockResolvedValue({ cmaToken: 'cmaToken', activeEnvironmentId: 'master' })
 confirmation.mockResolvedValue(true)
 spaceCreate.mockResolvedValue(fakeSpace)
 
@@ -23,7 +26,11 @@ test('creates space on successful user confirmation', async () => {
   await createSpaceStep(guideContext)
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(spaceCreate).toHaveBeenCalledTimes(1)
-  expect(spaceCreate).toHaveBeenCalledWith({ name: guideContext.activeGuide.name, feature: 'guide' })
+  expect(spaceCreate).toHaveBeenCalledWith({
+    context: { activeEnvironmentId: 'master', cmaToken: 'cmaToken' },
+    name: guideContext.activeGuide.name,
+    feature: 'guide'
+  })
 })
 
 test('guideContext stepCount incremented', async () => {
