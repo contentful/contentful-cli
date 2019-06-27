@@ -7,12 +7,16 @@ import contentfulExport from 'contentful-export'
 jest.mock('../../../../lib/context')
 jest.mock('contentful-export')
 
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to contentful-export', async () => {
   const stubArgv = {
-    spaceId: 'spaceId',
-    host: 'api.contentful.com',
+    context: {
+      activeSpaceId: 'spaceId',
+      activeEnvironmentId: 'master',
+      host: 'api.contentful.com',
+      managementToken: 'managementToken'
+    },
     includeDrafts: false,
     skipRoles: false,
     skipContentModel: false,
@@ -22,10 +26,16 @@ test('it should pass all args to contentful-export', async () => {
     saveFile: true,
     useVerboseRenderer: false,
     managementApplication: `contentful.cli/${version}`,
-    managementToken: 'managementToken',
     managementFeature: 'space-export'
   }
   await exportSpace(stubArgv)
-  expect(contentfulExport.mock.calls[0][0]).toEqual(stubArgv)
+  const result = {
+    ...stubArgv,
+    environmentId: 'master',
+    managementToken: 'managementToken',
+    spaceId: 'spaceId',
+    host: 'api.contentful.com'
+  }
+  expect(contentfulExport.mock.calls[0][0]).toEqual(result)
   expect(contentfulExport).toHaveBeenCalledTimes(1)
 })

@@ -38,7 +38,7 @@ test('login is required', async () => {
 })
 
 test('active space is required', async () => {
-  getContext.mockResolvedValue({ cmaToken: 'foo' })
+  getContext.mockResolvedValue({ managementToken: 'foo' })
   const stubArgv = {
     environmentId: 'test'
   }
@@ -48,10 +48,14 @@ test('active space is required', async () => {
 
 test('it writes the environment id to contentfulrc.json', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'managementToken',
+    managementToken: 'managementToken',
     activeSpaceId: 'spaceId'
   })
   const stubArgv = {
+    context: {
+      managementToken: 'managementToken',
+      activeSpaceId: 'spaceId'
+    },
     environmentId: 'test'
   }
   await environmentUse(stubArgv)

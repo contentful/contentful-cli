@@ -1,7 +1,6 @@
 import { addHandler } from '../../../../lib/cmds/config_cmds/add'
 import {
   setContext,
-  getContext,
   storeRuntimeConfig
 } from '../../../../lib/context'
 import { success } from '../../../../lib/utils/log'
@@ -10,12 +9,10 @@ import { successEmoji } from '../../../../lib/utils/emojis'
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
 
-getContext.mockResolvedValue({})
 storeRuntimeConfig.mockResolvedValue()
 
 afterEach(() => {
   setContext.mockClear()
-  getContext.mockClear()
   storeRuntimeConfig.mockClear()
   success.mockClear()
 })

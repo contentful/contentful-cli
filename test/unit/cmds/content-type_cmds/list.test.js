@@ -1,5 +1,4 @@
 import { handler } from '../../../../lib/cmds/content-type_cmds/list'
-import { getContext } from '../../../../lib/context'
 import { log } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 
@@ -56,11 +55,6 @@ const fakeClient = {
 }
 createManagementClient.mockResolvedValue(fakeClient)
 
-getContext.mockResolvedValue({
-  cmaToken: 'mockedToken',
-  activeSpaceId: 'someSpaceId'
-})
-
 afterEach(() => {
   createManagementClient.mockClear()
   getContentTypesSub.mockClear()
@@ -68,7 +62,13 @@ afterEach(() => {
 })
 
 test('List content types from default environment, "master"', async () => {
-  await handler({})
+  await handler({
+    context: {
+      managementToken: 'mockedToken',
+      activeSpaceId: 'someSpaceId',
+      activeEnvironmentId: 'master'
+    }
+  })
 
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(getContentTypesSub).toHaveBeenCalledTimes(1)
@@ -88,13 +88,13 @@ test('List content types from default environment, "master"', async () => {
 })
 
 test('List content types based on active environment if available', async () => {
-  getContext.mockResolvedValue({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId',
-    activeEnvironmentId: 'develop'
+  await handler({
+    context: {
+      managementToken: 'mockedToken',
+      activeSpaceId: 'someSpaceId',
+      activeEnvironmentId: 'develop'
+    }
   })
-
-  await handler({})
 
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(getContentTypesSub).toHaveBeenCalledTimes(1)
@@ -115,7 +115,11 @@ test('List content types based on active environment if available', async () => 
 
 test('List content types based on environment passed if --environment-id option is used', async () => {
   const stubArgv = {
-    environmentId: 'test'
+    context: {
+      managementToken: 'mockedToken',
+      activeSpaceId: 'someSpaceId',
+      activeEnvironmentId: 'test'
+    }
   }
 
   await handler(stubArgv)

@@ -12,7 +12,7 @@ Options:
   -h, --help                Show help                                  [boolean]
   --space-id, -s            ID of the space to delete
   --management-token, --mt  Contentful management API token             [string]
-  --yes                     Skip the confirmation question      [default: false]
+  --yes                     Skip the confirmation question
 
 Copyright 2018 Contentful, this is a BETA release"
 `;

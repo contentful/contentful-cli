@@ -2,8 +2,6 @@ import { resolve } from 'path'
 
 import { updateExtensionHandler } from '../../../../lib/cmds/extension_cmds/update'
 
-import { getContext } from '../../../../lib/context'
-
 import { successEmoji } from '../../../../lib/utils/emojis'
 import { success, log } from '../../../../lib/utils/log'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
@@ -26,15 +24,18 @@ const basicExtension = {
   sys: { id: '123', version: 3 }
 }
 
+const defaults = {
+  context: {
+    managementToken: 'management-token',
+    activeSpaceId: 'someSpaceId',
+    activeEnvironmentId: 'someEnvironmentId'
+  }
+}
+
 let updateStub
 let fakeClient
 
 beforeEach(() => {
-  getContext.mockResolvedValue({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId'
-  })
-
   updateStub = jest.fn().mockImplementation((extension) => extension)
 
   fakeClient = {
@@ -59,30 +60,35 @@ afterEach(() => {
   success.mockClear()
   log.mockClear()
   createExtension.mockClear()
-  getContext.mockReset()
 })
 
 test('Throws error if id is missing', async () => {
   await expect(
-    updateExtensionHandler({ spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+    updateExtensionHandler({ ...defaults, fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if name is missing', async () => {
   await expect(
-    updateExtensionHandler({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
+    updateExtensionHandler({ ...defaults, id: '123', fieldTypes: ['Symbol'], src: 'https://awesome.extension', force: true })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if --version and --force are missing', async () => {
   await expect(
-    updateExtensionHandler({ spaceId: 'space', id: '123', name: 'Widget', fieldTypes: ['Symbol'], src: 'https://awesome.extension' })
+    updateExtensionHandler({
+      ...defaults,
+      id: '123',
+      name: 'Widget',
+      fieldTypes: ['Symbol'],
+      src: 'https://awesome.extension'
+    })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
 test('Throws error if wrong --version value is passed', async () => {
   await expect(
-    updateExtensionHandler({ id: '123', spaceId: 'space', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
+    updateExtensionHandler({ ...defaults, id: '123', fieldTypes: ['Symbol'], name: 'New name', src: 'https://new.url', version: 4 })
   ).rejects.toThrowErrorMatchingSnapshot()
 })
 
@@ -105,9 +111,9 @@ test('Creates an extension with there is no one and force flag is present', asyn
   })
 
   await updateExtensionHandler({
+    ...defaults,
     id: '123',
     force: true,
-    spaceId: 'space',
     name: 'Widget',
     src: 'https://new.url'
   })
@@ -116,8 +122,8 @@ test('Creates an extension with there is no one and force flag is present', asyn
 
   await expect(
     updateExtensionHandler({
+      ...defaults,
       id: '123',
-      spaceId: 'space',
       name: 'Widget',
       src: 'https://new.url'
     })
@@ -130,9 +136,9 @@ test(
   'Calls update on extension with no version number but force',
   async () => {
     await updateExtensionHandler({
+      ...defaults,
       id: '123',
       force: true,
-      spaceId: 'space',
       name: 'Widget',
       src: 'https://new.url'
     })
@@ -144,9 +150,9 @@ test(
 
 test('Calls update on extension and reads srcdoc from disk', async () => {
   await updateExtensionHandler({
+    ...defaults,
     id: '123',
     version: 3,
-    spaceId: 'space',
     name: 'Widget',
     fieldTypes: ['Symbol'],
     srcdoc: resolve(__dirname, 'sample-extension.html')
@@ -157,13 +163,6 @@ test('Calls update on extension and reads srcdoc from disk', async () => {
 })
 
 test('Updates an extension with parameter definitions ', async () => {
-  getContext.mockReset()
-  getContext.mockResolvedValue({
-    cmaToken: 'mockedToken',
-    activeSpaceId: 'someSpaceId',
-    activeEnvironmentId: 'someEnvironmentId'
-  })
-
   const descriptor = `{
     "name": "Test Extension",
     "fieldTypes": ["Boolean"],
@@ -177,6 +176,7 @@ test('Updates an extension with parameter definitions ', async () => {
   readFileP.mockResolvedValue(descriptor)
 
   await updateExtensionHandler({
+    ...defaults,
     id: 'extension-id',
     descriptor: 'x.json',
     installationParameters: JSON.stringify({flag: true}),

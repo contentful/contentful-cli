@@ -31,7 +31,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -41,14 +41,16 @@ afterEach(() => {
 })
 
 test('list environments - requires space id', async () => {
-  await expect(environmentList({})).rejects.toThrowErrorMatchingSnapshot()
+  await expect(environmentList({context: {}})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(getEnvironmentsStub).not.toHaveBeenCalled()
 })
 
 test('list environments', async () => {
   await environmentList({
-    spaceId: 'someSpaceID'
+    context: {
+      activeSpaceId: 'someSpaceID'
+    }
   })
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(getEnvironmentsStub).toHaveBeenCalledTimes(1)

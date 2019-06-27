@@ -12,6 +12,14 @@ const environmentData = {
   }
 }
 
+const defaults = {
+  context: {
+    managementToken: 'management-token',
+    activeSpaceId: 'someSpaceID'
+  },
+  environmentId: 'test'
+}
+
 const createEnvironmentWithIdStub = jest.fn().mockResolvedValue(environmentData)
 
 const fakeClient = {
@@ -22,7 +30,7 @@ const fakeClient = {
 createManagementClient.mockResolvedValue(fakeClient)
 
 getContext.mockResolvedValue({
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 })
 
 afterEach(() => {
@@ -31,16 +39,13 @@ afterEach(() => {
 })
 
 test('create environment - requires space id', async () => {
-  await expect(environmentCreate({})).rejects.toThrowErrorMatchingSnapshot()
+  await expect(environmentCreate({context: {managementToken: 'management-token'}})).rejects.toThrowErrorMatchingSnapshot()
   expect(createManagementClient).not.toHaveBeenCalled()
   expect(createEnvironmentWithIdStub).not.toHaveBeenCalled()
 })
 
 test('create new environment with id', async () => {
-  const result = await environmentCreate({
-    spaceId: 'someSpaceID',
-    environmentId: 'test'
-  })
+  const result = await environmentCreate(defaults)
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(createEnvironmentWithIdStub).toHaveBeenCalledTimes(1)
@@ -50,8 +55,7 @@ test('create new environment with id', async () => {
 
 test('create new environment with id and name', async () => {
   const result = await environmentCreate({
-    spaceId: 'someSpaceID',
-    environmentId: 'test',
+    ...defaults,
     name: 'test'
   })
   expect(result).toBeTruthy()
@@ -64,8 +68,7 @@ test('create new environment with id and name', async () => {
 
 test('create new environment with id and name and source', async () => {
   const result = await environmentCreate({
-    spaceId: 'someSpaceID',
-    environmentId: 'test',
+    ...defaults,
     name: 'test',
     source: 'srcEnv'
   })

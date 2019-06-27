@@ -11,11 +11,11 @@ jest.mock('../../../lib/utils/actions')
 jest.mock('../../../lib/context')
 
 const mockedRcConfig = {
-  cmaToken: 'mockedToken'
+  managementToken: 'mockedToken'
 }
 inquirer.prompt.mockResolvedValue(mockedRcConfig)
 setContext.mockResolvedValue(true)
-getContext.mockResolvedValue({ cmaToken: false })
+getContext.mockResolvedValue({ managementToken: false })
 confirmation.mockResolvedValue(true)
 
 afterEach(() => {
@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 test('login - without error', async () => {
-  const result = await loginHandler()
+  const result = await loginHandler({context: {}})
 
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(opn).toHaveBeenCalled()
@@ -36,15 +36,14 @@ test('login - without error', async () => {
   expect(inquirer.prompt).toHaveBeenCalledTimes(1)
   expect(setContext).toHaveBeenCalledTimes(1)
   expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)
-  expect(result).toBe(mockedRcConfig.cmaToken)
+  expect(result).toBe(mockedRcConfig.managementToken)
 })
 
 test('login - user abort', async () => {
   confirmation.mockResolvedValueOnce(false)
 
-  await loginHandler()
+  await loginHandler({context: {}})
 
-  expect(getContext).toHaveBeenCalled()
   expect(confirmation).toHaveBeenCalled()
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(opn).not.toHaveBeenCalled()
@@ -54,9 +53,9 @@ test('login - user abort', async () => {
 })
 
 test('login - already logged in', async () => {
-  getContext.mockResolvedValueOnce({ cmaToken: 'alreadyLoggedIn' })
+  getContext.mockResolvedValueOnce({ managementToken: 'alreadyLoggedIn' })
 
-  await loginHandler()
+  await loginHandler({context: {managementToken: 'token'}})
 
   expect(opn).not.toHaveBeenCalled()
   expect(setContext).not.toHaveBeenCalled()

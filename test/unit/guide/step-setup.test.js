@@ -15,7 +15,7 @@ jest.mock('inquirer')
 
 prompt.mockResolvedValue({directoryName: 'test', directoryPath: 'test-path'})
 accessTokenCreate.mockResolvedValue({accessToken: 'abc123'})
-getContext.mockResolvedValue({cmaToken: 'abc124'})
+getContext.mockResolvedValue({managementToken: 'abc124'})
 const setupConfig = jest.fn().mockResolvedValue()
 
 const guideContext = {
@@ -58,7 +58,7 @@ test('checks for yarn, execa installs, creates cda token', async () => {
 
 test('gets context and sets up config', async () => {
   await setupStep(guideContext)
-  expect(getContext).toHaveBeenCalledTimes(1)
+  expect(getContext).toHaveBeenCalledTimes(2)
   expect(guideContext.activeGuide.setupConfig).toHaveBeenCalledTimes(1)
 })
 

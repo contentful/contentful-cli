@@ -13,7 +13,6 @@ import {
 } from '../../../../../lib/cmds/space_cmds/generate_cmds/migration'
 import fs from 'fs'
 import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
-import { getContext } from '../../../../../lib/context'
 
 jest.mock('../../../../../lib/utils/contentful-clients')
 jest.mock('../../../../../lib/context')
@@ -210,12 +209,12 @@ test('it generates the filename without content type', async () => {
 test('it generates the migration and writes to disk', async () => {
   const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync')
 
-  getContext.mockResolvedValue({
-    cmaToken: 'mockedToken'
-  })
   await generateMigration({
-    spaceId: 'fooSpace',
-    environmentId: 'fooEnv'
+    context: {
+      managementToken: 'managementToken',
+      activeSpaceId: 'fooSpace',
+      activeEnvironmentId: 'fooEnv'
+    }
   })
 
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/

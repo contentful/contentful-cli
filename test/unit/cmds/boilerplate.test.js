@@ -39,6 +39,14 @@ const mockedSpace = {
   createApiKey: jest.fn().mockImplementation(() => mockedApiKey)
 }
 
+const defaults = {
+  context: {
+    managementToken: 'management-token',
+    activeSpaceId: 'space',
+    activeEnvironmentId: 'master'
+  }
+}
+
 createManagementClient.mockImplementation(() => ({
   getSpace: jest.fn(() => mockedSpace),
   getApiKeys: jest.fn(() => [{
@@ -73,10 +81,11 @@ test(
   'successfully downloads boilerplate and generates access token',
   async () => {
     getContext.mockResolvedValue({
-      cmaToken: 'mocked'
+      managementToken: 'mocked',
+      spaceId: mockedSpace.sys.id
     })
     await downloadBoilerplate({
-      spaceId: mockedSpace.sys.id
+      context: { ...defaults.context, activeSpaceId: mockedSpace.sys.id }
     })
     expect(axios.mock.calls).toHaveLength(2)
     expect(createWriteStreamMock.mock.calls).toHaveLength(1)
@@ -86,10 +95,10 @@ test(
 
 test('requires login', async () => {
   getContext.mockResolvedValue({
-    cmaToken: null
+    managementToken: null
   })
   try {
-    await expect(downloadBoilerplate({})).rejects.toThrowError(PreconditionFailedError)
+    await expect(downloadBoilerplate({context: {}})).rejects.toThrowError(PreconditionFailedError)
   } catch (error) {
     expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
   }
@@ -97,10 +106,10 @@ test('requires login', async () => {
 
 test('requires spaceId and fails without', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked'
+    managementToken: 'mocked'
   })
   try {
-    await expect(downloadBoilerplate({})).rejects.toThrowError(PreconditionFailedError)
+    await expect(downloadBoilerplate({context: {managementToken: 'management-token'}})).rejects.toThrowError(PreconditionFailedError)
   } catch (error) {
     expect(error.message.includes('You need to provide a space id')).toBeTruthy()
   }
@@ -108,7 +117,7 @@ test('requires spaceId and fails without', async () => {
 
 test('requires spaceId and accepts it from context', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked',
+    managementToken: 'mocked',
     activeSpaceId: 'mocked'
   })
   await expect(downloadBoilerplate).not.toThrowError('works with space id provided via context')
@@ -116,9 +125,7 @@ test('requires spaceId and accepts it from context', async () => {
 
 test('requires spaceId and accepts it from argv arguments', async () => {
   getContext.mockResolvedValue({
-    cmaToken: 'mocked'
+    managementToken: 'mocked'
   })
-  await expect(() => downloadBoilerplate({
-    spaceId: 'mocked'
-  })).not.toThrowError('works with space id provided via arguments')
+  await expect(() => downloadBoilerplate(defaults)).not.toThrowError('works with space id provided via arguments')
 })

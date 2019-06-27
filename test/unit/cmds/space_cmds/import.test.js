@@ -7,20 +7,29 @@ import contentfulImport from 'contentful-import'
 jest.mock('../../../../lib/context')
 jest.mock('contentful-import')
 
-getContext.mockResolvedValue({ cmaToken: 'managementToken' })
+getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
+    context: {
+      activeSpaceId: 'spaceId',
+      managementToken: 'managementToken'
+    },
     skipContentModel: false,
     skipLocales: false,
     host: 'api.contentful.com',
     skipContentPublishing: false,
-    managementToken: 'managementToken',
     managementApplication: `contentful.cli/${version}`,
-    spaceId: 'spaceId',
     managementFeature: 'space-import'
   }
   await importSpace(stubArgv)
-  expect(contentfulImport.mock.calls[0][0]).toEqual(stubArgv)
+  const result = {
+    ...stubArgv,
+    managementToken: 'managementToken',
+    spaceId: 'spaceId',
+    environmentId: undefined,
+    host: undefined
+  }
+  expect(contentfulImport.mock.calls[0][0]).toEqual(result)
   expect(contentfulImport).toHaveBeenCalledTimes(1)
 })

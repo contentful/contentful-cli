@@ -12,7 +12,7 @@ const app = () => {
 let oldConfigContents = null
 const testConfigPath = process.cwd() + '/.contentfulrc.json'
 const testConfig = {
-  cmaToken: 'blahblah12234553',
+  managementToken: 'blahblah12234553',
   activeSpaceId: '89898989'
 }
 
@@ -41,7 +41,7 @@ test('Should list configs from first found config file', done => {
     .expect(result => {
       const resultText = result.stdout.trim()
       expect(
-        resultText.includes(testConfig.cmaToken) && resultText.includes(testConfig.activeSpaceId)
+        resultText.includes(testConfig.managementToken) && resultText.includes(testConfig.activeSpaceId)
       ).toBe(true)
     })
     .after(after)

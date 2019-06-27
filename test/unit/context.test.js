@@ -3,7 +3,7 @@ import { homedir } from 'os'
 
 const customConfigPath = resolve(process.cwd(), '.contentfulrc.json')
 const homeConfigPath = resolve(homedir(), '.contentfulrc.json')
-const MOCKED_RC = '{\n  "cmaToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
+const MOCKED_RC = '{\n  "managementToken": "mocked",\n  "activeSpaceId": "mocked"\n}\n'
 const enoent = new Error()
 enoent.code = 'ENOENT'
 
