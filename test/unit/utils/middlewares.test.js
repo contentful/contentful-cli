@@ -15,7 +15,8 @@ afterEach(() => {
 
 const defaults = {
   context: {
-    host: 'api.contentful.com'
+    host: 'api.contentful.com',
+    activeEnvironmentId: 'master'
   }
 }
 
