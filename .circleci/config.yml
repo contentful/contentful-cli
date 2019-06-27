@@ -55,6 +55,7 @@ jobs:
       - image: circleci/node:8
     steps:
       - checkout
+      - run: git fetch --tags
       - run: npm install
       - run: npm run build
       - run: npm run semantic-release
