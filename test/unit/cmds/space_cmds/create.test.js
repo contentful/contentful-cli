@@ -117,16 +117,6 @@ test('create space with passed organization id', async () => {
   expect(spaceUse).not.toHaveBeenCalled()
 })
 
-test('create space - fails when not logged in', async () => {
-  getContext.mockResolvedValueOnce({
-    managementToken: null
-  })
-  await expect(spaceCreate({context: {}})).rejects.toThrowErrorMatchingSnapshot()
-  expect(createManagementClient).not.toHaveBeenCalled()
-  expect(inquirer.prompt).not.toHaveBeenCalled()
-  expect(spaceUse).not.toHaveBeenCalled()
-})
-
 test('create space - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create space because of reasons'
   createSpaceStub.mockRejectedValueOnce(new Error(errorMessage))
