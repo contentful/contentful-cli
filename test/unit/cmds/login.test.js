@@ -61,3 +61,12 @@ test('login - already logged in', async () => {
   expect(setContext).not.toHaveBeenCalled()
   expect(inquirer.prompt).not.toHaveBeenCalled()
 })
+
+test('login - with management-token flag', async () => {
+  const result = await loginHandler({context: {managementToken: 'token'}, ...mockedRcConfig})
+
+  expect(setContext).toHaveBeenCalledTimes(1)
+  expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)
+  expect(result).toBe(mockedRcConfig.managementToken)
+  expect(inquirer.prompt).not.toHaveBeenCalled()
+})

@@ -23,3 +23,12 @@ test('should be already loged in', done => {
     .stdout(/Maybe you want to contentful logout\?/)
     .end(done)
 })
+
+test('should login with management-token flag', done => {
+  app()
+    .run(`login --management-token ${process.env.CLI_E2E_CMA_TOKEN}`)
+    .code(0)
+    .stdout(/Great! Your CMA token is now stored on your system\./)
+    .stdout(/You can always run contentful logout to remove it\./)
+    .end(done)
+})
