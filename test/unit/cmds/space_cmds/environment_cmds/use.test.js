@@ -28,24 +28,6 @@ afterEach(() => {
   setContext.mockClear()
 })
 
-test('login is required', async () => {
-  getContext.mockResolvedValue({})
-  const stubArgv = {
-    environmentId: 'test'
-  }
-  await expect(environmentUse(stubArgv)).rejects.toThrowErrorMatchingSnapshot()
-  expect(setContext).not.toHaveBeenCalled()
-})
-
-test('active space is required', async () => {
-  getContext.mockResolvedValue({ managementToken: 'foo' })
-  const stubArgv = {
-    environmentId: 'test'
-  }
-  await expect(environmentUse(stubArgv)).rejects.toThrowErrorMatchingSnapshot()
-  expect(setContext).not.toHaveBeenCalled()
-})
-
 test('it writes the environment id to contentfulrc.json', async () => {
   getContext.mockResolvedValue({
     managementToken: 'managementToken',

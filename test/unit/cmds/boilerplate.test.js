@@ -5,7 +5,6 @@ import axios from 'axios'
 
 import { downloadBoilerplate } from '../../../lib/cmds/boilerplate'
 import { getContext } from '../../../lib/context'
-import { PreconditionFailedError } from '../../../lib/utils/error'
 
 import {createManagementClient} from '../../../lib/utils/contentful-clients'
 
@@ -92,28 +91,6 @@ test(
     expect(mockedSpace.createApiKey).toHaveBeenCalled()
   }
 )
-
-test('requires login', async () => {
-  getContext.mockResolvedValue({
-    managementToken: null
-  })
-  try {
-    await expect(downloadBoilerplate({context: {}})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You have to be logged in to do this')).toBeTruthy()
-  }
-})
-
-test('requires spaceId and fails without', async () => {
-  getContext.mockResolvedValue({
-    managementToken: 'mocked'
-  })
-  try {
-    await expect(downloadBoilerplate({context: {managementToken: 'management-token'}})).rejects.toThrowError(PreconditionFailedError)
-  } catch (error) {
-    expect(error.message.includes('You need to provide a space id')).toBeTruthy()
-  }
-})
 
 test('requires spaceId and accepts it from context', async () => {
   getContext.mockResolvedValue({
