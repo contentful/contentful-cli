@@ -6,7 +6,6 @@ import {
 import { assertLoggedIn } from '../../../lib/utils/assertions'
 import { confirmation } from '../../../lib/utils/actions'
 import { log, warning, success } from '../../../lib/utils/log'
-import { PreconditionFailedError } from '../../../lib/utils/error'
 
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/actions')
@@ -25,17 +24,6 @@ afterEach(() => {
   setContext.mockClear()
   assertLoggedIn.mockClear()
   storeRuntimeConfig.mockClear()
-})
-
-test('logout fails when not logged in', async () => {
-  assertLoggedIn.mockRejectedValueOnce(new PreconditionFailedError())
-  await expect(logout({})).rejects.toThrowError(PreconditionFailedError)
-  expect(assertLoggedIn).toHaveBeenCalledTimes(1)
-  expect(warning).not.toHaveBeenCalled()
-  expect(success).not.toHaveBeenCalled()
-  expect(log).not.toHaveBeenCalled()
-  expect(setContext).not.toHaveBeenCalled()
-  expect(storeRuntimeConfig).not.toHaveBeenCalled()
 })
 
 test('logout is actually logging out', async () => {

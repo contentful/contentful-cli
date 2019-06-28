@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`active space is required 1`] = `"You need to provide a space id. You can pass it via the --space-id parameter or by running contentful space use"`;
-
-exports[`login is required 1`] = `
-"You have to be logged in to do this.
-You can log in via contentful login
-Or provide a managementToken via --management-Token argument"
-`;

@@ -38,12 +38,6 @@ afterEach(() => {
   createManagementClient.mockClear()
 })
 
-test('create environment - requires space id', async () => {
-  await expect(environmentCreate({context: {managementToken: 'management-token'}})).rejects.toThrowErrorMatchingSnapshot()
-  expect(createManagementClient).not.toHaveBeenCalled()
-  expect(createEnvironmentWithIdStub).not.toHaveBeenCalled()
-})
-
 test('create new environment with id', async () => {
   const result = await environmentCreate(defaults)
   expect(result).toBeTruthy()

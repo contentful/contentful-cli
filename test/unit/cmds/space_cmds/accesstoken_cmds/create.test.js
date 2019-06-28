@@ -61,31 +61,6 @@ test('return existing access token', async () => {
   expect(createApiKeyStub).not.toHaveBeenCalled()
 })
 
-test('create access token - fails when not logged in', async () => {
-  getApiKeysStub.mockResolvedValue({
-    items: [mockedAccessTokenData]
-  })
-  getContext.mockResolvedValueOnce({
-    managementToken: null
-  })
-  await expect(accessTokenCreate({
-    context: {
-      spaceId: 'some-space-id'
-    }
-  })).rejects.toThrowErrorMatchingSnapshot()
-  expect(createManagementClient).not.toHaveBeenCalled()
-  expect(createApiKeyStub).not.toHaveBeenCalled()
-})
-
-test('create access token - requires space id', async () => {
-  getApiKeysStub.mockResolvedValue({
-    items: [mockedAccessTokenData]
-  })
-  await expect(accessTokenCreate({})).rejects.toThrowErrorMatchingSnapshot()
-  expect(createManagementClient).not.toHaveBeenCalled()
-  expect(createApiKeyStub).not.toHaveBeenCalled()
-})
-
 test('create access token - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create access token because of reasons'
   getApiKeysStub.mockRejectedValueOnce(new Error(errorMessage))

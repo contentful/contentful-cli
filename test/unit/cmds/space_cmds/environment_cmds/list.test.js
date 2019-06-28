@@ -40,12 +40,6 @@ afterEach(() => {
   log.mockClear()
 })
 
-test('list environments - requires space id', async () => {
-  await expect(environmentList({context: {}})).rejects.toThrowErrorMatchingSnapshot()
-  expect(createManagementClient).not.toHaveBeenCalled()
-  expect(getEnvironmentsStub).not.toHaveBeenCalled()
-})
-
 test('list environments', async () => {
   await environmentList({
     context: {
