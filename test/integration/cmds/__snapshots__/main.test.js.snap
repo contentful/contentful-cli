@@ -11,6 +11,7 @@ Commands:
   guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  organization  Manage and list your organizations
   space         Manage and list your spaces
 
 Options:
@@ -31,6 +32,7 @@ Commands:
   guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  organization  Manage and list your organizations
   space         Manage and list your spaces
 
 Options:
@@ -52,6 +54,7 @@ Commands:
   guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  organization  Manage and list your organizations
   space         Manage and list your spaces
 
 Options:
@@ -72,6 +75,7 @@ Commands:
   guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  organization  Manage and list your organizations
   space         Manage and list your spaces
 
 Options:
