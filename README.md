@@ -24,7 +24,13 @@
 
 ## :cloud: Installation
 
-Using [npm](http://npmjs.org):
+Using [homebrew](https://brew.sh):
+
+``` sh
+brew install contentful-cli
+```
+
+Using [npm](https://npmjs.org):
 
 ``` sh
 npm install -g contentful-cli
