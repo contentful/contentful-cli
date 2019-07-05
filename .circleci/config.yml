@@ -59,6 +59,11 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run semantic-release
+  bump-brew-formula:
+    macos:
+      xcode: "9.0"
+    steps:
+      - run: npm run bump-brew-formula
 workflows:
   version: 2
   build_and_test:
@@ -73,3 +78,6 @@ workflows:
             - integration
             - linux
             - osx
+      - bump-brew-formula:
+          requires:
+            - release
