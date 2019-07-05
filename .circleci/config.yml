@@ -63,6 +63,7 @@ jobs:
     macos:
       xcode: "9.0"
     steps:
+      - checkout
       - run: npm run bump-brew-formula
 workflows:
   version: 2
