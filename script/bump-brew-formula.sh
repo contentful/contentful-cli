@@ -14,10 +14,11 @@ if [ ! $(git config --global user.email) ]; then git config --global user.email 
 if [ ! $(git config --global user.name) ]; then git config --global user.name "contentful"; fi
 
 package="contentful-cli"
-version=0.33.2 #$(npm show ${package} version)
+version=$(npm show ${package} version)
 url="https://registry.npmjs.org/${package}/-/${package}-${version}.tgz"
 sha256=$(curl -s ${url} | gsha256sum | awk '{ print $1 }')
 
+# send stderr to variable, pass stdout through
 {
   err=$(
     brew bump-formula-pr --strict ${package} --url=${url} --sha256=${sha256} --no-browse --message="This PR was automatically created via a script. Contact @contentful with any questions." ${DRY_RUN} 2>&1 >&3 3>&-
