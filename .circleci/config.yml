@@ -82,3 +82,6 @@ workflows:
       - bump-brew-formula:
           requires:
             - release
+          filters:
+            branches:
+              only: master
