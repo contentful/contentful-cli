@@ -6,8 +6,7 @@ exports[`should exit 1 when no args: wrong response in case of no args provided 
 Options:
   -h, --help                 Show help                                 [boolean]
   --space-id                 ID of the destination space                [string]
-  --environment-id           ID the environment in the destination space
-                                                    [string] [default: \\"master\\"]
+  --environment-id           ID the environment in the destination space[string]
   --management-token, --mt   Contentful management API token            [string]
   --content-file             JSON file that contains data to be import to your
                              space                           [string] [required]
@@ -38,8 +37,7 @@ exports[`should print help message: help data is incorrect 1`] = `
 Options:
   -h, --help                 Show help                                 [boolean]
   --space-id                 ID of the destination space                [string]
-  --environment-id           ID the environment in the destination space
-                                                    [string] [default: \\"master\\"]
+  --environment-id           ID the environment in the destination space[string]
   --management-token, --mt   Contentful management API token            [string]
   --content-file             JSON file that contains data to be import to your
                              space                           [string] [required]
