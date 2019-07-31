@@ -1,12 +1,12 @@
 import inquirer from 'inquirer'
-import opn from 'opn'
+import open from 'open'
 
 import { handler as loginHandler } from '../../../lib/cmds/login'
 import { getContext, setContext } from '../../../lib/context'
 import { confirmation } from '../../../lib/utils/actions'
 
 jest.mock('inquirer')
-jest.mock('opn')
+jest.mock('open')
 jest.mock('../../../lib/utils/actions')
 jest.mock('../../../lib/context')
 
@@ -20,7 +20,7 @@ confirmation.mockResolvedValue(true)
 
 afterEach(() => {
   inquirer.prompt.mockClear()
-  opn.mockClear()
+  open.mockClear()
   confirmation.mockClear()
   setContext.mockClear()
   getContext.mockClear()
@@ -30,7 +30,7 @@ test('login - without error', async () => {
   const result = await loginHandler({context: {}})
 
   if (['win32', 'darwin'].includes(process.platform)) {
-    expect(opn).toHaveBeenCalled()
+    expect(open).toHaveBeenCalled()
   }
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(inquirer.prompt).toHaveBeenCalledTimes(1)
@@ -46,7 +46,7 @@ test('login - user abort', async () => {
 
   expect(confirmation).toHaveBeenCalled()
   if (['win32', 'darwin'].includes(process.platform)) {
-    expect(opn).not.toHaveBeenCalled()
+    expect(open).not.toHaveBeenCalled()
   }
   expect(setContext).not.toHaveBeenCalled()
   expect(inquirer.prompt).not.toHaveBeenCalled()
@@ -57,7 +57,7 @@ test('login - already logged in', async () => {
 
   await loginHandler({context: {managementToken: 'token'}})
 
-  expect(opn).not.toHaveBeenCalled()
+  expect(open).not.toHaveBeenCalled()
   expect(setContext).not.toHaveBeenCalled()
   expect(inquirer.prompt).not.toHaveBeenCalled()
 })
