@@ -5,6 +5,7 @@ import { spaceUse } from '../../../../lib/cmds/space_cmds/use'
 import { getContext } from '../../../../lib/context'
 import { createManagementClient } from '../../../../lib/utils/contentful-clients'
 import { confirmation } from '../../../../lib/utils/actions'
+import { AbortedError } from '../../../../lib/guide/helpers'
 
 jest.mock('inquirer')
 jest.mock('../../../../lib/cmds/space_cmds/use')
@@ -144,9 +145,8 @@ test('abort space creation when saying no', async () => {
   const spaceData = {
     name: 'space name'
   }
-  confirmation.mockResolvedValueOnce(false)
-  const result = await spaceCreate({...defaults, ...spaceData})
-  expect(result).toBeFalsy()
+  createSpaceStub.mockRejectedValueOnce(new AbortedError())
+  await expect(spaceCreate({...defaults, ...spaceData})).rejects.toThrowError()
   expect(spaceUse).not.toHaveBeenCalled()
 })
 

@@ -88,7 +88,7 @@ test('should should abort space creation when answering no', done => {
       const regex = /Space creation aborted.*/ // name doesn't matter because response is replayed
       expect(resultText).toMatch(regex)
     })
-    .code(0)
+    .code(1)
     .end(done)
 })
 
