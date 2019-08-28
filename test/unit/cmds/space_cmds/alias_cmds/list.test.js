@@ -40,7 +40,7 @@ afterEach(() => {
   log.mockClear()
 })
 
-test.only('list environment aliases', async () => {
+test('list environment aliases', async () => {
   await environmentAliasList({
     context: {
       activeSpaceId: 'someSpaceID'
