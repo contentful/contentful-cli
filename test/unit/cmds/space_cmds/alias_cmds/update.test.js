@@ -45,7 +45,7 @@ afterEach(() => {
 test('list environment aliases', async () => {
   await environmentAliasUpdate({
     aliasId: 'alias-id',
-    environmentId: 'new-env-id',
+    targetEnvironmentId: 'new-env-id',
     context: {
       activeSpaceId: 'someSpaceID'
     }
