@@ -42,7 +42,7 @@ afterEach(() => {
   log.mockClear()
 })
 
-test.only('list environment aliases', async () => {
+test('list environment aliases', async () => {
   await environmentAliasUpdate({
     aliasId: 'alias-id',
     environmentId: 'new-env-id',
