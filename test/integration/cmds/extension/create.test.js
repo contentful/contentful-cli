@@ -138,6 +138,7 @@ test('should create extension from config file with srcdoc', done => {
   app()
     .run(`extension create --space-id ${space.sys.id} --descriptor ${configPath} --srcdoc '${srcDocPath}' --id some-other-id`)
     .expect((result) => {
+      console.log(result.stdout)
       expect(result.stdout.trim()).toMatch(/Successfully created extension:/)
       expect(result.stdout.trim()).toMatch(/ID.+some-other-id/)
       expect(result.stdout.trim()).toMatch(/Name.+Sample Extension/)
