@@ -3,7 +3,6 @@
 exports[`should print help message on shortcut: help data is incorrect 1`] = `
 "Commands:
   space accesstoken   Manage and list your delivery access tokens  [aliases: at]
-  space alias         Manage and list environment aliases
   space create        Create a space
   space delete        Deletes a space
   space environment   Manage and list environments
@@ -23,7 +22,6 @@ Options:
 exports[`should print help message when no command provided: wrong response in case of no command provided 1`] = `
 "Commands:
   space accesstoken   Manage and list your delivery access tokens  [aliases: at]
-  space alias         Manage and list environment aliases
   space create        Create a space
   space delete        Deletes a space
   space environment   Manage and list environments
@@ -44,7 +42,6 @@ Please specify a sub command."
 exports[`should print help message: help data is incorrect 1`] = `
 "Commands:
   space accesstoken   Manage and list your delivery access tokens  [aliases: at]
-  space alias         Manage and list environment aliases
   space create        Create a space
   space delete        Deletes a space
   space environment   Manage and list environments

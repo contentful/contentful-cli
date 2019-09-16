@@ -14,5 +14,5 @@ Options:
   --management-token, --mt  Contentful management API token             [string]
   --yes                     Skip the confirmation question
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;

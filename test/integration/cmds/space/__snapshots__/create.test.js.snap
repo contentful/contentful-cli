@@ -15,7 +15,7 @@ Options:
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
 
-Copyright 2018 Contentful, this is a BETA release
+Copyright 2019 Contentful
 Missing required argument: name"
 `;
 
@@ -34,5 +34,5 @@ Options:
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;
