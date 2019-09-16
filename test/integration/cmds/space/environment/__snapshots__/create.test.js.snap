@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should create environment with id and name provided 1`] = `""`;
+exports[`should create environment with id and name provided 1`] = `"Successfully created environment Staging (staging)"`;
 
 exports[`should exit 1 when no args: help data is incorrect 1`] = `
 "Usage: contentful space environment create --name 'Your Environment Name'
