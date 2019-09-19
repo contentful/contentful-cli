@@ -18,7 +18,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;
 
 exports[`should print help message on wrong subcommand: help data is incorrect 1`] = `
@@ -39,7 +39,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2018 Contentful, this is a BETA release
+Copyright 2019 Contentful
 Please specify a command."
 `;
 
@@ -61,7 +61,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;
 
 exports[`should return code 1 when errors exist no args: help data is incorrect 1`] = `
@@ -82,6 +82,6 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2018 Contentful, this is a BETA release
+Copyright 2019 Contentful
 Please specify a command."
 `;

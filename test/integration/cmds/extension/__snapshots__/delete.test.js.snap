@@ -15,5 +15,5 @@ Options:
                             locking                                     [number]
   --force                   Force operation without explicit version   [boolean]
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;

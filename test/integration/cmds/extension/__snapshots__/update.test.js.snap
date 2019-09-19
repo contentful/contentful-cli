@@ -23,5 +23,5 @@ Options:
   --installation-parameters  JSON string of installation parameter key-value
                              pairs                                      [string]
 
-Copyright 2018 Contentful, this is a BETA release"
+Copyright 2019 Contentful"
 `;
