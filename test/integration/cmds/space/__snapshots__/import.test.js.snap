@@ -24,6 +24,10 @@ Options:
   --proxy                    Proxy configuration in HTTP auth format:
                              [http|https]://host:port or
                              [http|https]://user:password@host:port     [string]
+  --timeout                  Timeout in milliseconds for API calls
+                                                       [number] [default: 20000]
+  --retry-limit              How many times to retry before an operation fails
+                                                          [number] [default: 10]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
@@ -55,6 +59,10 @@ Options:
   --proxy                    Proxy configuration in HTTP auth format:
                              [http|https]://host:port or
                              [http|https]://user:password@host:port     [string]
+  --timeout                  Timeout in milliseconds for API calls
+                                                       [number] [default: 20000]
+  --retry-limit              How many times to retry before an operation fails
+                                                          [number] [default: 10]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
