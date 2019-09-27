@@ -74,8 +74,7 @@ jobs:
       - run:
           name: Audit
           command: |
-            npm i -g npm-audit-resolver@2
-            check-audit --ignoreLow
+            npx npm-audit-resolver@2 check-audit
 workflows:
   version: 2
   build_and_test:
