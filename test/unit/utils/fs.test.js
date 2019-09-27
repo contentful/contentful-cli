@@ -1,11 +1,11 @@
-const Bluebird = require('bluebird');
+const { promisify } = require('util');
 
 const fsUtils = require('../../../lib/utils/fs');
 const fs = require('fs');
 
-const accessP = Bluebird.promisify(fs.access);
-const rmdirP = Bluebird.promisify(fs.rmdir);
-const mkdirP = Bluebird.promisify(fs.mkdir);
+const accessP = promisify(fs.access);
+const rmdirP = promisify(fs.rmdir);
+const mkdirP = promisify(fs.mkdir);
 
 test('ensureDir creates dir if it does not exist', async function() {
   const dirPath = '/tmp/i_hope_this_path_does_not_exist';
