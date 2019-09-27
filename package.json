@@ -110,7 +110,7 @@
   },
   "files": [
     "bin",
-    "dist",
+    "lib",
     "docs",
     "version.js",
     "README.md"
