@@ -59,7 +59,7 @@ const environmentMock = {
       items: [simpleContentType]
     };
   },
-  getContentType: function(ctId) {
+  getContentType: function() {
     return simpleContentType;
   },
   getEditorInterfaceForContentType: function(ctId) {

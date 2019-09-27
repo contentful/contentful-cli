@@ -1,19 +1,24 @@
 module.exports = {
-  'extends': 'standard',
-  'plugins': [
-    'standard',
-    'promise',
-    'jest'
-  ],
-  'env': {
-    'jest/globals': true
+  extends: ['eslint:recommended', 'prettier'],
+  plugins: ['jest', 'prettier'],
+  parserOptions: {
+    ecmaVersion: 2018
   },
-  'overrides': [
+  env: {
+    jest: true,
+    node: true,
+    es6: true
+  },
+  rules: {
+    'prettier/prettier': ['error'],
+    'require-atomic-updates': ['warn']
+  },
+  overrides: [
     {
-      'files': ['**.test.js'],
-      'rules': {
+      files: ['**.test.js'],
+      rules: {
         'no-unused-expressions': 'off'
       }
     }
   ]
-}
+};
