@@ -1,11 +1,11 @@
 const nixt = require('nixt');
 const { join } = require('path');
-import {
+const {
   initConfig,
   deleteSpaces,
   createSimpleSpace,
   expectedDir
-} from '../../util';
+} = require('../../util');
 
 const bin = join(__dirname, './../../../../', 'bin');
 const org = process.env.CLI_E2E_ORG_ID;

@@ -1,11 +1,11 @@
-import {
+const {
   log,
   wrappedLog,
   warning,
   success,
   error,
   logError
-} from '../../../lib/utils/log';
+} = require('../../../lib/utils/log');
 const {
   infoStyle,
   warningStyle,

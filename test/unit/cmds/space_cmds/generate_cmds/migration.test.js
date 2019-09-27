@@ -1,6 +1,6 @@
 const recast = require('recast');
 
-import {
+const {
   ctNameNeedsEscaping,
   ctVariableEscape,
   wrapMigrationWithBase,
@@ -10,7 +10,7 @@ import {
   generateMigrationScript,
   generateFileName,
   generateMigration
-} from '../../../../../lib/cmds/space_cmds/generate_cmds/migration';
+} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration');
 const fs = require('fs');
 const {
   createManagementClient

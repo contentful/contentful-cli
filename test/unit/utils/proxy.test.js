@@ -1,7 +1,7 @@
-import {
+const {
   proxyStringToObject,
   proxyObjectToString
-} from '../../../lib/utils/proxy';
+} = require('../../../lib/utils/proxy');
 
 test('proxyString with basic auth, with protocol', () => {
   const proxyString = 'http://foo:bar@127.0.0.1:8213';

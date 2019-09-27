@@ -1,10 +1,10 @@
-import {
+const {
   welcomeEmoji,
   successEmoji,
   errorEmoji,
   infoEmoji,
   generateNumberEmoji
-} from '../../../lib/utils/emojis';
+} = require('../../../lib/utils/emojis');
 
 const emojis = [welcomeEmoji, successEmoji, errorEmoji, infoEmoji];
 

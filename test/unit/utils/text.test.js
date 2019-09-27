@@ -3,13 +3,13 @@ const { textSync } = require('figlet');
 const stripAnsi = require('strip-ansi');
 const chalk = require('chalk');
 
-import {
+const {
   wrap,
   frame,
   asciiText,
   separator,
   DEFAULT_COLUMNS
-} from '../../../lib/utils/text';
+} = require('../../../lib/utils/text');
 
 jest.mock('figlet');
 jest.mock('chalk', () => ({
