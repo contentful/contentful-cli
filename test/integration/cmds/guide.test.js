@@ -4,7 +4,7 @@ const { join, resolve } = require('path');
 const nixt = require('nixt');
 const rimraf = require('rimraf');
 
-import { initConfig, deleteSpaces } from '../util';
+const { initConfig, deleteSpaces } = require('../util');
 
 const bin = join(__dirname, './../../../', 'bin');
 const projectDirectoryName = 'contentful-integration-starter-DELETE-ME';

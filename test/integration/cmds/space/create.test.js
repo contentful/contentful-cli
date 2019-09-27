@@ -1,6 +1,6 @@
 const nixt = require('nixt');
 const { join } = require('path');
-import { initConfig, deleteSpaces, extractSpaceId } from '../../util';
+const { initConfig, deleteSpaces, extractSpaceId } = require('../../util');
 
 const bin = join(__dirname, './../../../../', 'bin');
 

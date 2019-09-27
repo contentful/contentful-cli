@@ -1,5 +1,5 @@
 const { logout } = require('../../../lib/cmds/logout');
-import { storeRuntimeConfig, setContext } from '../../../lib/context';
+const { storeRuntimeConfig, setContext } = require('../../../lib/context');
 const { assertLoggedIn } = require('../../../lib/utils/assertions');
 const { confirmation } = require('../../../lib/utils/actions');
 const { log, warning, success } = require('../../../lib/utils/log');

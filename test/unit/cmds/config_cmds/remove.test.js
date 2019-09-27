@@ -1,5 +1,5 @@
 const { removeHandler } = require('../../../../lib/cmds/config_cmds/remove');
-import { setContext, storeRuntimeConfig } from '../../../../lib/context';
+const { setContext, storeRuntimeConfig } = require('../../../../lib/context');
 const { success } = require('../../../../lib/utils/log');
 const { successEmoji } = require('../../../../lib/utils/emojis');
 

@@ -1,6 +1,6 @@
 const nixt = require('nixt');
 const { resolve } = require('path');
-import { initConfig, createSimpleSpace, deleteSpaces } from '../../util';
+const { initConfig, createSimpleSpace, deleteSpaces } = require('../../util');
 
 const bin = resolve(__dirname, './../../../../', 'bin');
 const org = process.env.CLI_E2E_ORG_ID;

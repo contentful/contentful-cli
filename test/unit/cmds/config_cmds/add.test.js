@@ -1,5 +1,5 @@
 const { addHandler } = require('../../../../lib/cmds/config_cmds/add');
-import { setContext, storeRuntimeConfig } from '../../../../lib/context';
+const { setContext, storeRuntimeConfig } = require('../../../../lib/context');
 const { success } = require('../../../../lib/utils/log');
 const { successEmoji } = require('../../../../lib/utils/emojis');
 
