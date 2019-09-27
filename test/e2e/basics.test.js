@@ -1,59 +1,59 @@
-const { join } = require('path');
-const { platform } = require('os');
+const { join } = require('path')
+const { platform } = require('os')
 
-const execa = require('execa');
+const execa = require('execa')
 
-let cmd = null;
+let cmd = null
 switch (platform()) {
   case 'win32':
-    cmd = 'contentful-cli-win.exe';
-    break;
+    cmd = 'contentful-cli-win.exe'
+    break
   case 'linux':
-    cmd = 'contentful-cli-linux';
-    break;
+    cmd = 'contentful-cli-linux'
+    break
   case 'darwin':
-    cmd = 'contentful-cli-macos';
-    break;
+    cmd = 'contentful-cli-macos'
+    break
 }
 if (!cmd) {
-  throw new Error(`Platform ${platform()} is not supported`);
+  throw new Error(`Platform ${platform()} is not supported`)
 }
 
-const packageVersion = require('../../package.json').version;
-const cwd = join(__dirname, '../../', 'build');
-cmd = join(cwd, cmd);
+const packageVersion = require('../../package.json').version
+const cwd = join(__dirname, '../../', 'build')
+cmd = join(cwd, cmd)
 
 test('should return code 1 when errors exist no args', async () => {
   try {
-    await execa.shell(cmd);
-    throw new Error('CLI should exit with error');
+    await execa.shell(cmd)
+    throw new Error('CLI should exit with error')
   } catch (error) {
-    expect(error.code).toBe(1);
-    expect(error.stderr).toMatchSnapshot();
+    expect(error.code).toBe(1)
+    expect(error.stderr).toMatchSnapshot()
   }
-});
+})
 
 test('should print help message', async () => {
-  const { stdout } = await execa.shell(`${cmd} --help`);
-  expect(stdout).toMatchSnapshot();
-});
+  const { stdout } = await execa.shell(`${cmd} --help`)
+  expect(stdout).toMatchSnapshot()
+})
 
 test('should print help message on shortcut', async () => {
-  const { stdout } = await execa.shell(`${cmd} -h`);
-  expect(stdout).toMatchSnapshot();
-});
+  const { stdout } = await execa.shell(`${cmd} -h`)
+  expect(stdout).toMatchSnapshot()
+})
 
 test('should print help message on wrong subcommand', async () => {
   try {
-    await execa.shell(`${cmd} lolbar`);
-    throw new Error('CLI should exit with error');
+    await execa.shell(`${cmd} lolbar`)
+    throw new Error('CLI should exit with error')
   } catch (error) {
-    expect(error.code).toBe(1);
-    expect(error.stderr).toMatchSnapshot();
+    expect(error.code).toBe(1)
+    expect(error.stderr).toMatchSnapshot()
   }
-});
+})
 
 test('should print version number', async () => {
-  const { stdout } = await execa.shell(`${cmd} --version`);
-  await expect(stdout).toContain(packageVersion);
-});
+  const { stdout } = await execa.shell(`${cmd} --version`)
+  await expect(stdout).toContain(packageVersion)
+})

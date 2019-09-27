@@ -1,29 +1,29 @@
-const { homedir } = require('os');
-const { join, resolve } = require('path');
+const { homedir } = require('os')
+const { join, resolve } = require('path')
 
-const nixt = require('nixt');
-const rimraf = require('rimraf');
+const nixt = require('nixt')
+const rimraf = require('rimraf')
 
-const { initConfig, deleteSpaces } = require('../util');
+const { initConfig, deleteSpaces } = require('../util')
 
-const bin = join(__dirname, './../../../', 'bin');
-const projectDirectoryName = 'contentful-integration-starter-DELETE-ME';
+const bin = join(__dirname, './../../../', 'bin')
+const projectDirectoryName = 'contentful-integration-starter-DELETE-ME'
 
 const app = () => {
   return nixt({ newlines: true })
     .cwd(bin)
     .base('./contentful.js ')
-    .clone();
-};
+    .clone()
+}
 
-const spacesToDelete = [];
+const spacesToDelete = []
 beforeAll(() => {
-  return initConfig();
-});
+  return initConfig()
+})
 
 afterAll(() => {
-  return deleteSpaces(spacesToDelete);
-});
+  return deleteSpaces(spacesToDelete)
+})
 
 test('should be already logged in and run all steps', done => {
   app()
@@ -34,11 +34,11 @@ test('should be already logged in and run all steps', done => {
     .on(/Do you want to confirm the space creation?/)
     .respond('\n')
     .expect(({ stdout }) => {
-      const matches = /Successfully created space .+ \((.+)\)/.exec(stdout);
+      const matches = /Successfully created space .+ \((.+)\)/.exec(stdout)
       if (!matches) {
-        return new Error("Can't extract space id");
+        return new Error("Can't extract space id")
       }
-      spacesToDelete.push(matches[1]);
+      spacesToDelete.push(matches[1])
     })
     // step 3 seedContent
     .on(/Populate the Content model to your Space now?/)
@@ -60,6 +60,6 @@ test('should be already logged in and run all steps', done => {
     .stdout(/The guide is now completed/)
     .code(0)
     .end(() => {
-      rimraf(resolve(homedir(), projectDirectoryName), done);
-    });
-}, 600000);
+      rimraf(resolve(homedir(), projectDirectoryName), done)
+    })
+}, 600000)

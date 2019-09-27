@@ -1,23 +1,23 @@
-const { spaceUse } = require('../../../../lib/cmds/space_cmds/use');
+const { spaceUse } = require('../../../../lib/cmds/space_cmds/use')
 
-const { setContext } = require('../../../../lib/context');
+const { setContext } = require('../../../../lib/context')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients');
+} = require('../../../../lib/utils/contentful-clients')
 
-jest.mock('../../../../lib/context');
-jest.mock('../../../../lib/utils/contentful-clients');
+jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/utils/contentful-clients')
 
 const getSpaceStub = jest.fn().mockResolvedValue({
   sys: {
     id: 'test'
   },
   name: 'mocked'
-});
+})
 const fakeClient = {
   getSpace: getSpaceStub
-};
-createManagementClient.mockResolvedValue(fakeClient);
+}
+createManagementClient.mockResolvedValue(fakeClient)
 
 test('it writes the enviroment id to contentfulrc.json', async () => {
   const stubArgv = {
@@ -26,10 +26,10 @@ test('it writes the enviroment id to contentfulrc.json', async () => {
       activeEnvironmentId: 'master'
     },
     spaceId: 'test'
-  };
-  await spaceUse(stubArgv);
+  }
+  await spaceUse(stubArgv)
   expect(setContext).toHaveBeenCalledWith({
     activeEnvironmentId: 'master',
     activeSpaceId: 'test'
-  });
-});
+  })
+})

@@ -1,6 +1,6 @@
-const createServer = require('./server');
-const { ssl } = require('yargs').argv;
+const createServer = require('./server')
+const { ssl } = require('yargs').argv
 
-const server = createServer({ ssl });
+const server = createServer({ ssl })
 
-server.start().then(() => console.log('listening'));
+server.start().then(() => console.log('listening'))

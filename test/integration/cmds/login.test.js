@@ -1,19 +1,19 @@
-const nixt = require('nixt');
-const { join } = require('path');
-const { initConfig } = require('../util');
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig } = require('../util')
 
-const bin = join(__dirname, './../../../', 'bin');
+const bin = join(__dirname, './../../../', 'bin')
 
 const app = () => {
   return nixt({ newlines: true })
     .cwd(bin)
     .base('./contentful.js ')
-    .clone();
-};
+    .clone()
+}
 
 beforeAll(() => {
-  return initConfig();
-});
+  return initConfig()
+})
 
 test('should be already loged in', done => {
   app()
@@ -22,8 +22,8 @@ test('should be already loged in', done => {
     .stdout(/Looks like you already stored a management token on your system\./)
     .stdout(/Your management token:/)
     .stdout(/Maybe you want to contentful logout\?/)
-    .end(done);
-});
+    .end(done)
+})
 
 test('should login with management-token flag', done => {
   app()
@@ -31,5 +31,5 @@ test('should login with management-token flag', done => {
     .code(0)
     .stdout(/Great! Your CMA token is now stored on your system\./)
     .stdout(/You can always run contentful logout to remove it\./)
-    .end(done);
-});
+    .end(done)
+})

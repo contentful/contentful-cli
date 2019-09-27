@@ -1,59 +1,59 @@
-const nixt = require('nixt');
-const { join } = require('path');
+const nixt = require('nixt')
+const { join } = require('path')
 const {
   initConfig,
   deleteSpaces,
   createSimpleSpace,
   expectedDir
-} = require('../../util');
+} = require('../../util')
 
-const bin = join(__dirname, './../../../../', 'bin');
-const org = process.env.CLI_E2E_ORG_ID;
+const bin = join(__dirname, './../../../../', 'bin')
+const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
   return nixt({ newlines: true, showDiff: true })
     .cwd(bin)
     .base('./contentful.js ')
-    .clone();
-};
+    .clone()
+}
 
-var space = null;
-var spacesToDelete = [];
+var space = null
+var spacesToDelete = []
 
 beforeAll(() => {
-  return initConfig();
-});
+  return initConfig()
+})
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'space-import');
-  spacesToDelete.push(space.sys.id);
-});
+  space = await createSimpleSpace(org, 'space-import')
+  spacesToDelete.push(space.sys.id)
+})
 afterAll(() => {
-  return deleteSpaces(spacesToDelete);
-});
+  return deleteSpaces(spacesToDelete)
+})
 
 test('should print help message', done => {
   app()
     .run('space import --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim();
-      expect(resultText).toMatchSnapshot('help data is incorrect');
+      const resultText = result.stdout.trim()
+      expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(done);
-});
+    .end(done)
+})
 
 test('should exit 1 when no args', done => {
   app()
     .run('space import')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim();
+      const resultText = result.stderr.trim()
       expect(resultText).toMatchSnapshot(
         'wrong response in case of no args provided'
-      );
+      )
     })
-    .end(done);
-});
+    .end(done)
+})
 
 test('should exit 1 when no space provided', done => {
   app()
@@ -61,10 +61,10 @@ test('should exit 1 when no space provided', done => {
     .code(1)
     .stderr(/Error: You need to provide a space/)
     .end(err => {
-      expect(err).toBeFalsy();
-      done();
-    });
-});
+      expect(err).toBeFalsy()
+      done()
+    })
+})
 
 test('should import space', done => {
   app()
@@ -72,5 +72,5 @@ test('should import space', done => {
       `space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`
     )
     .stdout(/Finished importing all data/)
-    .end(done);
-}, 30000);
+    .end(done)
+}, 30000)

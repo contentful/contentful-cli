@@ -1,33 +1,29 @@
-const nixt = require('nixt');
-const { join } = require('path');
-const {
-  initConfig,
-  deleteSpaces,
-  createSimpleSpace
-} = require('../../../util');
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig, deleteSpaces, createSimpleSpace } = require('../../../util')
 
-const bin = join(__dirname, './../../../../../', 'bin');
+const bin = join(__dirname, './../../../../../', 'bin')
 
 const app = () => {
   return nixt({ newlines: true })
     .cwd(bin)
     .base('./contentful.js ')
-    .clone();
-};
+    .clone()
+}
 
-const org = process.env.CLI_E2E_ORG_ID;
-let space = null;
-const spacesToDelete = [];
+const org = process.env.CLI_E2E_ORG_ID
+let space = null
+const spacesToDelete = []
 
 beforeAll(async () => {
-  await initConfig();
-  space = await createSimpleSpace(org, 'space-env');
-  spacesToDelete.push(space.sys.id);
-});
+  await initConfig()
+  space = await createSimpleSpace(org, 'space-env')
+  spacesToDelete.push(space.sys.id)
+})
 
 afterAll(() => {
-  return deleteSpaces(spacesToDelete);
-});
+  return deleteSpaces(spacesToDelete)
+})
 
 test('should create, list and delete environment', done => {
   function createEnvironment() {
@@ -36,11 +32,11 @@ test('should create, list and delete environment', done => {
         `space environment create --space-id ${space.sys.id} --environment-id createListDelete --name "Create List Delete"`
       )
       .expect(result => {
-        const resultText = result.stdout.trim();
-        expect(resultText).toMatchSnapshot();
+        const resultText = result.stdout.trim()
+        expect(resultText).toMatchSnapshot()
       })
       .code(0)
-      .end(listEnvironments);
+      .end(listEnvironments)
   }
 
   function listEnvironments() {
@@ -51,7 +47,7 @@ test('should create, list and delete environment', done => {
       .stdout(/Create List Delete +|/)
       .stdout(/master +|/)
       .code(0)
-      .end(deleteEnvironment);
+      .end(deleteEnvironment)
   }
 
   function deleteEnvironment() {
@@ -64,8 +60,8 @@ test('should create, list and delete environment', done => {
       .stdout(/Create List Delete +|/)
       .stdout(/master +|/)
       .code(0)
-      .end(done);
+      .end(done)
   }
 
-  createEnvironment();
-}, 10000);
+  createEnvironment()
+}, 10000)
