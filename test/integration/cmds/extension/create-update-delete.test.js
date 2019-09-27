@@ -1,89 +1,99 @@
-import nixt from 'nixt'
-import { resolve } from 'path'
-import {
-  initConfig,
-  createSimpleSpace,
-  deleteSpaces
-} from '../../util'
+const nixt = require('nixt');
+const { resolve } = require('path');
+import { initConfig, createSimpleSpace, deleteSpaces } from '../../util';
 
-const bin = resolve(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
+const bin = resolve(__dirname, './../../../../', 'bin');
+const org = process.env.CLI_E2E_ORG_ID;
 
-const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
-const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
+const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json');
+const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html');
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
-}
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone();
+};
 
-let space = null
-let environment = null
-let spacesToDelete = []
+let space = null;
+let environment = null;
+let spacesToDelete = [];
 
 beforeAll(() => {
-  return initConfig()
-})
+  return initConfig();
+});
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'ext-crud')
-  environment = await space.getEnvironment('master')
-  spacesToDelete.push(space.sys.id)
-})
+  space = await createSimpleSpace(org, 'ext-crud');
+  environment = await space.getEnvironment('master');
+  spacesToDelete.push(space.sys.id);
+});
 
 afterAll(() => {
-  return deleteSpaces(spacesToDelete)
-})
+  return deleteSpaces(spacesToDelete);
+});
 
 test('should be able to create, update and delete a extension', done => {
-  const newSrc = 'https://new-src.example.com'
+  const newSrc = 'https://new-src.example.com';
 
-  function createExtension () {
+  function createExtension() {
     app()
-      .run(`extension create --space-id ${space.sys.id} --descriptor ${configPath} --src '${newSrc}'`)
-      .expect((result) => {
-        console.log(result.stdout)
-        console.log(result.stderr)
-        expect(result.stdout.trim()).toMatch(/Successfully created extension:/)
-        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
+      .run(
+        `extension create --space-id ${space.sys.id} --descriptor ${configPath} --src '${newSrc}'`
+      )
+      .expect(result => {
+        console.log(result.stdout);
+        console.log(result.stderr);
+        expect(result.stdout.trim()).toMatch(/Successfully created extension:/);
+        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/);
       })
       .code(0)
       .end(() => {
-        environment.getUiExtensions()
-          .then((result) => {
+        environment
+          .getUiExtensions()
+          .then(result => {
             if (!result.items.length) {
-              throw new Error('No extensions found while the sample one should show up')
+              throw new Error(
+                'No extensions found while the sample one should show up'
+              );
             }
-            expect(result.items[0].sys.id).toBe('sample-extension')
-            expect(result.items[0].extension.src).toBe(newSrc)
+            expect(result.items[0].sys.id).toBe('sample-extension');
+            expect(result.items[0].extension.src).toBe(newSrc);
           })
-          .then(updateExtension)
-      })
+          .then(updateExtension);
+      });
   }
 
-  function updateExtension () {
+  function updateExtension() {
     app()
-      .run(`extension update --version 1 --space-id ${space.sys.id} --descriptor ${configPath} --srcdoc '${srcDocPath}'`)
-      .expect((result) => {
-        console.log(result.stdout)
-        console.log(result.stderr)
-        expect(result.stdout.trim()).toMatch(/Successfully updated extension:/)
-        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
+      .run(
+        `extension update --version 1 --space-id ${space.sys.id} --descriptor ${configPath} --srcdoc '${srcDocPath}'`
+      )
+      .expect(result => {
+        console.log(result.stdout);
+        console.log(result.stderr);
+        expect(result.stdout.trim()).toMatch(/Successfully updated extension:/);
+        expect(result.stdout.trim()).toMatch(/ID.+sample-extension/);
       })
       .code(0)
-      .end(deleteExtension)
+      .end(deleteExtension);
   }
 
-  function deleteExtension () {
+  function deleteExtension() {
     app()
-      .run(`extension delete --id sample-extension --space-id ${space.sys.id} --version 1`)
-      .expect((result) => {
-        console.log(result.stdout)
-        console.log(result.stderr)
-        expect(result.stdout.trim()).toMatch(/Successfully deleted extension with ID sample-extension/)
+      .run(
+        `extension delete --id sample-extension --space-id ${space.sys.id} --version 1`
+      )
+      .expect(result => {
+        console.log(result.stdout);
+        console.log(result.stderr);
+        expect(result.stdout.trim()).toMatch(
+          /Successfully deleted extension with ID sample-extension/
+        );
       })
       .code(0)
-      .end(done)
+      .end(done);
   }
 
-  createExtension()
-}, 20000)
+  createExtension();
+}, 20000);

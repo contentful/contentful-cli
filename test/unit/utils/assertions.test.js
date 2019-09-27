@@ -1,43 +1,48 @@
-import { assertLoggedIn, assertSpaceIdProvided } from '../../../lib/utils/assertions'
+const {
+  assertLoggedIn,
+  assertSpaceIdProvided
+} = require('../../../lib/utils/assertions');
 
-import { getContext } from '../../../lib/context'
-import { highlightStyle } from '../../../lib/utils/styles'
+const { getContext } = require('../../../lib/context');
+const { highlightStyle } = require('../../../lib/utils/styles');
 
-jest.mock('../../../lib/context')
-jest.mock('../../../lib/utils/styles')
+jest.mock('../../../lib/context');
+jest.mock('../../../lib/utils/styles');
 
 getContext.mockResolvedValue({
   managementToken: 'mockedToken'
-})
+});
 
 afterEach(() => {
-  highlightStyle.mockClear()
-  getContext.mockClear()
-})
+  highlightStyle.mockClear();
+  getContext.mockClear();
+});
 
 test('assertLoggedIn when not logged in', async () => {
-  getContext.mockResolvedValueOnce({})
-  await expect(assertLoggedIn()).rejects.toThrowErrorMatchingSnapshot()
-})
+  getContext.mockResolvedValueOnce({});
+  await expect(assertLoggedIn()).rejects.toThrowErrorMatchingSnapshot();
+});
 
 test('assertLoggedIn when logged in', async () => {
-  await expect(assertLoggedIn)
-})
+  await expect(assertLoggedIn);
+});
 
 test('assertSpaceIdProvided when provided via args', async () => {
   await assertSpaceIdProvided({
     spaceId: 'mocked spaceId'
-  })
-})
+  });
+});
 
 test('assertSpaceIdProvided when provided via context', async () => {
   getContext.mockResolvedValueOnce({
     activeSpaceId: 'space id',
     managementToken: 'mockedToken'
-  })
-  await assertSpaceIdProvided()
-})
+  });
+  await assertSpaceIdProvided();
+});
 
 test('assertSpaceIdProvided when not provided at all', async () => {
-  await expect(assertSpaceIdProvided({})).rejects.toThrowErrorMatchingSnapshot()
-})
+  await expect(
+    assertSpaceIdProvided({})
+  ).rejects.toThrowErrorMatchingSnapshot();
+});
