@@ -1,12 +1,14 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 const streamBuffers = require('stream-buffers');
-const axios = require('axios').default;
+const axios = require('axios');
 
 const { downloadBoilerplate } = require('../../../lib/cmds/boilerplate');
 const { getContext } = require('../../../lib/context');
 
-const { createManagementClient } = require('../../../lib/utils/contentful-clients');
+const {
+  createManagementClient
+} = require('../../../lib/utils/contentful-clients');
 
 jest.mock('../../../lib/context');
 jest.mock('../../../lib/utils/contentful-clients');
@@ -57,7 +59,9 @@ createManagementClient.mockImplementation(() => ({
 
 inquirer.prompt.mockResolvedValue({ boilerplate: 'mockedBoilerplateId' });
 const createWriteStreamMock = jest.spyOn(fs, 'createWriteStream');
-createWriteStreamMock.mockImplementation(() => new streamBuffers.WritableStreamBuffer());
+createWriteStreamMock.mockImplementation(
+  () => new streamBuffers.WritableStreamBuffer()
+);
 
 beforeEach(() => {
   const mockedBoilerplateStream = new streamBuffers.ReadableStreamBuffer();
@@ -94,12 +98,16 @@ test('requires spaceId and accepts it from context', async () => {
     managementToken: 'mocked',
     activeSpaceId: 'mocked'
   });
-  await expect(downloadBoilerplate).not.toThrowError('works with space id provided via context');
+  await expect(downloadBoilerplate).not.toThrowError(
+    'works with space id provided via context'
+  );
 });
 
 test('requires spaceId and accepts it from argv arguments', async () => {
   getContext.mockResolvedValue({
     managementToken: 'mocked'
   });
-  await expect(() => downloadBoilerplate(defaults)).not.toThrowError('works with space id provided via arguments');
+  await expect(() => downloadBoilerplate(defaults)).not.toThrowError(
+    'works with space id provided via arguments'
+  );
 });
