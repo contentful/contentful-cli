@@ -63,6 +63,19 @@ jobs:
     steps:
       - checkout
       - run: npm run bump-brew-formula
+  audit:
+    docker:
+      - image: circleci/node:8
+        environment:
+          NPM_CONFIG_PROGRESS: false
+          NPM_CONFIG_LOGLEVEL: warn
+    steps:
+      - checkout
+      - run:
+          name: Audit
+          command: |
+            npm i -g npm-audit-resolver@2
+            check-audit --ignoreLow
 workflows:
   version: 2
   build_and_test:
@@ -71,11 +84,13 @@ workflows:
       - integration
       - linux
       - osx
+      - audit
       - release:
           requires:
             - unit
             - integration
             - linux
+            - audit
             - osx
       - bump-brew-formula:
           requires:
