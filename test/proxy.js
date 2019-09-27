@@ -15,7 +15,12 @@ const opts = {
   path: './recordings',
   bodyMatcher,
   ignoreHeaders: [
-    'x-contentful-user-agent', 'authorization', 'user-agent', 'content-length', 'accept-encoding', 'connection'
+    'x-contentful-user-agent',
+    'authorization',
+    'user-agent',
+    'content-length',
+    'accept-encoding',
+    'connection'
   ]
 }
 const server = talkback(opts)

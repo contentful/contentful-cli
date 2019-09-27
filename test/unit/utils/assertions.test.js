@@ -1,7 +1,10 @@
-import { assertLoggedIn, assertSpaceIdProvided } from '../../../lib/utils/assertions'
+const {
+  assertLoggedIn,
+  assertSpaceIdProvided
+} = require('../../../lib/utils/assertions')
 
-import { getContext } from '../../../lib/context'
-import { highlightStyle } from '../../../lib/utils/styles'
+const { getContext } = require('../../../lib/context')
+const { highlightStyle } = require('../../../lib/utils/styles')
 
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/styles')

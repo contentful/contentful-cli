@@ -1,6 +1,10 @@
-import { environmentDelete } from '../../../../../lib/cmds/space_cmds/environment_cmds/delete'
-import { getContext } from '../../../../../lib/context'
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+const {
+  environmentDelete
+} = require('../../../../../lib/cmds/space_cmds/environment_cmds/delete')
+const { getContext } = require('../../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')

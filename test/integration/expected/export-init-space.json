@@ -1,467 +1,461 @@
 {
-    "contentTypes": [
+  "contentTypes": [
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "wm5pmiduzfr4"
+          }
+        },
+        "id": "person",
+        "type": "ContentType",
+        "createdAt": "2017-05-29T14:07:02.059Z",
+        "updatedAt": "2017-05-29T14:13:06.934Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "publishedCounter": 2,
+        "version": 4,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "publishedVersion": 3,
+        "firstPublishedAt": "2017-05-29T14:07:02.831Z",
+        "publishedAt": "2017-05-29T14:13:06.910Z"
+      },
+      "displayField": "title",
+      "name": "Person",
+      "description": "",
+      "fields": [
         {
-            "sys": {
-                "space": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "Space",
-                        "id": "wm5pmiduzfr4"
-                    }
-                },
-                "id": "person",
-                "type": "ContentType",
-                "createdAt": "2017-05-29T14:07:02.059Z",
-                "updatedAt": "2017-05-29T14:13:06.934Z",
-                "createdBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "updatedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "publishedCounter": 2,
-                "version": 4,
-                "publishedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "publishedVersion": 3,
-                "firstPublishedAt": "2017-05-29T14:07:02.831Z",
-                "publishedAt": "2017-05-29T14:13:06.910Z"
-            },
-            "displayField": "title",
-            "name": "Person",
-            "description": "",
-            "fields": [
-                {
-                    "id": "name",
-                    "name": "Name",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "title",
-                    "name": "Title",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "slogan",
-                    "name": "Slogan",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "company",
-                    "name": "Company",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "shortBio",
-                    "name": "Short Bio",
-                    "type": "Text",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "email",
-                    "name": "Email",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "phone",
-                    "name": "Phone",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "facebook",
-                    "name": "Facebook",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "twitter",
-                    "name": "Twitter",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "github",
-                    "name": "Github",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "image",
-                    "name": "Image",
-                    "type": "Link",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false,
-                    "linkType": "Asset"
-                }
-            ]
+          "id": "name",
+          "name": "Name",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
         },
         {
-            "sys": {
-                "space": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "Space",
-                        "id": "wm5pmiduzfr4"
-                    }
-                },
-                "id": "blogPost",
-                "type": "ContentType",
-                "createdAt": "2017-05-29T14:07:02.217Z",
-                "updatedAt": "2017-05-29T14:13:07.778Z",
-                "createdBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "updatedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "publishedCounter": 2,
-                "version": 4,
-                "publishedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "publishedVersion": 3,
-                "firstPublishedAt": "2017-05-29T14:07:03.354Z",
-                "publishedAt": "2017-05-29T14:13:07.757Z"
-            },
-            "displayField": "title",
-            "name": "Blog Post",
-            "description": "",
-            "fields": [
-                {
-                    "id": "title",
-                    "name": "Title",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "slug",
-                    "name": "Slug",
-                    "type": "Symbol",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "heroImage",
-                    "name": "Hero Image",
-                    "type": "Link",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false,
-                    "linkType": "Asset"
-                },
-                {
-                    "id": "description",
-                    "name": "Description",
-                    "type": "Text",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "body",
-                    "name": "Body",
-                    "type": "Text",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "author",
-                    "name": "Author",
-                    "type": "Link",
-                    "localized": false,
-                    "required": false,
-                    "validations": [
-                        {
-                            "linkContentType": [
-                                "person"
-                            ]
-                        }
-                    ],
-                    "disabled": false,
-                    "omitted": false,
-                    "linkType": "Entry"
-                },
-                {
-                    "id": "publishDate",
-                    "name": "Publish Date",
-                    "type": "Date",
-                    "localized": false,
-                    "required": true,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false
-                },
-                {
-                    "id": "tags",
-                    "name": "tags",
-                    "type": "Array",
-                    "localized": false,
-                    "required": false,
-                    "validations": [],
-                    "disabled": false,
-                    "omitted": false,
-                    "items": {
-                        "type": "Symbol",
-                        "validations": [
-                            {
-                                "in": [
-                                    "general",
-                                    "javascript",
-                                    "static sites"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    ],
-    "editorInterfaces": [
-        {
-            "controls": [
-                {
-                    "fieldId": "name",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "title",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "slogan",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "company",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "shortBio",
-                    "widgetId": "markdown"
-                },
-                {
-                    "fieldId": "email",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "phone",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "facebook",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "twitter",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "github",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "image",
-                    "widgetId": "assetLinkEditor"
-                }
-            ],
-            "sys": {
-                "id": "default",
-                "type": "EditorInterface",
-                "version": 4,
-                "createdAt": "2017-05-29T14:07:03.031Z",
-                "createdBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "space": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "Space",
-                        "id": "wm5pmiduzfr4"
-                    }
-                },
-                "contentType": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "ContentType",
-                        "id": "person"
-                    }
-                },
-                "updatedAt": "2017-05-29T14:13:08.977Z",
-                "updatedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                }
-            }
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
         },
         {
-            "controls": [
-                {
-                    "fieldId": "title",
-                    "widgetId": "singleLine"
-                },
-                {
-                    "fieldId": "slug",
-                    "widgetId": "slugEditor"
-                },
-                {
-                    "fieldId": "heroImage",
-                    "widgetId": "assetLinkEditor"
-                },
-                {
-                    "fieldId": "description",
-                    "widgetId": "markdown"
-                },
-                {
-                    "fieldId": "body",
-                    "widgetId": "markdown"
-                },
-                {
-                    "fieldId": "author",
-                    "widgetId": "entryLinkEditor"
-                },
-                {
-                    "fieldId": "publishDate",
-                    "widgetId": "datePicker",
-                    "settings": {
-                        "format": "timeZ",
-                        "ampm": "24"
-                    }
-                },
-                {
-                    "fieldId": "tags",
-                    "widgetId": "tagEditor"
-                }
-            ],
-            "sys": {
-                "id": "default",
-                "type": "EditorInterface",
-                "version": 4,
-                "createdAt": "2017-05-29T14:07:03.552Z",
-                "createdBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                },
-                "space": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "Space",
-                        "id": "wm5pmiduzfr4"
-                    }
-                },
-                "contentType": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "ContentType",
-                        "id": "blogPost"
-                    }
-                },
-                "updatedAt": "2017-05-29T14:13:09.000Z",
-                "updatedBy": {
-                    "sys": {
-                        "type": "Link",
-                        "linkType": "User",
-                        "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
-                    }
-                }
-            }
+          "id": "slogan",
+          "name": "Slogan",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "company",
+          "name": "Company",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "shortBio",
+          "name": "Short Bio",
+          "type": "Text",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "email",
+          "name": "Email",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "phone",
+          "name": "Phone",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "facebook",
+          "name": "Facebook",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "twitter",
+          "name": "Twitter",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "github",
+          "name": "Github",
+          "type": "Symbol",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "image",
+          "name": "Image",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
         }
-    ]
+      ]
+    },
+    {
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "wm5pmiduzfr4"
+          }
+        },
+        "id": "blogPost",
+        "type": "ContentType",
+        "createdAt": "2017-05-29T14:07:02.217Z",
+        "updatedAt": "2017-05-29T14:13:07.778Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "publishedCounter": 2,
+        "version": 4,
+        "publishedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "publishedVersion": 3,
+        "firstPublishedAt": "2017-05-29T14:07:03.354Z",
+        "publishedAt": "2017-05-29T14:13:07.757Z"
+      },
+      "displayField": "title",
+      "name": "Blog Post",
+      "description": "",
+      "fields": [
+        {
+          "id": "title",
+          "name": "Title",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "slug",
+          "name": "Slug",
+          "type": "Symbol",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "heroImage",
+          "name": "Hero Image",
+          "type": "Link",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Asset"
+        },
+        {
+          "id": "description",
+          "name": "Description",
+          "type": "Text",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "body",
+          "name": "Body",
+          "type": "Text",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "author",
+          "name": "Author",
+          "type": "Link",
+          "localized": false,
+          "required": false,
+          "validations": [
+            {
+              "linkContentType": ["person"]
+            }
+          ],
+          "disabled": false,
+          "omitted": false,
+          "linkType": "Entry"
+        },
+        {
+          "id": "publishDate",
+          "name": "Publish Date",
+          "type": "Date",
+          "localized": false,
+          "required": true,
+          "validations": [],
+          "disabled": false,
+          "omitted": false
+        },
+        {
+          "id": "tags",
+          "name": "tags",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Symbol",
+            "validations": [
+              {
+                "in": ["general", "javascript", "static sites"]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "editorInterfaces": [
+    {
+      "controls": [
+        {
+          "fieldId": "name",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "title",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "slogan",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "company",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "shortBio",
+          "widgetId": "markdown"
+        },
+        {
+          "fieldId": "email",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "phone",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "facebook",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "twitter",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "github",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "image",
+          "widgetId": "assetLinkEditor"
+        }
+      ],
+      "sys": {
+        "id": "default",
+        "type": "EditorInterface",
+        "version": 4,
+        "createdAt": "2017-05-29T14:07:03.031Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "wm5pmiduzfr4"
+          }
+        },
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "person"
+          }
+        },
+        "updatedAt": "2017-05-29T14:13:08.977Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        }
+      }
+    },
+    {
+      "controls": [
+        {
+          "fieldId": "title",
+          "widgetId": "singleLine"
+        },
+        {
+          "fieldId": "slug",
+          "widgetId": "slugEditor"
+        },
+        {
+          "fieldId": "heroImage",
+          "widgetId": "assetLinkEditor"
+        },
+        {
+          "fieldId": "description",
+          "widgetId": "markdown"
+        },
+        {
+          "fieldId": "body",
+          "widgetId": "markdown"
+        },
+        {
+          "fieldId": "author",
+          "widgetId": "entryLinkEditor"
+        },
+        {
+          "fieldId": "publishDate",
+          "widgetId": "datePicker",
+          "settings": {
+            "format": "timeZ",
+            "ampm": "24"
+          }
+        },
+        {
+          "fieldId": "tags",
+          "widgetId": "tagEditor"
+        }
+      ],
+      "sys": {
+        "id": "default",
+        "type": "EditorInterface",
+        "version": 4,
+        "createdAt": "2017-05-29T14:07:03.552Z",
+        "createdBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        },
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "wm5pmiduzfr4"
+          }
+        },
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "blogPost"
+          }
+        },
+        "updatedAt": "2017-05-29T14:13:09.000Z",
+        "updatedBy": {
+          "sys": {
+            "type": "Link",
+            "linkType": "User",
+            "id": "1Ia5dbFx5kq0w5uB9nxuyZ"
+          }
+        }
+      }
+    }
+  ]
 }

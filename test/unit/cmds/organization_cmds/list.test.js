@@ -1,6 +1,10 @@
-import { organizationList } from '../../../../lib/cmds/organization_cmds/list'
-import { createManagementClient } from '../../../../lib/utils/contentful-clients'
-import { log } from '../../../../lib/utils/log'
+const {
+  organizationList
+} = require('../../../../lib/cmds/organization_cmds/list')
+const {
+  createManagementClient
+} = require('../../../../lib/utils/contentful-clients')
+const { log } = require('../../../../lib/utils/log')
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/contentful-clients')

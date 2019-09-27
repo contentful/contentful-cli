@@ -1,16 +1,15 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import {
-  initConfig,
-  deleteSpaces,
-  createSimpleSpace
-} from '../../util'
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig, deleteSpaces, createSimpleSpace } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 var space = null

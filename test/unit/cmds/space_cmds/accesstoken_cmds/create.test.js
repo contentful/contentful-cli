@@ -1,6 +1,10 @@
-import { accessTokenCreate } from '../../../../../lib/cmds/space_cmds/accesstoken_cmds/create'
-import { getContext } from '../../../../../lib/context'
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+const {
+  accessTokenCreate
+} = require('../../../../../lib/cmds/space_cmds/accesstoken_cmds/create')
+const { getContext } = require('../../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')
@@ -64,11 +68,13 @@ test('return existing access token', async () => {
 test('create access token - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create access token because of reasons'
   getApiKeysStub.mockRejectedValueOnce(new Error(errorMessage))
-  await expect(accessTokenCreate({
-    context: {
-      activeSpaceId: 'some-space-id'
-    }
-  })).rejects.toThrowError(errorMessage)
+  await expect(
+    accessTokenCreate({
+      context: {
+        activeSpaceId: 'some-space-id'
+      }
+    })
+  ).rejects.toThrowError(errorMessage)
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(createApiKeyStub).not.toHaveBeenCalled()
 })

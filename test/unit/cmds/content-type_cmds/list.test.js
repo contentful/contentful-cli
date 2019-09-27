@@ -1,6 +1,8 @@
-import { handler } from '../../../../lib/cmds/content-type_cmds/list'
-import { log } from '../../../../lib/utils/log'
-import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+const { handler } = require('../../../../lib/cmds/content-type_cmds/list')
+const { log } = require('../../../../lib/utils/log')
+const {
+  createManagementClient
+} = require('../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')

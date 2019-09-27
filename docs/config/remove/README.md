@@ -3,6 +3,7 @@
 Removes a config from `~/.contentfulrc.json`
 
 ## Usage
+
 ```
 Options:
   -h, --help                Show help                                  [boolean]
@@ -22,6 +23,7 @@ Examples:
 ```
 
 ### Example
+
 ```sh
 contentful config remove --proxy
 ```

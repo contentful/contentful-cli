@@ -1,6 +1,6 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import { initConfig } from '../../util'
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID

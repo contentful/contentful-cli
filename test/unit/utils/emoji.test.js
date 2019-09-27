@@ -1,15 +1,15 @@
-import {
+const {
   welcomeEmoji,
   successEmoji,
   errorEmoji,
   infoEmoji,
   generateNumberEmoji
-} from '../../../lib/utils/emojis'
+} = require('../../../lib/utils/emojis')
 
 const emojis = [welcomeEmoji, successEmoji, errorEmoji, infoEmoji]
 
 test('emojis should have space at the end to avoid display issues', () => {
-  emojis.forEach((emoji) => {
+  emojis.forEach(emoji => {
     expect(emoji.charAt(emoji.length - 1)).toBe(' ')
   })
 })

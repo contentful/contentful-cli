@@ -1,7 +1,11 @@
-import { environmentList } from '../../../../../lib/cmds/space_cmds/environment_cmds/list'
-import { getContext } from '../../../../../lib/context'
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
-import { log } from '../../../../../lib/utils/log'
+const {
+  environmentList
+} = require('../../../../../lib/cmds/space_cmds/environment_cmds/list')
+const { getContext } = require('../../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
+const { log } = require('../../../../../lib/utils/log')
 
 jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')

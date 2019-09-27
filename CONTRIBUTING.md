@@ -6,14 +6,9 @@ It also explains what to do in case you want to setup the project locally and ru
 
 # Setup
 
-This project is written in ES2015 and transpiled to ES5 using Babel, to the `dist` directory. This should generally only happen at publishing time, or for testing purposes only.
-
 Run `npm install` or `yarn` to install all necessary dependencies. When running `npm install` or `yarn` locally, `dist` is not compiled.
 
 All necessary dependencies are installed under `node_modules` and any necessary tools can be accessed via npm scripts. There is no need to install anything globally.
-
-If you have a `dist` directory, run `npm run clean`.
-
 
 # Code style
 
@@ -35,7 +30,7 @@ This project uses the [Angular JS Commit Message Conventions](https://docs.googl
 - test (when adding missing tests) (e.g. `feat(scope): Add missing test`)
 - chore (maintain) (e.g. `chore(scope): Maintain stuff`)
 
-**Note:** scope is optional, if there is not scope you can get rid of the parentheses 
+**Note:** scope is optional, if there is not scope you can get rid of the parentheses
 
 # Running tests
 

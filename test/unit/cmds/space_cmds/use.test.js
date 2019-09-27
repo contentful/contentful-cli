@@ -1,7 +1,9 @@
-import { spaceUse } from '../../../../lib/cmds/space_cmds/use'
+const { spaceUse } = require('../../../../lib/cmds/space_cmds/use')
 
-import { setContext } from '../../../../lib/context'
-import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+const { setContext } = require('../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/contentful-clients')
@@ -27,7 +29,7 @@ test('it writes the enviroment id to contentfulrc.json', async () => {
   }
   await spaceUse(stubArgv)
   expect(setContext).toHaveBeenCalledWith({
-    'activeEnvironmentId': 'master',
-    'activeSpaceId': 'test'
+    activeEnvironmentId: 'master',
+    activeSpaceId: 'test'
   })
 })

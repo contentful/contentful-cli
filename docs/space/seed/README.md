@@ -3,7 +3,8 @@
 Seed a Content model including some example Content entries to your space.
 
 Current it supports the following seed template:
-* `blog`: Simple example blog template with `Post`, `Author` and `Category` Content types.
+
+- `blog`: Simple example blog template with `Post`, `Author` and `Category` Content types.
 
 ## Usage
 
@@ -21,6 +22,7 @@ Options:
 ```
 
 ### Example
+
 ```sh
 contentful space seed --template blog
 ```

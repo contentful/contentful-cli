@@ -1,11 +1,8 @@
-import { logout } from '../../../lib/cmds/logout'
-import {
-  storeRuntimeConfig,
-  setContext
-} from '../../../lib/context'
-import { assertLoggedIn } from '../../../lib/utils/assertions'
-import { confirmation } from '../../../lib/utils/actions'
-import { log, warning, success } from '../../../lib/utils/log'
+const { logout } = require('../../../lib/cmds/logout')
+const { storeRuntimeConfig, setContext } = require('../../../lib/context')
+const { assertLoggedIn } = require('../../../lib/utils/assertions')
+const { confirmation } = require('../../../lib/utils/actions')
+const { log, warning, success } = require('../../../lib/utils/log')
 
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/actions')
@@ -29,7 +26,9 @@ afterEach(() => {
 test('logout is actually logging out', async () => {
   confirmation.mockResolvedValueOnce(true)
   await logout({})
-  expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
+  expect(warning).toHaveBeenCalledWith(
+    'This will log you out by deleting the CMA token stored on your system.'
+  )
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(success).toHaveBeenCalledWith('Successfully logged you out.')
   expect(log).not.toHaveBeenCalled()
@@ -41,7 +40,9 @@ test('logout is actually logging out', async () => {
 test('logout is abortable', async () => {
   confirmation.mockResolvedValueOnce(false)
   await logout({})
-  expect(warning).toHaveBeenCalledWith('This will log you out by deleting the CMA token stored on your system.')
+  expect(warning).toHaveBeenCalledWith(
+    'This will log you out by deleting the CMA token stored on your system.'
+  )
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(log).toHaveBeenCalledWith('Log out aborted by user.')
   expect(success).not.toHaveBeenCalled()

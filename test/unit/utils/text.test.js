@@ -1,25 +1,27 @@
-import wrapAnsi from 'wrap-ansi'
-import { textSync } from 'figlet'
-import stripAnsi from 'strip-ansi'
-import chalk from 'chalk'
+const wrapAnsi = require('wrap-ansi')
+const { textSync } = require('figlet')
+const stripAnsi = require('strip-ansi')
+const chalk = require('chalk')
 
-import {
+const {
   wrap,
   frame,
   asciiText,
   separator,
   DEFAULT_COLUMNS
-} from '../../../lib/utils/text'
+} = require('../../../lib/utils/text')
 
 jest.mock('figlet')
 jest.mock('chalk', () => ({
-  dim: jest.fn((val) => val),
-  bold: jest.fn((val) => val)
+  dim: jest.fn(val => val),
+  bold: jest.fn(val => val)
 }))
-jest.mock('wrap-ansi', () => jest.fn().mockImplementation((...args) => {
-  const wrapAnsi = require.requireActual('wrap-ansi')
-  return wrapAnsi(...args)
-}))
+jest.mock('wrap-ansi', () =>
+  jest.fn().mockImplementation((...args) => {
+    const wrapAnsi = require.requireActual('wrap-ansi')
+    return wrapAnsi(...args)
+  })
+)
 
 afterEach(() => {
   wrapAnsi.mockClear()

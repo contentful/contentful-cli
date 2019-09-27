@@ -18,14 +18,23 @@ const packageJSON = require('../package.json')
 const version = packageJSON.version
 const buildpath = 'build/'
 const files = {
-  'contentful-cli-macos': { to: 'contentful', package: 'contentful-cli-macos' },
-  'contentful-cli-linux': { to: 'contentful', package: 'contentful-cli-linux' },
-  'contentful-cli-win.exe': { to: 'contentful.exe', package: 'contentful-cli-win' }
+  'contentful-cli-macos': {
+    to: 'contentful',
+    package: 'contentful-cli-macos'
+  },
+  'contentful-cli-linux': {
+    to: 'contentful',
+    package: 'contentful-cli-linux'
+  },
+  'contentful-cli-win.exe': {
+    to: 'contentful.exe',
+    package: 'contentful-cli-win'
+  }
 }
 
 console.log('Prepare zip files for each platform:\n')
 
-Object.keys(files).forEach((file) => {
+Object.keys(files).forEach(file => {
   const zip = nodezip()
   const filename = files[file].to
   const filepath = path.join(buildpath, file)

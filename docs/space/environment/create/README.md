@@ -3,6 +3,7 @@
 Create a new Environment within a Space. You have to supply an id for the Environment.
 
 ## Usage
+
 ```
 Options:
   --environment-id, -e   Id of the environment to create                   [required]
@@ -13,6 +14,7 @@ Options:
 ```
 
 ### Example
+
 ```sh
 contentful space environment create --environment-id 'staging' --name 'Staging'
 ```

@@ -1,16 +1,19 @@
-import seedStep from '../../../lib/guide/step-seed'
+const seedStep = require('../../../lib/guide/step-seed')
 
-import { AbortedError } from '../../../lib/guide/helpers'
-import { confirmation } from '../../../lib/utils/actions'
-import { getContext } from '../../../lib/context'
-import { spaceSeed } from '../../../lib/cmds/space_cmds/seed'
+const { AbortedError } = require('../../../lib/guide/helpers')
+const { confirmation } = require('../../../lib/utils/actions')
+const { getContext } = require('../../../lib/context')
+const { spaceSeed } = require('../../../lib/cmds/space_cmds/seed')
 
 jest.mock('../../../lib/utils/log')
 jest.mock('../../../lib/utils/actions')
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/cmds/space_cmds/seed')
 
-getContext.mockResolvedValue({ managementToken: 'managementToken', activeEnvironmentId: 'master' })
+getContext.mockResolvedValue({
+  managementToken: 'managementToken',
+  activeEnvironmentId: 'master'
+})
 
 const guideContext = {
   stepCount: 0,
@@ -31,9 +34,15 @@ test('seeds space on successful user confirmation', async () => {
   await seedStep(guideContext)
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(spaceSeed).toHaveBeenCalledTimes(1)
-  const { activeGuide: {seed} } = guideContext
+  const {
+    activeGuide: { seed }
+  } = guideContext
   expect(spaceSeed).toHaveBeenCalledWith({
-    context: { managementToken: 'managementToken', activeEnvironmentId: 'master', activeSpaceId: guideContext.spaceId },
+    context: {
+      managementToken: 'managementToken',
+      activeEnvironmentId: 'master',
+      activeSpaceId: guideContext.spaceId
+    },
     template: seed,
     yes: true,
     feature: 'guide'

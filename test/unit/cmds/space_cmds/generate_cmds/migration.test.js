@@ -1,6 +1,6 @@
-import recast from 'recast'
+const recast = require('recast')
 
-import {
+const {
   ctNameNeedsEscaping,
   ctVariableEscape,
   wrapMigrationWithBase,
@@ -10,9 +10,11 @@ import {
   generateMigrationScript,
   generateFileName,
   generateMigration
-} from '../../../../../lib/cmds/space_cmds/generate_cmds/migration'
-import fs from 'fs'
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
+} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration')
+const fs = require('fs')
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../../lib/utils/contentful-clients')
 jest.mock('../../../../../lib/context')
@@ -47,20 +49,20 @@ const editorInterface = {
   ]
 }
 
-const EditorInterfaceNotFoundErrorMock = function () {
+const EditorInterfaceNotFoundErrorMock = function() {
   this.name = 'NotFound'
 }
 
 const environmentMock = {
-  getContentTypes: function () {
+  getContentTypes: function() {
     return {
       items: [simpleContentType]
     }
   },
-  getContentType: function (ctId) {
+  getContentType: function() {
     return simpleContentType
   },
-  getEditorInterfaceForContentType: function (ctId) {
+  getEditorInterfaceForContentType: function(ctId) {
     if (ctId === 'foo') {
       return editorInterface
     } else {
@@ -110,18 +112,21 @@ test('it wraps the program', async () => {
 
   const expected = 'module.exports = function(migration) {};'
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
 })
 
 test('it creates the content type', async () => {
   const programStub = b.blockStatement([createContentType(simpleContentType)])
 
-  const expected =
-`module.exports = function(migration) {
+  const expected = `module.exports = function(migration) {
     const foo = migration.createContentType("foo").name("Foo").description("some content type").displayField("name");
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
 })
 
 test('it creates the content type fields', async () => {
@@ -131,12 +136,13 @@ test('it creates the content type fields', async () => {
     )
   ])
 
-  const expected =
-`module.exports = function(migration) {
+  const expected = `module.exports = function(migration) {
     foo.createField("name").name("Name").type("Symbol");
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
 })
 
 test('it creates the editor interface', async () => {
@@ -151,19 +157,19 @@ test('it creates the editor interface', async () => {
     )
   ])
 
-  const expected =
-`module.exports = function(migration) {
+  const expected = `module.exports = function(migration) {
     foo.changeEditorInterface("name", "singleLine", {
         helpText: "the name"
     });
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
 })
 
 test('it creates the full migration script', async () => {
-  const expected =
-`module.exports = function(migration) {
+  const expected = `module.exports = function(migration) {
   const foo = migration
     .createContentType("foo")
     .name("Foo")
@@ -180,7 +186,9 @@ test('it creates the full migration script', async () => {
 };
 `
 
-  const result = await generateMigrationScript(environmentMock, [simpleContentType])
+  const result = await generateMigrationScript(environmentMock, [
+    simpleContentType
+  ])
 
   expect(result).toBe(expected)
 })
@@ -223,8 +231,7 @@ test('it generates the migration and writes to disk', async () => {
   expect(matches[1]).toBe('fooSpace')
   expect(matches[2]).toBe('fooEnv')
 
-  const expectedContent =
-`module.exports = function(migration) {
+  const expectedContent = `module.exports = function(migration) {
   const foo = migration
     .createContentType("foo")
     .name("Foo")

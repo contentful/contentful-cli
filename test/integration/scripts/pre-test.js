@@ -1,7 +1,7 @@
 const fs = require('mz/fs')
 const path = require('path')
 const os = require('os')
-const context = require('../../../dist/context')
+const context = require('../../../lib/context')
 
 const setup = async () => {
   const configPath = await context.getConfigPath()

@@ -1,12 +1,12 @@
-import { guide } from '../../../lib/cmds/guide'
-import { AbortedError } from '../../../lib/guide/helpers'
+const { guide } = require('../../../lib/cmds/guide')
+const { AbortedError } = require('../../../lib/guide/helpers')
 
-import loginStep from '../../../lib/guide/step-login'
-import createSpaceStep from '../../../lib/guide/step-create-space'
-import seedStep from '../../../lib/guide/step-seed'
-import setupStep from '../../../lib/guide/step-setup'
-import devServerStep from '../../../lib/guide/step-dev-server'
-import finishStep from '../../../lib/guide/step-finish'
+const loginStep = require('../../../lib/guide/step-login')
+const createSpaceStep = require('../../../lib/guide/step-create-space')
+const seedStep = require('../../../lib/guide/step-seed')
+const setupStep = require('../../../lib/guide/step-setup')
+const devServerStep = require('../../../lib/guide/step-dev-server')
+const finishStep = require('../../../lib/guide/step-finish')
 
 jest.mock('../../../lib/guide/step-login')
 jest.mock('../../../lib/guide/step-create-space')
@@ -16,7 +16,14 @@ jest.mock('../../../lib/guide/step-dev-server')
 jest.mock('../../../lib/guide/step-finish')
 jest.mock('../../../lib/utils/log')
 
-const stubs = [loginStep, createSpaceStep, seedStep, setupStep, devServerStep, finishStep]
+const stubs = [
+  loginStep,
+  createSpaceStep,
+  seedStep,
+  setupStep,
+  devServerStep,
+  finishStep
+]
 
 afterEach(() => {
   loginStep.mockClear()
@@ -29,7 +36,7 @@ afterEach(() => {
 
 test('guide cmd calls every step', async () => {
   await guide()
-  stubs.map((stub) => {
+  stubs.map(stub => {
     expect(stub).toHaveBeenCalledTimes(1)
     expect(stub.mock.calls[0][0].activeGuide).toBeTruthy()
   })

@@ -1,4 +1,4 @@
-import { handleAsyncError } from '../../../lib/utils/async'
+const { handleAsyncError } = require('../../../lib/utils/async')
 
 const exitStub = jest.fn()
 let originalExit = null

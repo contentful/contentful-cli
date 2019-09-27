@@ -1,12 +1,15 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import { readFile, writeFile, unlink } from 'mz/fs'
-import { emptyContext } from '../../../../lib/context'
+const nixt = require('nixt')
+const { join } = require('path')
+const { readFile, writeFile, unlink } = require('mz/fs')
+const { emptyContext } = require('../../../../lib/context')
 
 const bin = join(__dirname, './../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 let oldConfigContents = null
@@ -16,7 +19,7 @@ const testConfig = {
   activeSpaceId: '89898989'
 }
 
-async function before () {
+async function before() {
   try {
     oldConfigContents = await readFile(testConfigPath)
   } catch (e) {
@@ -25,7 +28,7 @@ async function before () {
   return writeFile(testConfigPath, JSON.stringify(testConfig, null, 2))
 }
 
-async function after () {
+async function after() {
   emptyContext()
   if (!oldConfigContents) {
     return unlink(testConfigPath)
@@ -41,7 +44,8 @@ test('Should list configs from first found config file', done => {
     .expect(result => {
       const resultText = result.stdout.trim()
       expect(
-        resultText.includes(testConfig.managementToken) && resultText.includes(testConfig.activeSpaceId)
+        resultText.includes(testConfig.managementToken) &&
+          resultText.includes(testConfig.activeSpaceId)
       ).toBe(true)
     })
     .after(after)

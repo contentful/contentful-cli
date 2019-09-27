@@ -1,17 +1,20 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import {
+const nixt = require('nixt')
+const { join } = require('path')
+const {
   initConfig,
   deleteSpaces,
   createSimpleSpace,
   expectedDir
-} from '../../util'
+} = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true, showDiff: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true, showDiff: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 var space = null
@@ -45,7 +48,9 @@ test('should exit 1 when no args', done => {
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      expect(resultText).toMatchSnapshot('wrong response in case of no args provided')
+      expect(resultText).toMatchSnapshot(
+        'wrong response in case of no args provided'
+      )
     })
     .end(done)
 })
@@ -55,7 +60,7 @@ test('should exit 1 when no space provided', done => {
     .run(`space import --content-file ${expectedDir}/export-init-space.json`)
     .code(1)
     .stderr(/Error: You need to provide a space/)
-    .end((err) => {
+    .end(err => {
       expect(err).toBeFalsy()
       done()
     })
@@ -63,7 +68,9 @@ test('should exit 1 when no space provided', done => {
 
 test('should import space', done => {
   app()
-    .run(`space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`)
+    .run(
+      `space import --space-id ${space.sys.id} --content-file ${expectedDir}/export-init-space.json`
+    )
     .stdout(/Finished importing all data/)
     .end(done)
 }, 30000)

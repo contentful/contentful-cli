@@ -20,6 +20,7 @@ Running the command while logged in already will show your current token.
 The logout is done via [contentful logout](../logout)
 
 ## Usage
+
 ```
 Options:
   --management-token, --mt   Management token to use to login

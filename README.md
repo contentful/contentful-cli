@@ -26,18 +26,19 @@
 
 Using [homebrew](https://brew.sh):
 
-``` sh
+```sh
 brew install contentful-cli
 ```
 
 Using [npm](https://npmjs.org):
 
-``` sh
+```sh
 npm install -g contentful-cli
 ```
 
 Using [yarn](https://yarnpkg.com):
-``` sh
+
+```sh
 yarn global add contentful-cli
 ```
 
@@ -71,12 +72,11 @@ When multiple proxy configurations exists, precedence is taken in this form:
 
 1. `http_proxy` takes precedence over `.contentfulrc.json`
 2. `https_proxy` takes precedence over `.contentfulrc.json`
-2. `https_proxy` takes precedence over `http_proxy`
-
+3. `https_proxy` takes precedence over `http_proxy`
 
 ## :rescue_worker_helmet: Troubleshooting
 
-* Unable to connect to Contentful through your Proxy? Try settings `rawProxy: true` in your `.contentfulrc.json` via:
+- Unable to connect to Contentful through your Proxy? Try settings `rawProxy: true` in your `.contentfulrc.json` via:
 
 ```sh
 contentful config add --raw-proxy
@@ -89,6 +89,7 @@ More detailed documentation for every command can be found in the [docs section]
 ## :hammer_and_wrench: Development
 
 After installing the dependencies, there is a trick to get your version of the CLI tool available globally on your system:
+
 ```sh
 npm link
 ```
@@ -98,6 +99,7 @@ This may collide with your already globally installed Contentful CLI. Make sure 
 ## :robot: Testing
 
 ### Integration Tests
+
 We are using [talkback](https://github.com/ijpiantanida/talkback) proxy to record and playback http requests in our integration tests. To run tests with the talkback proxy and recordings, simply run
 
 ```sh
@@ -114,8 +116,8 @@ npm run run-talkback-proxy // start proxy in one shell
 
 jest test/integration/cmds/space/* --watch // run tests using jest in another shell
 ```
-See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
 
+See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
 
 :warning: Environment variables for integration tests must be set:
 
@@ -125,6 +127,7 @@ CLI_E2E_ORG_ID = <organization_id>
 ```
 
 ### Updating Snapshots
+
 You might need to update snapshots and it's challenging with the recordings.
 
 Tip: run tests without recordings to update the snapshots.
@@ -136,12 +139,14 @@ jest test/integration/cmds/<path to the affected test file> --updateSnapshot
 If running `jest` alone, not from an npm script, you'll need to make sure your local config is set up correctly for the tests.
 
 ```
+
 npm run pretest:integration // this backs up your current config and puts in integration test config
 ./bin/contentful.js config list // check what's in there if you're curious
 ./bin/contentful.js config remove --proxy // remove proxy config since you're not using talkback recordings
 ./bin/contentful.js config remove --raw-proxy
 
 npm run posttest:integration // after running your tests, this restores your config to how it was before
+
 ```
 
 
@@ -159,3 +164,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## :scroll: License
 
 MIT
+```

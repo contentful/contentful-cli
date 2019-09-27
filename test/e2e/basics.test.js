@@ -1,7 +1,7 @@
-import { join } from 'path'
-import { platform } from 'os'
+const { join } = require('path')
+const { platform } = require('os')
 
-import execa from 'execa'
+const execa = require('execa')
 
 let cmd = null
 switch (platform()) {
@@ -34,12 +34,12 @@ test('should return code 1 when errors exist no args', async () => {
 })
 
 test('should print help message', async () => {
-  const {stdout} = await execa.shell(`${cmd} --help`)
+  const { stdout } = await execa.shell(`${cmd} --help`)
   expect(stdout).toMatchSnapshot()
 })
 
 test('should print help message on shortcut', async () => {
-  const {stdout} = await execa.shell(`${cmd} -h`)
+  const { stdout } = await execa.shell(`${cmd} -h`)
   expect(stdout).toMatchSnapshot()
 })
 
@@ -54,6 +54,6 @@ test('should print help message on wrong subcommand', async () => {
 })
 
 test('should print version number', async () => {
-  const {stdout} = await execa.shell(`${cmd} --version`)
+  const { stdout } = await execa.shell(`${cmd} --version`)
   await expect(stdout).toContain(packageVersion)
 })

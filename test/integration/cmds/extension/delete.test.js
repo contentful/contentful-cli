@@ -1,10 +1,13 @@
-import nixt from 'nixt'
-import { resolve } from 'path'
+const nixt = require('nixt')
+const { resolve } = require('path')
 
 const bin = resolve(__dirname, './../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 test('should print help message', done => {
@@ -22,10 +25,9 @@ test('should exit 1 when no args given except space id', done => {
   app()
     .run('extension delete')
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const regex = /Missing required argument:\s+id/
       expect(result.stderr.trim()).toMatch(regex)
     })
     .end(done)
 })
-

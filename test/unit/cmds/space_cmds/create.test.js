@@ -1,11 +1,13 @@
-import inquirer from 'inquirer'
+const inquirer = require('inquirer')
 
-import { spaceCreate } from '../../../../lib/cmds/space_cmds/create'
-import { spaceUse } from '../../../../lib/cmds/space_cmds/use'
-import { getContext } from '../../../../lib/context'
-import { createManagementClient } from '../../../../lib/utils/contentful-clients'
-import { confirmation } from '../../../../lib/utils/actions'
-import { AbortedError } from '../../../../lib/guide/helpers'
+const { spaceCreate } = require('../../../../lib/cmds/space_cmds/create')
+const { spaceUse } = require('../../../../lib/cmds/space_cmds/use')
+const { getContext } = require('../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../lib/utils/contentful-clients')
+const { confirmation } = require('../../../../lib/utils/actions')
+const { AbortedError } = require('../../../../lib/guide/helpers')
 
 jest.mock('inquirer')
 jest.mock('../../../../lib/cmds/space_cmds/use')
@@ -63,7 +65,7 @@ test('create space with single org user', async () => {
   const spaceData = {
     name: 'space name'
   }
-  const result = await spaceCreate({...defaults, ...spaceData})
+  const result = await spaceCreate({ ...defaults, ...spaceData })
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
@@ -93,7 +95,7 @@ test('create space with multi org user', async () => {
       }
     ]
   })
-  const result = await spaceCreate({...defaults, ...spaceData})
+  const result = await spaceCreate({ ...defaults, ...spaceData })
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
@@ -108,11 +110,13 @@ test('create space with passed organization id', async () => {
     name: 'space name',
     organizationId: 'mockedOrganizationId'
   }
-  const result = await spaceCreate({...defaults, ...spaceData})
+  const result = await spaceCreate({ ...defaults, ...spaceData })
   expect(result).toBeTruthy()
   expect(createManagementClient).toHaveBeenCalledTimes(1)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
-  expect(fakeClient.createSpace.mock.calls[0][0]).toEqual({name: spaceData.name})
+  expect(fakeClient.createSpace.mock.calls[0][0]).toEqual({
+    name: spaceData.name
+  })
   expect(fakeClient.createSpace.mock.calls[0][1]).toBe('mockedOrganizationId')
   expect(inquirer.prompt).not.toHaveBeenCalled()
   expect(spaceUse).not.toHaveBeenCalled()
@@ -121,7 +125,9 @@ test('create space with passed organization id', async () => {
 test('create space - throws error when sth goes wrong', async () => {
   const errorMessage = 'Unable to create space because of reasons'
   createSpaceStub.mockRejectedValueOnce(new Error(errorMessage))
-  await expect(spaceCreate({context: {managementToken: 'management-token'}})).rejects.toThrowError(errorMessage)
+  await expect(
+    spaceCreate({ context: { managementToken: 'management-token' } })
+  ).rejects.toThrowError(errorMessage)
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
   expect(inquirer.prompt).not.toHaveBeenCalled()
   expect(spaceUse).not.toHaveBeenCalled()
@@ -132,7 +138,7 @@ test('create space - accepts default locale', async () => {
     name: 'space name',
     defaultLocale: 'de-DE'
   }
-  const result = await spaceCreate({...defaults, ...spaceData})
+  const result = await spaceCreate({ ...defaults, ...spaceData })
   expect(result).toBeTruthy()
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
   expect(fakeClient.createSpace.mock.calls[0][0]).toEqual(spaceData)
@@ -146,7 +152,9 @@ test('abort space creation when saying no', async () => {
     name: 'space name'
   }
   createSpaceStub.mockRejectedValueOnce(new AbortedError())
-  await expect(spaceCreate({...defaults, ...spaceData})).rejects.toThrowError()
+  await expect(
+    spaceCreate({ ...defaults, ...spaceData })
+  ).rejects.toThrowError()
   expect(spaceUse).not.toHaveBeenCalled()
 })
 
@@ -164,5 +172,5 @@ test('create space and use it as default for further commands', async () => {
   expect(fakeClient.createSpace).toHaveBeenCalledTimes(1)
   expect(fakeClient.createSpace.mock.calls[0][0]).toEqual(spaceData)
   expect(fakeClient.createSpace.mock.calls[0][1]).toBe(undefined)
-  expect(spaceUse).toHaveBeenCalledWith({spaceId: 'MockedSpaceId'})
+  expect(spaceUse).toHaveBeenCalledWith({ spaceId: 'MockedSpaceId' })
 })

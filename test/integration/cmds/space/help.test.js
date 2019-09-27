@@ -1,10 +1,13 @@
-import nixt from 'nixt'
-import { join } from 'path'
+const nixt = require('nixt')
+const { join } = require('path')
 
 const bin = join(__dirname, './../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 test('should print help message', done => {
@@ -24,7 +27,9 @@ test('should print help message when no command provided', done => {
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      expect(resultText).toMatchSnapshot('wrong response in case of no command provided')
+      expect(resultText).toMatchSnapshot(
+        'wrong response in case of no command provided'
+      )
     })
     .end(done)
 })

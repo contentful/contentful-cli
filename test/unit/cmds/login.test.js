@@ -1,9 +1,9 @@
-import inquirer from 'inquirer'
-import open from 'open'
+const inquirer = require('inquirer')
+const open = require('open')
 
-import { handler as loginHandler } from '../../../lib/cmds/login'
-import { getContext, setContext } from '../../../lib/context'
-import { confirmation } from '../../../lib/utils/actions'
+const { handler: loginHandler } = require('../../../lib/cmds/login')
+const { getContext, setContext } = require('../../../lib/context')
+const { confirmation } = require('../../../lib/utils/actions')
 
 jest.mock('inquirer')
 jest.mock('open')
@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 test('login - without error', async () => {
-  const result = await loginHandler({context: {}})
+  const result = await loginHandler({ context: {} })
 
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(open).toHaveBeenCalled()
@@ -42,7 +42,7 @@ test('login - without error', async () => {
 test('login - user abort', async () => {
   confirmation.mockResolvedValueOnce(false)
 
-  await loginHandler({context: {}})
+  await loginHandler({ context: {} })
 
   expect(confirmation).toHaveBeenCalled()
   if (['win32', 'darwin'].includes(process.platform)) {
@@ -55,7 +55,7 @@ test('login - user abort', async () => {
 test('login - already logged in', async () => {
   getContext.mockResolvedValueOnce({ managementToken: 'alreadyLoggedIn' })
 
-  await loginHandler({context: {managementToken: 'token'}})
+  await loginHandler({ context: { managementToken: 'token' } })
 
   expect(open).not.toHaveBeenCalled()
   expect(setContext).not.toHaveBeenCalled()
@@ -63,7 +63,10 @@ test('login - already logged in', async () => {
 })
 
 test('login - with management-token flag', async () => {
-  const result = await loginHandler({context: {managementToken: 'token'}, ...mockedRcConfig})
+  const result = await loginHandler({
+    context: { managementToken: 'token' },
+    ...mockedRcConfig
+  })
 
   expect(setContext).toHaveBeenCalledTimes(1)
   expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)

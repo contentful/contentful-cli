@@ -1,19 +1,27 @@
-import appRoot from 'app-root-path'
-import Promise from 'bluebird'
-import { resolve } from 'path'
-import { homedir } from 'os'
-import { writeFile, stat } from 'mz/fs'
-import { createManagementClient } from '../../lib/utils/contentful-clients'
+const appRoot = require('app-root-path')
+const Promise = require('bluebird')
+const { resolve } = require('path')
+const { homedir } = require('os')
+const { writeFile, stat } = require('mz/fs')
+const { createManagementClient } = require('../../lib/utils/contentful-clients')
 
-export const expectedDir = `${appRoot}/test/integration/expected`
-export const tmpDir = `${appRoot}/test/integration/expected/tmp`
-export const configFile = resolve(homedir(), '.contentfulrc.json')
+module.exports.expectedDir = `${appRoot}/test/integration/expected`
+module.exports.tmpDir = `${appRoot}/test/integration/expected/tmp`
+const configFile = resolve(homedir(), '.contentfulrc.json')
+module.exports.configFile = configFile
 
-export async function initConfig () {
+async function initConfig() {
   try {
     await stat(configFile)
   } catch (e) {
-    return writeFile(configFile, JSON.stringify({ managementToken: process.env.CLI_E2E_CMA_TOKEN }, null, 4))
+    return writeFile(
+      configFile,
+      JSON.stringify(
+        { managementToken: process.env.CLI_E2E_CMA_TOKEN },
+        null,
+        4
+      )
+    )
   }
 
   const configParams = require(configFile)
@@ -22,37 +30,64 @@ export async function initConfig () {
     return configParams
   }
 
-  return writeFile(configFile, JSON.stringify({ managementToken: process.env.CLI_E2E_CMA_TOKEN }, null, 4))
+  return writeFile(
+    configFile,
+    JSON.stringify({ managementToken: process.env.CLI_E2E_CMA_TOKEN }, null, 4)
+  )
 }
 
-export async function deleteSpaces (spacesToDelete) {
-  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
-  await Promise.map(spacesToDelete, (spaceId) => {
-    return client.getSpace(spaceId).then((space) => {
-      // Add delay here because there is a bug that you can't delete a space
-      // with environment that has a status of inprogress
-      return Promise.delay(1000).then(() => space.delete())
-    }, (error) => {
-      console.log('Can not find space to delete with id: ', spaceId, error)
-    })
-  }, {concurrency: 1})
+module.exports.initConfig = initConfig
+
+async function deleteSpaces(spacesToDelete) {
+  const client = await createManagementClient({
+    accessToken: process.env.CLI_E2E_CMA_TOKEN
+  })
+  await Promise.map(
+    spacesToDelete,
+    spaceId => {
+      return client.getSpace(spaceId).then(
+        space => {
+          // Add delay here because there is a bug that you can't delete a space
+          // with environment that has a status of inprogress
+          return Promise.delay(1000).then(() => space.delete())
+        },
+        error => {
+          console.log('Can not find space to delete with id: ', spaceId, error)
+        }
+      )
+    },
+    { concurrency: 1 }
+  )
 }
 
-export function extractSpaceId (text) {
+module.exports.deleteSpaces = deleteSpaces
+
+function extractSpaceId(text) {
   var regex = /successfully created space \w* \((.*)\)/i
   var found = text.match(regex)
   return found[1]
 }
 
-export async function createSimpleSpace (organization, spaceName) {
-  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
-  return client.createSpace({
-    name: 'IntegrationTest_' + spaceName
-  }, organization)
+module.exports.extractSpaceId = extractSpaceId
+
+async function createSimpleSpace(organization, spaceName) {
+  const client = await createManagementClient({
+    accessToken: process.env.CLI_E2E_CMA_TOKEN
+  })
+  return client.createSpace(
+    {
+      name: 'IntegrationTest_' + spaceName
+    },
+    organization
+  )
 }
 
-export async function addNewCT (spaceId, name, fields) {
-  const client = await createManagementClient({accessToken: process.env.CLI_E2E_CMA_TOKEN})
+module.exports.createSimpleSpace = createSimpleSpace
+
+async function addNewCT(spaceId, name, fields) {
+  const client = await createManagementClient({
+    accessToken: process.env.CLI_E2E_CMA_TOKEN
+  })
   var space = await client.getSpace(spaceId)
   var contentType = await space.createContentType({
     name: name,
@@ -61,3 +96,5 @@ export async function addNewCT (spaceId, name, fields) {
   await contentType.publish()
   return contentType
 }
+
+module.exports.addNewCT = addNewCT

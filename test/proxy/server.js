@@ -6,7 +6,7 @@ const url = require('url')
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
 
-function options (ssl = false) {
+function options(ssl = false) {
   if (!ssl) {
     return {}
   }
@@ -17,21 +17,23 @@ function options (ssl = false) {
   }
 }
 
-function onConnection (req, socket) {
+function onConnection(req, socket) {
   console.log('Receiving reverse proxy request for:' + req.url)
 
   const serverUrl = url.parse('https://' + req.url)
 
-  const srvSocket = net.connect(serverUrl.port, serverUrl.hostname, function () {
-    socket.write('HTTP/1.1 200 Connection Established\r\n' +
-    'Proxy-agent: Node-Proxy\r\n' +
-    '\r\n')
+  const srvSocket = net.connect(serverUrl.port, serverUrl.hostname, function() {
+    socket.write(
+      'HTTP/1.1 200 Connection Established\r\n' +
+        'Proxy-agent: Node-Proxy\r\n' +
+        '\r\n'
+    )
     srvSocket.pipe(socket)
     socket.pipe(srvSocket)
   })
 }
 
-const handler = (resolve, reject) => (err) => {
+const handler = (resolve, reject) => err => {
   if (err) {
     return reject(err)
   }
@@ -39,30 +41,30 @@ const handler = (resolve, reject) => (err) => {
   resolve()
 }
 
-function collectRequestURLs () {
+function collectRequestURLs() {
   const calls = []
 
   return {
-    collect: (req) => calls.push(req.url),
+    collect: req => calls.push(req.url),
     getCalls: () => calls
   }
 }
 
-function createServer ({ ssl: createHttpsProxy } = {}) {
+function createServer({ ssl: createHttpsProxy } = {}) {
   const transport = createHttpsProxy ? https : http
   const additionalConfig = options(createHttpsProxy)
   const proxyConfig = Object.assign({ prependPath: false }, additionalConfig)
   const proxy = httpProxy.createServer(proxyConfig)
 
-  proxy.on('error', (e) => {
+  proxy.on('error', e => {
     console.log('ERROR')
     console.log(e)
   })
 
-  function onRequest (req, res) {
+  function onRequest(req, res) {
     console.log('Receiving reverse proxy request for:' + req.url)
 
-    proxy.web(req, res, {target: req.url})
+    proxy.web(req, res, { target: req.url })
   }
 
   const transportArgs = createHttpsProxy ? [options, onRequest] : [onRequest]

@@ -1,10 +1,12 @@
-import setupStep from '../../../lib/guide/step-setup'
-import { join } from 'path'
+const setupStep = require('../../../lib/guide/step-setup')
+const { join } = require('path')
 
-import { getContext } from '../../../lib/context'
-import { accessTokenCreate } from '../../../lib/cmds/space_cmds/accesstoken_cmds/create'
-import { prompt } from 'inquirer'
-import execa from 'execa'
+const { getContext } = require('../../../lib/context')
+const {
+  accessTokenCreate
+} = require('../../../lib/cmds/space_cmds/accesstoken_cmds/create')
+const { prompt } = require('inquirer')
+const execa = require('execa')
 
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/log')
@@ -13,9 +15,9 @@ jest.mock('../../../lib/cmds/space_cmds/accesstoken_cmds/create')
 jest.mock('execa')
 jest.mock('inquirer')
 
-prompt.mockResolvedValue({directoryName: 'test', directoryPath: 'test-path'})
-accessTokenCreate.mockResolvedValue({accessToken: 'abc123'})
-getContext.mockResolvedValue({managementToken: 'abc124'})
+prompt.mockResolvedValue({ directoryName: 'test', directoryPath: 'test-path' })
+accessTokenCreate.mockResolvedValue({ accessToken: 'abc123' })
+getContext.mockResolvedValue({ managementToken: 'abc124' })
 const setupConfig = jest.fn().mockResolvedValue()
 
 const guideContext = {

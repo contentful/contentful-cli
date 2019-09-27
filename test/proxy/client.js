@@ -3,7 +3,7 @@ const HttpsProxyAgent = require('https-proxy-agent')
 const { ssl, space, token } = require('yargs').argv
 
 const envKeys = ['http_proxy', 'https_proxy']
-envKeys.forEach((envKey) => {
+envKeys.forEach(envKey => {
   delete process.env[envKey]
   delete process.env[envKey.toUpperCase()]
 })
@@ -27,9 +27,9 @@ const client = createClient({
   httpsAgent: agent
 })
 
-client.getSpace(space)
-  .then((space) => {
-    space.getEntries()
-      .then(console.log)
+client
+  .getSpace(space)
+  .then(space => {
+    space.getEntries().then(console.log)
   })
   .catch(console.error)

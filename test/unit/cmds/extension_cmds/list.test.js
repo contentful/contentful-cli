@@ -1,7 +1,9 @@
-import { handler } from '../../../../lib/cmds/extension_cmds/list'
+const { handler } = require('../../../../lib/cmds/extension_cmds/list')
 
-import { log } from '../../../../lib/utils/log'
-import { createManagementClient } from '../../../../lib/utils/contentful-clients'
+const { log } = require('../../../../lib/utils/log')
+const {
+  createManagementClient
+} = require('../../../../lib/utils/contentful-clients')
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
@@ -12,11 +14,15 @@ const mockExtensions = {
     {
       extension: {
         name: 'Widget',
-        fieldTypes: [{ type: 'Symbol' }, { type: 'Array', items: { type: 'Symbol' } }],
+        fieldTypes: [
+          { type: 'Symbol' },
+          { type: 'Array', items: { type: 'Symbol' } }
+        ],
         src: 'https://awesome.extension'
       },
       sys: { id: '123', version: 7 }
-    }, {
+    },
+    {
       extension: {
         name: 'Widget 2',
         fieldTypes: [{ type: 'Entry' }, { type: 'Number' }],
@@ -61,7 +67,7 @@ beforeEach(() => {
 test('Lists extensions', async () => {
   await handler(defaults)
 
-  const outputValues = [ 'Widget', '123', '7', 'Widget 2', '456', '8' ]
+  const outputValues = ['Widget', '123', '7', 'Widget 2', '456', '8']
 
   outputValues.forEach(str => {
     expect(log.mock.calls[0][0]).toContain(str)
@@ -69,7 +75,9 @@ test('Lists extensions', async () => {
 })
 
 test('Displays message if list is empty', async () => {
-  await handler({ context: { ...defaults.context, activeEnvironmentId: 'empty' } })
+  await handler({
+    context: { ...defaults.context, activeEnvironmentId: 'empty' }
+  })
 
   expect(log).toHaveBeenCalledWith('No extensions found')
 })

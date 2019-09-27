@@ -1,19 +1,23 @@
-import paginate from '../../../lib/utils/pagination'
+const paginate = require('../../../lib/utils/pagination')
 
 test('paginates over multi page api results', async () => {
   const exampleMethod = jest.fn()
   exampleMethod.mockReturnValueOnce({
-    items: [{
-      id: 'item 1'
-    }],
+    items: [
+      {
+        id: 'item 1'
+      }
+    ],
     skip: 0,
     limit: 1,
     total: 2
   })
   exampleMethod.mockReturnValueOnce({
-    items: [{
-      id: 'item 2'
-    }],
+    items: [
+      {
+        id: 'item 2'
+      }
+    ],
     skip: 1,
     limit: 1,
     total: 2
@@ -32,9 +36,11 @@ test('paginates over multi page api results', async () => {
 test('does not paginate over single page api results', async () => {
   const exampleMethod = jest.fn()
   exampleMethod.mockReturnValue({
-    items: [{
-      id: 'item 1'
-    }],
+    items: [
+      {
+        id: 'item 1'
+      }
+    ],
     skip: 0,
     limit: 1,
     total: 1

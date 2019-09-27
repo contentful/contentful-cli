@@ -3,6 +3,7 @@
 Adds a config to `~/.contentfulrc.json`
 
 ## Usage
+
 ```
 Options:
   --management-token, --mt       API management token
@@ -21,6 +22,7 @@ Examples:
 ```
 
 ### Example
+
 ```sh
 contentful config add --proxy user:password@host:port
 ```

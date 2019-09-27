@@ -1,9 +1,11 @@
-import finishStep from '../../../lib/guide/step-finish'
+const finishStep = require('../../../lib/guide/step-finish')
 
-import { join } from 'path'
-import fs from 'fs'
-import { success } from '../../../lib/utils/log'
-import { createManagementClient } from '../../../lib/utils/contentful-clients'
+const { join } = require('path')
+const fs = require('fs')
+const { success } = require('../../../lib/utils/log')
+const {
+  createManagementClient
+} = require('../../../lib/utils/contentful-clients')
 
 jest.mock('../../../lib/utils/log')
 jest.mock('../../../lib/utils/contentful-clients')
@@ -36,7 +38,9 @@ afterEach(() => {
 test('calls success and reads whats-next.md', async () => {
   await finishStep(guideContext)
   expect(fs.readFileSync).toHaveBeenCalledTimes(1)
-  expect(fs.readFileSync.mock.calls[0][0]).toBe(join(guideContext.installationDirectory, 'WHATS-NEXT.MD'))
+  expect(fs.readFileSync.mock.calls[0][0]).toBe(
+    join(guideContext.installationDirectory, 'WHATS-NEXT.MD')
+  )
   expect(success).toHaveBeenCalledTimes(1)
 })
 

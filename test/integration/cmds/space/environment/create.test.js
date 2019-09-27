@@ -1,15 +1,14 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import {
-  initConfig,
-  deleteSpaces,
-  createSimpleSpace
-} from '../../../util'
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig, deleteSpaces, createSimpleSpace } = require('../../../util')
 
 const bin = join(__dirname, './../../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 const org = process.env.CLI_E2E_ORG_ID
@@ -50,8 +49,10 @@ test('should print help message', done => {
 
 test('should create environment with id and name provided', done => {
   app()
-    .run(`space environment create --space-id ${space.sys.id} --environment-id staging --name Staging`)
-    .expect((result) => {
+    .run(
+      `space environment create --space-id ${space.sys.id} --environment-id staging --name Staging`
+    )
+    .expect(result => {
       const resultText = result.stdout.trim()
       expect(resultText).toMatchSnapshot()
     })
@@ -61,8 +62,12 @@ test('should create environment with id and name provided', done => {
 
 test('should create environment using shortcuts args', done => {
   app()
-    .run(`space environment create -s ${space.sys.id} -e shortcutenvironment -n shortcutEnvironment`)
-    .stdout(/Successfully created environment shortcutEnvironment \(shortcutenvironment\)/)
+    .run(
+      `space environment create -s ${space.sys.id} -e shortcutenvironment -n shortcutEnvironment`
+    )
+    .stdout(
+      /Successfully created environment shortcutEnvironment \(shortcutenvironment\)/
+    )
     .code(0)
     .end(done)
 })

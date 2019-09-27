@@ -1,15 +1,14 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import {
-  initConfig,
-  deleteSpaces,
-  extractSpaceId
-} from '../../util'
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig, deleteSpaces, extractSpaceId } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 var spacesToDelete = []
@@ -48,10 +47,12 @@ test('should print help message', done => {
 
 test('should create space', done => {
   app()
-    .run(`space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`)
+    .run(
+      `space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`
+    )
     .on(/Do you want to confirm the space creation?/)
     .respond('\n')
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
@@ -64,10 +65,12 @@ test('should create space', done => {
 
 test('should create space using shortcuts args', done => {
   app()
-    .run(`space create -n cli_test_org_space_sh --org ${process.env.CLI_E2E_ORG_ID}`)
+    .run(
+      `space create -n cli_test_org_space_sh --org ${process.env.CLI_E2E_ORG_ID}`
+    )
     .on(/Do you want to confirm the space creation?/)
     .respond('\n')
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)
@@ -80,10 +83,12 @@ test('should create space using shortcuts args', done => {
 
 test('should should abort space creation when answering no', done => {
   app()
-    .run(`space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`)
+    .run(
+      `space create --name cli_test_org_space --organization-id ${process.env.CLI_E2E_ORG_ID}`
+    )
     .on(/Do you want to confirm the space creation?/)
     .respond('n\n')
-    .expect((result) => {
+    .expect(result => {
       const resultText = result.stdout.trim()
       const regex = /Space creation aborted.*/ // name doesn't matter because response is replayed
       expect(resultText).toMatch(regex)
@@ -94,8 +99,10 @@ test('should should abort space creation when answering no', done => {
 
 test('should should skip prompt when --yes is set', done => {
   app()
-    .run(`space create --name cli_test_org_space --yes --organization-id ${process.env.CLI_E2E_ORG_ID}`)
-    .expect((result) => {
+    .run(
+      `space create --name cli_test_org_space --yes --organization-id ${process.env.CLI_E2E_ORG_ID}`
+    )
+    .expect(result => {
       const resultText = result.stdout.trim()
       var spaceId = extractSpaceId(resultText)
       spacesToDelete.push(spaceId)

@@ -1,8 +1,8 @@
-import { exportSpace } from '../../../../lib/cmds/space_cmds/export'
+const { exportSpace } = require('../../../../lib/cmds/space_cmds/export')
 
-import { version } from '../../../../package.json'
-import { getContext } from '../../../../lib/context'
-import contentfulExport from 'contentful-export'
+const { version } = require('../../../../package.json')
+const { getContext } = require('../../../../lib/context')
+const contentfulExport = require('contentful-export')
 
 jest.mock('../../../../lib/context')
 jest.mock('contentful-export')

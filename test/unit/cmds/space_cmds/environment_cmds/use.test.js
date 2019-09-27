@@ -1,7 +1,11 @@
-import { environmentUse } from '../../../../../lib/cmds/space_cmds/environment_cmds/use'
+const {
+  environmentUse
+} = require('../../../../../lib/cmds/space_cmds/environment_cmds/use')
 
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
-import { setContext, getContext } from '../../../../../lib/context'
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
+const { setContext, getContext } = require('../../../../../lib/context')
 
 jest.mock('../../../../../lib/utils/contentful-clients')
 jest.mock('../../../../../lib/context')
@@ -41,5 +45,5 @@ test('it writes the environment id to contentfulrc.json', async () => {
     environmentId: 'test'
   }
   await environmentUse(stubArgv)
-  expect(setContext.mock.calls[0][0]).toEqual({ 'activeEnvironmentId': 'test' })
+  expect(setContext.mock.calls[0][0]).toEqual({ activeEnvironmentId: 'test' })
 })

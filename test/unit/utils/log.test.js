@@ -1,14 +1,19 @@
-import {
+const {
   log,
   wrappedLog,
   warning,
   success,
   error,
   logError
-} from '../../../lib/utils/log'
-import { infoStyle, warningStyle, errorStyle, successStyle } from '../../../lib/utils/styles'
-import { frame, wrap } from '../../../lib/utils/text'
-import { PreconditionFailedError } from '../../../lib/utils/error'
+} = require('../../../lib/utils/log')
+const {
+  infoStyle,
+  warningStyle,
+  errorStyle,
+  successStyle
+} = require('../../../lib/utils/styles')
+const { frame, wrap } = require('../../../lib/utils/text')
+const { PreconditionFailedError } = require('../../../lib/utils/error')
 
 jest.mock('../../../lib/utils/styles', () => ({
   infoStyle: jest.fn(),
@@ -83,7 +88,10 @@ test('success', () => {
 
 test('logError - SDK error', () => {
   const error = new Error()
-  error.message = JSON.stringify({message: 'Some error from the SDK', data: { foo: { bar: ['some', 'data'] } }})
+  error.message = JSON.stringify({
+    message: 'Some error from the SDK',
+    data: { foo: { bar: ['some', 'data'] } }
+  })
   logError(error)
   expect(errorStyle).toHaveBeenCalledTimes(1)
   expect(wrap).toHaveBeenCalledTimes(1)

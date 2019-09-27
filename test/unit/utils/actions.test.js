@@ -1,6 +1,6 @@
-import { confirmation } from '../../../lib/utils/actions'
+const { confirmation } = require('../../../lib/utils/actions')
 
-import { prompt } from 'inquirer'
+const { prompt } = require('inquirer')
 
 jest.mock('inquirer')
 

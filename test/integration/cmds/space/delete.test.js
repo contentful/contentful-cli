@@ -1,15 +1,15 @@
-import nixt from 'nixt'
-import { join } from 'path'
-import {
-  initConfig,
-  createSimpleSpace
-} from '../../util'
+const nixt = require('nixt')
+const { join } = require('path')
+const { initConfig, createSimpleSpace } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 var space = null
@@ -46,7 +46,7 @@ test('should print help message', done => {
 test('should delete space', done => {
   app()
     .run(`space delete --space-id ${space.sys.id} --yes`)
-    .expect((result) => {
+    .expect(result => {
       const regex = /space was successfully deleted/
       expect(result.stdout.trim()).toMatch(regex)
     })

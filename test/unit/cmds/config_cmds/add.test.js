@@ -1,10 +1,7 @@
-import { addHandler } from '../../../../lib/cmds/config_cmds/add'
-import {
-  setContext,
-  storeRuntimeConfig
-} from '../../../../lib/context'
-import { success } from '../../../../lib/utils/log'
-import { successEmoji } from '../../../../lib/utils/emojis'
+const { addHandler } = require('../../../../lib/cmds/config_cmds/add')
+const { setContext, storeRuntimeConfig } = require('../../../../lib/context')
+const { success } = require('../../../../lib/utils/log')
+const { successEmoji } = require('../../../../lib/utils/emojis')
 
 jest.mock('../../../../lib/context')
 jest.mock('../../../../lib/utils/log')
@@ -18,7 +15,7 @@ afterEach(() => {
 })
 
 test('config add command', async () => {
-  await addHandler({proxy: 'user:password@host:8080'})
+  await addHandler({ proxy: 'user:password@host:8080' })
   const expectedProxy = {
     host: 'host',
     port: 8080,
@@ -29,5 +26,7 @@ test('config add command', async () => {
     }
   }
   expect(setContext.mock.calls[0][0].proxy).toEqual(expectedProxy)
-  expect(success).toHaveBeenCalledWith(`${successEmoji} config added successfully`)
+  expect(success).toHaveBeenCalledWith(
+    `${successEmoji} config added successfully`
+  )
 })

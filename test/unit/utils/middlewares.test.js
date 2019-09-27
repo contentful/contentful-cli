@@ -1,24 +1,32 @@
-import { buildContext, getCommand, assertContext } from '../../../lib/utils/middlewares'
+const {
+  buildContext,
+  getCommand,
+  assertContext
+} = require('../../../lib/utils/middlewares')
 
-import { getContext } from '../../../lib/context'
-import { handleAsyncError } from '../../../lib/utils/async'
-import { assertLoggedIn, assertSpaceIdProvided } from '../../../lib/utils/assertions'
+const { getContext } = require('../../../lib/context')
+const { handleAsyncError } = require('../../../lib/utils/async')
+const {
+  assertLoggedIn,
+  assertSpaceIdProvided
+} = require('../../../lib/utils/assertions')
 
 jest.mock('../../../lib/context')
 jest.mock('../../../lib/utils/styles')
 jest.mock('../../../lib/utils/async')
 jest.mock('../../../lib/config', () => ({
-  __esModule: true,
-  default: {
-    noAuthNeeded: ['config add', 'config list', 'config remove'],
-    noSpaceIdNeeded: ['logout', 'config add', 'config list', 'config remove', 'space create', 'space list']
-  }
+  noAuthNeeded: ['config add', 'config list', 'config remove'],
+  noSpaceIdNeeded: [
+    'logout',
+    'config add',
+    'config list',
+    'config remove',
+    'space create',
+    'space list'
+  ]
 }))
 jest.mock('yargs', () => ({
-  __esModule: true,
-  default: {
-    getContext: () => ({ fullCommands: ['config', 'list'] })
-  }
+  getContext: () => ({ fullCommands: ['config', 'list'] })
 }))
 
 handleAsyncError.mockReturnValue(jest.fn())
@@ -46,7 +54,9 @@ test('useFlagsIfAvailable set activeSpaceId (overwrite context)', async () => {
     activeSpaceId: 'spaceId'
   })
   const result = await buildContext({ spaceId: 'activeSpaceId' })
-  expect(result).toEqual({ context: { ...defaults.context, activeSpaceId: 'activeSpaceId' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, activeSpaceId: 'activeSpaceId' }
+  })
 })
 
 test('useFlagsIfAvailable set activeSpaceId (from context)', async () => {
@@ -54,7 +64,9 @@ test('useFlagsIfAvailable set activeSpaceId (from context)', async () => {
     activeSpaceId: 'spaceId'
   })
   const result = await buildContext({})
-  expect(result).toEqual({ context: { ...defaults.context, activeSpaceId: 'spaceId' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, activeSpaceId: 'spaceId' }
+  })
 })
 
 test('useFlagsIfAvailable set managementToken (overwrite context)', async () => {
@@ -62,7 +74,9 @@ test('useFlagsIfAvailable set managementToken (overwrite context)', async () => 
     managementToken: 'managementToken'
   })
   const result = await buildContext({ managementToken: 'managementToken' })
-  expect(result).toEqual({ context: { ...defaults.context, managementToken: 'managementToken' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, managementToken: 'managementToken' }
+  })
 })
 
 test('useFlagsIfAvailable set managementToken (from context)', async () => {
@@ -70,7 +84,9 @@ test('useFlagsIfAvailable set managementToken (from context)', async () => {
     managementToken: 'managementToken'
   })
   const result = await buildContext({})
-  expect(result).toEqual({ context: { ...defaults.context, managementToken: 'managementToken' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, managementToken: 'managementToken' }
+  })
 })
 
 test('useFlagsIfAvailable set activeEnvironmentId (overwrite context)', async () => {
@@ -78,7 +94,9 @@ test('useFlagsIfAvailable set activeEnvironmentId (overwrite context)', async ()
     activeEnvironmentId: 'activeEnvironmentId'
   })
   const result = await buildContext({ environmentId: 'environmentId' })
-  expect(result).toEqual({ context: { ...defaults.context, activeEnvironmentId: 'environmentId' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, activeEnvironmentId: 'environmentId' }
+  })
 })
 
 test('useFlagsIfAvailable set activeEnvironmentId (from context)', async () => {
@@ -86,7 +104,9 @@ test('useFlagsIfAvailable set activeEnvironmentId (from context)', async () => {
     activeEnvironmentId: 'activeEnvironmentId'
   })
   const result = await buildContext({})
-  expect(result).toEqual({ context: { ...defaults.context, activeEnvironmentId: 'activeEnvironmentId' } })
+  expect(result).toEqual({
+    context: { ...defaults.context, activeEnvironmentId: 'activeEnvironmentId' }
+  })
 })
 
 test('useFlagsIfAvailable set rawProxy to true', async () => {

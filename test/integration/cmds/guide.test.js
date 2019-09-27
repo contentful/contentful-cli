@@ -1,19 +1,19 @@
-import { homedir } from 'os'
-import { join, resolve } from 'path'
+const { homedir } = require('os')
+const { join, resolve } = require('path')
 
-import nixt from 'nixt'
-import rimraf from 'rimraf'
+const nixt = require('nixt')
+const rimraf = require('rimraf')
 
-import {
-  initConfig,
-  deleteSpaces
-} from '../util'
+const { initConfig, deleteSpaces } = require('../util')
 
 const bin = join(__dirname, './../../../', 'bin')
 const projectDirectoryName = 'contentful-integration-starter-DELETE-ME'
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 const spacesToDelete = []
@@ -33,10 +33,10 @@ test('should be already logged in and run all steps', done => {
     .respond('\n')
     .on(/Do you want to confirm the space creation?/)
     .respond('\n')
-    .expect(({stdout}) => {
+    .expect(({ stdout }) => {
       const matches = /Successfully created space .+ \((.+)\)/.exec(stdout)
       if (!matches) {
-        return new Error('Can\'t extract space id')
+        return new Error("Can't extract space id")
       }
       spacesToDelete.push(matches[1])
     })
@@ -49,11 +49,14 @@ test('should be already logged in and run all steps', done => {
     .respond(`${projectDirectoryName}\n`)
     .on(/Where should the '.*' directory be located?/)
     .respond('\n')
-    .stdout(/Setting up project configuration file which includes your Contentful Delivery API token/)
+    .stdout(
+      /Setting up project configuration file which includes your Contentful Delivery API token/
+    )
     // step 5 run dev server
     .on(/Run Gatsby Starter Blog locally in development mode now?/)
     .respond('\n')
-    .on(/You can now view .* in the browser./).respond('Q')
+    .on(/You can now view .* in the browser./)
+    .respond('Q')
     .stdout(/The guide is now completed/)
     .code(0)
     .end(() => {

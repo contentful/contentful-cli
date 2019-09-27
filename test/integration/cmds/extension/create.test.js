@@ -1,10 +1,6 @@
-import nixt from 'nixt'
-import { resolve } from 'path'
-import {
-  initConfig,
-  createSimpleSpace,
-  deleteSpaces
-} from '../../util'
+const nixt = require('nixt')
+const { resolve } = require('path')
+const { initConfig, createSimpleSpace, deleteSpaces } = require('../../util')
 
 const bin = resolve(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
@@ -13,7 +9,10 @@ const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true })
+    .cwd(bin)
+    .base('./contentful.js ')
+    .clone()
 }
 
 let space = null
@@ -49,7 +48,7 @@ test('should exit 1 when no args given', done => {
   app()
     .run('extension create')
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const regex = /You need to provide a space id./
       expect(result.stderr.trim()).toMatch(regex)
     })
@@ -60,7 +59,7 @@ test('should exit 1 everything except space id is given', done => {
   app()
     .run(`extension create --space-id ${space.sys.id}`)
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const regex = /Missing required properties:\s+name/
       expect(result.stderr.trim()).toMatch(regex)
     })
@@ -69,44 +68,50 @@ test('should exit 1 everything except space id is given', done => {
 
 test('should exit 1 when src and srcdoc are omitted', done => {
   app()
-    .run(`extension create --space-id ${space.sys.id} --name foo --field-types Symbol`)
+    .run(
+      `extension create --space-id ${space.sys.id} --name foo --field-types Symbol`
+    )
     .code(1)
-    .expect((result) => {
+    .expect(result => {
       const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
       expect(result.stderr.trim()).toMatch(regex)
     })
     .end(done)
 })
 
-test(
-  'should exit 1 when descriptor given but src and srcdoc still missing',
-  done => {
-    app()
-      .run(`extension create  --space-id ${space.sys.id} --descriptor ${configPath}`)
-      .code(1)
-      .expect((result) => {
-        const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
-        expect(result.stderr.trim()).toMatch(regex)
-      })
-      .end(done)
-  }
-)
+test('should exit 1 when descriptor given but src and srcdoc still missing', done => {
+  app()
+    .run(
+      `extension create  --space-id ${space.sys.id} --descriptor ${configPath}`
+    )
+    .code(1)
+    .expect(result => {
+      const regex = /Error: Must contain exactly one of:\s+src, srcdoc/
+      expect(result.stderr.trim()).toMatch(regex)
+    })
+    .end(done)
+})
 
 test('should create extension from config file', done => {
   app()
-    .run(`extension create --space-id ${space.sys.id} --descriptor ${configPath} --src 'https://foo.com/sample-extension'`)
-    .expect((result) => {
+    .run(
+      `extension create --space-id ${space.sys.id} --descriptor ${configPath} --src 'https://foo.com/sample-extension'`
+    )
+    .expect(result => {
       expect(result.stdout.trim()).toMatch(/Successfully created extension:/)
       expect(result.stdout.trim()).toMatch(/ID.+sample-extension/)
       expect(result.stdout.trim()).toMatch(/Name.+Sample Extension/)
       expect(result.stdout.trim()).toMatch(/Field types.+Symbol, Number/)
-      expect(result.stdout.trim()).toMatch(/Src.+https:\/\/foo.com\/sample-extension/)
+      expect(result.stdout.trim()).toMatch(
+        /Src.+https:\/\/foo.com\/sample-extension/
+      )
       expect(result.stdout.trim()).toMatch(/Version.+1/)
     })
     .code(0)
     .end(() => {
-      return environment.getUiExtension('sample-extension')
-        .then((extension) => {
+      return environment
+        .getUiExtension('sample-extension')
+        .then(extension => {
           if (!extension) {
             done.fail('Extension not found via CMA')
             return
@@ -126,7 +131,7 @@ test('should create extension from config file', done => {
             ]
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err)
           done.fail()
         })
@@ -136,8 +141,10 @@ test('should create extension from config file', done => {
 
 test('should create extension from config file with srcdoc', done => {
   app()
-    .run(`extension create --space-id ${space.sys.id} --descriptor ${configPath} --srcdoc '${srcDocPath}' --id some-other-id`)
-    .expect((result) => {
+    .run(
+      `extension create --space-id ${space.sys.id} --descriptor ${configPath} --srcdoc '${srcDocPath}' --id some-other-id`
+    )
+    .expect(result => {
       expect(result.stdout.trim()).toMatch(/Successfully created extension:/)
       expect(result.stdout.trim()).toMatch(/ID.+some-other-id/)
       expect(result.stdout.trim()).toMatch(/Name.+Sample Extension/)
@@ -147,9 +154,12 @@ test('should create extension from config file with srcdoc', done => {
     })
     .code(0)
     .end(() => {
-      return environment.getUiExtensions()
-        .then((result) => {
-          const extension = result.items.find((item) => item.sys.id === 'some-other-id')
+      return environment
+        .getUiExtensions()
+        .then(result => {
+          const extension = result.items.find(
+            item => item.sys.id === 'some-other-id'
+          )
           if (!extension) {
             done.fail('Extension not found via CMA')
             return
@@ -169,7 +179,7 @@ test('should create extension from config file with srcdoc', done => {
             ]
           })
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err)
           done.fail()
         })

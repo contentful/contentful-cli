@@ -1,8 +1,8 @@
-import { migration } from '../../../../lib/cmds/space_cmds/migration'
+const { migration } = require('../../../../lib/cmds/space_cmds/migration')
 
-import { version } from '../../../../package.json'
-import { getContext } from '../../../../lib/context'
-import runMigration from 'contentful-migration/built/bin/cli'
+const { version } = require('../../../../package.json')
+const { getContext } = require('../../../../lib/context')
+const { runMigration } = require('contentful-migration/built/bin/cli')
 
 jest.mock('../../../../lib/context')
 jest.mock('contentful-migration/built/bin/cli')
@@ -26,6 +26,7 @@ test('it should pass all args to the migration', async () => {
     environmentId: 'master',
     accessToken: 'managementToken'
   }
+
   expect(runMigration.mock.calls[0][0]).toEqual(result)
   expect(runMigration).toHaveBeenCalledTimes(1)
 })
