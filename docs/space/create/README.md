@@ -4,6 +4,7 @@ Create a new Space. You have to supply a name for the space, while the ´--organ
 option is only relevant for power users.
 
 ## Usage
+
 ```
 Usage: contentful space create --name 'Your Space Name'
 
@@ -16,6 +17,7 @@ Options:
 ```
 
 ### Example
+
 ```sh
 contentful space create --name 'Your Space Name'
 ```

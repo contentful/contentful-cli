@@ -3,6 +3,7 @@
 Deletes an Environment from a Space. You have to supply an id for the Environment.
 
 ## Usage
+
 ```
 Options:
   --environment-id, -e  Id of the environment to delete               [required]
@@ -10,6 +11,7 @@ Options:
 ```
 
 ### Example
+
 ```sh
 contentful space environment delete --environment-id 'staging'
 ```

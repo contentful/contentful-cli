@@ -2,4 +2,4 @@
 
 ## Available subcommands:
 
-* [migration](./migration) - Generates a migration file for a Space.
+- [migration](./migration) - Generates a migration file for a Space.

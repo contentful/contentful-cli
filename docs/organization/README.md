@@ -2,4 +2,4 @@
 
 ## Available subcommands:
 
-* [list](./list) - List all Organizations you have access to
+- [list](./list) - List all Organizations you have access to

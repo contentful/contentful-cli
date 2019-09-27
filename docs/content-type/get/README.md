@@ -32,4 +32,3 @@ contentful content-type get --space-id xxx --id test
 │ * │ long     │ long       │ Text       │ false    │
 └───┴──────────┴────────────┴────────────┴──────────┘
 ```
-

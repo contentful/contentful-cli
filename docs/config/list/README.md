@@ -3,6 +3,7 @@
 List all the configs stored in `~/.contentfulrc.json`
 
 ## Usage
+
 ```
 contentful config list
 
@@ -16,6 +17,7 @@ Examples:
 ```
 
 ### Example
+
 ```sh
 contentful config list
 ```

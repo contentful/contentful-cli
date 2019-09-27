@@ -13,15 +13,16 @@ Options:
   --space-id, -s  ID of the Space to use for other commands
 ```
 
-
 ### Examples
 
 Select and activate a Space interactively from a list of Spaces:
+
 ```sh
 contentful space use
 ```
 
 Select and activate a specific Space:
+
 ```sh
 contentful space use -s a552c7cb6601
 ```

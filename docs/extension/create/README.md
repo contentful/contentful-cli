@@ -39,6 +39,7 @@ Create an extension using `srcdoc` with automatically assigned ID and two field 
 ```shell
 contentful extension create --space-id xxx --field-types Symbol --field-types Text --srcdoc ./bundle.html
 ```
+
 When using `srcdoc` property, an extension is considered internally hosted. A file being pointed by the `srcdoc` property will be loaded and uploaded as a string to Contentful. All local dependencies have to be manually inlined into the file. The command line tool does not take care of link resolving and inlining of referenced local resources. The maximal size of a file used with the `srcdoc` property is `200kB`.
 
 Create an extension using `./extension.json` descriptor file and provide installation parameter:

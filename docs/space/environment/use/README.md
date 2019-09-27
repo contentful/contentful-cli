@@ -16,12 +16,13 @@ Options:
 ### Examples
 
 Select and activate a Environment interactively from a list of Environments:
+
 ```sh
 contentful space environment use
 ```
 
 Select and activate a specific Space:
+
 ```sh
 contentful space environment use -e 'dev'
 ```
-

@@ -3,6 +3,7 @@
 Lists all Organizations you have access to.
 
 ## Example
+
 ```sh
 contentful organization list
 ```
