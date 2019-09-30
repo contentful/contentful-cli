@@ -95,6 +95,8 @@ workflows:
           filters:
             branches:
               only: master
+    jobs:
+      - audit-and-notify
   build_and_test:
     jobs:
       - unit
