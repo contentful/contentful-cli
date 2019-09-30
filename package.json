@@ -81,7 +81,7 @@
     "contentful-export": "^7.7.0",
     "contentful-import": "^7.6.0",
     "contentful-management": "^5.11.2",
-    "contentful-migration": "^1.0.1",
+    "contentful-migration": "^1.0.2",
     "emojic": "^1.1.11",
     "execa": "^0.10.0",
     "figlet": "^1.2.0",
