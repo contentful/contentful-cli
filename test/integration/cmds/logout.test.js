@@ -20,7 +20,6 @@ test('should not logout', done => {
     .run('logout')
     .on(/Do you want to log out now\?/)
     .respond('n\n')
-    .stdout(/Do you want to log out now\? No/)
     .stdout(/Log out aborted by user\./)
     .code(0)
     .end(done)
