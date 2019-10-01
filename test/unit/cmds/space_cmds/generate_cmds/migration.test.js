@@ -104,7 +104,7 @@ test('it doesnt escape name when neither starts with number or is reserved', asy
 })
 
 test('it does escape when name starts with number', async () => {
-  expect(ctVariableEscape('3asd')).toBe('_3Asd')
+  expect(ctVariableEscape('3asd')).toBe('_3asd')
 })
 
 test('it does escape when name is reserved word', async () => {
