@@ -7,7 +7,7 @@ const {
   wrapMigrationWithBase,
   createContentType,
   createField,
-  changeEditorInterface,
+  changeFieldControl,
   generateMigrationScript,
   generateFileName,
   generateMigration
@@ -45,6 +45,7 @@ const editorInterface = {
     {
       fieldId: 'name',
       widgetId: 'singleLine',
+      widgetNamespace: 'builtin',
       settings: {
         helpText: 'the name'
       }
@@ -151,9 +152,10 @@ test('it creates the content type fields', async () => {
 test('it creates the editor interface', async () => {
   const programStub = b.blockStatement([
     b.expressionStatement(
-      changeEditorInterface(
+      changeFieldControl(
         simpleContentType.sys.id,
         editorInterface.controls[0].fieldId,
+        editorInterface.controls[0].widgetNamespace,
         editorInterface.controls[0].widgetId,
         editorInterface.controls[0].settings
       )
@@ -161,7 +163,7 @@ test('it creates the editor interface', async () => {
   ])
 
   const expected = `module.exports = function(migration) {
-    foo.changeEditorInterface("name", "singleLine", {
+    foo.changeFieldControl("name", "builtin", "singleLine", {
         helpText: "the name"
     });
 };`
@@ -183,7 +185,7 @@ test('it creates the full migration script', async () => {
     .name("Name")
     .type("Symbol");
 
-  foo.changeEditorInterface("name", "singleLine", {
+  foo.changeFieldControl("name", "builtin", "singleLine", {
     helpText: "the name"
   });
 };
@@ -245,7 +247,7 @@ test('it generates the migration and writes to disk', async () => {
     .name("Name")
     .type("Symbol");
 
-  foo.changeEditorInterface("name", "singleLine", {
+  foo.changeFieldControl("name", "builtin", "singleLine", {
     helpText: "the name"
   });
 };
