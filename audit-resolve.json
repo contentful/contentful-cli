@@ -1,0 +1,51 @@
+{
+  "decisions": {
+    "996|contentful-export>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>@jest/reporters>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>jest-runner>jest-jasmine2>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>jest-runner>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>jest-runner>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>@jest/core>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|jest>jest-cli>jest-config>jest-environment-jsdom>jsdom>request>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    },
+    "996|inquirer-select-directory>inquirer>external-editor>extend": {
+      "decision": "ignore",
+      "madeAt": 1569585073445,
+      "expiresAt": 1572177067029
+    }
+  },
+  "rules": {},
+  "version": 1
+}

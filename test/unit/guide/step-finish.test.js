@@ -36,6 +36,7 @@ afterEach(() => {
 })
 
 test('calls success and reads whats-next.md', async () => {
+  fs.readFileSync.mockClear()
   await finishStep(guideContext)
   expect(fs.readFileSync).toHaveBeenCalledTimes(1)
   expect(fs.readFileSync.mock.calls[0][0]).toBe(

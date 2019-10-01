@@ -63,19 +63,53 @@ jobs:
     steps:
       - checkout
       - run: npm run bump-brew-formula
+  audit: &audit
+    docker:
+      - image: circleci/node:8
+        environment:
+          NPM_CONFIG_PROGRESS: false
+          NPM_CONFIG_LOGLEVEL: warn
+    steps:
+      - checkout
+      - run: &audit_action
+          name: Audit
+          command: |
+            npx npm-audit-resolver@2 check-audit
+  audit-and-notify:
+    <<: *audit
+    steps:
+      - checkout
+      - run: *audit_action
+      - run:
+          name: Notify vulnerabilities found
+          when: on_fail
+          command: |
+            script/notify-vulnerabilities-to-slack.sh $SLACK_WEBHOOK
 workflows:
   version: 2
+  scheduled-audit:
+    triggers:
+      - schedule:
+          # Run each day at midnight
+          cron: '0 0 * * *'
+          filters:
+            branches:
+              only: master
+    jobs:
+      - audit-and-notify
   build_and_test:
     jobs:
       - unit
       - integration
       - linux
       - osx
+      - audit
       - release:
           requires:
             - unit
             - integration
             - linux
+            - audit
             - osx
       - bump-brew-formula:
           requires:

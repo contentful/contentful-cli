@@ -1,4 +1,5 @@
 const recast = require('recast')
+const rimraf = require('rimraf')
 
 const {
   ctNameNeedsEscaping,
@@ -18,6 +19,8 @@ const {
 
 jest.mock('../../../../../lib/utils/contentful-clients')
 jest.mock('../../../../../lib/context')
+
+const filePrefix = 'fooSpace'
 
 const b = recast.types.builders
 
@@ -195,22 +198,22 @@ test('it creates the full migration script', async () => {
 
 test('it generates the filename when content type is present', async () => {
   const filenameRegex = /^(\w+)-(\w+)-(\w+)-\d+.js$/
-  const filename = generateFileName('fooSpace', 'master', 'fooCT')
+  const filename = generateFileName(filePrefix, 'master', 'fooCT')
 
   const matches = filename.match(filenameRegex)
 
-  expect(matches[1]).toBe('fooSpace')
+  expect(matches[1]).toBe(filePrefix)
   expect(matches[2]).toBe('master')
   expect(matches[3]).toBe('fooCT')
 })
 
 test('it generates the filename without content type', async () => {
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
-  const filename = generateFileName('fooSpace', 'master')
+  const filename = generateFileName(filePrefix, 'master')
 
   const matches = filename.match(filenameRegex)
 
-  expect(matches[1]).toBe('fooSpace')
+  expect(matches[1]).toBe(filePrefix)
   expect(matches[2]).toBe('master')
 })
 
@@ -220,7 +223,7 @@ test('it generates the migration and writes to disk', async () => {
   await generateMigration({
     context: {
       managementToken: 'managementToken',
-      activeSpaceId: 'fooSpace',
+      activeSpaceId: filePrefix,
       activeEnvironmentId: 'fooEnv'
     }
   })
@@ -228,7 +231,7 @@ test('it generates the migration and writes to disk', async () => {
   const filenameRegex = /^(\w+)-(\w+)-\d+.js$/
   const matches = writeFileSyncMock.mock.calls[0][0].match(filenameRegex)
 
-  expect(matches[1]).toBe('fooSpace')
+  expect(matches[1]).toBe(filePrefix)
   expect(matches[2]).toBe('fooEnv')
 
   const expectedContent = `module.exports = function(migration) {
@@ -249,3 +252,5 @@ test('it generates the migration and writes to disk', async () => {
 `
   expect(writeFileSyncMock.mock.calls[0][1]).toBe(expectedContent)
 })
+
+afterAll(() => rimraf(`./${filePrefix}*.js`, err => err && console.error(err)))
