@@ -38,7 +38,7 @@ Object.keys(files).forEach(file => {
   const zip = nodezip()
   const filename = files[file].to
   const filepath = path.join(buildpath, file)
-  const packageName = `${files[file].package}-${version}-BETA.zip`
+  const packageName = `${files[file].package}-${version}.zip`
 
   zip.file(filename, fs.readFileSync(filepath))
 
