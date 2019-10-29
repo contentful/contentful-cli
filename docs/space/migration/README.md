@@ -16,8 +16,8 @@ Options:
   --space-id, -s        ID of the space to run the migration script on[required]
   --environment-id, -e  ID of the environment within the space to run the
                         migration script on                  [default: "master"]
-  --access-token, -a    The access token to use
-                        This takes precedence over environment variables or
+  --management-token,   The Contentful management access token to use
+  --mt                  This takes precedence over environment variables or
                         .contentfulrc
   --yes, -y             Skips any confirmation before applying the migration
                         script                        [boolean] [default: false]
