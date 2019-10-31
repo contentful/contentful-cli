@@ -1,7 +1,11 @@
-import { environmentAliasUpdate } from '../../../../../lib/cmds/space_cmds/alias_cmds/update'
-import { getContext } from '../../../../../lib/context'
-import { createManagementClient } from '../../../../../lib/utils/contentful-clients'
-import { log } from '../../../../../lib/utils/log'
+const {
+  environmentAliasUpdate
+} = require('../../../../../lib/cmds/space_cmds/alias_cmds/update')
+const { getContext } = require('../../../../../lib/context')
+const {
+  createManagementClient
+} = require('../../../../../lib/utils/contentful-clients')
+const { log } = require('../../../../../lib/utils/log')
 
 jest.mock('../../../../../lib/context')
 jest.mock('../../../../../lib/utils/contentful-clients')
@@ -23,7 +27,9 @@ const environmentAliasData = {
 
 environmentAliasData.update = jest.fn().mockResolvedValue(environmentAliasData)
 
-const getEnvironmentAliasStub = jest.fn().mockResolvedValue(environmentAliasData)
+const getEnvironmentAliasStub = jest
+  .fn()
+  .mockResolvedValue(environmentAliasData)
 
 const fakeClient = {
   getSpace: async () => ({
