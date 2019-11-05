@@ -1,163 +1,150 @@
 {
   "decisions": {
     "996|contentful-export>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>@jest/reporters>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>jest-runner>jest-jasmine2>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>jest-runner>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>jest-runtime>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>jest-runner>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>@jest/core>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|jest>jest-cli>jest-config>jest-environment-jsdom>jsdom>request>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
+      "decision": "fix",
+      "madeAt": 1572883639469
     },
     "996|inquirer-select-directory>inquirer>external-editor>extend": {
-      "decision": "ignore",
-      "madeAt": 1569585073445,
-      "expiresAt": 1572177067029
-    },
-    "1184|https-proxy-agent": {
       "decision": "fix",
-      "madeAt": 1571640191550
+      "madeAt": 1572883639469
     },
     "1184|semantic-release>@semantic-release/github>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662414646,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884071574,
+      "expiresAt": 1575476036035
     },
     "1184|semantic-release>@semantic-release/npm>npm>libcipm>pacote>make-fetch-happen>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>pacote>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
     },
     "1184|semantic-release>@semantic-release/npm>npm>pacote>make-fetch-happen>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
     },
     "1184|semantic-release>@semantic-release/npm>npm>libcipm>pacote>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>pacote>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
     },
     "1184|semantic-release>@semantic-release/npm>npm>pacote>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmaccess>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpmaccess>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmhook>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpmhook>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmorg>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpmorg>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmpublish>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmsearch>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpmsearch>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmteam>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpmteam>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>npm-profile>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>npm-profile>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
-    },
-    "1184|semantic-release>@semantic-release/npm>npm>libnpm>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
-      "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
     },
     "1184|semantic-release>@semantic-release/npm>npm>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
       "decision": "ignore",
-      "madeAt": 1571662422972,
-      "expiresAt": 1574254388240
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>pacote>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>pacote>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmaccess>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpmaccess>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmhook>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpmhook>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmorg>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpmorg>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmpublish>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076588,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmsearch>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpmsearch>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>libnpmteam>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpmteam>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>npm-profile>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>npm-profile>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
+    },
+    "1184|semantic-release>@semantic-release/npm>npm>libnpm>npm-registry-fetch>make-fetch-happen>https-proxy-agent": {
+      "decision": "ignore",
+      "madeAt": 1572884076589,
+      "expiresAt": 1575476036035
     }
   },
   "rules": {},
