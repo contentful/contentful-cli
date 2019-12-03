@@ -157,6 +157,50 @@
     "1300|semantic-release>@semantic-release/release-notes-generator>conventional-changelog-writer>handlebars": {
       "decision": "fix",
       "madeAt": 1572942133413
+    },
+    "1316|jest>jest-cli>@jest/core>@jest/reporters>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1316|nyc>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1316|semantic-release>@semantic-release/release-notes-generator>conventional-changelog-writer>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1324|jest>jest-cli>@jest/core>@jest/reporters>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1324|nyc>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1324|semantic-release>@semantic-release/release-notes-generator>conventional-changelog-writer>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1325|jest>jest-cli>@jest/core>@jest/reporters>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1325|nyc>istanbul-reports>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1325|semantic-release>@semantic-release/release-notes-generator>conventional-changelog-writer>handlebars": {
+      "decision": "fix",
+      "madeAt": 1575361832870
+    },
+    "1084|contentful-migration>yargs>os-locale>mem": {
+      "decision": "postpone",
+      "madeAt": 1575361844998
+    },
+    "1084|semantic-release>@semantic-release/npm>npm>libnpx>yargs>os-locale>mem": {
+      "decision": "postpone",
+      "madeAt": 1575361844998
     }
   },
   "rules": {},
