@@ -1,6 +1,6 @@
 {
   "name": "contentful-cli",
-  "version": "1.2.1",
+  "version": "1.2.0",
   "description": "Contentful CLI tool",
   "main": "bin/contentful.js",
   "bin": {
