@@ -1,5 +1,14 @@
 {
   "name": "Sample Extension",
   "id": "sample-extension",
-  "fieldTypes": ["Symbol", "Number"]
+  "fieldTypes": [
+    "Symbol",
+    "Number",
+    {
+      "type": "Array",
+      "items": {
+        "type": "Symbol"
+      }
+    }
+  ]
 }
