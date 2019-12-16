@@ -74,7 +74,7 @@ jobs:
       - run: &audit_action
           name: Audit
           command: |
-            npx npm-audit-resolver@2 check-audit
+            npx npm-audit-resolver@2 check-audit --ignoreLow
   audit-and-notify:
     <<: *audit
     steps:
