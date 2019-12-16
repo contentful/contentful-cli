@@ -201,6 +201,26 @@
       "decision": "ignore",
       "madeAt": 1576066243258,
       "expiresAt": 1576671024348
+    },
+    "1437|semantic-release>@semantic-release/npm>npm": {
+      "decision": "ignore",
+      "madeAt": 1576494939961,
+      "expiresAt": 1576671024348
+    },
+    "1438|semantic-release>@semantic-release/npm>npm>bin-links": {
+      "decision": "ignore",
+      "madeAt": 1576494939961,
+      "expiresAt": 1576671024348
+    },
+    "1438|semantic-release>@semantic-release/npm>npm>libcipm>bin-links": {
+      "decision": "ignore",
+      "madeAt": 1576494994152,
+      "expiresAt": 1576671024348
+    },
+    "1438|semantic-release>@semantic-release/npm>npm>libnpm>bin-links": {
+      "decision": "ignore",
+      "madeAt": 1576494940846,
+      "expiresAt": 1576671024348
     }
   },
   "rules": {},
