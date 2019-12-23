@@ -203,14 +203,12 @@
       "expiresAt": 1576671024348
     },
     "1437|semantic-release>@semantic-release/npm>npm": {
-      "decision": "ignore",
-      "madeAt": 1576494939961,
-      "expiresAt": 1576671024348
+      "decision": "fix",
+      "madeAt": 1577105177940
     },
     "1438|semantic-release>@semantic-release/npm>npm>bin-links": {
-      "decision": "ignore",
-      "madeAt": 1576494939961,
-      "expiresAt": 1576671024348
+      "decision": "fix",
+      "madeAt": 1577105177940
     },
     "1438|semantic-release>@semantic-release/npm>npm>libcipm>bin-links": {
       "decision": "ignore",
