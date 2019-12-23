@@ -26,7 +26,7 @@
 
 ### Pre-requisites
 
-- node.js 12.x
+- Node LTS
 
 ###  Installation
 
@@ -48,7 +48,7 @@ Using [yarn](https://yarnpkg.com):
 yarn global add contentful-cli
 ```
 
-Please note that for the non standalone versions you need node `=> v12` to use the CLI.
+Please note that for the non standalone versions you need Node LTS to use the CLI.
 
 ## :hand: Usage
 
