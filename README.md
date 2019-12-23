@@ -22,7 +22,13 @@
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
 - More to come soon! 🚀
 
-## :cloud: Installation
+## :cloud: Pre-requisites && Installation
+
+### Pre-requisites
+
+- Node LTS
+
+###  Installation
 
 Using [homebrew](https://brew.sh):
 
@@ -42,7 +48,7 @@ Using [yarn](https://yarnpkg.com):
 yarn global add contentful-cli
 ```
 
-Please note that for the non standalone versions you need node `=> v8` to use the CLI.
+Please note that for the non standalone versions you need Node LTS to use the CLI.
 
 ## :hand: Usage
 
@@ -134,7 +140,7 @@ Tip: run tests without recordings to update the snapshots.
 
 ```
 jest test/integration/cmds/<path to the affected test file> --updateSnapshot
-``
+```
 
 If running `jest` alone, not from an npm script, you'll need to make sure your local config is set up correctly for the tests.
 
@@ -164,4 +170,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## :scroll: License
 
 MIT
-```
