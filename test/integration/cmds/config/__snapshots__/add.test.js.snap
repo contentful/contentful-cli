@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`config add throws error when option ae is empty: Not enough arguments following: ae 1`] = `
+"/home/janko/contentful/contentful-cli/lib/cli.js:30
+    if (err) throw err
+             ^
+YError: Not enough arguments following: ae
+    at Object.runValidation [as _runValidation] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1170:28)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:233:36)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:200:45)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.parse (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:566:25)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/lib/cli.js:35:4)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Module.require (internal/modules/cjs/loader.js:1028:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/bin/contentful.js:3:1)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10) {
+  name: 'YError',
+  message: 'Not enough arguments following: ae'
+}"
+`;
+
+exports[`config add throws error when option as is empty: Not enough arguments following: as 1`] = `
+"/home/janko/contentful/contentful-cli/lib/cli.js:30
+    if (err) throw err
+             ^
+YError: Not enough arguments following: as
+    at Object.runValidation [as _runValidation] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1170:28)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:233:36)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:200:45)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.parse (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:566:25)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/lib/cli.js:35:4)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Module.require (internal/modules/cjs/loader.js:1028:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/bin/contentful.js:3:1)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10) {
+  name: 'YError',
+  message: 'Not enough arguments following: as'
+}"
+`;
+
+exports[`config add throws error when option mt is empty: Not enough arguments following: mt 1`] = `
+"/home/janko/contentful/contentful-cli/lib/cli.js:30
+    if (err) throw err
+             ^
+YError: Not enough arguments following: mt
+    at Object.runValidation [as _runValidation] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1170:28)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:233:36)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.runCommand (/home/janko/contentful/contentful-cli/node_modules/yargs/lib/command.js:200:45)
+    at Object.parseArgs [as _parseArgs] (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:1078:30)
+    at Object.parse (/home/janko/contentful/contentful-cli/node_modules/yargs/yargs.js:566:25)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/lib/cli.js:35:4)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10)
+    at Module.load (internal/modules/cjs/loader.js:988:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:896:14)
+    at Module.require (internal/modules/cjs/loader.js:1028:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/home/janko/contentful/contentful-cli/bin/contentful.js:3:1)
+    at Module._compile (internal/modules/cjs/loader.js:1139:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1159:10) {
+  name: 'YError',
+  message: 'Not enough arguments following: mt'
+}"
+`;
