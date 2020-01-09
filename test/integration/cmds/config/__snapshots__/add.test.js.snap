@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`config add throws error when option ae is empty: Not enough arguments following: ae 1`] = `"Not enough arguments following: ae"`;
+
+exports[`config add throws error when option as is empty: Not enough arguments following: as 1`] = `"Not enough arguments following: as"`;
+
+exports[`config add throws error when option mt is empty: Not enough arguments following: mt 1`] = `"Not enough arguments following: mt"`;
