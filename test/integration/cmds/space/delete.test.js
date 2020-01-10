@@ -24,30 +24,19 @@ beforeAll(async () => {
   space = await createSimpleSpace(org, 'space-delete')
 })
 
-test('should print help message', done => {
-  app()
-    .run('space delete --help')
-    .code(0)
-    .expect(result => {
-      const resultText = result.stdout.trim()
-      expect(resultText).toMatchSnapshot('help data is incorrect')
-    })
-    .end(done)
-})
-
-test('should exit 1 when no args', done => {
+test('should show help and exit 1 when no args', done => {
   app()
     .run('space delete')
     .code(1)
     .expect(result => {
       const resultText = result.stderr.trim()
-      expect(resultText).toMatchSnapshot('help data is incorrect')
+      expect(resultText).toMatchSnapshot('space delete')
     })
     .end(done)
 })
 
 test('should exit 1 when no args, even with activeSpaceId set', async done => {
-  // Add and remove options activeSpaceId and activeEnvironmentId to
+  // Add and remove property activeSpaceId and activeEnvironmentId to
   // .contentfulrc.json for only this test:
   const configFilePath = resolve(homedir(), '.contentfulrc.json')
   let configContents = null
@@ -68,18 +57,20 @@ test('should exit 1 when no args, even with activeSpaceId set', async done => {
         )
       )
     } catch (e) {
-      throw Error(e)
+      throw new Error(
+        'Could not create sample .contentfulrc.json with activeSpaceId property'
+      )
     }
   }
   async function after() {
-    return writeFile(configFilePath, configContents)
+    return writeFile(configFilePath, JSON.stringify(configContents))
   }
   app()
     .before(before)
-    .run(`space delete --yes`)
+    .run('space delete')
     .expect(result => {
-      const regex = /space was successfully deleted/
-      expect(result.stdout.trim()).not.toMatch(regex)
+      const regex = /Missing required argument: space-id/
+      expect(result.stderr.trim()).toMatch(regex)
     })
     .code(1)
     .after(after)
