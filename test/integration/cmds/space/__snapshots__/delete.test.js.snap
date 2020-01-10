@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should show help and exit 1 when no args: space delete 1`] = `
+exports[`should print help message and exit 1 when no args: space delete 1`] = `
 "Usage: contentful space delete
 
 Options:
@@ -11,4 +11,16 @@ Options:
 
 Copyright 2019 Contentful
 Missing required argument: space-id"
+`;
+
+exports[`should print help message: space delete 1`] = `
+"Usage: contentful space delete
+
+Options:
+  -h, --help                Show help                                  [boolean]
+  --space-id, -s            ID of the space to delete                 [required]
+  --management-token, --mt  Contentful management API token             [string]
+  --yes                     Skip the confirmation question
+
+Copyright 2019 Contentful"
 `;

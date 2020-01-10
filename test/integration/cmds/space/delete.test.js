@@ -24,7 +24,18 @@ beforeAll(async () => {
   space = await createSimpleSpace(org, 'space-delete')
 })
 
-test('should show help and exit 1 when no args', done => {
+test('should print help message', done => {
+  app()
+    .run('space delete --help')
+    .code(0)
+    .expect(result => {
+      const resultText = result.stdout.trim()
+      expect(resultText).toMatchSnapshot('space delete')
+    })
+    .end(done)
+})
+
+test('should print help message and exit 1 when no args', done => {
   app()
     .run('space delete')
     .code(1)
