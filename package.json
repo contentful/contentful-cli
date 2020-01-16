@@ -13,7 +13,7 @@
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
-    "audit": "resolve-audit",
+    "audit": "resolve-audit --ignoreLow",
     "build:standalone": "pkg --targets node8-macos-x64,node8-linux-x64,node8-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "bump-brew-formula": "script/bump-brew-formula.sh",
