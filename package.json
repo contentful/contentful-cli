@@ -159,18 +159,7 @@
         "@semantic-release/github",
         {
           "assets": [
-            {
-              "path": "build/contentful-cli-macos-*.zip",
-              "label": "MacOS executable"
-            },
-            {
-              "path": "build/contentful-cli-linux-*.zip",
-              "label": "Linux executable"
-            },
-            {
-              "path": "build/contentful-cli-win-*.zip",
-              "label": "Windows executable"
-            }
+            "build/*.zip"
           ]
         }
       ]
