@@ -159,16 +159,6 @@
         "@semantic-release/github",
         {
           "assets": [
-            [
-              "CHANGELOG.md",
-              "CONTRIBUTING.md",
-              "README.md",
-              "package.json",
-              "package-lock.json",
-              "bin/**",
-              "lib/**",
-              "docs/**"
-            ],
             {
               "path": "build/contentful-cli-macos-*.zip",
               "label": "MacOS executable"
