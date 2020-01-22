@@ -56,7 +56,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - run: npm install
-      - run: npm run build:standalone
+      - run: npm run build:package
       - run: npm run semantic-release
   bump-brew-formula:
     macos:
