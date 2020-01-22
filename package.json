@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "pkg --targets node8-macos-x64,node8-linux-x64,node8-win-x64 --out-dir build .",
+    "build:standalone": "pkg --targets node12-macos-x64,node12-linux-x64,node12-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "bump-brew-formula": "script/bump-brew-formula.sh",
     "lint": "eslint bin lib test",
@@ -148,6 +148,42 @@
     "*.js": [
       "eslint --fix",
       "git add"
+    ]
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            [
+              "CHANGELOG.md",
+              "CONTRIBUTING.md",
+              "README.md",
+              "package.json",
+              "package-lock.json",
+              "bin/**",
+              "lib/**",
+              "docs/**"
+            ],
+            {
+              "path": "build/contentful-cli-macos-*.zip",
+              "label": "MacOS executable"
+            },
+            {
+              "path": "build/contentful-cli-linux-*.zip",
+              "label": "Linux executable"
+            },
+            {
+              "path": "build/contentful-cli-win-*.zip",
+              "label": "Windows executable"
+            }
+          ]
+        }
+      ]
     ]
   }
 }
