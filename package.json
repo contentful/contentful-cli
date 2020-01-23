@@ -1,6 +1,6 @@
 {
   "name": "contentful-cli",
-  "version": "1.2.1",
+  "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI tool",
   "main": "bin/contentful.js",
   "bin": {
@@ -159,7 +159,21 @@
         "@semantic-release/github",
         {
           "assets": [
-            "build/*.zip"
+            {
+              "path": "build/contentful-cli-macos-*.zip",
+              "name": "contentful-cli-macos-${nextRelease.version}.zip",
+              "label": "MacOS executable"
+            },
+            {
+              "path": "build/contentful-cli-linux-*.zip",
+              "name": "contentful-cli-linux-${nextRelease.version}.zip",
+              "label": "Linux executable"
+            },
+            {
+              "path": "build/contentful-cli-win-*.zip",
+              "name": "contentful-cli-win-${nextRelease.version}.zip",
+              "label": "Windows executable"
+            }
           ]
         }
       ]
