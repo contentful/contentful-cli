@@ -28,7 +28,7 @@
 
 - Node LTS
 
-###  Installation
+### Installation
 
 Using [homebrew](https://brew.sh):
 
@@ -154,8 +154,6 @@ npm run pretest:integration // this backs up your current config and puts in int
 npm run posttest:integration // after running your tests, this restores your config to how it was before
 
 ```
-
-
 
 ## :question: Support
 

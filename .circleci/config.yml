@@ -56,6 +56,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - run: npm install
+      - run: npm run build:package
       - run: npm run semantic-release
   bump-brew-formula:
     macos:
@@ -74,7 +75,7 @@ jobs:
       - run: &audit_action
           name: Audit
           command: |
-            npx npm-audit-resolver@2 check-audit --ignoreLow
+            npx npm-audit-resolver@2 --ignoreLow
   audit-and-notify:
     <<: *audit
     steps:
