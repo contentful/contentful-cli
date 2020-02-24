@@ -21,8 +21,6 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
-  --update                   Update entries if they already exist
-                                                      [boolean] [default: true]
   --error-log-file           Full path to the error log file            [string]
   --management-host          Management API host
                                         [string] [default: "api.contentful.com"]
