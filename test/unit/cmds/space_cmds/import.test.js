@@ -19,7 +19,6 @@ test('it should pass all args to contentful-import', async () => {
     skipLocales: false,
     host: 'api.contentful.com',
     skipContentPublishing: false,
-    update: true,
     managementApplication: `contentful.cli/${version}`,
     managementFeature: 'space-import'
   }
@@ -27,7 +26,6 @@ test('it should pass all args to contentful-import', async () => {
   const result = {
     ...stubArgv,
     managementToken: 'managementToken',
-    noUpdate: false,
     spaceId: 'spaceId',
     environmentId: undefined,
     host: undefined
