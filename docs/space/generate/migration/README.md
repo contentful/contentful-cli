@@ -12,7 +12,7 @@ Options:
   --filename, -f  Optional - Name of the generated file. If omitted will generate one with the format SPACE_ID-ENV_ID[-CT_ID]-TIMESTAMP
 ```
 
-This command will try to use if configured the Space ID and Environment ID saved by using `space use` and `space environment use`.
+This command will try to use the Space ID and Environment ID saved by using `space use` and `space environment use` if they have been configured.
 
 ### Examples
 

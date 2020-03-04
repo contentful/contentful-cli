@@ -6,7 +6,7 @@ As the CLI tool uses our Content Management API, you need to have an CMA access
 token to use all the commands. This command will take care of that.
 
 If no managementToken is supplied by using the `--management-token` flag,
-a browser window will open, which let's you login or signup to a Contentful account.
+a browser window will open, which lets you login or signup to a Contentful account.
 As soon as are logged in, you have to press authorize the Contentful CLI tool
 from within your browser which will afterwards display a freshly generated
 secure CMA access token.
