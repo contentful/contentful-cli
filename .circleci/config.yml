@@ -104,13 +104,13 @@ workflows:
       - integration
       - linux
       - osx
-      - audit
+      # - audit
       - release:
           requires:
             - unit
             - integration
             - linux
-            - audit
+            # - audit
             - osx
       - bump-brew-formula:
           requires:
