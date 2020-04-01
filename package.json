@@ -54,7 +54,7 @@
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-prettier": "^3.1.1",
     "http-proxy": "^1.17.0",
-    "husky": "^0.14.3",
+    "husky": "^4.2.3",
     "jest": "^24.9.0",
     "lint-staged": "^9.4.0",
     "nixt": "^0.5.1",
