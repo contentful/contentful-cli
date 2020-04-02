@@ -82,7 +82,7 @@
     "contentful-management": "^5.12.0",
     "contentful-migration": "^v1.0.13",
     "emojic": "^1.1.11",
-    "execa": "^0.10.0",
+    "execa": "^4.0.0",
     "figlet": "^1.2.0",
     "find-up": "^3.0.0",
     "https-proxy-agent": "^3.0.1",
