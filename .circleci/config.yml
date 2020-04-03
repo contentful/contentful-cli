@@ -39,7 +39,7 @@ jobs:
       - run: npm run test:e2e
   osx:
     macos:
-      xcode: '11'
+      xcode: '11.0'
     steps:
       - run: node --version
       - run: npm --version
