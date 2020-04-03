@@ -85,7 +85,7 @@
     "execa": "^0.10.0",
     "figlet": "^1.2.0",
     "find-up": "^4.1.0",
-    "https-proxy-agent": "^3.0.1",
+    "https-proxy-agent": "^5.0.0",
     "inquirer": "^7.0.0",
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
