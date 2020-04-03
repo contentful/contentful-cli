@@ -64,8 +64,7 @@ Options:
   -v, --version  Show current version                                  [boolean]
 
 Copyright 2019 Contentful
-Please specify a command.
-"
+Please specify a command."
 `;
 
 exports[`should return code 1 when errors exist no args 1`] = `
@@ -88,6 +87,5 @@ Options:
   -v, --version  Show current version                                  [boolean]
 
 Copyright 2019 Contentful
-Please specify a command.
-"
+Please specify a command."
 `;
