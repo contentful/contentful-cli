@@ -174,19 +174,16 @@ test('it creates the editor interface', async () => {
 })
 
 test('it creates the full migration script', async () => {
-  const expected = `module.exports = function(migration) {
+  const expected = `module.exports = function (migration) {
   const foo = migration
     .createContentType("foo")
     .name("Foo")
     .description("some content type")
     .displayField("name");
-  foo
-    .createField("name")
-    .name("Name")
-    .type("Symbol");
+  foo.createField("name").name("Name").type("Symbol");
 
   foo.changeFieldControl("name", "builtin", "singleLine", {
-    helpText: "the name"
+    helpText: "the name",
   });
 };
 `
@@ -236,19 +233,16 @@ test('it generates the migration and writes to disk', async () => {
   expect(matches[1]).toBe(filePrefix)
   expect(matches[2]).toBe('fooEnv')
 
-  const expectedContent = `module.exports = function(migration) {
+  const expectedContent = `module.exports = function (migration) {
   const foo = migration
     .createContentType("foo")
     .name("Foo")
     .description("some content type")
     .displayField("name");
-  foo
-    .createField("name")
-    .name("Name")
-    .type("Symbol");
+  foo.createField("name").name("Name").type("Symbol");
 
   foo.changeFieldControl("name", "builtin", "singleLine", {
-    helpText: "the name"
+    helpText: "the name",
   });
 };
 `

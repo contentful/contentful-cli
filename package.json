@@ -69,7 +69,7 @@
     "trevor": "^2.3.0"
   },
   "dependencies": {
-    "ast-types": "^0.11.5",
+    "ast-types": "^0.13.3",
     "bfj": "^6.1.1",
     "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
@@ -96,11 +96,11 @@
     "npm-audit-resolver": "^2.0.1",
     "open": "^6.4.0",
     "path": "^0.12.7",
-    "prettier": "^1.18.2",
+    "prettier": "^2.0.2",
     "recast": "^0.15.3",
     "rxjs": "^6.0.0",
     "shell-escape": "^0.2.0",
-    "tar": "^4.4.4",
+    "tar": "^6.0.1",
     "to-ast": "^1.0.0",
     "tree-kill": "^1.2.2",
     "wrap-ansi": "^6.2.0",
