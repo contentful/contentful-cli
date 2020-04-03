@@ -18,6 +18,7 @@ test('it should pass all args to contentful-export', async () => {
       managementToken: 'managementToken'
     },
     includeDrafts: false,
+    includeArchived: false,
     skipRoles: false,
     skipContentModel: false,
     skipContent: false,

@@ -21,6 +21,8 @@ Options:
                           (default path is the current directory)       [string]
   --include-drafts        Include drafts in the exported entries
                                                       [boolean] [default: false]
+  --include-archived      Include archived entries in the exported entries
+                                                      [boolean] [default: false]
   --skip-content-model    Skip exporting content models
                                                       [boolean] [default: false]
   --skip-content          Skip exporting assets and entries
@@ -39,6 +41,8 @@ Options:
   --proxy                 Proxy configuration in HTTP auth format:
                           [http|https]://host:port or
                           [http|https]://user:password@host:port        [string]
+  --raw-proxy             Pass proxy config to Axios instead of creating a 
+                          custom httpsAgent.                           [boolean]
   --error-log-file        Full path to the error log file               [string]
   --query-entries         Exports only entries that matches these queries[array]
   --query-assets          Exports only assets that matches these queries [array]
