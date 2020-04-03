@@ -25,35 +25,35 @@ cmd = join(cwd, cmd)
 
 test('should return code 1 when errors exist no args', async () => {
   try {
-    await execa.shell(cmd)
+    await execa(cmd)
     throw new Error('CLI should exit with error')
   } catch (error) {
-    expect(error.code).toBe(1)
+    expect(error.exitCode).toBe(1)
     expect(error.stderr).toMatchSnapshot()
   }
 })
 
 test('should print help message', async () => {
-  const { stdout } = await execa.shell(`${cmd} --help`)
+  const { stdout } = await execa(cmd, ['--help'])
   expect(stdout).toMatchSnapshot()
 })
 
 test('should print help message on shortcut', async () => {
-  const { stdout } = await execa.shell(`${cmd} -h`)
+  const { stdout } = await execa(cmd, ['-h'])
   expect(stdout).toMatchSnapshot()
 })
 
 test('should print help message on wrong subcommand', async () => {
   try {
-    await execa.shell(`${cmd} lolbar`)
+    await execa(cmd, ['lolbar'])
     throw new Error('CLI should exit with error')
   } catch (error) {
-    expect(error.code).toBe(1)
+    expect(error.exitCode).toBe(1)
     expect(error.stderr).toMatchSnapshot()
   }
 })
 
 test('should print version number', async () => {
-  const { stdout } = await execa.shell(`${cmd} --version`)
+  const { stdout } = await execa(cmd, ['--version'])
   await expect(stdout).toContain(packageVersion)
 })
