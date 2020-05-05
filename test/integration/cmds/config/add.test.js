@@ -32,6 +32,10 @@ test('config add throws error when option mt is empty', done => {
     .end(done)
 })
 
+test('config add allows insecure', (done) => {
+  app().run('config add --insecure=true').code(0).end(done)
+})
+
 test('config add throws error when option ae is empty', done => {
   app()
     .run('config add --ae')

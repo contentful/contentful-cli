@@ -115,6 +115,26 @@ test('useFlagsIfAvailable set rawProxy to true', async () => {
   expect(result).toEqual({ context: { ...defaults.context, rawProxy: true } })
 })
 
+describe('insecure', () => {
+  test('insecure is not specified by default', async () => {
+    getContext.mockResolvedValueOnce({})
+    const result = await buildContext({})
+    expect(result).toEqual({ context: defaults.context })
+  })
+
+  test('insecure can be set to true in base context', async () => {
+    getContext.mockResolvedValueOnce({ insecure: true })
+    const result = await buildContext({})
+    expect(result).toEqual({ context: { ...defaults.context, insecure: true } })
+  })
+
+  test('insecure can be set to true manually', async () => {
+    getContext.mockResolvedValueOnce({})
+    const result = await buildContext({ insecure: true })
+    expect(result).toEqual({ context: { ...defaults.context, insecure: true } })
+  })
+})
+
 test('useFlagsIfAvailable set rawProxy to false', async () => {
   getContext.mockResolvedValueOnce({})
   const result = await buildContext({ rawProxy: false })
