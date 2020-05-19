@@ -18,7 +18,7 @@ jest.mock('chalk', () => ({
 }))
 jest.mock('wrap-ansi', () =>
   jest.fn().mockImplementation((...args) => {
-    const wrapAnsi = require.requireActual('wrap-ansi')
+    const wrapAnsi = jest.requireActual('wrap-ansi')
     return wrapAnsi(...args)
   })
 )
