@@ -186,3 +186,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/vim,code,linux,macos,windows,sublimetext,node
+
+# Our own logs
+contentful-import-error-log-*.json
