@@ -1,8 +1,9 @@
 const nixt = require('nixt')
+const fs = require('fs')
 const { join } = require('path')
-const { setContext, storeRuntimeConfig } = require('../../../../lib/context')
 
 const bin = join(__dirname, './../../../../', 'bin')
+const TMP_CONFIG_FILE = join(fs.mkdtempSync('/tmp/add.test'), '.contentfulrc.json')
 
 const app = () => {
   return nixt({ newlines: true })
@@ -35,12 +36,11 @@ test('config add throws error when option mt is empty', done => {
 
 test('config add allows insecure', (done) => {
   app()
+    .env('CONTENTFUL_CONFIG_FILE', TMP_CONFIG_FILE)
     .run('config add --insecure=true')
+    .unlink(TMP_CONFIG_FILE)
     .code(0)
-    .end(() => {
-      setContext({ insecure: false })
-      storeRuntimeConfig().then(done)
-    })
+    .end(done)
 })
 
 test('config add throws error when option ae is empty', done => {
