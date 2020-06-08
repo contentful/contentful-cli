@@ -74,7 +74,7 @@
     "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
     "camelcase": "^5.0.0",
-    "chalk": "^2.4.1",
+    "chalk": "^4.0.0",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
     "contentful-export": "^7.8.16",
