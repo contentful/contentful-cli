@@ -73,7 +73,7 @@
     "bfj": "^6.1.1",
     "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
-    "camelcase": "^5.0.0",
+    "camelcase": "^6.0.0",
     "chalk": "^2.4.1",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
