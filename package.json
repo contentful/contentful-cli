@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "ast-types": "^0.13.3",
-    "bfj": "^6.1.1",
+    "bfj": "^7.0.2",
     "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
     "camelcase": "^5.0.0",
