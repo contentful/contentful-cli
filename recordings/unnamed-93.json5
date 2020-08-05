@@ -1,25 +1,26 @@
 {
     meta: {
-        createdAt: '2018-08-28T12:27:18.563Z',
+        createdAt: '2020-08-05T07:46:29.178Z',
         host: '',
+        reqHumanReadable: true,
+        resHumanReadable: true,
     },
     req: {
-        url: 'https://api.contentful.com:443/spaces/8f1c9kf6vo6w/',
-        method: 'DELETE',
+        url: 'https://api.contentful.com:443/spaces/grkch32r95g1/environments/staging',
+        method: 'PUT',
         headers: {
             accept: 'application/json, text/plain, */*',
             'content-type': 'application/vnd.contentful.management.v1+json',
         },
-        body: '',
+        body: {
+            name: 'Staging',
+        },
     },
     res: {
-        status: 204,
+        status: 201,
         headers: {
-            'accept-ranges': [
-                'bytes',
-            ],
             'access-control-allow-headers': [
-                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature',
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature,X-Contentful-Source-Environment,X-Contentful-Team,X-Contentful-Parent-Id,x-contentful-validate-only,X-Contentful-Skip-UI-Draft-Validation,X-Contentful-Marketplace,X-Contentful-UI-Content-Auto-Save,cf-trace',
             ],
             'access-control-allow-methods': [
                 'DELETE,GET,HEAD,POST,PUT,OPTIONS',
@@ -40,16 +41,19 @@
                 '1aFpYrKtFPzNxXxUyJorz4',
             ],
             'cf-space-id': [
-                '8f1c9kf6vo6w',
+                'grkch32r95g1',
             ],
             'content-type': [
-                'application/octet-stream',
+                'application/vnd.contentful.management.v1+json',
             ],
             'contentful-api': [
                 'cma',
             ],
             date: [
-                'Tue, 28 Aug 2018 12:27:19 GMT',
+                'Wed, 05 Aug 2020 07:46:29 GMT',
+            ],
+            etag: [
+                'W/"e5047e52768b864f4f4f7b2d3483ca60"',
             ],
             'referrer-policy': [
                 'strict-origin-when-cross-origin',
@@ -67,7 +71,7 @@
                 '36000',
             ],
             'x-contentful-ratelimit-hour-remaining': [
-                '35533',
+                '35999',
             ],
             'x-contentful-ratelimit-reset': [
                 '0',
@@ -79,7 +83,7 @@
                 '9',
             ],
             'x-contentful-request-id': [
-                '5b8d2bd25d8810213eb79296f039ed34',
+                '447b4da70cb8ced672fd2d66c41cf1cc',
             ],
             'x-download-options': [
                 'noopen',
@@ -93,21 +97,61 @@
             'x-xss-protection': [
                 '1; mode=block',
             ],
+            'content-length': [
+                '691',
+            ],
             connection: [
                 'Close',
             ],
             'set-cookie': [
-                'visid_incap_673446=5DM39FkpT62bRg6xt4lPM6Y/hVsAAAAAQUIPAAAAAABoqSMW7TLHjb+xNai3J6KP; expires=Wed, 28 Aug 2019 07:36:37 GMT; path=/; Domain=.contentful.com',
-                'nlbi_673446=wppRcl6ZoVRE/qom6lKYhQAAAACQytUH1WE+et+lBVnSJr8Y; path=/; Domain=.contentful.com',
-                'incap_ses_876_673446=R1qqGlEySkfWoN2V0i0oDKY/hVsAAAAAds0u88aHZM+9RFJx5KRhEQ==; path=/; Domain=.contentful.com',
-            ],
-            'x-iinfo': [
-                '11-2728342-2728347 NNNN CT(0 0 0) RT(1535459237829 28) q(0 0 0 -1) r(10 10) U5',
+                'visid_incap_673446=VNEZnQFCS/GPT8i/e/qLC9VjKl8AAAAAQUIPAAAAAADIomit5x9d/HpNNibXmS5m; expires=Wed, 04 Aug 2021 21:37:11 GMT; HttpOnly; path=/; Domain=.contentful.com',
+                'nlbi_673446=kA1xIZ0UR1J6g0lqKsJtVwAAAAB3wAyhrN6dFr04uWepQx+0; path=/; Domain=.contentful.com',
+                'incap_ses_533_673446=Awq/WBPnyhP2VZiqzZhlB9VjKl8AAAAAESreXPnBmyImahiscnt/jA==; path=/; Domain=.contentful.com',
             ],
             'x-cdn': [
                 'Incapsula',
             ],
+            'x-iinfo': [
+                '5-9283700-9283710 NNNN CT(88 88 0) RT(1596613588711 28) q(0 0 2 -1) r(5 5) U5',
+            ],
         },
-        body: '',
+        body: {
+            name: 'Staging',
+            sys: {
+                type: 'Environment',
+                id: 'staging',
+                version: 1,
+                space: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'Space',
+                        id: 'grkch32r95g1',
+                    },
+                },
+                status: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'Status',
+                        id: 'queued',
+                    },
+                },
+                createdBy: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'User',
+                        id: '1aEHayGKJiZWC9KnSz7ts6',
+                    },
+                },
+                createdAt: '2020-08-05T07:46:29Z',
+                updatedBy: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'User',
+                        id: '1aEHayGKJiZWC9KnSz7ts6',
+                    },
+                },
+                updatedAt: '2020-08-05T07:46:29Z',
+            },
+        },
     },
 }
