@@ -13,5 +13,4 @@ update_configs:
           update_type: "in_range"
     ignored_updates:
       - match:
-          dependency_name: "yargs"
-          version_requirement: "15.x"
+          dependency_name: "yargs*"
