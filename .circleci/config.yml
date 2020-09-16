@@ -63,7 +63,9 @@ jobs:
       xcode: '11.0'
     steps:
       - checkout
-      - run: npm run bump-brew-formula
+      - run:
+        command: npm run bump-brew-formula
+        no_output_timeout: 30m
   audit: &audit
     docker:
       - image: circleci/node:12
