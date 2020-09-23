@@ -1,0 +1,98 @@
+{
+    meta: {
+        createdAt: '2020-09-23T09:16:38.286Z',
+        host: '',
+        resHumanReadable: true,
+        resUncompressed: true,
+    },
+    req: {
+        url: 'https://api.contentful.com:443/spaces/5veyr2eppqxt/environments/master/tags',
+        method: 'GET',
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+        },
+        body: '',
+    },
+    res: {
+        status: 404,
+        headers: {
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature,X-Contentful-Source-Environment,X-Contentful-Team,X-Contentful-Parent-Id,x-contentful-validate-only,X-Contentful-Skip-UI-Draft-Validation,X-Contentful-Marketplace,X-Contentful-UI-Content-Auto-Save,cf-trace',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,OPTIONS',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cf-environment-id': [
+                'master',
+            ],
+            'cf-space-id': [
+                '5veyr2eppqxt',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            date: [
+                'Wed, 23 Sep 2020 09:16:38 GMT',
+            ],
+            etag: [
+                '"12710792807516519812"',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            'x-contentful-request-id': [
+                '37fc4cbe527c9a7f875b5984bbd186c1',
+            ],
+            'x-contentful-route': [
+                '/spaces/:space/environments/:environment/tags',
+            ],
+            connection: [
+                'Close',
+            ],
+            'set-cookie': [
+                'visid_incap_673446=Tvv3s0ZSRwaQ+WDa2VrA/nYSa18AAAAAQUIPAAAAAADwTWB1F1O+eZVeAQ8WP+Qe; expires=Wed, 22 Sep 2021 13:22:02 GMT; HttpOnly; path=/; Domain=.contentful.com',
+                'nlbi_673446=Ks1OLJP7x27COJn1KsJtVwAAAABXOGmgrRwkgK3O/lSCAkSH; path=/; Domain=.contentful.com',
+                'incap_ses_260_673446=AkzqCMvHPgiMWtFWtLSbA3YSa18AAAAAdNIeqNMmNcUxAcSgCwA63w==; path=/; Domain=.contentful.com',
+            ],
+            'x-cdn': [
+                'Incapsula',
+            ],
+            'content-encoding': [
+                'gzip',
+            ],
+            'transfer-encoding': [
+                'chunked',
+            ],
+            'x-iinfo': [
+                '7-84537228-84537244 NNYY CT(0 0 0) RT(1600852598110 39) q(0 0 0 0) r(2 2) U5',
+            ],
+        },
+        body: {
+            sys: {
+                type: 'Error',
+                id: 'ServerError',
+            },
+            message: '404 - {"requestId":"37fc4cbe527c9a7f875b5984bbd186c1","message":"The resource could not be found.","sys":{"type":"Error","id":"NotFound"}}',
+            requestId: '37fc4cbe527c9a7f875b5984bbd186c1',
+        },
+    },
+}
