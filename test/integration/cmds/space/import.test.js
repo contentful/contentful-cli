@@ -73,4 +73,4 @@ test('should import space', done => {
     )
     .stdout(/Finished importing all data/)
     .end(done)
-}, 100000)
+}, 30000)
