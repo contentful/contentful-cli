@@ -59,12 +59,14 @@ jobs:
       - run: npm run build:package
       - run: npm run semantic-release
   bump-brew-formula:
-    no_output_timeout: 30m
     macos:
       xcode: '11.0'
     steps:
       - checkout
-      - run: npm run bump-brew-formula
+      - run:
+          name: bump brew formula
+          command: npm run bump-brew-formula
+          no_output_timeout: 30m
   audit: &audit
     docker:
       - image: circleci/node:12
