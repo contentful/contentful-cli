@@ -7,7 +7,7 @@ const rimraf = require('rimraf')
 const { initConfig, deleteSpaces } = require('../util')
 
 const bin = join(__dirname, './../../../', 'bin')
-const projectDirectoryName = 'contentful-integration-starter-DELETE-ME'
+const projectDirectoryName = 'ctf-cli-test-DELETE-ME'
 
 const app = () => {
   return nixt({ newlines: true })
