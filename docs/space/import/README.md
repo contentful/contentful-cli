@@ -40,7 +40,7 @@ contentful space import \
 
 ## Limitations
 
-- This tool currently does **not** support the import of space memberships.
+- This tool currently does **not** support the import of roles or space memberships.
 - This tool is expecting the target space to have the same default locale as your previously exported space.
 - Imported webhooks with credentials will be imported as normal webhooks. Credentials should be added manually afterwards.
 - If you have custom UI extensions, you need to reinstall them manually in the new space. Check this [link](https://www.contentful.com/blog/2016/07/06/ui-extensions-sdk/) on how to install them
