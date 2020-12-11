@@ -63,6 +63,7 @@ jobs:
       xcode: '11.0'
     steps:
       - checkout
+      - run: git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core" fetch --unshallow
       - run:
           name: bump brew formula
           command: npm run bump-brew-formula
