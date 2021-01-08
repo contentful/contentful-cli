@@ -64,6 +64,7 @@ jobs:
     steps:
       - checkout
       - run: git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core" fetch --unshallow
+      - run: git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask" fetch --unshallow
       - run:
           name: bump brew formula
           command: npm run bump-brew-formula
