@@ -189,3 +189,5 @@ $RECYCLE.BIN/
 
 # Our own logs
 contentful-import-error-log-*.json
+
+.idea
