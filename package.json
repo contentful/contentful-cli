@@ -69,7 +69,7 @@
     "trevor": "^2.3.0"
   },
   "dependencies": {
-    "ast-types": "^0.13.3",
+    "ast-types": "^0.14.2",
     "bfj": "^7.0.2",
     "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
