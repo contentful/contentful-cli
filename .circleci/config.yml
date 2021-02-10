@@ -58,17 +58,6 @@ jobs:
       - run: npm install
       - run: npm run build:package
       - run: npm run semantic-release
-  bump-brew-formula:
-    macos:
-      xcode: '11.0'
-    steps:
-      - checkout
-      - run: git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core" fetch --unshallow
-      - run: git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask" fetch --unshallow
-      - run:
-          name: bump brew formula
-          command: npm run bump-brew-formula
-          no_output_timeout: 30m
   audit: &audit
     docker:
       - image: circleci/node:12
@@ -117,9 +106,3 @@ workflows:
             - linux
             # - audit
             - osx
-      - bump-brew-formula:
-          requires:
-            - release
-          filters:
-            branches:
-              only: master
