@@ -5,10 +5,7 @@ const { initConfig, deleteSpaces, createSimpleSpace } = require('../../../util')
 const bin = join(__dirname, './../../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 const org = process.env.CLI_E2E_ORG_ID

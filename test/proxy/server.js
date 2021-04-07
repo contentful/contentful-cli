@@ -22,15 +22,19 @@ function onConnection(req, socket) {
 
   const serverUrl = url.parse('https://' + req.url)
 
-  const srvSocket = net.connect(serverUrl.port, serverUrl.hostname, function() {
-    socket.write(
-      'HTTP/1.1 200 Connection Established\r\n' +
-        'Proxy-agent: Node-Proxy\r\n' +
-        '\r\n'
-    )
-    srvSocket.pipe(socket)
-    socket.pipe(srvSocket)
-  })
+  const srvSocket = net.connect(
+    serverUrl.port,
+    serverUrl.hostname,
+    function () {
+      socket.write(
+        'HTTP/1.1 200 Connection Established\r\n' +
+          'Proxy-agent: Node-Proxy\r\n' +
+          '\r\n'
+      )
+      srvSocket.pipe(socket)
+      socket.pipe(srvSocket)
+    }
+  )
 }
 
 const handler = (resolve, reject) => err => {

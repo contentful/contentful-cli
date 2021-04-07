@@ -7,7 +7,7 @@ const accessP = promisify(fs.access)
 const rmdirP = promisify(fs.rmdir)
 const mkdirP = promisify(fs.mkdir)
 
-test('ensureDir creates dir if it does not exist', async function() {
+test('ensureDir creates dir if it does not exist', async function () {
   const dirPath = '/tmp/i_hope_this_path_does_not_exist'
 
   try {
@@ -27,7 +27,7 @@ test('ensureDir creates dir if it does not exist', async function() {
   }
 })
 
-test('ensureDir does not break if called multiple times', async function() {
+test('ensureDir does not break if called multiple times', async function () {
   const dirPath = '/tmp/some_random_path_for_tests'
 
   try {
@@ -49,7 +49,7 @@ test('ensureDir does not break if called multiple times', async function() {
   }
 })
 
-test('ensureDir rethrows on no ENOENT errors', async function() {
+test('ensureDir rethrows on no ENOENT errors', async function () {
   const parentDir = '/tmp/path_with_no_read_rights'
   const dirPath = '/tmp/path_with_no_read_rights/foo'
 

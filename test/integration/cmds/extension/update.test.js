@@ -6,10 +6,7 @@ const bin = resolve(__dirname, './../../../../', 'bin')
 const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 test('should print help message', done => {
