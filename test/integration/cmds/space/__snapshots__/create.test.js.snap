@@ -14,7 +14,7 @@ Options:
   --default-locale, -l      The default locale of the new space         [string]
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
-  --header, -H              Pass additional HTTP Header                 [string]
+  --header, -H              Pass an additional HTTP Header              [string]
 
 Copyright 2019 Contentful
 Missing required argument: name"
@@ -34,7 +34,7 @@ Options:
   --default-locale, -l      The default locale of the new space         [string]
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
-  --header, -H              Pass additional HTTP Header                 [string]
+  --header, -H              Pass an additional HTTP Header              [string]
 
 Copyright 2019 Contentful"
 `;
