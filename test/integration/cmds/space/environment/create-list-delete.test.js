@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
 test('should create, list and delete environment', done => {
   function createEnvironment() {

@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
 test('should exit 1 when no args', done => {
   app()
