@@ -19,6 +19,7 @@ Options:
   --sidebar                  Render the extension in the sidebar       [boolean]
   --installation-parameters  JSON string of installation parameter key-value
                              pairs                                      [string]
+  --header, -H               Pass additional HTTP Header                [string]
 
 Copyright 2019 Contentful"
 `;

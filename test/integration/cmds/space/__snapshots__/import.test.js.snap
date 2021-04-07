@@ -26,6 +26,7 @@ Options:
                                                        [number] [default: 20000]
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
+  --header, -H               Pass additional HTTP Header                [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
@@ -59,6 +60,7 @@ Options:
                                                        [number] [default: 20000]
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
+  --header, -H               Pass additional HTTP Header                [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
