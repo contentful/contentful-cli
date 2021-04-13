@@ -6,10 +6,7 @@ const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 var space = null
@@ -24,7 +21,7 @@ beforeAll(async () => {
 })
 afterAll(() => {
   return deleteSpaces(spacesToDelete)
-})
+}, 10000)
 
 test('should print help message', done => {
   app()

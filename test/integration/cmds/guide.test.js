@@ -10,10 +10,7 @@ const bin = join(__dirname, './../../../', 'bin')
 const projectDirectoryName = 'ctf-cli-test-DELETE-ME'
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 const spacesToDelete = []

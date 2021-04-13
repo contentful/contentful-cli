@@ -105,7 +105,10 @@ test('useFlagsIfAvailable set activeEnvironmentId (from context)', async () => {
   })
   const result = await buildContext({})
   expect(result).toEqual({
-    context: { ...defaults.context, activeEnvironmentId: 'activeEnvironmentId' }
+    context: {
+      ...defaults.context,
+      activeEnvironmentId: 'activeEnvironmentId'
+    }
   })
 })
 
