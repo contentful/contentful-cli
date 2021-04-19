@@ -106,3 +106,8 @@ workflows:
             - linux
             # - audit
             - osx
+          filters:
+            branches:
+              only:
+                - master
+                - experimental
