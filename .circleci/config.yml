@@ -100,6 +100,7 @@ workflows:
       - osx
       # - audit
       - release:
+          context: dev-workflows-release
           requires:
             - unit
             - integration
