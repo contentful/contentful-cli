@@ -6,6 +6,7 @@ exports[`should print help message: help data is incorrect 1`] = `
 Options:
   -h, --help                Show help                                  [boolean]
   --management-token, --mt  Contentful management API token             [string]
+  --header, -H              Pass an additional HTTP Header              [string]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/organization/list

@@ -35,7 +35,8 @@ test('it should pass all args to contentful-export', async () => {
     environmentId: 'master',
     managementToken: 'managementToken',
     spaceId: 'spaceId',
-    host: 'api.contentful.com'
+    host: 'api.contentful.com',
+    headers: {}
   }
   expect(contentfulExport.mock.calls[0][0]).toEqual(result)
   expect(contentfulExport).toHaveBeenCalledTimes(1)

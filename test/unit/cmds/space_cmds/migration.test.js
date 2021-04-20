@@ -24,7 +24,8 @@ test('it should pass all args to the migration', async () => {
     ...stubArgv,
     spaceId: 'spaceId',
     environmentId: 'master',
-    accessToken: 'managementToken'
+    accessToken: 'managementToken',
+    headers: {}
   }
 
   expect(runMigration.mock.calls[0][0]).toEqual(result)

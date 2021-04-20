@@ -9,10 +9,7 @@ const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 let space = null

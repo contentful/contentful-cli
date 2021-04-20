@@ -55,7 +55,7 @@ beforeEach(() => {
       getEnvironment: async () => ({
         getUiExtension: async () => {
           const extension = { ...basicExtension }
-          extension.update = function() {
+          extension.update = function () {
             return updateStub(this)
           }
           return extension

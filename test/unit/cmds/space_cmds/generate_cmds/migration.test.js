@@ -53,20 +53,20 @@ const editorInterface = {
   ]
 }
 
-const EditorInterfaceNotFoundErrorMock = function() {
+const EditorInterfaceNotFoundErrorMock = function () {
   this.name = 'NotFound'
 }
 
 const environmentMock = {
-  getContentTypes: function() {
+  getContentTypes: function () {
     return {
       items: [simpleContentType]
     }
   },
-  getContentType: function() {
+  getContentType: function () {
     return simpleContentType
   },
-  getEditorInterfaceForContentType: function(ctId) {
+  getEditorInterfaceForContentType: function (ctId) {
     if (ctId === 'foo') {
       return editorInterface
     } else {

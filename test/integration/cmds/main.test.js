@@ -5,10 +5,7 @@ const packageVersion = require('../../../package.json').version
 const bin = join(__dirname, './../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true })
-    .cwd(bin)
-    .base('./contentful.js ')
-    .clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
 test('should return code 1 when errors exist no args', done => {

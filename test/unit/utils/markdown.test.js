@@ -1,6 +1,6 @@
 const markdown = require('../../../lib/utils/markdown')
 
-test('headings are rendered in terminal', function() {
+test('headings are rendered in terminal', function () {
   const md = `
 # H1
 ## H2
@@ -25,7 +25,7 @@ Alt-H2
 `)
 })
 
-test('urls are rendered in terminal', function() {
+test('urls are rendered in terminal', function () {
   const md = `
 [I'm an inline-style link](https://www.google.com)
 http://www.example.com
@@ -38,7 +38,7 @@ http://www.example.com
 `)
 })
 
-test('inline code is rendered in terminal', function() {
+test('inline code is rendered in terminal', function () {
   const inlineCode = `
 Inline \`code\` has \`back-ticks around\` it.
   `
@@ -47,7 +47,7 @@ Inline \`code\` has \`back-ticks around\` it.
   expect(res).toContain(`Inline code has back-ticks around it.`)
 })
 
-test('code blocks are rendered in terminal', function() {
+test('code blocks are rendered in terminal', function () {
   const inlineCode = `
 \`\`\`python
 s = "Python syntax highlighting"

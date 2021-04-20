@@ -28,7 +28,8 @@ test('it should pass all args to contentful-import', async () => {
     managementToken: 'managementToken',
     spaceId: 'spaceId',
     environmentId: undefined,
-    host: undefined
+    host: undefined,
+    headers: {}
   }
   expect(contentfulImport.mock.calls[0][0]).toEqual(result)
   expect(contentfulImport).toHaveBeenCalledTimes(1)

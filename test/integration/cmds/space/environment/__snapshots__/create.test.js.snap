@@ -16,6 +16,7 @@ Options:
   --await-processing, -w    Wait until the environment is processed and ready
                                                       [boolean] [default: false]
   --management-token, --mt  Contentful management API token             [string]
+  --header, -H              Pass an additional HTTP Header              [string]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/
@@ -38,6 +39,7 @@ Options:
   --await-processing, -w    Wait until the environment is processed and ready
                                                       [boolean] [default: false]
   --management-token, --mt  Contentful management API token             [string]
+  --header, -H              Pass an additional HTTP Header              [string]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/

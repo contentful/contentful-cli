@@ -8,6 +8,7 @@ Options:
   --space-id, -s            ID of the space to delete                 [required]
   --management-token, --mt  Contentful management API token             [string]
   --yes                     Skip the confirmation question
+  --header, -H              Pass an additional HTTP Header              [string]
 
 Copyright 2019 Contentful
 Missing required argument: space-id"
@@ -21,6 +22,7 @@ Options:
   --space-id, -s            ID of the space to delete                 [required]
   --management-token, --mt  Contentful management API token             [string]
   --yes                     Skip the confirmation question
+  --header, -H              Pass an additional HTTP Header              [string]
 
 Copyright 2019 Contentful"
 `;
