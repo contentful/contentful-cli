@@ -79,20 +79,20 @@
     "contentful-export": "^7.11.5",
     "contentful-import": "^8.0.6",
     "contentful-management": "^7.3.1",
-    "contentful-migration": "^4.0.0",
+    "contentful-migration": "^4.1.1",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
     "figlet": "^1.2.0",
     "find-up": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
-    "inquirer": "^7.0.0",
+    "inquirer": "^8.0.0",
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
     "lodash": "^4.17.15",
-    "marked": "^1.1.1",
+    "marked": "^2.0.0",
     "mkdirp": "^1.0.3",
     "mz": "^2.6.0",
-    "open": "^7.0.3",
+    "open": "^8.0.5",
     "path": "^0.12.7",
     "prettier": "^2.0.2",
     "recast": "^0.20.4",
@@ -149,6 +149,14 @@
     ]
   },
   "release": {
+    "branches": [
+      "master",
+      {
+        "name": "experimental",
+        "channel": "experimental",
+        "prerelease": true
+      }
+    ],
     "plugins": [
       [
         "@semantic-release/commit-analyzer",
