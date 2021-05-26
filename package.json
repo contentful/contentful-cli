@@ -77,7 +77,7 @@
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
     "contentful-export": "^7.11.5",
-    "contentful-import": "^7.9.23",
+    "contentful-import": "^8.1.12",
     "contentful-management": "^7.3.1",
     "contentful-migration": "^4.1.1",
     "emojic": "^1.1.11",
