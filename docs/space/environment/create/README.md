@@ -15,7 +15,8 @@ Options:
   --await-processing, -w    Wait until the environment is processed and ready
                                                       [boolean] [default: false]
   --processing-timeout, -t  Await processing times out after specified number of
-                            minutes                        [number] [default: 5]
+                            minutes (only is applied if await-processing is set)
+                                                           [number] [default: 5]
   --management-token, --mt  Contentful management API token             [string]
   --header, -H              Pass an additional HTTP Header              [string]
 ```
