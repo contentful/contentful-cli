@@ -119,7 +119,7 @@ typings/
 
 # dotenv environment variables file
 .env
-
+.envrc
 
 ### SublimeText ###
 # cache files for sublime text

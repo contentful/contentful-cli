@@ -29,7 +29,7 @@ test('urls are rendered in terminal', function () {
   const md = `
 [I'm an inline-style link](https://www.google.com)
 http://www.example.com
-  `
+`
 
   const res = markdown(md)
   expect(res).toBe(`I’m an inline-style link (https://www.google.com)

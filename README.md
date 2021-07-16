@@ -4,7 +4,6 @@
 
 [![npm](https://img.shields.io/npm/v/contentful-cli.svg)](https://www.npmjs.com/package/contentful-cli)
 [![Build Status](https://travis-ci.com/contentful/contentful-cli.svg?token=fyDxSEex8FXB9BKySX88&branch=master)](https://travis-ci.com/contentful/contentful-cli)
-[![codecov](https://codecov.io/gh/contentful/contentful-cli/branch/master/graph/badge.svg?token=c2bwazppuO)](https://codecov.io/gh/contentful/contentful-cli)
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
 

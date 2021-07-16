@@ -11,7 +11,6 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm install
       - run: npm test
-      - run: bash <(curl -s https://codecov.io/bash)
   integration:
     docker:
       - image: circleci/node:12
