@@ -63,7 +63,7 @@
     "rimraf": "^3.0.2",
     "semantic-release": "^17.0.4",
     "stream-buffers": "^3.0.2",
-    "strip-ansi": "^6.0.0",
+    "strip-ansi": "^7.0.0",
     "talkback": "^2.1.1",
     "trevor": "^2.3.0"
   },
