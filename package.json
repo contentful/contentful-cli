@@ -20,7 +20,7 @@
     "test": "npm run test:coverage",
     "test:coverage": "nyc npm run test:unit",
     "test:html-coverage": "nyc --reporter=html npm run test:unit",
-    "test:unit": "jest --maxWorkers=2 test/unit/** --verbose",
+    "test:unit": "jest ----runInBand test/unit/** --verbose",
     "test:unit:watch": "jest test/unit/** --verbose --watch",
     "pretest:integration": "node test/integration/scripts/pre-test.js",
     "pretest:integration:ci": "npm run pretest:integration",
