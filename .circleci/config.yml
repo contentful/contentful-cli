@@ -2,38 +2,38 @@ version: 2.0
 jobs:
   unit:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.10
     steps:
       - run: node --version
       - run: npm --version
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run: npm test
   integration:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.10
     steps:
       - run: node --version
       - run: npm --version
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
   linux:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.10
     steps:
       - run: node --version
       - run: npm --version
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run: npm run build:standalone
       - run: npm run test:e2e
   osx:
@@ -45,21 +45,21 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm install
+      - run: npm ci
       - run: npm run build:standalone
       - run: npm run test:e2e
   release:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.10
     steps:
       - checkout
       - run: git fetch --tags
-      - run: npm install
+      - run: npm ci
       - run: npm run build:package
       - run: npm run semantic-release
   audit: &audit
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:16.10
         environment:
           NPM_CONFIG_PROGRESS: false
           NPM_CONFIG_LOGLEVEL: warn
