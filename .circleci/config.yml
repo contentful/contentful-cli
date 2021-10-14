@@ -2,7 +2,7 @@ version: 2.0
 jobs:
   unit:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.11
     steps:
       - run: node --version
       - run: npm --version
@@ -13,7 +13,7 @@ jobs:
       - run: npm test
   integration:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.11
     steps:
       - run: node --version
       - run: npm --version
@@ -26,7 +26,7 @@ jobs:
           no_output_timeout: 20m
   linux:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.11
     steps:
       - run: node --version
       - run: npm --version
@@ -50,7 +50,7 @@ jobs:
       - run: npm run test:e2e
   release:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.11
     steps:
       - checkout
       - run: git fetch --tags
@@ -59,7 +59,7 @@ jobs:
       - run: npm run semantic-release
   audit: &audit
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/node:16.11
         environment:
           NPM_CONFIG_PROGRESS: false
           NPM_CONFIG_LOGLEVEL: warn
