@@ -89,7 +89,7 @@
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
     "lodash": "^4.17.15",
-    "marked": "^3.0.7",
+    "marked": "^4.0.1",
     "mkdirp": "^1.0.3",
     "mz": "^2.6.0",
     "open": "^8.0.5",
