@@ -54,7 +54,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "http-proxy": "^1.17.0",
     "husky": "^4.3.8",
-    "jest": "^27.3.1",
+    "jest": "^26.6.3",
     "lint-staged": "^12.0.2",
     "nixt": "^0.5.1",
     "node-zip": "^1.1.1",
@@ -63,7 +63,7 @@
     "rimraf": "^3.0.2",
     "semantic-release": "^18.0.0",
     "stream-buffers": "^3.0.2",
-    "strip-ansi": "^7.0.1",
+    "strip-ansi": "^6.0.0",
     "talkback": "^2.1.1",
     "trevor": "^2.3.0"
   },
@@ -89,7 +89,7 @@
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
     "lodash": "^4.17.15",
-    "marked": "^4.0.1",
+    "marked": "^3.0.8",
     "mkdirp": "^1.0.3",
     "mz": "^2.6.0",
     "open": "^8.0.5",
@@ -102,7 +102,7 @@
     "to-ast": "^1.0.0",
     "tree-kill": "^1.2.2",
     "wrap-ansi": "^7.0.0",
-    "yargs": "~17.2.1",
+    "yargs": "~13.3.2",
     "zlib": "^1.0.5"
   },
   "engines": {
