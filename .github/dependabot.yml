@@ -9,6 +9,10 @@ updates:
       timezone: UTC
     open-pull-requests-limit: 10
     ignore:
+    - dependency-name: jest
+    - dependency-name: strip-ansi
+    - dependency-name: marked
+    - dependency-name: yargs
     - dependency-name: husky
       versions:
         - ">=5.0.0"
