@@ -9,7 +9,7 @@
 // then be shared with the customers
 //
 
-const nodezip = require('node-zip')
+const jszip = require('jszip')
 const path = require('path')
 const fs = require('fs')
 
@@ -34,15 +34,18 @@ const files = {
 
 console.log('Prepare zip files for each platform:\n')
 
-Object.keys(files).forEach(file => {
-  const zip = nodezip()
+Object.keys(files).forEach(async file => {
+  let zip = new jszip()
   const filename = files[file].to
   const filepath = path.join(buildpath, file)
   const packageName = `${files[file].package}-${version}.zip`
 
   zip.file(filename, fs.readFileSync(filepath))
 
-  const data = zip.generate({ base64: false, compression: 'DEFLATE' })
+  const data = await zip.generateAsync({
+    type: 'nodebuffer',
+    compression: 'DEFLATE'
+  })
 
   console.log(packageName)
   fs.writeFileSync(path.join(buildpath, packageName), data, 'binary')
