@@ -83,7 +83,7 @@
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
     "figlet": "^1.2.0",
-    "find-up": "^5.0.0",
+    "find-up": "^6.2.0",
     "https-proxy-agent": "^5.0.0",
     "inquirer": "^8.0.0",
     "inquirer-select-directory": "^1.2.0",
