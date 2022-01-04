@@ -2,9 +2,6 @@
 
 A guide introducing basic concepts for working with Contentful.
 
-This command is intended for users new to Contentful, regular users can run
-`contentful boilerplate` directly to quickly set up an example project.
-
 ## What steps does the guide contain?
 
 ### 1. Sign in to a new or existing account
@@ -23,8 +20,8 @@ and add the first Content entries to the freshly created space.
 
 #### 4. Download app to display your content
 
-A shortcut to [contentful boilerplate](../boilerplate) to download a boilerplate
-example project built with one of our SDKs.
+Download one of the [boilerplate example projects from Github](https://github.com/contentful?q=boilerplate&type=all&language=&sort=) 
+and add the required credentials to the project.
 
 #### 5. Run the app based on your environment
 
