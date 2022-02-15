@@ -21,6 +21,7 @@ Options:
                         .contentfulrc
   --yes, -y             Skips any confirmation before applying the migration
                         script                        [boolean] [default: false]
+  --retry-limit         Number of retries before failure
   --config              An optional configuration JSON file containing all the
                         options for a single run
 
