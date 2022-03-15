@@ -17,6 +17,7 @@ test('it should pass all args to contentful-export', async () => {
       host: 'api.contentful.com',
       managementToken: 'managementToken'
     },
+    deliveryToken: 'deliveryToken',
     includeDrafts: false,
     includeArchived: false,
     skipRoles: false,
