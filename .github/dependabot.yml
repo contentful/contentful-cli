@@ -24,10 +24,6 @@ updates:
     - dependency-name: wrap-ansi # Pure ESM package. Remove from ignore when ESM is supported
       versions:
         - ">=8.0.0"
-    - dependency-name: marked # Pure ESM package. Remove from ignore when ESM is supported
-      versions:
-        - ">=4.0.0"
-
     - dependency-name: jest
     - dependency-name: yargs
     - dependency-name: husky
