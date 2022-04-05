@@ -10,11 +10,10 @@ Usage: contentful space import --content-file <file>
 Options:
   -h, --help                 Show help                                 [boolean]
   --space-id                 ID of the destination space                [string]
-  --environment-id           ID the environment in the destination space
-                                                    [string] [default: "master"]
-  --management-token         Contentful management API token            [string]
-  --content-file             JSON file that contains data to be import to your
-                             space                           [string] [required]
+  --environment-id           ID the environment in the destination space[string]
+  --management-token, --mt   Contentful management API token            [string]
+  --content-file             JSON file that contains data to import into a space
+                                                             [string] [required]
   --content-model-only       Import only content types[boolean] [default: false]
   --skip-content-model       Skip importing content types and locales
                                                       [boolean] [default: false]
@@ -22,11 +21,16 @@ Options:
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
-  --management-host          Management API host
+  --host                     Management API host
                                         [string] [default: "api.contentful.com"]
   --proxy                    Proxy configuration in HTTP auth format:
                              [http|https]://host:port or
                              [http|https]://user:password@host:port     [string]
+  --timeout                  Timeout in milliseconds for API calls
+                                                       [number] [default: 20000]
+  --retry-limit              How many times to retry before an operation fails
+                                                          [number] [default: 10]
+  --header, -H               Pass an additional HTTP Header             [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 ```
