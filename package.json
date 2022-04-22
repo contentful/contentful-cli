@@ -78,7 +78,7 @@
     "command-exists": "^1.2.7",
     "contentful-export": "^7.14.0",
     "contentful-import": "^8.2.25",
-    "contentful-management": "^9.0.0",
+    "contentful-management": "^10.0.0",
     "contentful-migration": "^4.8.0",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
