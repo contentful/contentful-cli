@@ -4,6 +4,7 @@ import { proxyObjectToString } from '../../utils/proxy'
 import { version } from '../../../package.json'
 import { warning } from '../../utils/log'
 import { getHeadersFromOption } from '../../utils/headers'
+import { copyright } from '../../utils/copyright'
 import { Argv } from 'yargs'
 
 export const command = 'import'
@@ -91,7 +92,7 @@ export const builder = (yargs: Argv) => {
       'config',
       'An optional configuration JSON file containing all the options for a single run'
     )
-    .epilog('Copyright 2019 Contentful')
+    .epilog(copyright)
 }
 
 interface ProxyObject {

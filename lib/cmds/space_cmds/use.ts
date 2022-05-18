@@ -9,6 +9,7 @@ import { success } from '../../utils/log'
 import paginate from '../../utils/pagination'
 import { highlightStyle } from '../../utils/styles'
 import { getHeadersFromOption } from '../../utils/headers'
+import { copyright } from '../../utils/copyright'
 import { Space } from 'contentful-management'
 
 export const command = 'use'
@@ -31,7 +32,7 @@ export const builder = (yargs: Argv) => {
       type: 'string',
       describe: 'Pass an additional HTTP Header'
     })
-    .epilog('Copyright 2019 Contentful')
+    .epilog(copyright)
 }
 
 function showSuccess(space: Space, env = 'master') {

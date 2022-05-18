@@ -16,6 +16,7 @@ import createSpaceLogging from '../../core/event-handlers/logging/create-space-h
 
 import { AbortedError } from '../../utils/aborted-error'
 import { getHeadersFromOption } from '../../utils/headers'
+import { copyright } from '../../utils/copyright'
 import { Argv } from 'yargs'
 
 export const command = 'create'
@@ -60,7 +61,7 @@ export const builder = (yargs: Argv) => {
       type: 'string',
       describe: 'Pass an additional HTTP Header'
     })
-    .epilog('Copyright 2019 Contentful')
+    .epilog(copyright)
 }
 
 interface Context {

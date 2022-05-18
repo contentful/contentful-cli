@@ -1,5 +1,6 @@
 import yargs from 'yargs'
 import { log } from './utils/log'
+import { copyright } from './utils/copyright'
 import { buildContext, getCommand, assertContext } from './utils/middlewares'
 const { version } = require('../package.json')
 
@@ -21,7 +22,7 @@ yargs
     skipValidation: true
   })
   .version(false)
-  .epilog('Copyright 2019 Contentful')
+  .epilog(copyright)
   .fail(function (msg, err, yargs) {
     if (err) throw err
     console.error(yargs.help())
