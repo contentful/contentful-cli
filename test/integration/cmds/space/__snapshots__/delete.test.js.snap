@@ -10,7 +10,7 @@ Options:
   --yes                     Skip the confirmation question
   --header, -H              Pass an additional HTTP Header              [string]
 
-Copyright 2019 Contentful
+Copyright 2022 Contentful
 Missing required argument: space-id"
 `;
 
@@ -24,5 +24,5 @@ Options:
   --yes                     Skip the confirmation question
   --header, -H              Pass an additional HTTP Header              [string]
 
-Copyright 2019 Contentful"
+Copyright 2022 Contentful"
 `;

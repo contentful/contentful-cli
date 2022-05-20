@@ -30,7 +30,7 @@ Options:
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
-Copyright 2019 Contentful
+Copyright 2022 Contentful
 Missing required argument: content-file"
 `;
 
@@ -64,5 +64,5 @@ Options:
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
-Copyright 2019 Contentful"
+Copyright 2022 Contentful"
 `;

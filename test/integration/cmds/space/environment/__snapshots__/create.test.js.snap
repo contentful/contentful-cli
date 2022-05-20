@@ -24,7 +24,7 @@ Options:
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/
 create
-Copyright 2019 Contentful
+Copyright 2022 Contentful
 Missing required arguments: environment-id, name"
 `;
 
@@ -50,5 +50,5 @@ Options:
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/space/environment/
 create
-Copyright 2019 Contentful"
+Copyright 2022 Contentful"
 `;

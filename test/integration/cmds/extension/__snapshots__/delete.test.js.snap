@@ -16,5 +16,5 @@ Options:
   --force                   Force operation without explicit version   [boolean]
   --header, -H              Pass an additional HTTP Header              [string]
 
-Copyright 2019 Contentful"
+Copyright 2022 Contentful"
 `;

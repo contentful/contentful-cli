@@ -16,7 +16,7 @@ Options:
                             --space-id is skipped.                     [boolean]
   --header, -H              Pass an additional HTTP Header              [string]
 
-Copyright 2019 Contentful
+Copyright 2022 Contentful
 Missing required argument: name"
 `;
 
@@ -36,5 +36,5 @@ Options:
                             --space-id is skipped.                     [boolean]
   --header, -H              Pass an additional HTTP Header              [string]
 
-Copyright 2019 Contentful"
+Copyright 2022 Contentful"
 `;
