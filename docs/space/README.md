@@ -3,6 +3,7 @@
 ## Available subcommands:
 
 - [use](./use) - Remember a Space to skip the `--space-id` option in subsequent commands
+- [accesstoken](./accesstoken) - List and create access tokens
 - [list](./list) - List all Spaces you have access to
 - [create](./create) - Create a new Space
 - [seed](./seed) - Seed a predefined template to a Space
