@@ -50,6 +50,39 @@ test('create new access token', async () => {
   expect(createApiKeyStub.mock.calls[0][0]).toEqual(mockedAccessTokenData)
 })
 
+test('create new access token with specified environment', async () => {
+  const specificEnvironmentAccessToken = {
+    name: 'access token name',
+    description: 'some example description',
+    environments: [
+      {
+        sys: {
+          id: 'test-env',
+          linkType: 'Environment',
+          type: 'Link'
+        }
+      }
+    ]
+  }
+
+  getApiKeysStub.mockResolvedValue({
+    items: []
+  })
+  const result = await accessTokenCreate({
+    ...mockedAccessTokenData,
+    environment: 'test-env',
+    context: {
+      activeSpaceId: 'some-space-id'
+    }
+  })
+  expect(result).toBeTruthy()
+  expect(createManagementClient).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub).toHaveBeenCalledTimes(1)
+  expect(createApiKeyStub.mock.calls[0][0]).toEqual(
+    specificEnvironmentAccessToken
+  )
+})
+
 test('return existing access token', async () => {
   getApiKeysStub.mockResolvedValue({
     items: [mockedAccessTokenData]
