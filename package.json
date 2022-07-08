@@ -65,7 +65,7 @@
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
     "talkback": "^3.0.1",
-    "trevor": "^1.1.2"
+    "trevor": "^2.4.1"
   },
   "dependencies": {
     "ast-types": "^0.14.2",
