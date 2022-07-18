@@ -3,6 +3,7 @@
   "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI tool",
   "main": "bin/contentful.js",
+  "private": true,
   "bin": {
     "contentful": "bin/contentful.js"
   },
@@ -154,6 +155,11 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
+      },
+      {
+        "name": "next",
+        "channel": "next",
+        "prerelease": "beta"
       }
     ],
     "plugins": [
