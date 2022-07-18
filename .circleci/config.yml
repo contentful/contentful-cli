@@ -102,10 +102,10 @@ workflows:
           requires:
             - unit
             - integration
-            # - linux
-            # - audit
-            # - osx
+          # - linux
+          # - audit
+          # - osx
           filters:
             branches:
               only:
-                - next
+                - beta
