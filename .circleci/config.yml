@@ -55,7 +55,6 @@ jobs:
       - checkout
       - run: git fetch --tags
       - run: npm ci
-      - run: npm run build:package
       - run: npm run semantic-release
   audit: &audit
     docker:
@@ -95,19 +94,18 @@ workflows:
     jobs:
       - unit
       - integration
-      - linux
-      - osx
+      # - linux
+      # - osx
       # - audit
       - release:
           context: dev-workflows-release
           requires:
             - unit
             - integration
-            - linux
+            # - linux
             # - audit
-            - osx
+            # - osx
           filters:
             branches:
               only:
-                - master
-                - experimental
+                - next
