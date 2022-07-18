@@ -148,7 +148,6 @@
     ]
   },
   "release": {
-    "dryRun": true,
     "branches": [
       "master",
       {
