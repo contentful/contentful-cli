@@ -92,16 +92,16 @@ workflows:
       - audit-and-notify
   build_and_test:
     jobs:
-      # - unit
-      # - integration
+      - unit
+      - integration
       # - linux
       # - osx
       # - audit
       - release:
           context: dev-workflows-release
-          # requires:
-          #   - unit
-          #   - integration
+          requires:
+            - unit
+            - integration
           # - linux
           # - audit
           # - osx
