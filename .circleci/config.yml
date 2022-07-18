@@ -98,8 +98,8 @@ workflows:
       - audit-and-notify
   build_and_test:
     jobs:
-      # - unit
-      # - integration
+      - unit
+      - integration
       # - linux
       # - osx
       # - audit
