@@ -62,7 +62,6 @@ jobs:
           template-preset: 'semantic-release-ecosystem'
       - run: git fetch --tags
       - run: npm ci
-      - run: npm run build:package
       - run: npm run semantic-release
   audit:
     docker: &ref_0
@@ -101,17 +100,18 @@ workflows:
     jobs:
       - unit
       - integration
-      - linux
-      - osx
+      # - linux
+      # - osx
+      # - audit
       - release:
           context: vault
           requires:
             - unit
             - integration
-            - linux
-            - osx
+            # - linux
+            # - audit
+            # - osx
           filters:
             branches:
               only:
-                - master
-                - experimental
+                - next
