@@ -85,7 +85,7 @@
     "figlet": "^1.2.0",
     "find-up": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
-    "inquirer": "^8.0.0",
+    "inquirer": "^9.0.1",
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
     "lodash": "^4.17.15",
