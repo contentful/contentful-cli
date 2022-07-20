@@ -17,7 +17,6 @@
 - Generate migration scripts for the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/master/README.md#reference-documentation) from existing spaces.
 - Seed your space with example data.
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
-- Run a guide which introduces you to the Contentful basics.
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
 - More to come soon! 🚀
 

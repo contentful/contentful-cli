@@ -12,7 +12,7 @@ beforeAll(() => {
   return initConfig()
 })
 
-test('should not logout', done => {
+test.only('should not logout', done => {
   app()
     .run('logout')
     .on(/Do you want to log out now\?/)
