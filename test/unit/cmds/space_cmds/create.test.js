@@ -7,7 +7,7 @@ const {
   createManagementClient
 } = require('../../../../lib/utils/contentful-clients')
 const { confirmation } = require('../../../../lib/utils/actions')
-const { AbortedError } = require('../../../../lib/guide/helpers')
+const { AbortedError } = require('../../../../lib/utils/aborted-error')
 
 jest.mock('inquirer')
 jest.mock('../../../../lib/cmds/space_cmds/use')

@@ -8,7 +8,6 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
   organization  Manage and list your organizations
@@ -29,7 +28,6 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
   organization  Manage and list your organizations
@@ -50,7 +48,6 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
   organization  Manage and list your organizations
@@ -72,7 +69,6 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
   organization  Manage and list your organizations
