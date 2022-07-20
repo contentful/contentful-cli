@@ -1,4 +1,4 @@
-const recast = require('recast')
+const { prettyPrint, types } = require('recast')
 const rimraf = require('rimraf')
 
 const {
@@ -11,18 +11,17 @@ const {
   generateMigrationScript,
   generateFileName,
   generateMigration
-} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration')
+} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration.mjs')
 const fs = require('fs')
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients')
+} = require('../../../../../lib/utils/contentful-clients.mjs')
 
-jest.mock('../../../../../lib/utils/contentful-clients')
-jest.mock('../../../../../lib/context')
+jest.mock('../../../../../lib/utils/contentful-clients.mjs')
+jest.mock('../../../../../lib/context.mjs')
 
 const filePrefix = 'fooSpace'
-
-const b = recast.types.builders
+const b = types.builders
 
 const simpleContentType = {
   sys: {
@@ -116,9 +115,7 @@ test('it wraps the program', async () => {
 
   const expected = 'module.exports = function(migration) {};'
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
-    expected
-  )
+  expect(prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
 test('it creates the content type', async () => {
@@ -128,9 +125,7 @@ test('it creates the content type', async () => {
     const foo = migration.createContentType("foo").name("Foo").description("some content type").displayField("name");
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
-    expected
-  )
+  expect(prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
 test('it creates the content type fields', async () => {
@@ -144,9 +139,7 @@ test('it creates the content type fields', async () => {
     foo.createField("name").name("Name").type("Symbol");
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
-    expected
-  )
+  expect(prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
 test('it creates the editor interface', async () => {
@@ -168,9 +161,7 @@ test('it creates the editor interface', async () => {
     });
 };`
 
-  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
-    expected
-  )
+  expect(prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(expected)
 })
 
 test('it creates the full migration script', async () => {

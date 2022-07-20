@@ -1,13 +1,13 @@
 const {
   environmentCreate
-} = require('../../../../../lib/cmds/space_cmds/environment_cmds/create')
-const { getContext } = require('../../../../../lib/context')
+} = require('../../../../../lib/cmds/space_cmds/environment_cmds/create.mjs')
+const { getContext } = require('../../../../../lib/context.mjs')
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients')
+} = require('../../../../../lib/utils/contentful-clients.mjs')
 
-jest.mock('../../../../../lib/context')
-jest.mock('../../../../../lib/utils/contentful-clients')
+jest.mock('../../../../../lib/context.mjs')
+jest.mock('../../../../../lib/utils/contentful-clients.mjs')
 
 const environmentData = {
   name: 'environment name',

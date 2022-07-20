@@ -1,12 +1,12 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { readFile, writeFile, unlink } = require('mz/fs')
-const { emptyContext } = require('../../../../lib/context')
+const { readFile, writeFile, unlink } = require('fs/promises')
+const { emptyContext } = require('../../../../lib/context.mjs')
 
 const bin = join(__dirname, './../../../../', 'bin')
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
 }
 
 let oldConfigContents = null

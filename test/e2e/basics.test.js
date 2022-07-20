@@ -19,7 +19,7 @@ if (!cmd) {
   throw new Error(`Platform ${platform()} is not supported`)
 }
 
-const packageVersion = require('../../package.json').version
+const { version } = require('../../package.json')
 const cwd = join(__dirname, '../../', 'build')
 cmd = join(cwd, cmd)
 
@@ -55,5 +55,5 @@ test('should print help message on wrong subcommand', async () => {
 
 test('should print version number', async () => {
   const { stdout } = await execa(cmd, ['--version'])
-  await expect(stdout).toContain(packageVersion)
+  await expect(stdout).toContain(version)
 })

@@ -1,16 +1,16 @@
 const {
   deleteExtension
-} = require('../../../../lib/cmds/extension_cmds/delete')
+} = require('../../../../lib/cmds/extension_cmds/delete.mjs')
 
-const { successEmoji } = require('../../../../lib/utils/emojis')
-const { success } = require('../../../../lib/utils/log')
+const { successEmoji } = require('../../../../lib/utils/emojis.mjs')
+const { success } = require('../../../../lib/utils/log.mjs')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients')
+} = require('../../../../lib/utils/contentful-clients.mjs')
 
-jest.mock('../../../../lib/context')
-jest.mock('../../../../lib/utils/log')
-jest.mock('../../../../lib/utils/contentful-clients')
+jest.mock('../../../../lib/context.mjs')
+jest.mock('../../../../lib/utils/log.mjs')
+jest.mock('../../../../lib/utils/contentful-clients.mjs')
 
 const deleteStub = jest.fn()
 

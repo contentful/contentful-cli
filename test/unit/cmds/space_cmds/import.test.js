@@ -1,10 +1,10 @@
-const { importSpace } = require('../../../../lib/cmds/space_cmds/import')
+const { importSpace } = require('../../../../lib/cmds/space_cmds/import.mjs')
 
 const { version } = require('../../../../package.json')
-const { getContext } = require('../../../../lib/context')
+const { getContext } = require('../../../../lib/context.mjs')
 const contentfulImport = require('contentful-import')
 
-jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/context.mjs')
 jest.mock('contentful-import')
 
 getContext.mockResolvedValue({ managementToken: 'managementToken' })

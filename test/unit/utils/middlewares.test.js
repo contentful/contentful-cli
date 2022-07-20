@@ -2,19 +2,19 @@ const {
   buildContext,
   getCommand,
   assertContext
-} = require('../../../lib/utils/middlewares')
+} = require('../../../lib/utils/middlewares.mjs')
 
-const { getContext } = require('../../../lib/context')
-const { handleAsyncError } = require('../../../lib/utils/async')
+const { getContext } = require('../../../lib/context.mjs')
+const { handleAsyncError } = require('../../../lib/utils/async.mjs')
 const {
   assertLoggedIn,
   assertSpaceIdProvided
-} = require('../../../lib/utils/assertions')
+} = require('../../../lib/utils/assertions.mjs')
 
-jest.mock('../../../lib/context')
-jest.mock('../../../lib/utils/styles')
-jest.mock('../../../lib/utils/async')
-jest.mock('../../../lib/config', () => ({
+jest.mock('../../../lib/context.mjs')
+jest.mock('../../../lib/utils/styles.mjs')
+jest.mock('../../../lib/utils/async.mjs')
+jest.mock('../../../lib/config.mjs', () => ({
   noAuthNeeded: ['config add', 'config list', 'config remove'],
   noSpaceIdNeeded: [
     'logout',

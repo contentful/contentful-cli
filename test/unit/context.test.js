@@ -14,7 +14,7 @@ beforeEach(() => {
 
 test('locates correct config file path', async () => {
   jest.mock('find-up')
-  const { getConfigPath } = require('../../lib/context')
+  const { getConfigPath } = require('../../lib/context.mjs')
   const findUp = require('find-up')
   findUp.mockResolvedValueOnce(customConfigPath)
 
@@ -24,7 +24,7 @@ test('locates correct config file path', async () => {
 
 test('uses home directory as config file path if none is found', async () => {
   jest.mock('find-up')
-  const { getConfigPath } = require('../../lib/context')
+  const { getConfigPath } = require('../../lib/context.mjs')
 
   const configPath = await getConfigPath()
   expect(configPath).toBe(homeConfigPath)
@@ -32,15 +32,15 @@ test('uses home directory as config file path if none is found', async () => {
 
 test('loading, writing, setting and getting context & rc', async () => {
   jest.mock('find-up')
-  jest.mock('mz/fs')
-  const { readFile, writeFile } = require('mz/fs')
+  jest.mock('fs/promises')
+  const { readFile, writeFile } = require('fs/promises')
   readFile.mockRejectedValue(enoent)
 
   const {
     getContext,
     setContext,
     storeRuntimeConfig
-  } = require('../../lib/context')
+  } = require('../../lib/context.mjs')
 
   let context = await getContext()
   let contextSize = Object.keys(context).length
@@ -65,11 +65,11 @@ test('loading, writing, setting and getting context & rc', async () => {
 
 test('loading existing rc config and attaching it to the context', async () => {
   jest.mock('find-up')
-  jest.mock('mz/fs')
-  const { readFile } = require('mz/fs')
+  jest.mock('fs/promises')
+  const { readFile } = require('fs/promises')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
 
-  const { getContext } = require('../../lib/context')
+  const { getContext } = require('../../lib/context.mjs')
 
   let context = await getContext()
   let contextSize = Object.keys(context).length
@@ -79,9 +79,9 @@ test('loading existing rc config and attaching it to the context', async () => {
 })
 
 test('loadProxyFromEnv', async () => {
-  jest.mock('mz/fs')
-  const { readFile } = require('mz/fs')
-  const { emptyContext, getContext } = require('../../lib/context')
+  jest.mock('fs/promises')
+  const { readFile } = require('fs/promises')
+  const { emptyContext, getContext } = require('../../lib/context.mjs')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
   let context
 

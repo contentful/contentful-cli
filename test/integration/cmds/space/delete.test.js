@@ -1,7 +1,7 @@
 const nixt = require('nixt')
 const { join } = require('path')
 const { initConfig, createSimpleSpace } = require('../../util')
-const { readFile, writeFile } = require('mz/fs')
+const { readFile, writeFile } = require('fs/promises')
 const { homedir } = require('os')
 const { resolve } = require('path')
 
@@ -9,7 +9,7 @@ const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
 }
 
 var space = null

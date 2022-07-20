@@ -9,7 +9,7 @@ const {
   asciiText,
   separator,
   DEFAULT_COLUMNS
-} = require('../../../lib/utils/text')
+} = require('../../../lib/utils/text.mjs')
 
 jest.mock('figlet')
 jest.mock('chalk', () => ({

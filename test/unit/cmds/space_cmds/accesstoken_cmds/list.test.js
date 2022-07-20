@@ -1,16 +1,15 @@
 const {
   accessTokenList
-} = require('../../../../../lib/cmds/space_cmds/accesstoken_cmds/list')
-const { getContext } = require('../../../../../lib/context')
+} = require('../../../../../lib/cmds/space_cmds/accesstoken_cmds/list.mjs')
+const { getContext } = require('../../../../../lib/context.mjs')
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients')
-jest.mock('../../../../../lib/utils/log')
-jest.mock('../../../../../lib/context')
-jest.mock('../../../../../lib/utils/contentful-clients')
+} = require('../../../../../lib/utils/contentful-clients.mjs')
+const { log } = require('../../../../../lib/utils/log.mjs')
 
-const { log } = require('../../../../../lib/utils/log')
-jest.mock('../../../../../lib/utils/log')
+jest.mock('../../../../../lib/context.mjs')
+jest.mock('../../../../../lib/utils/contentful-clients.mjs')
+jest.mock('../../../../../lib/utils/log.mjs')
 
 const accessTokenData = {
   items: [

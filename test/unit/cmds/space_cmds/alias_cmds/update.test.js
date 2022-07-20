@@ -1,15 +1,15 @@
 const {
   environmentAliasUpdate
-} = require('../../../../../lib/cmds/space_cmds/alias_cmds/update')
-const { getContext } = require('../../../../../lib/context')
+} = require('../../../../../lib/cmds/space_cmds/alias_cmds/update.mjs')
+const { getContext } = require('../../../../../lib/context.mjs')
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients')
-const { log } = require('../../../../../lib/utils/log')
+} = require('../../../../../lib/utils/contentful-clients.mjs')
+const { log } = require('../../../../../lib/utils/log.mjs')
 
-jest.mock('../../../../../lib/context')
-jest.mock('../../../../../lib/utils/contentful-clients')
-jest.mock('../../../../../lib/utils/log')
+jest.mock('../../../../../lib/context.mjs')
+jest.mock('../../../../../lib/utils/contentful-clients.mjs')
+jest.mock('../../../../../lib/utils/log.mjs')
 
 const environmentData = {
   sys: {

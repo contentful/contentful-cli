@@ -1,13 +1,13 @@
-const { handler } = require('../../../../lib/cmds/extension_cmds/list')
+const { handler } = require('../../../../lib/cmds/extension_cmds/list.mjs')
 
-const { log } = require('../../../../lib/utils/log')
+const { log } = require('../../../../lib/utils/log.mjs')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients')
+} = require('../../../../lib/utils/contentful-clients.mjs')
 
-jest.mock('../../../../lib/context')
-jest.mock('../../../../lib/utils/log')
-jest.mock('../../../../lib/utils/contentful-clients')
+jest.mock('../../../../lib/context.mjs')
+jest.mock('../../../../lib/utils/log.mjs')
+jest.mock('../../../../lib/utils/contentful-clients.mjs')
 
 const mockExtensions = {
   items: [

@@ -1,7 +1,7 @@
-const fs = require('mz/fs')
+const fs = require('fs/promises')
 const path = require('path')
 const os = require('os')
-const context = require('../../../lib/context')
+const context = require('../../../lib/context.mjs')
 
 const setup = async () => {
   const configPath = await context.getConfigPath()

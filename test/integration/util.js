@@ -2,8 +2,10 @@ const appRoot = require('app-root-path')
 const Promise = require('bluebird')
 const { resolve } = require('path')
 const { homedir } = require('os')
-const { writeFile, stat } = require('mz/fs')
-const { createManagementClient } = require('../../lib/utils/contentful-clients')
+const { writeFile, stat } = require('fs/promises')
+const {
+  createManagementClient
+} = require('../../lib/utils/contentful-clients.mjs')
 
 module.exports.expectedDir = `${appRoot}/test/integration/expected`
 module.exports.tmpDir = `${appRoot}/test/integration/expected/tmp`

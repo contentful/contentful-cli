@@ -9,7 +9,7 @@ const TMP_CONFIG_FILE = join(
 )
 
 const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
+  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
 }
 
 test('config add throws error when option as is empty', done => {

@@ -1,19 +1,20 @@
 const inquirer = require('inquirer')
 const open = require('open')
+const { handler: loginHandler } = require('../../../lib/cmds/login.mjs')
+const { getContext, setContext } = require('../../../lib/context.mjs')
+const { confirmation } = require('../../../lib/utils/actions.mjs')
 
-const { handler: loginHandler } = require('../../../lib/cmds/login')
-const { getContext, setContext } = require('../../../lib/context')
-const { confirmation } = require('../../../lib/utils/actions')
-
-jest.mock('inquirer')
-jest.mock('open')
-jest.mock('../../../lib/utils/actions')
-jest.mock('../../../lib/context')
-
-const mockedRcConfig = {
+const mockRcConfig = {
   managementToken: 'mockedToken'
 }
-inquirer.prompt.mockResolvedValue(mockedRcConfig)
+
+jest.mock('inquirer', () => ({
+  prompt: jest.fn().mockImplementation(() => Promise.resolve(mockRcConfig))
+}))
+jest.mock('open')
+jest.mock('../../../lib/utils/actions.mjs')
+jest.mock('../../../lib/context.mjs')
+
 setContext.mockResolvedValue(true)
 getContext.mockResolvedValue({ managementToken: false })
 confirmation.mockResolvedValue(true)
@@ -35,8 +36,8 @@ test('login - without error', async () => {
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(inquirer.prompt).toHaveBeenCalledTimes(1)
   expect(setContext).toHaveBeenCalledTimes(1)
-  expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)
-  expect(result).toBe(mockedRcConfig.managementToken)
+  expect(setContext.mock.calls[0][0]).toEqual(mockRcConfig)
+  expect(result).toBe(mockRcConfig.managementToken)
 })
 
 test('login - user abort', async () => {
@@ -65,11 +66,11 @@ test('login - already logged in', async () => {
 test('login - with management-token flag', async () => {
   const result = await loginHandler({
     context: { managementToken: 'token' },
-    ...mockedRcConfig
+    ...mockRcConfig
   })
 
   expect(setContext).toHaveBeenCalledTimes(1)
-  expect(setContext.mock.calls[0][0]).toEqual(mockedRcConfig)
-  expect(result).toBe(mockedRcConfig.managementToken)
+  expect(setContext.mock.calls[0][0]).toEqual(mockRcConfig)
+  expect(result).toBe(mockRcConfig.managementToken)
   expect(inquirer.prompt).not.toHaveBeenCalled()
 })

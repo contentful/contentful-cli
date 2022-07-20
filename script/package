@@ -13,9 +13,8 @@ const jszip = require('jszip')
 const path = require('path')
 const fs = require('fs')
 
-const packageJSON = require('../package.json')
+const { version } = require('../package.json')
 
-const version = packageJSON.version
 const buildpath = 'build/'
 const files = {
   'contentful-cli-macos': {

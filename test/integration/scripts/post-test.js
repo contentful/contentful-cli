@@ -1,7 +1,7 @@
-const fs = require('mz/fs')
+const fs = require('fs')
 const path = require('path')
 const os = require('os')
-const context = require('../../../lib/context')
+const context = require('../../../lib/context.mjs')
 
 const teardown = async () => {
   const configPath = await context.getConfigPath()

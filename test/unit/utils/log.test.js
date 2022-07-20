@@ -5,23 +5,23 @@ const {
   success,
   error,
   logError
-} = require('../../../lib/utils/log')
+} = require('../../../lib/utils/log.mjs')
 const {
   infoStyle,
   warningStyle,
   errorStyle,
   successStyle
-} = require('../../../lib/utils/styles')
-const { frame, wrap } = require('../../../lib/utils/text')
-const { PreconditionFailedError } = require('../../../lib/utils/error')
+} = require('../../../lib/utils/styles.mjs')
+const { frame, wrap } = require('../../../lib/utils/text.mjs')
+const { PreconditionFailedError } = require('../../../lib/utils/error.mjs')
 
-jest.mock('../../../lib/utils/styles', () => ({
+jest.mock('../../../lib/utils/styles.mjs', () => ({
   infoStyle: jest.fn(),
   warningStyle: jest.fn(),
   errorStyle: jest.fn(),
   successStyle: jest.fn()
 }))
-jest.mock('../../../lib/utils/text')
+jest.mock('../../../lib/utils/text.mjs')
 
 afterEach(() => {
   infoStyle.mockClear()

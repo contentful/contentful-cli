@@ -1,4 +1,4 @@
-const paginate = require('../../../lib/utils/pagination')
+const paginate = require('../../../lib/utils/pagination.mjs').default
 
 test('paginates over multi page api results', async () => {
   const exampleMethod = jest.fn()

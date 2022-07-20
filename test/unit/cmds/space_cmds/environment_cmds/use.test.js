@@ -1,14 +1,14 @@
 const {
   environmentUse
-} = require('../../../../../lib/cmds/space_cmds/environment_cmds/use')
+} = require('../../../../../lib/cmds/space_cmds/environment_cmds/use.mjs')
 
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients')
-const { setContext, getContext } = require('../../../../../lib/context')
+} = require('../../../../../lib/utils/contentful-clients.mjs')
+const { setContext, getContext } = require('../../../../../lib/context.mjs')
 
-jest.mock('../../../../../lib/utils/contentful-clients')
-jest.mock('../../../../../lib/context')
+jest.mock('../../../../../lib/utils/contentful-clients.mjs')
+jest.mock('../../../../../lib/context.mjs')
 
 const getEnvironment = jest.fn().mockResolvedValue({
   sys: {

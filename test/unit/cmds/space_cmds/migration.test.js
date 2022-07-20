@@ -1,10 +1,10 @@
-const { migration } = require('../../../../lib/cmds/space_cmds/migration')
+const { migration } = require('../../../../lib/cmds/space_cmds/migration.mjs')
 
 const { version } = require('../../../../package.json')
-const { getContext } = require('../../../../lib/context')
+const { getContext } = require('../../../../lib/context.mjs')
 const { runMigration } = require('contentful-migration/built/bin/cli')
 
-jest.mock('../../../../lib/context')
+jest.mock('../../../../lib/context.mjs')
 jest.mock('contentful-migration/built/bin/cli')
 
 getContext.mockResolvedValue({ managementToken: 'managementToken' })

@@ -1,8 +1,9 @@
-const { confirmation } = require('../../../lib/utils/actions')
-
 const { prompt } = require('inquirer')
+const { confirmation } = require('../../../lib/utils/actions.mjs')
 
-jest.mock('inquirer')
+jest.mock('inquirer', () => ({
+  prompt: jest.fn()
+}))
 
 afterEach(() => {
   prompt.mockClear()

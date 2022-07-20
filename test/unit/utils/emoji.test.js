@@ -4,7 +4,7 @@ const {
   errorEmoji,
   infoEmoji,
   generateNumberEmoji
-} = require('../../../lib/utils/emojis')
+} = require('../../../lib/utils/emojis.mjs')
 
 const emojis = [welcomeEmoji, successEmoji, errorEmoji, infoEmoji]
 

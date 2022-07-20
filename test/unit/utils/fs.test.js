@@ -1,6 +1,6 @@
 const { promisify } = require('util')
 
-const fsUtils = require('../../../lib/utils/fs')
+const fsUtils = require('../../../lib/utils/fs.mjs')
 const fs = require('fs')
 
 const accessP = promisify(fs.access)

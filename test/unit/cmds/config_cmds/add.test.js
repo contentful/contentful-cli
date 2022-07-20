@@ -1,10 +1,13 @@
-const { addHandler } = require('../../../../lib/cmds/config_cmds/add')
-const { setContext, storeRuntimeConfig } = require('../../../../lib/context')
-const { success } = require('../../../../lib/utils/log')
-const { successEmoji } = require('../../../../lib/utils/emojis')
+const { addHandler } = require('../../../../lib/cmds/config_cmds/add.mjs')
+const {
+  setContext,
+  storeRuntimeConfig
+} = require('../../../../lib/context.mjs')
+const { success } = require('../../../../lib/utils/log.mjs')
+const { successEmoji } = require('../../../../lib/utils/emojis.mjs')
 
-jest.mock('../../../../lib/context')
-jest.mock('../../../../lib/utils/log')
+jest.mock('../../../../lib/context.mjs')
+jest.mock('../../../../lib/utils/log.mjs')
 
 storeRuntimeConfig.mockResolvedValue()
 

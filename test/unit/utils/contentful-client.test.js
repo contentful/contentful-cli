@@ -1,7 +1,7 @@
 const { version } = require('../../../package.json')
 const {
   createManagementClient
-} = require('../../../lib/utils/contentful-clients')
+} = require('../../../lib/utils/contentful-clients.mjs')
 const { createClient } = require('contentful-management')
 
 jest.mock('contentful-management', () => ({ createClient: jest.fn() }))
