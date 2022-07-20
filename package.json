@@ -20,10 +20,10 @@
     "test:html-coverage": "nyc --reporter=html npm run test:unit",
     "test:unit": "jest --runInBand test/unit/** --verbose",
     "test:unit:watch": "jest test/unit/** --verbose --watch",
-    "pretest:integration": "node test/integration/scripts/pre-test.js",
+    "pretest:integration": "node test/integration/scripts/pre-test.mjs",
     "pretest:integration:ci": "npm run pretest:integration",
     "pretest:integration:update": "npm run pretest:integration",
-    "posttest:integration": "node test/integration/scripts/post-test.js",
+    "posttest:integration": "node test/integration/scripts/post-test.mjs",
     "posttest:integration:ci": "npm run posttest:integration",
     "posttest:integration:update": "npm run posttest:integration",
     "test:jest": "jest test/integration/cmds/**",
@@ -90,7 +90,7 @@
     "inquirer": "^9.0.0",
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
-    "lodash": "^4.17.15",
+    "lodash-es": "^4.17.21",
     "marked": "^4.0.12",
     "mkdirp": "^1.0.3",
     "open": "^8.0.5",
@@ -102,7 +102,7 @@
     "to-ast": "^1.0.0",
     "tree-kill": "^1.2.2",
     "wrap-ansi": "^7.0.0",
-    "yargs": "~13.3.2"
+    "yargs": "^17.5.1"
   },
   "engines": {
     "node": ">=16.14"

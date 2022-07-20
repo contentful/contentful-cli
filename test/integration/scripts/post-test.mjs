@@ -1,7 +1,7 @@
-const fs = require('fs')
-const path = require('path')
-const os = require('os')
-const context = require('../../../lib/context.mjs')
+import fs from 'fs'
+import path from 'path'
+import os from 'os'
+import context from '../../../lib/context.mjs'
 
 const teardown = async () => {
   const configPath = await context.getConfigPath()

@@ -1,10 +1,10 @@
-const fs = require('fs/promises')
-const path = require('path')
-const os = require('os')
-const context = require('../../../lib/context.mjs')
+import fs from 'fs/promises'
+import path from 'path'
+import os from 'os'
+import { getConfigPath } from '../../../lib/context.mjs'
 
 const setup = async () => {
-  const configPath = await context.getConfigPath()
+  const configPath = await getConfigPath()
   const backupPath = path.join(os.homedir(), '.contentfulrc.json.backup')
   try {
     const configContent = await fs.readFile(configPath)
