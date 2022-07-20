@@ -4,7 +4,6 @@
 
 - [login](./login) - Start new CLI session
 - [logout](./logout) - End CLI session
-- [guide](./guide) - Getting started with Contentful
 - [config](./config) - Config related commands
 - [space](./space) - Space related commands
 - [organization](./organization) - Organization related commands
