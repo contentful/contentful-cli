@@ -1,6 +1,5 @@
 const {
   buildContext,
-  getCommand,
   assertContext
 } = require('../../../lib/utils/middlewares.mjs')
 
@@ -154,11 +153,6 @@ test('useFlagsIfAvailable set host', async () => {
   getContext.mockResolvedValueOnce({})
   const result = await buildContext({ host: 'host' })
   expect(result).toEqual({ context: { ...defaults.context, host: 'host' } })
-})
-
-test('getCommand', async () => {
-  const result = await getCommand()
-  expect(result).toEqual({ cmd: 'config list' })
 })
 
 test('assertContext do not fail if context is valid', async () => {
