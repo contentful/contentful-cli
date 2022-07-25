@@ -11,6 +11,7 @@
     "url": "https://github.com/contentful/contentful-cli.git"
   },
   "author": "Contentful <opensource@contentful.com>",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
@@ -37,7 +38,7 @@
     "prettier": "prettier --config .prettierrc \"./*.js\" \"{./lib,./test,./docs,.}/**/*.{js,json,md}\"",
     "prettier:write": "npm run prettier -- --write",
     "prettier:debug": "npm run prettier -- --debug-check",
-    "run-talkback-proxy": "node test/proxy.js",
+    "run-talkback-proxy": "node test/proxy.cjs",
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
@@ -105,7 +106,7 @@
     "yargs": "^17.5.1"
   },
   "engines": {
-    "node": ">=16.14"
+    "node": ">=14"
   },
   "files": [
     "bin",
