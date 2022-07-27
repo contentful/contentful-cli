@@ -1,4 +1,4 @@
-const { createClient } = require('contentful-management')
+const cma = require('contentful-management')
 const HttpsProxyAgent = require('https-proxy-agent')
 const { ssl, space, token } = require('yargs').argv
 
@@ -22,7 +22,7 @@ if (ssl) {
 
 const agent = new HttpsProxyAgent(proxyConfig)
 
-const client = createClient({
+const client = cma.createClient({
   accessToken: token,
   httpsAgent: agent
 })
