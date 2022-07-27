@@ -4,7 +4,7 @@
   "description": "Contentful CLI tool",
   "main": "bin/contentful.mjs",
   "bin": {
-    "contentful": "bin/contentful.mjs"
+    "contentful": "dist/cli.mjs"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
+    "build": "tsc lib/**/* --outDir dist",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
     "test:coverage": "nyc npm run test:unit",
@@ -102,6 +103,7 @@
     "tar": "^6.0.1",
     "to-ast": "^1.0.0",
     "tree-kill": "^1.2.2",
+    "typescript": "^4.7.4",
     "wrap-ansi": "^7.0.0",
     "yargs": "^17.5.1"
   },
