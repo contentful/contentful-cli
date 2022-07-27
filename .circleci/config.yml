@@ -21,6 +21,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run build
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m

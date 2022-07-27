@@ -2,11 +2,10 @@ const nixt = require('nixt')
 const { join } = require('path')
 const { initConfig, deleteSpaces, extractSpaceId } = require('../../util')
 
-const bin = join(__dirname, './../../../../', 'bin')
+const dist = join(__dirname, './../../../../', 'dist')
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(dist).base('./contentful.js').clone()
 
 var spacesToDelete = []
 
@@ -18,7 +17,8 @@ afterAll(() => {
   return deleteSpaces(spacesToDelete)
 }, 10000)
 
-test('should exit 1 when no args', done => {
+test.only('should exit 1 when no args', done => {
+  debugger
   app()
     .run('space create')
     .code(1)
@@ -26,9 +26,7 @@ test('should exit 1 when no args', done => {
       const resultText = result.stderr.trim()
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
-    .end(() => {
-      done()
-    })
+    .end(done)
 })
 
 test('should print help message', done => {
