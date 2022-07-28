@@ -5,9 +5,8 @@ const { initConfig, deleteSpaces, createSimpleSpace } = require('../../util')
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 var space = null
 var spacesToDelete = []

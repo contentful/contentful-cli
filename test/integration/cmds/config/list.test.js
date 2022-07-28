@@ -5,9 +5,8 @@ const { emptyContext } = require('../../../../lib/context.mjs')
 
 const bin = join(__dirname, './../../../../', 'bin')
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 let oldConfigContents = null
 const testConfigPath = process.cwd() + '/.contentfulrc.json'

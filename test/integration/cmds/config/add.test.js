@@ -8,9 +8,8 @@ const TMP_CONFIG_FILE = join(
   '.contentfulrc.json'
 )
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 test('config add throws error when option as is empty', done => {
   app()

@@ -8,9 +8,8 @@ const org = process.env.CLI_E2E_ORG_ID
 const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 let space = null
 let environment = null

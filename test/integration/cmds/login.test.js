@@ -4,9 +4,8 @@ const { initConfig } = require('../util')
 
 const bin = join(__dirname, './../../../', 'bin')
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 beforeAll(() => {
   return initConfig()

@@ -2,10 +2,10 @@
   "name": "@contentful/cli",
   "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI tool",
-  "source": "bin/contentful.mjs",
+  "source": "lib/cli.js",
   "main": "dist/contentful.js",
   "bin": {
-    "contentful": "dist/cli.mjs"
+    "contentful": "bin/contentful.js"
   },
   "repository": {
     "type": "git",
@@ -15,10 +15,10 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "watch": "parcel watch",
-    "build": "parcel build",
-    "audit": "resolve-audit",
+    "bundle": "parcel build",
+    "bundle:watch": "parcel watch",
     "build": "tsc lib/**/* --outDir dist",
+    "audit": "resolve-audit",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
     "test:coverage": "nyc npm run test:unit",

@@ -4,9 +4,8 @@ const { join } = require('path')
 const { version } = require('../../../package.json')
 const bin = join(__dirname, './../../../', 'bin')
 
-const app = () => {
-  return nixt({ newlines: true }).cwd(bin).base('./contentful.mjs').clone()
-}
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 test('should return code 1 when errors exist no args', done => {
   app()

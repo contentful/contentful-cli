@@ -10,12 +10,11 @@ const {
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
 
-const app = () => {
-  return nixt({ newlines: true, showDiff: true })
+const app = () =>
+  nixt({ newlines: true, showDiff: true })
     .cwd(bin)
     .base('./contentful.js ')
     .clone()
-}
 
 var space = null
 var spacesToDelete = []

@@ -10,6 +10,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run bundle
       - run: npm test
   integration:
     docker:
@@ -21,7 +22,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
-      - run: npm run build
+      - run: npm run bundle
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m

@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import { resolve } from 'path'
 import { homedir } from 'os'
 import { writeFile, stat } from 'fs/promises'
-import { createManagementClient } from '../../lib/utils/contentful-clients.mjs'
+import { createManagementClient } from '../../lib/utils/contentful-clients'
 
 export const expectedDir = `${appRoot}/test/integration/expected`
 export const tmpDir = `${appRoot}/test/integration/expected/tmp`
