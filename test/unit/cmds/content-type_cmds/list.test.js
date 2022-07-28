@@ -1,12 +1,12 @@
-const { handler } = require('../../../../lib/cmds/content-type_cmds/list.mjs')
-const { log } = require('../../../../lib/utils/log.mjs')
+const { handler } = require('../../../../lib/cmds/content-type_cmds/list.js')
+const { log } = require('../../../../lib/utils/log.js')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients.mjs')
+} = require('../../../../lib/utils/contentful-clients.js')
 
-jest.mock('../../../../lib/context.mjs')
-jest.mock('../../../../lib/utils/log.mjs')
-jest.mock('../../../../lib/utils/contentful-clients.mjs')
+jest.mock('../../../../lib/context.js')
+jest.mock('../../../../lib/utils/log.js')
+jest.mock('../../../../lib/utils/contentful-clients.js')
 
 const mockContentTypes = [
   {

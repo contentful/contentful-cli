@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
-import * as context from '../../../lib/context.mjs'
+import * as context from '../../../lib/context.js'
 
 const teardown = async () => {
   const configPath = await context.getConfigPath()

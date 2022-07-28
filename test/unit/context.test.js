@@ -14,7 +14,7 @@ beforeEach(() => {
 
 test('locates correct config file path', async () => {
   jest.mock('find-up')
-  const { getConfigPath } = require('../../lib/context.mjs')
+  const { getConfigPath } = require('../../lib/context.js')
   const findUp = require('find-up')
   findUp.mockResolvedValueOnce(customConfigPath)
 
@@ -24,7 +24,7 @@ test('locates correct config file path', async () => {
 
 test('uses home directory as config file path if none is found', async () => {
   jest.mock('find-up')
-  const { getConfigPath } = require('../../lib/context.mjs')
+  const { getConfigPath } = require('../../lib/context.js')
 
   const configPath = await getConfigPath()
   expect(configPath).toBe(homeConfigPath)
@@ -40,7 +40,7 @@ test('loading, writing, setting and getting context & rc', async () => {
     getContext,
     setContext,
     storeRuntimeConfig
-  } = require('../../lib/context.mjs')
+  } = require('../../lib/context.js')
 
   let context = await getContext()
   let contextSize = Object.keys(context).length
@@ -69,7 +69,7 @@ test('loading existing rc config and attaching it to the context', async () => {
   const { readFile } = require('fs/promises')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
 
-  const { getContext } = require('../../lib/context.mjs')
+  const { getContext } = require('../../lib/context.js')
 
   let context = await getContext()
   let contextSize = Object.keys(context).length
@@ -81,7 +81,7 @@ test('loading existing rc config and attaching it to the context', async () => {
 test('loadProxyFromEnv', async () => {
   jest.mock('fs/promises')
   const { readFile } = require('fs/promises')
-  const { emptyContext, getContext } = require('../../lib/context.mjs')
+  const { emptyContext, getContext } = require('../../lib/context.js')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
   let context
 

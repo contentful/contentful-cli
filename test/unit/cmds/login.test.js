@@ -1,8 +1,8 @@
 const inquirer = require('inquirer')
 const open = require('open')
-const { handler: loginHandler } = require('../../../lib/cmds/login.mjs')
-const { getContext, setContext } = require('../../../lib/context.mjs')
-const { confirmation } = require('../../../lib/utils/actions.mjs')
+const { handler: loginHandler } = require('../../../lib/cmds/login.js')
+const { getContext, setContext } = require('../../../lib/context.js')
+const { confirmation } = require('../../../lib/utils/actions.js')
 
 const mockRcConfig = {
   managementToken: 'mockedToken'
@@ -12,8 +12,8 @@ jest.mock('inquirer', () => ({
   prompt: jest.fn().mockImplementation(() => Promise.resolve(mockRcConfig))
 }))
 jest.mock('open')
-jest.mock('../../../lib/utils/actions.mjs')
-jest.mock('../../../lib/context.mjs')
+jest.mock('../../../lib/utils/actions.js')
+jest.mock('../../../lib/context.js')
 
 setContext.mockResolvedValue(true)
 getContext.mockResolvedValue({ managementToken: false })

@@ -2,22 +2,22 @@ const { resolve } = require('path')
 
 const {
   createExtensionHandler
-} = require('../../../../lib/cmds/extension_cmds/create.mjs')
+} = require('../../../../lib/cmds/extension_cmds/create.js')
 
-const { successEmoji } = require('../../../../lib/utils/emojis.mjs')
-const { success, log } = require('../../../../lib/utils/log.mjs')
+const { successEmoji } = require('../../../../lib/utils/emojis.js')
+const { success, log } = require('../../../../lib/utils/log.js')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients.mjs')
-const { readFileP } = require('../../../../lib/utils/fs.mjs')
+} = require('../../../../lib/utils/contentful-clients.js')
+const { readFileP } = require('../../../../lib/utils/fs.js')
 const readSrcDocFile =
-  require('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file.mjs').default
+  require('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file.js').default
 
-jest.mock('../../../../lib/context.mjs')
-jest.mock('../../../../lib/utils/log.mjs')
-jest.mock('../../../../lib/utils/fs.mjs')
-jest.mock('../../../../lib/utils/contentful-clients.mjs')
-jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file.mjs')
+jest.mock('../../../../lib/context.js')
+jest.mock('../../../../lib/utils/log.js')
+jest.mock('../../../../lib/utils/fs.js')
+jest.mock('../../../../lib/utils/contentful-clients.js')
+jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file.js')
 
 readSrcDocFile.mockImplementation(async extension => {
   extension.srcdoc = '<h1>Sample Extension Content</h1>'

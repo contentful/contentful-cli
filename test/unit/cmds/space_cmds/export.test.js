@@ -1,10 +1,10 @@
-const { exportSpace } = require('../../../../lib/cmds/space_cmds/export.mjs')
+const { exportSpace } = require('../../../../lib/cmds/space_cmds/export.js')
 
 const { version } = require('../../../../package.json')
-const { getContext } = require('../../../../lib/context.mjs')
+const { getContext } = require('../../../../lib/context.js')
 const contentfulExport = require('contentful-export')
 
-jest.mock('../../../../lib/context.mjs')
+jest.mock('../../../../lib/context.js')
 jest.mock('contentful-export')
 
 getContext.mockResolvedValue({ managementToken: 'managementToken' })

@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import os from 'os'
-import { getConfigPath } from '../../../lib/context.mjs'
+import { getConfigPath } from '../../../lib/context.js'
 
 const setup = async () => {
   const configPath = await getConfigPath()

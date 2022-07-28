@@ -1,20 +1,20 @@
 const inquirer = require('inquirer')
-const { spaceCreate } = require('../../../../lib/cmds/space_cmds/create.mjs')
-const { spaceUse } = require('../../../../lib/cmds/space_cmds/use.mjs')
-const { getContext } = require('../../../../lib/context.mjs')
+const { spaceCreate } = require('../../../../lib/cmds/space_cmds/create.js')
+const { spaceUse } = require('../../../../lib/cmds/space_cmds/use.js')
+const { getContext } = require('../../../../lib/context.js')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients.mjs')
-const { confirmation } = require('../../../../lib/utils/actions.mjs')
-const { AbortedError } = require('../../../../lib/utils/error.mjs')
+} = require('../../../../lib/utils/contentful-clients.js')
+const { confirmation } = require('../../../../lib/utils/actions.js')
+const { AbortedError } = require('../../../../lib/utils/error.js')
 
 jest.mock('inquirer', () => ({
   prompt: jest.fn()
 }))
-jest.mock('../../../../lib/cmds/space_cmds/use.mjs')
-jest.mock('../../../../lib/context.mjs')
-jest.mock('../../../../lib/utils/contentful-clients.mjs')
-jest.mock('../../../../lib/utils/actions.mjs')
+jest.mock('../../../../lib/cmds/space_cmds/use.js')
+jest.mock('../../../../lib/context.js')
+jest.mock('../../../../lib/utils/contentful-clients.js')
+jest.mock('../../../../lib/utils/actions.js')
 
 confirmation.mockResolvedValue(true)
 

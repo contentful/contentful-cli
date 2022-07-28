@@ -1,7 +1,7 @@
 const {
   proxyStringToObject,
   proxyObjectToString
-} = require('../../../lib/utils/proxy.mjs')
+} = require('../../../lib/utils/proxy.js')
 
 test('proxyString with basic auth, with protocol', () => {
   const proxyString = 'http://foo:bar@127.0.0.1:8213'

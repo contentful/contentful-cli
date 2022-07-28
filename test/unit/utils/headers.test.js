@@ -1,4 +1,4 @@
-const { getHeadersFromOption } = require('../../../lib/utils/headers.mjs')
+const { getHeadersFromOption } = require('../../../lib/utils/headers.js')
 
 test('getHeadersFromOption returns empty object when value is undefined', () => {
   expect(getHeadersFromOption(undefined)).toEqual({})

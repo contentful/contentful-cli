@@ -1,13 +1,13 @@
 const {
   assertLoggedIn,
   assertSpaceIdProvided
-} = require('../../../lib/utils/assertions.mjs')
+} = require('../../../lib/utils/assertions.js')
 
-const { getContext } = require('../../../lib/context.mjs')
-const { highlightStyle } = require('../../../lib/utils/styles.mjs')
+const { getContext } = require('../../../lib/context.js')
+const { highlightStyle } = require('../../../lib/utils/styles.js')
 
-jest.mock('../../../lib/context.mjs')
-jest.mock('../../../lib/utils/styles.mjs')
+jest.mock('../../../lib/context.js')
+jest.mock('../../../lib/utils/styles.js')
 
 getContext.mockResolvedValue({
   managementToken: 'mockedToken'

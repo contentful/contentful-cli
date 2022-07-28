@@ -11,14 +11,14 @@ const {
   generateMigrationScript,
   generateFileName,
   generateMigration
-} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration.mjs')
+} = require('../../../../../lib/cmds/space_cmds/generate_cmds/migration.js')
 const fs = require('fs')
 const {
   createManagementClient
-} = require('../../../../../lib/utils/contentful-clients.mjs')
+} = require('../../../../../lib/utils/contentful-clients.js')
 
-jest.mock('../../../../../lib/utils/contentful-clients.mjs')
-jest.mock('../../../../../lib/context.mjs')
+jest.mock('../../../../../lib/utils/contentful-clients.js')
+jest.mock('../../../../../lib/context.js')
 
 const filePrefix = 'fooSpace'
 const b = types.builders

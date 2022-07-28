@@ -1,4 +1,4 @@
-const markdown = require('../../../lib/utils/markdown.mjs').default
+const markdown = require('../../../lib/utils/markdown.js').default
 
 test('headings are rendered in terminal', function () {
   const md = `

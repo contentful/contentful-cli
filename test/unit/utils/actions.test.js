@@ -1,5 +1,5 @@
 const { prompt } = require('inquirer')
-const { confirmation } = require('../../../lib/utils/actions.mjs')
+const { confirmation } = require('../../../lib/utils/actions.js')
 
 jest.mock('inquirer', () => ({
   prompt: jest.fn()

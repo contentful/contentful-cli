@@ -1,14 +1,14 @@
 const {
   organizationList
-} = require('../../../../lib/cmds/organization_cmds/list.mjs')
+} = require('../../../../lib/cmds/organization_cmds/list.js')
 const {
   createManagementClient
-} = require('../../../../lib/utils/contentful-clients.mjs')
-const { log } = require('../../../../lib/utils/log.mjs')
+} = require('../../../../lib/utils/contentful-clients.js')
+const { log } = require('../../../../lib/utils/log.js')
 
-jest.mock('../../../../lib/context.mjs')
-jest.mock('../../../../lib/utils/contentful-clients.mjs')
-jest.mock('../../../../lib/utils/log.mjs')
+jest.mock('../../../../lib/context.js')
+jest.mock('../../../../lib/utils/contentful-clients.js')
+jest.mock('../../../../lib/utils/log.js')
 
 const organizationData = {
   items: [
