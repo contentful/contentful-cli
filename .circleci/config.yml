@@ -10,6 +10,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run: npm test
   integration:
     docker:
@@ -21,6 +22,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
@@ -55,6 +57,7 @@ jobs:
       - checkout
       - run: git fetch --tags
       - run: npm ci
+      - run: npm run tsc
       - run: npm run semantic-release
   audit: &audit
     docker:
