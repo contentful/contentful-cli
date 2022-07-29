@@ -14,6 +14,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run: npm test
       - run: npm run tsc -- --noEmit
   integration:
@@ -26,6 +27,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
@@ -62,6 +64,7 @@ jobs:
           template-preset: 'semantic-release-ecosystem'
       - run: git fetch --tags
       - run: npm ci
+      - run: npm run tsc
       - run: npm run semantic-release
   audit:
     docker: &ref_0

@@ -1,10 +1,6 @@
-const yargs = require('yargs')
-const { log } = require('./utils/log')
-const {
-  buildContext,
-  getCommand,
-  assertContext
-} = require('./utils/middlewares')
+import yargs from 'yargs'
+import { log } from './utils/log'
+import { buildContext, getCommand, assertContext } from './utils/middlewares'
 const { version } = require('../package.json')
 
 yargs
