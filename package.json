@@ -33,7 +33,6 @@
     "test:integration:ci": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --runInBand\" --success first --kill-others",
     "test:integration:update": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --updateSnapshot --runInBand\" --success first --kill-others",
     "test:e2e": "cross-env jest --testPathPattern=test/e2e --verbose",
-    "test:simulate-ci": "trevor",
     "precommit": "npm run prettier:write && lint-staged",
     "prepush": "jest --changedSince master test/unit/**",
     "prettier": "prettier --config .prettierrc \"./*.js\" \"{./lib,./test,./docs,.}/**/*.{js,json,md}\"",
@@ -64,8 +63,7 @@
     "semantic-release": "^19.0.2",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
-    "talkback": "^3.0.1",
-    "trevor": "^2.4.1"
+    "talkback": "^3.0.1"
   },
   "dependencies": {
     "ast-types": "^0.14.2",
