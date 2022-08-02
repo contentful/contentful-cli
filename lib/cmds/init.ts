@@ -1,8 +1,8 @@
-import { Argv } from 'yargs'
 import inquirer from 'inquirer'
+import chalk from 'chalk'
+import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
-import chalk from 'chalk'
 
 export const command = 'init'
 
@@ -14,7 +14,7 @@ export const builder = (yargs: Argv) => {
     .epilog('Your Contentful Guide: https://contentful.com/developers')
 }
 
-const init = async () => {
+export const init = async () => {
   greetings()
   const { login } = await inquirer.prompt([
     {
