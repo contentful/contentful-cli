@@ -1,7 +1,7 @@
 const inquirer = require('inquirer')
 const open = require('open')
 
-const { handler: loginHandler } = require('../../../lib/cmds/login')
+const { handler: loginHandler } = require('../../../dist/cmds/login')
 const { getContext, setContext } = require('../../../lib/context')
 const { confirmation } = require('../../../lib/utils/actions')
 
