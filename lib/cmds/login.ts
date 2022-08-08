@@ -1,25 +1,26 @@
-const open = require('open')
-const inquirer = require('inquirer')
-const chalk = require('chalk')
+import open from 'open'
+import inquirer from 'inquirer'
+import chalk from 'chalk'
 
-const { getConfigPath, setContext, storeRuntimeConfig } = require('../context')
-const { confirmation } = require('../utils/actions')
-const { handleAsyncError: handle } = require('../utils/async')
-const { log } = require('../utils/log')
-const { highlightStyle, codeStyle, pathStyle } = require('../utils/styles')
-const { frame } = require('../utils/text')
+import { getConfigPath, setContext, storeRuntimeConfig } from '../context'
+import { confirmation } from '../utils/actions'
+import { handleAsyncError as handle } from '../utils/async'
+import { log } from '../utils/log'
+import { highlightStyle, codeStyle, pathStyle } from '../utils/styles'
+import { frame } from '../utils/text'
+import { Argv } from 'yargs'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
 const REDIRECT_URI = 'https://www.contentful.com/developers/cli-oauth-page/'
 const oAuthURL = `https://be.contentful.com/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage`
 
-module.exports.command = 'login'
+export const command = 'login'
 
-module.exports.desc = 'Login to Contentful'
+export const desc = 'Login to Contentful'
 
-module.exports.builder = yargs => {
-  return yargs
+export const builder = (yargs: Argv) =>
+  yargs
     .usage('Usage: contentful login')
     .option('management-token', {
       alias: 'mt',
@@ -33,9 +34,20 @@ module.exports.builder = yargs => {
         'Copyright 2019 Contentful'
       ].join('\n')
     )
+
+interface Context {
+  managementToken?: string
 }
 
-async function login({ context, managementToken: managementTokenFlag }) {
+interface LoginProps {
+  context: Context
+  managementToken: string
+}
+
+export const login = async ({
+  context,
+  managementToken: managementTokenFlag
+}: LoginProps) => {
   const { managementToken } = context
 
   let token
@@ -61,10 +73,14 @@ async function login({ context, managementToken: managementTokenFlag }) {
     )
     log()
 
-    const confirmed = await confirmation('Open a browser window now?')
+    const confirmed = await confirmation('Continue login through the browser?')
 
     if (!confirmed) {
-      log('Log in aborted by the user.')
+      log(
+        chalk.red('Aborted!'),
+        'please login to use contentful cli features!',
+        `\nUsage: ${chalk.green('contentful')} ${chalk.cyan('login')}`
+      )
       return
     }
 
@@ -110,6 +126,4 @@ async function login({ context, managementToken: managementTokenFlag }) {
   return token
 }
 
-module.exports.login = login
-
-module.exports.handler = handle(login)
+export const handler = handle(login)
