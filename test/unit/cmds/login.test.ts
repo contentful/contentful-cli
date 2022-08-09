@@ -1,7 +1,5 @@
 import { prompt, PromptModule } from 'inquirer'
 import open from 'open'
-import { MockedFunction } from 'ts-jest/dist/utils/testing'
-
 import { handler as loginHandler } from '../../../lib/cmds/login'
 import { getContext, setContext } from '../../../lib/context'
 import { confirmation } from '../../../lib/utils/actions'
@@ -16,11 +14,11 @@ const mockedRcConfig = {
 }
 
 const mocks = {
-  inquirerPrompt: prompt as MockedFunction<PromptModule>,
-  open: open as MockedFunction<typeof open>,
-  setContext: setContext as MockedFunction<any>,
-  getContext: getContext as MockedFunction<any>,
-  confirmation: confirmation as MockedFunction<any>
+  inquirerPrompt: prompt as jest.MockedFunction<PromptModule>,
+  open: open as jest.MockedFunction<typeof open>,
+  setContext: setContext as jest.MockedFunction<any>,
+  getContext: getContext as jest.MockedFunction<any>,
+  confirmation: confirmation as jest.MockedFunction<any>
 }
 
 mocks.inquirerPrompt.mockResolvedValue(mockedRcConfig)
