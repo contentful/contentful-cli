@@ -9,6 +9,8 @@ import { log } from '../utils/log'
 import { highlightStyle, codeStyle, pathStyle } from '../utils/styles'
 import { frame } from '../utils/text'
 import { Argv } from 'yargs'
+import { stdin, stdout } from 'process'
+import { listener, emitter } from '../utils/http-listener'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
@@ -49,6 +51,7 @@ export const login = async ({
   managementToken: managementTokenFlag
 }: LoginProps) => {
   const { managementToken } = context
+  const tokenListener = listener('token')
 
   let token
   if (managementTokenFlag) {
@@ -86,9 +89,9 @@ export const login = async ({
 
     // We open the browser window only on Windows and OSX since this might fail or open the wrong browser on Linux.
     if (['win32', 'darwin'].includes(process.platform)) {
-      await open(oAuthURL, {
-        wait: false
-      })
+      // await open(oAuthURL, {
+      //   wait: false
+      // })
     } else {
       log(
         `Unable to open your browser automatically. Please open the following URI in your browser:\n\n${pathStyle(
@@ -97,12 +100,20 @@ export const login = async ({
       )
     }
 
+    emitter.on('token', params => {
+      const token = params.get('token')
+      if (!token) return
+      // stdin.write(`${token}\n`)
+      tokenListener.close()
+    })
+
     const tokenAnswer = await inquirer.prompt([
       {
         type: 'password',
         name: 'managementToken',
         message: 'Paste your token here:',
-        validate: val => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()) // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
+        validate: val => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()), // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
+        mask: true
       }
     ])
 
