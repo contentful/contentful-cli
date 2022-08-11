@@ -1,5 +1,3 @@
-import inquirer from 'inquirer'
-import chalk from 'chalk'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
@@ -17,13 +15,14 @@ export const builder = (yargs: Argv) => {
 }
 
 export const init = async () => {
-  greetings()
   const context = await getContext()
-  const managementToken = context.managementToken
-  await login({
-    context,
-    managementToken
-  })
+
+  greetings()
+
+  if (!context.managementToken)
+    await login({
+      context
+    })
 }
 
 export const handler = handle(init)

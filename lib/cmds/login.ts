@@ -41,7 +41,7 @@ interface Context {
 
 interface LoginProps {
   context: Context
-  managementToken: string
+  managementToken?: string
 }
 
 export const login = async ({
