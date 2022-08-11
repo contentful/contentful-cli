@@ -1,14 +1,16 @@
-const runContentfulImport = require('contentful-import')
-const { handleAsyncError: handle } = require('../../utils/async')
-const { proxyObjectToString } = require('../../utils/proxy')
-const { version } = require('../../../package.json')
-const { warning } = require('../../utils/log')
-const { getHeadersFromOption } = require('../../utils/headers')
-module.exports.command = 'import'
+import runContentfulImport from 'contentful-import'
+import { handleAsyncError as handle } from '../../utils/async'
+import { proxyObjectToString } from '../../utils/proxy'
+import { version } from '../../../package.json'
+import { warning } from '../../utils/log'
+import { getHeadersFromOption } from '../../utils/headers'
+import { Argv } from 'yargs'
 
-module.exports.desc = 'import a space'
+export const command = 'import'
 
-module.exports.builder = yargs => {
+export const desc = 'import a space'
+
+export const builder = (yargs: Argv) => {
   return yargs
     .usage('Usage: contentful space import --content-file <file>')
     .option('space-id', {
@@ -92,7 +94,43 @@ module.exports.builder = yargs => {
     .epilog('Copyright 2019 Contentful')
 }
 
-const importSpace = async argv => {
+interface ProxyObject {
+  host: string
+  port: number
+  auth: { username: string; password: string }
+  isHttps: boolean
+}
+
+interface Context {
+  managementToken?: string
+  activeSpaceId?: string
+  activeEnvironmentId?: string
+  host?: string
+  proxy?: string | ProxyObject
+  rawProxy?: string
+}
+
+interface ImportSpaceProps {
+  context: Context
+  feature?: string
+  update?: never
+  header?: string
+  proxy?: string
+}
+
+interface Options {
+  spaceId?: string
+  environmentId?: string
+  managementApplication: string
+  managementFeature: string
+  managementToken?: string
+  host?: string
+  headers: string
+  proxy?: string
+  rawProxy?: string
+}
+
+export const importSpace = async (argv: ImportSpaceProps) => {
   if (argv.update !== undefined) {
     warning('The --update option has been deprecated and will be ignored.')
   }
@@ -107,7 +145,7 @@ const importSpace = async argv => {
     rawProxy
   } = context
 
-  const options = {
+  const options: Options = {
     ...argv,
     spaceId: activeSpaceId,
     environmentId: activeEnvironmentId,
@@ -134,5 +172,4 @@ const importSpace = async argv => {
   return runContentfulImport(options)
 }
 
-module.exports.importSpace = importSpace
-module.exports.handler = handle(importSpace)
+export const handler = handle(importSpace)
