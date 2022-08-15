@@ -9,7 +9,6 @@ import { log } from '../utils/log'
 import { highlightStyle, codeStyle, pathStyle } from '../utils/styles'
 import { frame } from '../utils/text'
 import { Argv } from 'yargs'
-import { stdin, stdout } from 'process'
 import { listener, emitter } from '../utils/http-listener'
 
 const APP_ID =
@@ -51,7 +50,7 @@ export const login = async ({
   managementToken: managementTokenFlag
 }: LoginProps) => {
   const { managementToken } = context
-  const tokenListener = listener('token')
+  listener('token')
 
   let token
   if (managementTokenFlag) {
@@ -89,9 +88,9 @@ export const login = async ({
 
     // We open the browser window only on Windows and OSX since this might fail or open the wrong browser on Linux.
     if (['win32', 'darwin'].includes(process.platform)) {
-      // await open(oAuthURL, {
-      //   wait: false
-      // })
+      await open(oAuthURL, {
+        wait: false
+      })
     } else {
       log(
         `Unable to open your browser automatically. Please open the following URI in your browser:\n\n${pathStyle(
@@ -100,14 +99,15 @@ export const login = async ({
       )
     }
 
-    emitter.on('token', params => {
+    let tokenPrompt: any = undefined
+    emitter.on('token', async params => {
       const token = params.get('token')
       if (!token) return
-      // stdin.write(`${token}\n`)
-      tokenListener.close()
+      await setContext({ managementToken: token })
+      tokenPrompt.ui.close()
     })
 
-    const tokenAnswer = await inquirer.prompt([
+    tokenPrompt = await inquirer.prompt([
       {
         type: 'password',
         name: 'managementToken',
@@ -117,7 +117,9 @@ export const login = async ({
       }
     ])
 
-    token = tokenAnswer.managementToken
+    console.log('tokenPrompt')
+
+    token = tokenPrompt.managementToken
   }
 
   await setContext({
