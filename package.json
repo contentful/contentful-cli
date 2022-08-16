@@ -28,7 +28,7 @@
     "posttest:integration": "node test/integration/scripts/post-test.js",
     "posttest:integration:ci": "npm run posttest:integration",
     "posttest:integration:update": "npm run posttest:integration",
-    "test:jest": "jest test/integration/cmds/**",
+    "test:jest": "jest test/integration/cmds/space/environment/create-list-delete.test.js",
     "test:integration": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest\" --success first --kill-others",
     "test:integration:ci": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --runInBand\" --success first --kill-others",
     "test:integration:update": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --updateSnapshot --runInBand\" --success first --kill-others",

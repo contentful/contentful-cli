@@ -74,6 +74,8 @@ async function createSimpleSpace(organization, spaceName) {
   const client = await createManagementClient({
     accessToken: process.env.CLI_E2E_CMA_TOKEN
   })
+
+  console.log("client - ", client)
   return client.createSpace(
     {
       name: 'IntegrationTest_' + spaceName

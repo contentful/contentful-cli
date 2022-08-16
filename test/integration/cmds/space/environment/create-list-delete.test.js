@@ -15,6 +15,7 @@ const spacesToDelete = []
 beforeAll(async () => {
   await initConfig()
   space = await createSimpleSpace(org, 'space-env')
+  console.log("SPACE - ", space)
   spacesToDelete.push(space.sys.id)
 })
 
@@ -22,7 +23,7 @@ afterAll(() => {
   return deleteSpaces(spacesToDelete)
 }, 10000)
 
-test('should create, list and delete environment', done => {
+test.only('should create, list and delete environment', done => {
   function createEnvironment() {
     app()
       .run(
