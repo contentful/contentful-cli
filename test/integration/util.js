@@ -71,19 +71,15 @@ function extractSpaceId(text) {
 module.exports.extractSpaceId = extractSpaceId
 
 async function createSimpleSpace(organization, spaceName) {
-  try {
-    const client = await createManagementClient({
-      accessToken: process.env.CLI_E2E_CMA_TOKEN
-    })
-    return client.createSpace(
-      {
-        name: 'IntegrationTest_' + spaceName
-      },
-      organization
-    )
-  } catch (err) {
-    console.error('---------error creating a space', err)
-  }
+  const client = await createManagementClient({
+    accessToken: process.env.CLI_E2E_CMA_TOKEN
+  })
+  return client.createSpace(
+    {
+      name: 'IntegrationTest_' + spaceName
+    },
+    organization
+  )
 }
 
 module.exports.createSimpleSpace = createSimpleSpace
