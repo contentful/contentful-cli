@@ -21,11 +21,7 @@ beforeAll(() => {
 })
 
 beforeAll(async () => {
-  console.log('--------------------Create Space Start')
   space = await createSimpleSpace(org, 'ext-crud')
-  console.log('--------------------Create Space Sleep Start')
-  await new Promise(r => setTimeout(r, 10000))
-  console.log('--------------------Create Extension Sleep End', space)
   environment = await space.getEnvironment('master')
   spacesToDelete.push(space.sys.id)
 })
@@ -34,7 +30,7 @@ afterAll(() => {
   return deleteSpaces(spacesToDelete)
 })
 
-test.only('should be able to create, update and delete a extension', done => {
+test('should be able to create, update and delete a extension', done => {
   const newSrc = 'https://new-src.example.com'
 
   function createExtension() {
