@@ -1,21 +1,22 @@
-const inquirer = require('inquirer')
-const { createManagementClient } = require('../../utils/contentful-clients')
+import inquirer from 'inquirer'
+import { Argv } from 'yargs'
+import { createManagementClient } from '../../utils/contentful-clients'
 
-const { setContext, storeRuntimeConfig } = require('../../context')
-const { handleAsyncError: handle } = require('../../utils/async')
-const { success } = require('../../utils/log')
-const paginate = require('../../utils/pagination')
-const { highlightStyle } = require('../../utils/styles')
-const { getHeadersFromOption } = require('../../utils/headers')
+import { setContext, storeRuntimeConfig } from '../../context'
+import { handleAsyncError as handle } from '../../utils/async'
+import { success } from '../../utils/log'
+import paginate from '../../utils/pagination'
+import { highlightStyle } from '../../utils/styles'
+import { getHeadersFromOption } from '../../utils/headers'
 
-module.exports.command = 'use'
+export const command = 'use'
 
-module.exports.desc =
+export const desc =
   'Sets the default space which every command will use when the --space-id option is skipped.'
 
-module.exports.aliases = ['u']
+export const aliases = ['u']
 
-module.exports.builder = yargs => {
+export const builder = (yargs: Argv) => {
   return yargs
     .usage('Usage: contentful space use')
     .option('space-id', {
@@ -31,7 +32,14 @@ module.exports.builder = yargs => {
     .epilog('Copyright 2019 Contentful')
 }
 
-function showSuccess(space, env) {
+interface Space {
+  name: string
+  sys: {
+    id: string
+  }
+}
+
+function showSuccess(space: Space, env: string) {
   success(
     `Now using the '${env}' Environment of Space ${highlightStyle(
       space.name
@@ -41,7 +49,19 @@ function showSuccess(space, env) {
   )
 }
 
-async function spaceUse({ context, spaceId, header }) {
+interface Context {
+  managementToken?: string
+  activeSpaceId?: string
+  activeEnvironmentId?: string
+}
+
+interface SpaceUseProps {
+  context: Context
+  spaceId?: string
+  header?: string
+}
+
+export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
   const { managementToken, activeEnvironmentId } = context
 
   const client = await createManagementClient({
@@ -59,13 +79,13 @@ async function spaceUse({ context, spaceId, header }) {
 
     await storeRuntimeConfig()
 
-    showSuccess(space, activeEnvironmentId)
+    showSuccess(space, activeEnvironmentId as string)
 
     return space
   }
 
   const spacesResult = await paginate({ client, method: 'getSpaces' })
-  const spaceChoices = spacesResult.items
+  const spaceChoices = (spacesResult.items as Space[])
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(
       space => ({
@@ -80,6 +100,7 @@ async function spaceUse({ context, spaceId, header }) {
     {
       type: 'list',
       name: 'spaceId',
+      prefix: '👀',
       message: 'Please select a space:',
       choices: spaceChoices
     }
@@ -99,6 +120,4 @@ async function spaceUse({ context, spaceId, header }) {
   return space
 }
 
-module.exports.spaceUse = spaceUse
-
-module.exports.handler = handle(spaceUse)
+export const handler = handle(spaceUse)

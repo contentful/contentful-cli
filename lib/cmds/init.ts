@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import chalk from 'chalk'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
@@ -7,6 +8,8 @@ import { login } from './login'
 import { spaceCreate } from './space_cmds/create'
 import { importSpace } from './space_cmds/import'
 import initialContent from './init/content.json'
+import { createManagementClient } from '../utils/contentful-clients'
+import { spaceUse } from './space_cmds/use'
 
 export const command = 'init'
 
@@ -80,6 +83,9 @@ export const init = async () => {
         content: initialContent
       })
     }
+  } else {
+    const space = await spaceUse({ context })
+    console.log({space})
   }
 }
 
