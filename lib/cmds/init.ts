@@ -91,11 +91,8 @@ export const init = async () => {
   // something something
 
   success({
-    accessToken,
-    connectionType: type,
-    entryId,
-    environmentId,
-    spaceId
+    accessToken: context.managementToken,
+    connectionType: type
   })
 }
 
