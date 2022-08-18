@@ -2,6 +2,7 @@ import inquirer from 'inquirer'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
+import success, { type ConnectionType } from './init/success'
 import { getContext } from '../context'
 import { login } from './login'
 import { spaceCreate } from './space_cmds/create'
@@ -86,6 +87,16 @@ export const init = async () => {
     const space = await spaceUse({ context })
     // Return space to be used.
   }
+
+  // something something
+
+  success({
+    accessToken,
+    connectionType: type,
+    entryId,
+    environmentId,
+    spaceId
+  })
 }
 
 export const handler = handle(init)
