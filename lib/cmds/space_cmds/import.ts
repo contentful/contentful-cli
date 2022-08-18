@@ -116,6 +116,7 @@ interface ImportSpaceProps {
   update?: never
   header?: string
   proxy?: string
+  content?: object
 }
 
 interface Options {
