@@ -1,4 +1,4 @@
-import inquirer from 'inquirer'
+import inquirer, { Separator } from 'inquirer'
 import { Argv } from 'yargs'
 import { createManagementClient } from '../../utils/contentful-clients'
 
@@ -8,6 +8,7 @@ import { success } from '../../utils/log'
 import paginate from '../../utils/pagination'
 import { highlightStyle } from '../../utils/styles'
 import { getHeadersFromOption } from '../../utils/headers'
+import { Space } from 'contentful-management'
 
 export const command = 'use'
 
@@ -30,13 +31,6 @@ export const builder = (yargs: Argv) => {
       describe: 'Pass an additional HTTP Header'
     })
     .epilog('Copyright 2019 Contentful')
-}
-
-interface Space {
-  name: string
-  sys: {
-    id: string
-  }
 }
 
 function showSuccess(space: Space, env: string) {
@@ -85,7 +79,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
   }
 
   const spacesResult = await paginate({ client, method: 'getSpaces' })
-  const spaceChoices = (spacesResult.items as Space[])
+  const spaceChoices = (spacesResult.items as Array<Space>)
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(
       space => ({
@@ -94,7 +88,6 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
       }),
       {}
     )
-    .concat([new inquirer.Separator()])
 
   const answersSpaceSelection = await inquirer.prompt([
     {
@@ -102,7 +95,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
       name: 'spaceId',
       prefix: '👀',
       message: 'Please select a space:',
-      choices: spaceChoices
+      choices: [...spaceChoices, new Separator()]
     }
   ])
 
@@ -115,7 +108,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
 
   await storeRuntimeConfig()
 
-  showSuccess(space, activeEnvironmentId)
+  showSuccess(space, activeEnvironmentId as string)
 
   return space
 }
