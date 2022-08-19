@@ -13,9 +13,9 @@ export default async function success({
 }: {
   accessToken: string
   connectionType: ConnectionType
-  entryId: string
-  environmentId: string
-  spaceId: string
+  entryId?: string
+  environmentId?: string
+  spaceId?: string
 }) {
   const examples = {
     'Contentful.js': highlight(
@@ -49,9 +49,11 @@ export default async function success({
 
   console.log(`Try your first request with ${connectionType}:`)
   console.log(examples[connectionType])
-  console.log(
-    "Don't forget to replace environment ID and entry ID with your own values\n"
-  )
+
+  if (entryId)
+    console.log(
+      "Don't forget to replace space ID, environment ID, and entry ID with your own values\n"
+    )
 
   if (connectionType === 'GraphQL') {
     console.log(

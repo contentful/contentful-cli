@@ -88,11 +88,13 @@ export const init = async () => {
     // Return space to be used.
   }
 
-  // something something
+  // something something, get the flow type
+  // one of 'Contentful.js', 'GraphQL', 'REST API'
+  const connectionType = 'GraphQL'
 
   success({
     accessToken: context.managementToken,
-    connectionType: type
+    connectionType
   })
 }
 
