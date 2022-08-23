@@ -43,34 +43,35 @@ test('should print help message and exit 1 when no args', done => {
     .end(done)
 })
 
-test('should exit 1 when no args, even with activeSpaceId set', async done => {
+test('should exit 1 when no args, even with activeSpaceId set', done => {
   // Add and remove property activeSpaceId and activeEnvironmentId to
   // .contentfulrc.json for only this test:
   const configFilePath = resolve(homedir(), '.contentfulrc.json')
   let configContents = null
-  async function before() {
-    try {
-      let configContentsBuffer = await readFile(configFilePath)
-      configContents = JSON.parse(configContentsBuffer)
-      return writeFile(
-        configFilePath,
-        JSON.stringify(
-          {
-            ...configContents,
-            activeSpaceId: space.sys.id,
-            activeEnvironmentId: 'master'
-          },
-          null,
-          2
+  function before() {
+    readFile(configFilePath)
+      .then(contentBuffer => {
+        configContents = JSON.parse(contentBuffer)
+        return writeFile(
+          configFilePath,
+          JSON.stringify(
+            {
+              ...configContents,
+              activeSpaceId: space.sys.id,
+              activeEnvironmentId: 'master'
+            },
+            null,
+            2
+          )
         )
-      )
-    } catch (e) {
-      throw new Error(
-        'Could not create sample .contentfulrc.json with activeSpaceId property'
-      )
-    }
+      })
+      .catch(err => {
+        new Error(
+          `Could not create sample .contentfulrc.json with activeSpaceId property ${err}`
+        )
+      })
   }
-  async function after() {
+  function after() {
     return writeFile(configFilePath, JSON.stringify(configContents))
   }
   app()
