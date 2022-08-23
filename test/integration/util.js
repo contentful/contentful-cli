@@ -63,8 +63,9 @@ async function deleteSpaces(spacesToDelete) {
 module.exports.deleteSpaces = deleteSpaces
 
 function extractSpaceId(text) {
-  var regex = /successfully created space \w* \((.*)\)/i
-  var found = text.match(regex)
+  const regex = /successfully created space .*/i
+  const sentenceWithSpaceId = text.match(regex)
+  const found = sentenceWithSpaceId[0].match(/\((.*)\)/i)
   return found[1]
 }
 
