@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "pkg --targets node12-macos-x64,node12-linux-x64,node12-win-x64 --out-dir build .",
+    "build:standalone": "pkg --targets node16-macos-x64,node16-linux-x64,node16-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
