@@ -48,6 +48,7 @@
     "@babel/core": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.18.6",
+    "@contentful/integration-test-utils": "^2.0.0",
     "@types/inquirer": "^8.2.1",
     "@types/jest": "^28.1.6",
     "@types/node": "^18.6.2",
