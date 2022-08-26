@@ -1,14 +1,8 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const {
-  initConfig,
-  deleteSpaces,
-  createSimpleSpace,
-  expectedDir
-} = require('../../util')
+const { createSimpleSpace, expectedDir } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
   return nixt({ newlines: true, showDiff: true })
@@ -17,19 +11,11 @@ const app = () => {
     .clone()
 }
 
-var space = null
-var spacesToDelete = []
+let space = null
 
-beforeAll(() => {
-  return initConfig()
-})
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'space-import')
-  spacesToDelete.push(space.sys.id)
+  space = await createSimpleSpace('Space Import')
 })
-afterAll(() => {
-  return deleteSpaces(spacesToDelete)
-}, 10000)
 
 test('should print help message', done => {
   app()

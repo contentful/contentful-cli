@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { initConfig, createSimpleSpace } = require('../../util')
+const { createSimpleSpace } = require('../../util')
 const { readFile, writeFile } = require('mz/fs')
 const { homedir } = require('os')
 const { resolve } = require('path')
@@ -12,11 +12,8 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-var space = null
+let space = null
 
-beforeAll(() => {
-  return initConfig()
-})
 beforeAll(async () => {
   space = await createSimpleSpace(org, 'space-delete')
 })

@@ -1,33 +1,18 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { initConfig } = require('../../util')
-import { createTestSpace, initClient } from '@contentful/integration-test-utils'
+import { createSimpleSpace } from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
-const organizationId = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-const client = initClient()
-
 let space = null
 
-beforeAll(() => {
-  return initConfig()
-})
 beforeAll(async () => {
-  space = await createTestSpace({
-    client,
-    repo: 'CLI',
-    organizationId,
-    testSuiteName: 'Spaces list'
-  })
+  space = await createSimpleSpace('List Spaces')
 })
-afterAll(() => {
-  if (space) return space.delete()
-}, 10000)
 
 test('should print help message', done => {
   app()
