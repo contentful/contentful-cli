@@ -9,6 +9,8 @@ const enoent = new Error()
 enoent.code = 'ENOENT'
 
 beforeEach(() => {
+  // ensure no custom config file path
+  delete process.env.CONTENTFUL_CONFIG_FILE
   jest.resetModules()
 })
 

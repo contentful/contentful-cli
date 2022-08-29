@@ -16,6 +16,11 @@ const testConfig = {
   activeSpaceId: '89898989'
 }
 
+beforeEach(() => {
+  // ensure no custom config file path
+  delete process.env.CONTENTFUL_CONFIG_FILE
+})
+
 async function before() {
   try {
     oldConfigContents = await readFile(testConfigPath)

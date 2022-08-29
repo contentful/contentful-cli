@@ -68,7 +68,7 @@ test('should be able to create, update and delete a extension', done => {
   function deleteExtension() {
     app()
       .run(
-        `extension delete --id sample-extension --space-id ${space.sys.id} --version 1`
+        `extension delete --id sample-extension --space-id ${space.sys.id} --version 2`
       )
       .expect(result => {
         console.log(result.stdout)

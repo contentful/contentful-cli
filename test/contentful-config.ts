@@ -1,10 +1,14 @@
 import { writeFile, stat } from 'fs/promises'
-import { resolve } from 'path'
-import { homedir } from 'os'
 
-const configFile = resolve(homedir(), '.contentfulrc.json')
+const configFile = process.env.CONTENTFUL_CONFIG_FILE
 
 export async function initConfig() {
+  if (!configFile)
+    throw Error(
+      `Please specify .contentfulrc.json path
+      Set env variable CONTENTFUL_CONFIG_FILE`
+    )
+
   try {
     await stat(configFile)
   } catch (e) {

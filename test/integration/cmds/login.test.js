@@ -7,7 +7,7 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-test('should be already loged in', done => {
+test('should be already logged in', done => {
   app()
     .run('login')
     .code(0)
