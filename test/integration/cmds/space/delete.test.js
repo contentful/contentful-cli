@@ -6,7 +6,6 @@ const { homedir } = require('os')
 const { resolve } = require('path')
 
 const bin = join(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
@@ -15,7 +14,7 @@ const app = () => {
 let space = null
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'space-delete')
+  space = await createSimpleSpace('Space Delete')
 })
 
 test('should print help message', done => {

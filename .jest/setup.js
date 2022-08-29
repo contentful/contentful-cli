@@ -1,5 +1,5 @@
 import { cleanUpTestSpaces } from '@contentful/integration-test-utils'
-import { initConfig } from '../test/integration/util'
+import { initConfig } from '../test/contentful-config'
 
 beforeAll(() => {
   return initConfig()
