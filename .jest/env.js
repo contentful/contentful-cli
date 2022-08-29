@@ -1,2 +1,3 @@
 import { tmpdir } from 'os'
-process.env.CONTENTFUL_CONFIG_FILE = `${tmpdir()}/.contentfulrc.json`
+import { join } from 'path'
+process.env.CONTENTFUL_CONFIG_FILE = join(tmpdir(), '.contentfulrc.json')

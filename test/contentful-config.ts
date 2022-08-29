@@ -1,4 +1,4 @@
-import { writeFile, stat } from 'fs/promises'
+import { writeFile, stat, readFile } from 'fs/promises'
 
 const configFile = process.env.CONTENTFUL_CONFIG_FILE
 
@@ -22,7 +22,8 @@ export async function initConfig() {
     )
   }
 
-  const configParams = require(configFile)
+  const configParamsFile = await readFile(configFile, 'utf8')
+  const configParams = JSON.parse(configParamsFile)
 
   if (configParams.managementToken !== null) {
     return configParams
