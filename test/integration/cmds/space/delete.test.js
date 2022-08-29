@@ -1,24 +1,20 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { initConfig, createSimpleSpace } = require('../../util')
-const { readFile, writeFile } = require('mz/fs')
+const { createSimpleSpace } = require('../../util')
+const { readFile, writeFile } = require('fs/promises')
 const { homedir } = require('os')
 const { resolve } = require('path')
 
 const bin = join(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
-var space = null
+let space = null
 
-beforeAll(() => {
-  return initConfig()
-})
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'space-delete')
+  space = await createSimpleSpace('Space Delete')
 })
 
 test('should print help message', done => {
@@ -43,34 +39,35 @@ test('should print help message and exit 1 when no args', done => {
     .end(done)
 })
 
-test('should exit 1 when no args, even with activeSpaceId set', async done => {
+test('should exit 1 when no args, even with activeSpaceId set', done => {
   // Add and remove property activeSpaceId and activeEnvironmentId to
   // .contentfulrc.json for only this test:
   const configFilePath = resolve(homedir(), '.contentfulrc.json')
   let configContents = null
-  async function before() {
-    try {
-      let configContentsBuffer = await readFile(configFilePath)
-      configContents = JSON.parse(configContentsBuffer)
-      return writeFile(
-        configFilePath,
-        JSON.stringify(
-          {
-            ...configContents,
-            activeSpaceId: space.sys.id,
-            activeEnvironmentId: 'master'
-          },
-          null,
-          2
+  function before() {
+    readFile(configFilePath)
+      .then(contentBuffer => {
+        configContents = JSON.parse(contentBuffer)
+        return writeFile(
+          configFilePath,
+          JSON.stringify(
+            {
+              ...configContents,
+              activeSpaceId: space.sys.id,
+              activeEnvironmentId: 'master'
+            },
+            null,
+            2
+          )
         )
-      )
-    } catch (e) {
-      throw new Error(
-        'Could not create sample .contentfulrc.json with activeSpaceId property'
-      )
-    }
+      })
+      .catch(err => {
+        new Error(
+          `Could not create sample .contentfulrc.json with activeSpaceId property ${err}`
+        )
+      })
   }
-  async function after() {
+  function after() {
     return writeFile(configFilePath, JSON.stringify(configContents))
   }
   app()

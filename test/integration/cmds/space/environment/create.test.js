@@ -1,26 +1,17 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { initConfig, deleteSpaces, createSimpleSpace } = require('../../../util')
+const { createSimpleSpace } = require('../../../util')
 
 const bin = join(__dirname, './../../../../../', 'bin')
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
-
-const org = process.env.CLI_E2E_ORG_ID
 let space = null
-const spacesToDelete = []
 
 beforeAll(async () => {
-  await initConfig()
-  space = await createSimpleSpace(org, 'space-env-cr')
-  spacesToDelete.push(space.sys.id)
+  space = await createSimpleSpace('Space Env Create')
 })
-
-afterAll(() => {
-  return deleteSpaces(spacesToDelete)
-}, 10000)
 
 test('should exit 1 when no args', done => {
   app()
