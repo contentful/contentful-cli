@@ -1,9 +1,8 @@
 const nixt = require('nixt')
 const { resolve } = require('path')
-const { initConfig, createSimpleSpace, deleteSpaces } = require('../../util')
+const { createSimpleSpace } = require('../../util')
 
 const bin = resolve(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
 
 const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
@@ -14,20 +13,10 @@ const app = () => {
 
 let space = null
 let environment = null
-let spacesToDelete = []
-
-beforeAll(() => {
-  return initConfig()
-})
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'ext-crud')
+  space = await createSimpleSpace('Extensions')
   environment = await space.getEnvironment('master')
-  spacesToDelete.push(space.sys.id)
-})
-
-afterAll(() => {
-  return deleteSpaces(spacesToDelete)
 })
 
 test('should be able to create, update and delete a extension', done => {
@@ -79,7 +68,7 @@ test('should be able to create, update and delete a extension', done => {
   function deleteExtension() {
     app()
       .run(
-        `extension delete --id sample-extension --space-id ${space.sys.id} --version 1`
+        `extension delete --id sample-extension --space-id ${space.sys.id} --version 2`
       )
       .expect(result => {
         console.log(result.stdout)

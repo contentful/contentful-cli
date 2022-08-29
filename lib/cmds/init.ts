@@ -1,8 +1,8 @@
-import inquirer from 'inquirer'
-import chalk from 'chalk'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
+import { getContext } from '../context'
+import { login } from './login'
 
 export const command = 'init'
 
@@ -15,22 +15,14 @@ export const builder = (yargs: Argv) => {
 }
 
 export const init = async () => {
+  const context = await getContext()
+
   greetings()
-  const { login } = await inquirer.prompt([
-    {
-      type: 'confirm',
-      name: 'login',
-      prefix: '🔒',
-      message: `You are ${chalk.red(
-        'not'
-      )} logged in, continue login in browser?`
-    }
-  ])
-  if (!login)
-    return console.log(
-      chalk.red('Please login to take advantage of contentful cli features!'),
-      `\nUse: ${chalk.green('contentful')} ${chalk.cyan('login')}`
-    )
+
+  if (!context.managementToken)
+    await login({
+      context
+    })
 }
 
 export const handler = handle(init)
