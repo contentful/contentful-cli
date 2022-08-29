@@ -78,7 +78,7 @@ export const login = async ({
     if (!confirmed) {
       log(
         chalk.red('Aborted!'),
-        'please login to use contentful cli features!',
+        'please login to use Contentful CLI features!',
         `\nUsage: ${chalk.green('contentful')} ${chalk.cyan('login')}`
       )
       return

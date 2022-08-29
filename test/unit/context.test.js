@@ -32,8 +32,8 @@ test('uses home directory as config file path if none is found', async () => {
 
 test('loading, writing, setting and getting context & rc', async () => {
   jest.mock('find-up')
-  jest.mock('mz/fs')
-  const { readFile, writeFile } = require('mz/fs')
+  jest.mock('fs/promises')
+  const { readFile, writeFile } = require('fs/promises')
   readFile.mockRejectedValue(enoent)
 
   const {
@@ -65,8 +65,8 @@ test('loading, writing, setting and getting context & rc', async () => {
 
 test('loading existing rc config and attaching it to the context', async () => {
   jest.mock('find-up')
-  jest.mock('mz/fs')
-  const { readFile } = require('mz/fs')
+  jest.mock('fs/promises')
+  const { readFile } = require('fs/promises')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
 
   const { getContext } = require('../../lib/context')
@@ -79,8 +79,8 @@ test('loading existing rc config and attaching it to the context', async () => {
 })
 
 test('loadProxyFromEnv', async () => {
-  jest.mock('mz/fs')
-  const { readFile } = require('mz/fs')
+  jest.mock('fs/promises')
+  const { readFile } = require('fs/promises')
   const { emptyContext, getContext } = require('../../lib/context')
   readFile.mockResolvedValue({ toString: () => MOCKED_RC })
   let context

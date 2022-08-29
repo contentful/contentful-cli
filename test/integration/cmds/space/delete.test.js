@@ -1,7 +1,7 @@
 const nixt = require('nixt')
 const { join } = require('path')
 const { createSimpleSpace } = require('../../util')
-const { readFile, writeFile } = require('mz/fs')
+const { readFile, writeFile } = require('fs/promises')
 const { homedir } = require('os')
 const { resolve } = require('path')
 

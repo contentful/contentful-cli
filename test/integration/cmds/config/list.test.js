@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { readFile, writeFile, unlink } = require('mz/fs')
+const { readFile, writeFile, unlink } = require('fs/promises')
 const { emptyContext } = require('../../../../lib/context')
 
 const bin = join(__dirname, './../../../../', 'bin')

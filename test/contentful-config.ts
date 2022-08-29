@@ -1,4 +1,4 @@
-import { writeFile, stat } from 'mz/fs'
+import { writeFile, stat } from 'fs/promises'
 import { resolve } from 'path'
 import { homedir } from 'os'
 
