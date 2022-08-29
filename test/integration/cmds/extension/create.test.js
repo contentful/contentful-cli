@@ -1,10 +1,8 @@
 const nixt = require('nixt')
 const { resolve } = require('path')
-const { initConfig, createSimpleSpace, deleteSpaces } = require('../../util')
+const { createSimpleSpace } = require('../../util')
 
 const bin = resolve(__dirname, './../../../../', 'bin')
-const org = process.env.CLI_E2E_ORG_ID
-
 const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
 const srcDocPath = resolve(__dirname, 'fixtures', 'sample-extension.html')
 
@@ -14,21 +12,11 @@ const app = () => {
 
 let space = null
 let environment = null
-let spacesToDelete = []
-
-beforeAll(() => {
-  return initConfig()
-})
 
 beforeAll(async () => {
-  space = await createSimpleSpace(org, 'ext-create')
+  space = await createSimpleSpace('Extension Create')
   environment = await space.getEnvironment('master')
-  spacesToDelete.push(space.sys.id)
 })
-
-afterAll(() => {
-  return deleteSpaces(spacesToDelete)
-}, 10000)
 
 test('should print help message', done => {
   app()

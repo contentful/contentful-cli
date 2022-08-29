@@ -1,6 +1,5 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { initConfig } = require('../../util')
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
@@ -8,10 +7,6 @@ const org = process.env.CLI_E2E_ORG_ID
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
-
-beforeAll(() => {
-  return initConfig()
-})
 
 test('should print help message', done => {
   app()
