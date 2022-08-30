@@ -31,7 +31,7 @@ export async function createSimpleSpace(testSuiteName = 'CLI Test Space') {
 
 async function addNewCT(spaceId, name, fields) {
   const client = await createManagementClient({
-    accessToken: process.env.CLI_E2E_CMA_TOKEN
+    accessToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN
   })
   var space = await client.getSpace(spaceId)
   var contentType = await space.createContentType({
