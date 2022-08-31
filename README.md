@@ -23,7 +23,7 @@
 
 ## :cloud: Installation
 
-Make sure you have [Node LTS](https://nodejs.org/en/) locally
+Make sure you have [Node LTS](https://nodejs.org/en/) installed
 
 Then using [npm](https://npmjs.org) or [yarn](https://yarnpkg.com):
 
