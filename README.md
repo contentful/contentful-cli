@@ -9,7 +9,7 @@
 
 ## :rocket: Features
 
-- Introduction to Contentful with `init` command.
+- Get started with Contentful with the `init` command.
 - Manage spaces - list, create, delete,...
 - Export your space to a JSON file.
 - Import your space from a JSON file.
@@ -19,11 +19,10 @@
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
-- More to come soon! 🚀
 
 ## :cloud: Installation
 
-Make sure you have [Node LTS](https://nodejs.org/en/) locally
+Make sure you have [Node LTS](https://nodejs.org/en/) installed
 
 Then using [npm](https://npmjs.org) or [yarn](https://yarnpkg.com):
 
@@ -86,8 +85,8 @@ contentful config add --raw-proxy
 2. To avoid development version colliding with your already installed Contentful CLI, change the command name in `package.json`
    ```diff
      "bin": {
-      - "contentful": "bin/contentful.js"
-      + "ctfl": "bin/contentful.js"
+   -     "contentful": "bin/contentful.js"
+   +     "ctfl": "bin/contentful.js"
      }
    ```
 3. Link your local version, and happy hacking :tada:
