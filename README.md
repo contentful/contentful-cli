@@ -19,7 +19,6 @@
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
-- More to come soon! 🚀
 
 ## :cloud: Installation
 
