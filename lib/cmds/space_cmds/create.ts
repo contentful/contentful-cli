@@ -1,27 +1,28 @@
-const logging = require('../../utils/log')
-const { handleAsyncError: handle } = require('../../utils/async')
-const { createManagementClient } = require('../../utils/contentful-clients')
-const { spaceUse } = require('./use')
+import logging from '../../utils/log'
+import { handleAsyncError as handle } from '../../utils/async'
+import { createManagementClient } from '../../utils/contentful-clients'
+import { spaceUse } from './use'
 
-const { EventSystem } = require('../../core/events')
-const { CREATE_SPACE_HANDLER } = require('../../core/events/scopes')
+import { EventSystem } from '../../core/events'
+import { CREATE_SPACE_HANDLER } from '../../core/events/scopes'
 
-const { warningStyle } = require('../../utils/styles')
-const { confirmation } = require('../../utils/actions')
-const IntentSystem = require('../../core/event-handlers/intents')
-const LoggingSystem = require('../../core/event-handlers/logging')
+import { warningStyle } from '../../utils/styles'
+import { confirmation } from '../../utils/actions'
+import IntentSystem from '../../core/event-handlers/intents'
+import LoggingSystem from '../../core/event-handlers/logging'
 
-const createSpaceIntents = require('../../core/event-handlers/intents/create-space-handler')
-const createSpaceLogging = require('../../core/event-handlers/logging/create-space-handler')
+import createSpaceIntents from '../../core/event-handlers/intents/create-space-handler'
+import createSpaceLogging from '../../core/event-handlers/logging/create-space-handler'
 
-const { AbortedError } = require('../../utils/aborted-error')
-const { getHeadersFromOption } = require('../../utils/headers')
+import { AbortedError } from '../../utils/aborted-error'
+import { getHeadersFromOption } from '../../utils/headers'
+import { Argv } from 'yargs'
 
-module.exports.command = 'create'
+export const command = 'create'
 
-module.exports.desc = 'Create a space'
+export const desc = 'Create a space'
 
-module.exports.builder = yargs => {
+export const builder = (yargs: Argv) => {
   return yargs
     .usage("Usage: contentful space create --name 'Your Space Name'")
     .option('name', {
@@ -43,11 +44,6 @@ module.exports.builder = yargs => {
       describe:
         'Confirm space creation without prompt, be aware this may result in extra monthly charges depend on your subscription'
     })
-    .option('default-locale', {
-      alias: 'l',
-      describe: 'The default locale of the new space',
-      type: 'string'
-    })
     .option('use', {
       alias: 'u',
       describe:
@@ -62,18 +58,25 @@ module.exports.builder = yargs => {
     .epilog('Copyright 2019 Contentful')
 }
 
-async function spaceCreate(argv) {
-  const {
-    context,
-    name,
-    defaultLocale,
-    yes,
-    use,
-    feature = 'space-create'
-  } = argv
+interface Context {
+  managementToken?: string
+}
+
+interface SpaceCreateProps {
+  context: Context
+  name: string
+  yes?: boolean
+  use?: boolean
+  feature?: string
+  organizationId?: string
+  header?: string
+}
+
+export const spaceCreate = async function (argv: SpaceCreateProps) {
+  const { context, name, yes, use, header, feature = 'space-create' } = argv
 
   const { managementToken } = context
-  let { organizationId } = argv
+  let { organizationId = '' } = argv
   const client = await createManagementClient({
     feature,
     accessToken: managementToken,
@@ -103,11 +106,7 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
   }
 
   const intentSystem = new IntentSystem()
-  intentSystem.addHandler(
-    createSpaceIntents({
-      skipConfirm: yes
-    })
-  )
+  intentSystem.addHandler(createSpaceIntents())
 
   const loggingSystem = new LoggingSystem(logging)
   loggingSystem.addHandler(createSpaceLogging)
@@ -142,14 +141,13 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
 
   const space = await client.createSpace(
     {
-      name,
-      defaultLocale
+      name
     },
     organizationId
   )
 
   if (use) {
-    await spaceUse({ spaceId: space.sys.id })
+    await spaceUse({ context, spaceId: space.sys.id, header })
   }
 
   dispatcher.dispatch('SPACE_CREATED', { space })
@@ -157,6 +155,4 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
   return space
 }
 
-module.exports.spaceCreate = spaceCreate
-
-module.exports.handler = handle(spaceCreate)
+export const handler = handle(spaceCreate)

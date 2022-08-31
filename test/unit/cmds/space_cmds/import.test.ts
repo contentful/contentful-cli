@@ -1,13 +1,17 @@
-const { importSpace } = require('../../../../lib/cmds/space_cmds/import')
+import { importSpace } from '../../../../lib/cmds/space_cmds/import'
 
-const { version } = require('../../../../package.json')
-const { getContext } = require('../../../../lib/context')
-const contentfulImport = require('contentful-import')
+import { version } from '../../../../package.json'
+import { getContext } from '../../../../lib/context'
+import contentfulImport from 'contentful-import'
 
 jest.mock('../../../../lib/context')
 jest.mock('contentful-import')
 
-getContext.mockResolvedValue({ managementToken: 'managementToken' })
+const mocks = {
+  getContext: getContext as jest.MockedFunction<any>
+}
+
+mocks.getContext.mockResolvedValue({ managementToken: 'managementToken' })
 
 test('it should pass all args to contentful-import', async () => {
   const stubArgv = {
