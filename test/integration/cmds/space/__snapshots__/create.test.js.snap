@@ -11,7 +11,6 @@ Options:
   --yes, -y                 Confirm space creation without prompt, be aware this
                             may result in extra monthly charges depend on your
                             subscription
-  --default-locale, -l      The default locale of the new space         [string]
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
   --header, -H              Pass an additional HTTP Header              [string]
@@ -31,7 +30,6 @@ Options:
   --yes, -y                 Confirm space creation without prompt, be aware this
                             may result in extra monthly charges depend on your
                             subscription
-  --default-locale, -l      The default locale of the new space         [string]
   --use, -u                 Use the created space as default space when the
                             --space-id is skipped.                     [boolean]
   --header, -H              Pass an additional HTTP Header              [string]
