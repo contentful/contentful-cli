@@ -9,7 +9,7 @@
 
 ## :rocket: Features
 
-- Introduction to Contentful with `init` command.
+- Get started with Contentful with the `init` command.
 - Manage spaces - list, create, delete,...
 - Export your space to a JSON file.
 - Import your space from a JSON file.
