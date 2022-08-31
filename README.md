@@ -84,10 +84,10 @@ contentful config add --raw-proxy
    npm i
    ```
 2. To avoid development version colliding with your already installed Contentful CLI, change the command name in `package.json`
-   ```json
+   ```diff
      "bin": {
-       // "contentful": "bin/contentful.js"
-       "ctfl": "bin/contentful.js"
+      - "contentful": "bin/contentful.js"
+      + "ctfl": "bin/contentful.js"
      }
    ```
 3. Link your local version, and happy hacking :tada:
