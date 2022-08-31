@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "pkg --targets node12-macos-x64,node12-linux-x64,node12-win-x64 --out-dir build .",
+    "build:standalone": "pkg --targets node16-macos-x64,node16-linux-x64,node16-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
@@ -33,7 +33,6 @@
     "test:integration:ci": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --runInBand\" --success first --kill-others",
     "test:integration:update": "NODE_ENV=test concurrently \"npm:run-talkback-proxy\" \"npm:test:jest -- --updateSnapshot --runInBand\" --success first --kill-others",
     "test:e2e": "cross-env jest --testPathPattern=test/e2e --verbose",
-    "test:simulate-ci": "trevor",
     "precommit": "npm run prettier:write && lint-staged",
     "prepush": "jest --changedSince master test/unit/**",
     "prettier": "prettier --config .prettierrc \"./*.js\" \"{./lib,./test,./docs,.}/**/*.{js,json,md}\"",
@@ -47,10 +46,10 @@
     "axios": "^0.27.0",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.2",
-    "cz-conventional-changelog": "^3.1.0",
+    "cz-conventional-changelog": "^3.0.1",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.0.0",
-    "eslint-plugin-jest": "^26.1.1",
+    "eslint-plugin-jest": "^27.0.1",
     "eslint-plugin-prettier": "^4.0.0",
     "http-proxy": "^1.17.0",
     "husky": "^4.3.8",
@@ -64,8 +63,7 @@
     "semantic-release": "^19.0.2",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
-    "talkback": "^3.0.1",
-    "trevor": "^2.3.0"
+    "talkback": "^3.0.1"
   },
   "dependencies": {
     "ast-types": "^0.14.2",
@@ -76,7 +74,7 @@
     "chalk": "^2.4.1",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
-    "contentful-export": "^7.17.13",
+    "contentful-export": "^7.17.16",
     "contentful-import": "^8.3.2",
     "contentful-management": "^10.0.0",
     "contentful-migration": "^4.8.0",
