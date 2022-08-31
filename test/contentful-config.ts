@@ -1,13 +1,11 @@
 import { writeFile, stat, readFile } from 'fs/promises'
 
 const configFile = process.env.CONTENTFUL_CONFIG_FILE
+const configFileError = `Please specify .contentfulrc.json path
+Set env variable CONTENTFUL_CONFIG_FILE`
 
-export async function initConfig() {
-  if (!configFile)
-    throw Error(
-      `Please specify .contentfulrc.json path
-      Set env variable CONTENTFUL_CONFIG_FILE`
-    )
+export const initConfig = async () => {
+  if (!configFile) throw Error(configFileError)
 
   try {
     await stat(configFile)
@@ -15,7 +13,7 @@ export async function initConfig() {
     return writeFile(
       configFile,
       JSON.stringify(
-        { managementToken: process.env.CLI_E2E_CMA_TOKEN },
+        { managementToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN },
         null,
         4
       )
@@ -31,6 +29,10 @@ export async function initConfig() {
 
   return writeFile(
     configFile,
-    JSON.stringify({ managementToken: process.env.CLI_E2E_CMA_TOKEN }, null, 4)
+    JSON.stringify(
+      { managementToken: process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN },
+      null,
+      4
+    )
   )
 }
