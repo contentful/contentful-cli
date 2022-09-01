@@ -51,6 +51,7 @@ export const init = async () => {
       ]
     }
   ])
+
   if (newSpace) {
     const { spaceName, content } = await inquirer.prompt([
       {
@@ -84,7 +85,6 @@ export const init = async () => {
   } else {
     const space = await spaceUse({ context })
     // Return space to be used.
-    console.log({ space })
   }
 }
 
