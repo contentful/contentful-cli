@@ -7,6 +7,7 @@ import { login } from './login'
 import { spaceCreate } from './space_cmds/create'
 import { importSpace } from './space_cmds/import'
 import initialContent from './init/content.json'
+import { spaceUse } from './space_cmds/use'
 
 export const command = 'init'
 
@@ -50,6 +51,7 @@ export const init = async () => {
       ]
     }
   ])
+
   if (newSpace) {
     const { spaceName, content } = await inquirer.prompt([
       {
@@ -80,6 +82,9 @@ export const init = async () => {
         content: initialContent
       })
     }
+  } else {
+    const space = await spaceUse({ context })
+    // Return space to be used.
   }
 }
 
