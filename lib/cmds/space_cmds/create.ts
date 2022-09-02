@@ -44,6 +44,11 @@ export const builder = (yargs: Argv) => {
       describe:
         'Confirm space creation without prompt, be aware this may result in extra monthly charges depend on your subscription'
     })
+    .option('default-locale', {
+      alias: 'l',
+      describe: 'The default locale of the new space',
+      type: 'string'
+    })
     .option('use', {
       alias: 'u',
       describe:
@@ -65,6 +70,7 @@ interface Context {
 interface SpaceCreateProps {
   context: Context
   name: string
+  defaultLocale?: string
   yes?: boolean
   use?: boolean
   feature?: string
@@ -73,7 +79,15 @@ interface SpaceCreateProps {
 }
 
 export const spaceCreate = async function (argv: SpaceCreateProps) {
-  const { context, name, yes, use, header, feature = 'space-create' } = argv
+  const {
+    context,
+    name,
+    defaultLocale,
+    yes,
+    use,
+    header,
+    feature = 'space-create'
+  } = argv
 
   const { managementToken } = context
   let { organizationId = '' } = argv
@@ -141,7 +155,8 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
 
   const space = await client.createSpace(
     {
-      name
+      name,
+      defaultLocale
     },
     organizationId
   )
