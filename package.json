@@ -13,7 +13,6 @@
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
-    "tsc": "tsc",
     "audit": "resolve-audit",
     "build:standalone": "pkg --targets node12-macos-x64,node12-linux-x64,node12-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
@@ -90,7 +89,7 @@
     "command-exists": "^1.2.7",
     "contentful-export": "^7.19.0",
     "contentful-import": "^8.3.2",
-    "contentful-management": "^10.0.0",
+    "contentful-management": "^10.12.1",
     "contentful-migration": "^4.12.5",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
