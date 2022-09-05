@@ -27,10 +27,7 @@ export const init = async () => {
   let managementToken = context.managementToken
 
   if (!context.managementToken) {
-    managementToken = await login({
-      context,
-      managementToken
-    })
+    managementToken = await login({ context })
   }
 
   if (!managementToken) return
