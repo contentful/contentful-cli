@@ -13,7 +13,7 @@ import { Argv } from 'yargs'
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
 const REDIRECT_URI = 'https://www.contentful.com/developers/cli-oauth-page/'
-const oAuthURL = `https://be.contentful.com/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage`
+const oAuthURL = `https://be.contentful.com/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage&action=cli`
 
 export const command = 'login'
 
