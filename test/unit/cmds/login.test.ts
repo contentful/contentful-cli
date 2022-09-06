@@ -39,6 +39,7 @@ test('login - without error', async () => {
 
   if (['win32', 'darwin'].includes(process.platform)) {
     expect(open).toHaveBeenCalled()
+    expect(mocks.open.mock.calls[0][0].includes('action=cli')).toBeTruthy()
   }
   expect(confirmation).toHaveBeenCalledTimes(1)
   expect(prompt).toHaveBeenCalledTimes(1)
