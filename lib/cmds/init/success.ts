@@ -62,5 +62,5 @@ export default async function success({
     )
   }
 
-  console.log(`Share your feedback at ${FEEDBACK_LINK}`)
+  console.log(`Share your feedback for this CLI at ${FEEDBACK_LINK}`)
 }
