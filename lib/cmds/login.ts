@@ -2,13 +2,12 @@ import open from 'open'
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 
-import { getConfigPath, setContext, storeRuntimeConfig } from '../context'
+import { setContext, storeRuntimeConfig } from '../context'
 import { confirmation } from '../utils/actions'
 import { handleAsyncError as handle } from '../utils/async'
-import { log } from '../utils/log'
-import { highlightStyle, codeStyle, pathStyle } from '../utils/styles'
-import { frame } from '../utils/text'
+import { highlightStyle, pathStyle } from '../utils/styles'
 import { Argv } from 'yargs'
+import { tokenInfo } from '../utils/token-info'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
@@ -55,28 +54,26 @@ export const login = async ({
     token = managementTokenFlag
   } else {
     if (managementToken) {
-      log()
-      log(
-        `Looks like you already stored a management token on your system. ${chalk.dim(
-          `(Located at ${await getConfigPath()})`
-        )}`
+      console.log(`You're already logged in!`)
+      await tokenInfo()
+      console.log(
+        `To logout, type: ${chalk.green('contentful')} ${chalk.magenta(
+          'logout'
+        )}\n`
       )
-      log(frame(`Your management token: ${managementToken}`))
-      log(`Maybe you want to ${codeStyle('contentful logout')}?`)
       return managementToken
     }
 
-    log(
+    console.log(
       `A browser window will open where you will log in (or sign up if you don’t have an account), authorize this CLI tool and paste your ${highlightStyle(
         'CMA token'
-      )} here:`
+      )} here:\n`
     )
-    log()
 
-    const confirmed = await confirmation('Continue login through the browser?')
+    const confirmed = await confirmation('Continue login on the browser?')
 
     if (!confirmed) {
-      log(
+      console.log(
         chalk.red('Aborted!'),
         'please login to use Contentful CLI features!',
         `\nUsage: ${chalk.green('contentful')} ${chalk.cyan('login')}`
@@ -90,7 +87,7 @@ export const login = async ({
         wait: false
       })
     } else {
-      log(
+      console.log(
         `Unable to open your browser automatically. Please open the following URI in your browser:\n\n${pathStyle(
           oAuthURL
         )}\n\n`
@@ -100,6 +97,7 @@ export const login = async ({
     const tokenAnswer = await inquirer.prompt([
       {
         type: 'password',
+        mask: true,
         name: 'managementToken',
         message: 'Paste your token here:',
         validate: val => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()) // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
@@ -112,17 +110,11 @@ export const login = async ({
   await setContext({
     managementToken: token
   })
-  await storeRuntimeConfig()
-  log()
-  log(
-    `Great! Your ${highlightStyle(
-      'CMA token'
-    )} is now stored on your system. ${chalk.dim(
-      `(Located at ${await getConfigPath()})`
-    )}`
-  )
-  log(`You can always run ${codeStyle('contentful logout')} to remove it.`)
 
+  await storeRuntimeConfig()
+
+  console.log(`\n${chalk.green('Great!')} You've successfully logged in!`)
+  tokenInfo()
   return token
 }
 

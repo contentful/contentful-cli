@@ -11,9 +11,8 @@ test('should be already logged in', done => {
   app()
     .run('login')
     .code(0)
-    .stdout(/Looks like you already stored a management token on your system\./)
+    .stdout(/You're already logged in!/)
     .stdout(/Your management token:/)
-    .stdout(/Maybe you want to contentful logout\?/)
     .end(done)
 })
 
@@ -23,7 +22,6 @@ test('should login with management-token flag', done => {
       `login --management-token ${process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN}`
     )
     .code(0)
-    .stdout(/Great! Your CMA token is now stored on your system\./)
-    .stdout(/You can always run contentful logout to remove it\./)
+    .stdout(/Great! You've successfully logged in!/)
     .end(done)
 })
