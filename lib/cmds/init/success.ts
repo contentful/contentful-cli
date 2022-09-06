@@ -29,7 +29,8 @@ export default async function success({
     .getEntry("${entryId}")
     .then(entry => console.log(entry))
     .catch(err => console.log(err));
-    `
+    `,
+      { language: 'JavaScript' }
     ),
     GraphQL: `
   curl -g \\
@@ -52,7 +53,7 @@ export default async function success({
 
   if (entryId)
     console.log(
-      "Don't forget to replace space ID, environment ID, and entry ID with your own values\n"
+      "Note: Don't forget to replace space ID, environment ID, and entry ID with your own values\n"
     )
 
   if (connectionType === 'GraphQL') {
@@ -61,8 +62,5 @@ export default async function success({
     )
   }
 
-  console.log(
-    'Do you want to give us feedback on the experience of using this command?'
-  )
-  console.log(`Share your thoughts at ${FEEDBACK_LINK}`)
+  console.log(`Share your feedback for this CLI at ${FEEDBACK_LINK}`)
 }

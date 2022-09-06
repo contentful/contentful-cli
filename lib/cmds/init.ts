@@ -9,6 +9,7 @@ import { spaceCreate } from './space_cmds/create'
 import { importSpace } from './space_cmds/import'
 import initialContent from './init/content.json'
 import { spaceUse } from './space_cmds/use'
+import chalk from 'chalk'
 
 export const command = 'init'
 
@@ -50,6 +51,8 @@ export const init = async () => {
     }
   ])
 
+  let space
+
   if (newSpace) {
     const { spaceName, content } = await inquirer.prompt([
       {
@@ -66,7 +69,7 @@ export const init = async () => {
       }
     ])
 
-    const space = await spaceCreate({
+    space = await spaceCreate({
       context,
       name: spaceName
     })
@@ -81,17 +84,37 @@ export const init = async () => {
       })
     }
   } else {
-    const space = await spaceUse({ context })
-    // Return space to be used.
+    space = await spaceUse({ context })
   }
 
-  // something something, get the flow type
-  // one of 'Contentful.js', 'GraphQL', 'REST API'
-  const connectionType = 'GraphQL'
+  const environmentId = (await space.getEnvironments()).items[0].sys.id
+
+  const { connectionType } = await inquirer.prompt({
+    type: 'list',
+    name: 'connectionType',
+    prefix: '👓',
+    message: 'How would you like to consume content in your code?',
+    choices: [
+      {
+        name: `${chalk.magenta('GraphQL')}`,
+        value: 'GraphQL'
+      },
+      {
+        name: `${chalk.yellow('JS Client')}`,
+        value: 'Contentful.js'
+      },
+      {
+        name: 'REST API',
+        value: 'rest'
+      }
+    ]
+  })
 
   success({
     accessToken: context.managementToken,
-    connectionType
+    connectionType,
+    spaceId: space.sys.id,
+    environmentId
   })
 }
 
