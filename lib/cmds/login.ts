@@ -54,12 +54,13 @@ export const login = async ({
     token = managementTokenFlag
   } else {
     if (managementToken) {
+      console.log(`You're already logged in!`)
+      await tokenInfo()
       console.log(
-        `You're already logged in! to logout type: ${chalk.green(
-          'contentful'
-        )} ${chalk.magenta('logout')}`
+        `To logout, type: ${chalk.green('contentful')} ${chalk.magenta(
+          'logout'
+        )}\n`
       )
-      tokenInfo()
       return managementToken
     }
 
