@@ -114,7 +114,9 @@ export const login = async ({
   await storeRuntimeConfig()
 
   console.log(`\n${chalk.green('Great!')} You've successfully logged in!`)
-  tokenInfo()
+
+  await tokenInfo()
+
   return token
 }
 
