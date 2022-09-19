@@ -34,7 +34,7 @@ export const builder = (yargs: Argv) => {
     .epilog('Copyright 2019 Contentful')
 }
 
-function showSuccess(space: Space, env: string) {
+function showSuccess(space: Space, env = 'master') {
   success(
     `Now using the '${env}' Environment of Space ${highlightStyle(
       space.name
@@ -75,7 +75,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
 
     await storeRuntimeConfig()
 
-    showSuccess(space, activeEnvironmentId as string)
+    showSuccess(space, activeEnvironmentId)
 
     return space
   }
@@ -111,7 +111,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
 
   await storeRuntimeConfig()
 
-  showSuccess(space, activeEnvironmentId as string)
+  showSuccess(space, activeEnvironmentId)
 
   return space
 }
