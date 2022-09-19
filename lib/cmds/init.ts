@@ -25,13 +25,12 @@ export const init = async () => {
   greetings()
 
   const context = await getContext()
-  let managementToken = context.managementToken
 
   if (!context.managementToken) {
-    managementToken = await login({ context })
+    context.managementToken = await login({ context })
   }
 
-  if (!managementToken) return
+  if (!context.managementToken) return
 
   const { newSpace } = await inquirer.prompt([
     {
