@@ -25,13 +25,15 @@ export const init = async () => {
   greetings()
 
   const context = await getContext()
-  let managementToken = context.managementToken
 
   if (!context.managementToken) {
-    managementToken = await login({ context })
+    context.managementToken = await login({ context })
   }
 
-  if (!managementToken) return
+  if (!context.managementToken)
+    return console.log(
+      chalk.red("We couldn't find your access token, please login again!")
+    )
 
   const { newSpace } = await inquirer.prompt([
     {
