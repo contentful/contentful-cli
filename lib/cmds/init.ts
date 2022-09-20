@@ -5,11 +5,9 @@ import greetings from './init/greetings'
 import success from './init/success'
 import { getContext } from '../context'
 import { login } from './login'
-import { spaceCreate } from './space_cmds/create'
-import { importSpace } from './space_cmds/import'
-import initialContent from './init/content.json'
-import { spaceUse } from './space_cmds/use'
 import chalk from 'chalk'
+import { getPreviewApiKey } from './init/apikey'
+import { getSpace } from './init/space'
 
 export const command = 'init'
 
@@ -35,61 +33,11 @@ export const init = async () => {
       chalk.red("We couldn't find your access token, please login again!")
     )
 
-  const { newSpace } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'newSpace',
-      message: 'Do you want to create a new space or use an existing one?',
-      choices: [
-        {
-          name: 'Create new space',
-          value: true
-        },
-        {
-          name: 'Use existing space',
-          value: false
-        }
-      ]
-    }
-  ])
+  const space = await getSpace(context)
 
-  let space
-
-  if (newSpace) {
-    const { spaceName, content } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'spaceName',
-        message: 'What should be the name for the new created space?',
-        validate: name => name !== '' || 'Space name is required'
-      },
-      {
-        type: 'confirm',
-        name: 'content',
-        message: ({ spaceName }) =>
-          `Do you want to have example content in ${spaceName}?`
-      }
-    ])
-
-    space = await spaceCreate({
-      context,
-      name: spaceName
-    })
-
-    if (content) {
-      await importSpace({
-        context: {
-          ...context,
-          activeSpaceId: space.sys.id
-        },
-        content: initialContent
-      })
-    }
-  } else {
-    space = await spaceUse({ context })
-  }
-
-  const environmentId = (await space.getEnvironments()).items[0].sys.id
+  const environmentId =
+    (await space.getEnvironments()).items[0].sys.id || 'master'
+  const apiKey = await getPreviewApiKey(space, environmentId)
 
   const { connectionType } = await inquirer.prompt({
     type: 'list',
@@ -113,7 +61,7 @@ export const init = async () => {
   })
 
   success({
-    accessToken: context.managementToken,
+    accessToken: apiKey,
     connectionType,
     spaceId: space.sys.id,
     environmentId
