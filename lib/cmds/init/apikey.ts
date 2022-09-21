@@ -2,9 +2,9 @@ import { Space } from 'contentful-management'
 
 export const getPreviewApiKey = async (space: Space, environmentId: string) => {
   let apiKey
-  const apiKeys = await space.getPreviewApiKeys()
-  if (!apiKeys.items.length) {
-    apiKey = await space.createApiKey({
+  const previewApiKeys = await space.getPreviewApiKeys()
+  if (!previewApiKeys.items.length) {
+    const createdApiKey = await space.createApiKey({
       name: space.name,
       environments: [
         {
@@ -16,10 +16,12 @@ export const getPreviewApiKey = async (space: Space, environmentId: string) => {
         }
       ]
     })
-    apiKey = await space.getPreviewApiKey(apiKey.sys.id)
-    apiKey = apiKey.accessToken
+    const previewApiKey = await space.getPreviewApiKey(
+      createdApiKey.preview_api_key.sys.id
+    )
+    apiKey = previewApiKey.accessToken
   } else {
-    apiKey = apiKeys.items[0].accessToken
+    apiKey = previewApiKeys.items[0].accessToken
   }
 
   return apiKey
