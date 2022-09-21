@@ -32,14 +32,16 @@ export default async function success({
     `,
       { language: 'JavaScript' }
     ),
-    GraphQL: `
-  curl -g \\
-    -X POST \\
-    -H "Content-Type: application/json" \\
-    -H "Authorization: Bearer ${accessToken}" \\
-    -d  '{"query":"your GraphQL query here' \\
-    https://graphql.contentful.com/content/v1/spaces/${spaceId}/environments/${environmentId}
-    `,
+    GraphQL: highlight(
+      `
+    curl -g \\
+      -X POST \\
+      -H "Content-Type: application/json" \\
+      -H "Authorization: Bearer ${accessToken}" \\
+      -d  '{"query":"your GraphQL query here' \\
+      https://graphql.contentful.com/content/v1/spaces/${spaceId}/environments/${environmentId}
+      `
+    ),
     'REST API': `
   curl --include \\
     --request GET \\
