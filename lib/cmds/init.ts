@@ -55,7 +55,7 @@ export const init = async () => {
       },
       {
         name: 'REST API',
-        value: 'rest'
+        value: 'REST API'
       }
     ]
   })
