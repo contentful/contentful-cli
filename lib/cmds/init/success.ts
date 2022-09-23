@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import { highlight } from 'cli-highlight'
 
-export type ConnectionType = 'Contentful.js' | 'GraphQL' | 'REST API'
+export type ConnectionType = 'React' | 'Contentful.js' | 'GraphQL' | 'REST API'
 type SuccessProps = {
   accessToken: string
   connectionType: ConnectionType
@@ -45,7 +45,40 @@ export default async function success({
     curl --include \\
       --request GET \\
       https://preview.contentful.com/spaces/${spaceId}/environments/${environmentId}/entries?access_token=${accessToken}
-    `
+    `,
+    React: highlight(
+      `
+    export const useContentfulQuery = ({ query, variables }) => {
+      const [data, setData] = useState(null);
+      useEffect(() => {
+        if (!query || !variables) return;
+        const getContentfulData = async () => {
+          const response = await fetch("https://graphql.contentful.com/content/v1/spaces/${spaceId}",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer ${accessToken}",
+              },
+              body: JSON.stringify({ query, variables,}),
+            }
+          );
+          const { data: contentfulData } = await response.json();
+          setData(contentfulData);
+        };
+        getContentfulData();
+      }, [query, variables]);
+      return { data };
+    };
+
+    // Then in your component:
+    const { data } = useContentfulQuery({
+      query: "query($preview:Boolean){entryCollection(preview:$preview){items{__typename}}}",
+      variables: { preview: true },
+    });
+    `,
+      { language: 'JavaScript' }
+    )
   }
 
   console.log(
@@ -59,6 +92,7 @@ export default async function success({
   )
 
   switch (connectionType) {
+    case 'React':
     case 'GraphQL':
       console.log(
         `Use ${chalk.magenta(
