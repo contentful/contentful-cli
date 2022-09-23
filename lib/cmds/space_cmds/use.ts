@@ -36,7 +36,7 @@ export const builder = (yargs: Argv) => {
 
 function showSuccess(space: Space, env = 'master') {
   success(
-    `Now using the '${env}' Environment of Space ${highlightStyle(
+    `Now sssusing the '${env}' Environment of Space ${highlightStyle(
       space.name
     )} (${highlightStyle(
       space.sys.id
@@ -54,9 +54,15 @@ interface SpaceUseProps {
   context: Context
   spaceId?: string
   header?: string
+  successMsg?: boolean
 }
 
-export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
+export async function spaceUse({
+  context,
+  spaceId,
+  header,
+  successMsg = true
+}: SpaceUseProps) {
   inquirer.registerPrompt('autocomplete', inquirerPrompt)
   const { managementToken, activeEnvironmentId } = context
 
@@ -74,8 +80,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
     })
 
     await storeRuntimeConfig()
-
-    showSuccess(space, activeEnvironmentId)
+    if (successMsg) showSuccess(space, activeEnvironmentId)
 
     return space
   }
@@ -111,7 +116,7 @@ export async function spaceUse({ context, spaceId, header }: SpaceUseProps) {
 
   await storeRuntimeConfig()
 
-  showSuccess(space, activeEnvironmentId)
+  if (successMsg) showSuccess(space, activeEnvironmentId)
 
   return space
 }
