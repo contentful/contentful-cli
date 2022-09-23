@@ -55,9 +55,11 @@ export const getSpace = async (context: any) => {
         },
         content: initialContent
       })
+    } else {
+      // TODO: log message about adding content model and content
     }
   } else {
-    space = await spaceUse({ context })
+    space = await spaceUse({ context, successMsg: false })
   }
 
   return space
