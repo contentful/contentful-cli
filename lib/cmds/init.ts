@@ -46,6 +46,10 @@ export const init = async () => {
     message: 'How would you like to consume content in your code?',
     choices: [
       {
+        name: `${chalk.blue('React')}`,
+        value: 'React'
+      },
+      {
         name: `${chalk.magenta('GraphQL')}`,
         value: 'GraphQL'
       },
@@ -55,7 +59,7 @@ export const init = async () => {
       },
       {
         name: 'REST API',
-        value: 'rest'
+        value: 'REST API'
       }
     ]
   })

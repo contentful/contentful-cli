@@ -12,7 +12,12 @@ Start building and enable your content editors and codebase with powerful tools!
         padding: 1,
         borderStyle: 'round',
         borderColor: 'cyan',
-        margin: 0.5
+        margin: {
+          left: 0,
+          top: 1,
+          right: 0,
+          bottom: 1
+        }
       }
     )
   )
