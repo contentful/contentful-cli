@@ -29,7 +29,9 @@ Options:
                                                       [boolean] [default: false]
   --skip-roles            Skip exporting roles and permissions
                                                       [boolean] [default: false]
+  --skip-tags             Skip exporting tags         [boolean] [default: false]
   --skip-webhooks         Skip exporting webhooks     [boolean] [default: false]
+  --strip-tags            Untag assets and entries    [boolean] [default: false]
   --content-only          only export entries and assets
                                                       [boolean] [default: false]
   --download-assets       With this flags assets will also be downloaded
