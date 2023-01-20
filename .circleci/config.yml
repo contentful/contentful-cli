@@ -15,6 +15,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
       - run: npm test
+      - run: npm run tsc -- --noEmit
   integration:
     docker:
       - image: cimg/node:16.11

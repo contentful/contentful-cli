@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es2018",
+    "lib": ["es2018"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "outDir": "output"
+  },
+  "include": ["lib"],
+  "exclude": ["node_modules", "bin", "docs", "recordings"]
+}
