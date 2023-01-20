@@ -13,8 +13,9 @@
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "scripts": {
+    "tsc": "tsc",
     "audit": "resolve-audit",
-    "build:standalone": "pkg --targets node16-macos-x64,node16-linux-x64,node16-win-x64 --out-dir build .",
+    "build:standalone": "npm run tsc && pkg --targets node16-macos-x64,node16-linux-x64,node16-win-x64 --out-dir build .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
@@ -99,6 +100,7 @@
     "tar": "^6.0.1",
     "to-ast": "^1.0.0",
     "tree-kill": "^1.2.2",
+    "typescript": "^4.9.4",
     "wrap-ansi": "^7.0.0",
     "yargs": "~13.3.2"
   },
