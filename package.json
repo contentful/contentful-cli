@@ -23,7 +23,7 @@
     "test:html-coverage": "nyc --reporter=html npm run test:unit",
     "test:unit": "jest --runInBand test/unit/** --verbose",
     "test:unit:watch": "jest test/unit/** --verbose --watch",
-    "pretest:integration": "node test/integration/scripts/pre-test.js",
+    "pretest:integration": "node test/integration/scripts/pre-test.js && npm run build:standalone",
     "pretest:integration:ci": "npm run pretest:integration",
     "pretest:integration:update": "npm run pretest:integration",
     "posttest:integration": "node test/integration/scripts/post-test.js",
