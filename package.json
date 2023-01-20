@@ -110,6 +110,7 @@
   },
   "files": [
     "bin",
+    "output",
     "lib",
     "docs",
     "version.js",
