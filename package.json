@@ -43,6 +43,7 @@
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
+    "@types/yargs": "^17.0.20",
     "app-root-path": "^3.0.0",
     "axios": "^0.27.0",
     "concurrently": "^7.0.0",
@@ -135,7 +136,7 @@
   "pkg": {
     "scripts": [
       "./node_modules/blessed/lib/widgets/*.js",
-      "./lib/**/*.js"
+      "./output/**/*.js"
     ],
     "assets": [
       "./node_modules/figlet/fonts/Standard.flf"
