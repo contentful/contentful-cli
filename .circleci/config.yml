@@ -1,4 +1,8 @@
-version: 2.0
+version: 2.1
+
+orbs:
+  vault: contentful/vault@1
+
 jobs:
   unit:
     docker:
@@ -55,6 +59,8 @@ jobs:
       - image: cimg/node:lts
     steps:
       - checkout
+      - vault/get-secrets: # Loads vault secrets
+          template-preset: 'semantic-release-ecosystem'
       - run: git fetch --tags
       - run: npm ci
       - run: npm run tsc
@@ -101,7 +107,7 @@ workflows:
       # - osx
       # - audit
       - release:
-          context: dev-workflows-release
+          context: vault
           requires:
             - unit
             - integration
