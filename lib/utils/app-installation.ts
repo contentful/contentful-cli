@@ -3,11 +3,17 @@ import { ClientAPI } from 'contentful-management'
 /**
  * Checks if a specified app is installed in an environment
  */
-async function appIsInstalled(
+async function isAppInstalled(
   client: ClientAPI,
-  spaceId: string,
-  environmentId: string,
-  appId: string
+  {
+    spaceId,
+    environmentId,
+    appId
+  }: {
+    spaceId: string
+    environmentId: string
+    appId: string
+  }
 ): Promise<boolean> {
   try {
     await client.rawRequest({
@@ -26,4 +32,4 @@ async function appIsInstalled(
   }
 }
 
-module.exports.appIsInstalled = appIsInstalled
+module.exports.isAppInstalled = isAppInstalled
