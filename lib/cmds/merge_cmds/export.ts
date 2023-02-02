@@ -79,7 +79,7 @@ const promptAppInstallationInEnvironment = async (
   return true
 }
 
-const checkAndInstallAppInEnvironments = async (
+export const checkAndInstallAppInEnvironments = async (
   client: ClientAPI,
   spaceId: string,
   environmentIds: [string, string],
