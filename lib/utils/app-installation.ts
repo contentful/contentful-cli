@@ -40,12 +40,21 @@ export async function installApp(
     appId
   }: {
     spaceId: string
-    environmentId: string
+    environmentId: string | string[]
     appId: string
   }
 ): Promise<void> {
-  await client.rawRequest({
-    method: 'PUT',
-    url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`
-  })
+  const environments = Array.isArray(environmentId)
+    ? environmentId
+    : [environmentId]
+
+  for (const environmentId of environments) {
+    await client.rawRequest({
+      method: 'PUT',
+      url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`,
+      data: {
+        parameters: {}
+      }
+    })
+  }
 }
