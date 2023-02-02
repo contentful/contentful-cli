@@ -101,7 +101,7 @@ describe("merge export command's behavior", () => {
     target: Environment
   }
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     space = await createSimpleSpace('Space Delete')
 
     environments = {
@@ -110,7 +110,7 @@ describe("merge export command's behavior", () => {
     }
   }, 15000)
 
-  afterAll(async () => {
+  afterEach(async () => {
     await deleteSpace(space.sys.id)
   })
 
@@ -147,41 +147,11 @@ describe("merge export command's behavior", () => {
   })
 
   it('install the app in one envs and continues with exporting', done => {
-    const resetEnvironments = async () => {
-      environments = {
-        source: await createSimpleEnvironment(space.sys.id, 'source'),
-        target: await createSimpleEnvironment(space.sys.id, 'target')
-      }
-    }
-    resetEnvironments()
-      .then(() =>
-        installApp(client, {
-          spaceId: space.sys.id,
-          environmentId: environments.source.sys.id,
-          appId: MERGE_APP_ID
-        })
-      )
-      .then(() =>
-        app()
-          .run(
-            `merge export -s ${environments.source.sys.id} -t ${environments.target.sys.id} --space-id ${space.sys.id} --yes`
-          )
-          .expect(({ stdout }: Result) => {
-            const resultText = stdout.trim()
-            expect(resultText).toContain('Exporting environment migration.')
-          })
-          .end(done)
-      )
-  }, 10000)
-
-  it('install the app in both envs and continues with exporting', done => {
-    const resetEnvironments = async () => {
-      environments = {
-        source: await createSimpleEnvironment(space.sys.id, 'source'),
-        target: await createSimpleEnvironment(space.sys.id, 'target')
-      }
-    }
-    resetEnvironments().then(() =>
+    installApp(client, {
+      spaceId: space.sys.id,
+      environmentId: environments.source.sys.id,
+      appId: MERGE_APP_ID
+    }).then(() =>
       app()
         .run(
           `merge export -s ${environments.source.sys.id} -t ${environments.target.sys.id} --space-id ${space.sys.id} --yes`
@@ -192,5 +162,17 @@ describe("merge export command's behavior", () => {
         })
         .end(done)
     )
+  }, 10000)
+
+  it('install the app in both envs and continues with exporting', done => {
+    app()
+      .run(
+        `merge export -s ${environments.source.sys.id} -t ${environments.target.sys.id} --space-id ${space.sys.id} --yes`
+      )
+      .expect(({ stdout }: Result) => {
+        const resultText = stdout.trim()
+        expect(resultText).toContain('Exporting environment migration.')
+      })
+      .end(done)
   })
 })
