@@ -16,7 +16,6 @@ jobs:
       - run: npm ci
       - run: npm run tsc
       - run: npm test
-      - run: npm run tsc -- --noEmit
   integration:
     docker:
       - image: cimg/node:lts
