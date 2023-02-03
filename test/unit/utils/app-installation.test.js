@@ -1,4 +1,7 @@
-const { isAppInstalled } = require('../../../lib/utils/app-installation')
+const {
+  isAppInstalled,
+  installApp
+} = require('../../../lib/utils/app-installation')
 
 const spaceId = 'SPACE_ID'
 const environmentId = 'ENV_ID'
@@ -47,4 +50,32 @@ test('properly handles a faulty check', async () => {
   })
 
   expect(isInstalled).toBeFalsy()
+})
+
+test('can install an app in an environment', async () => {
+  const client = {
+    rawRequest: jest.fn()
+  }
+
+  await installApp(client, {
+    spaceId,
+    environmentId,
+    appId
+  })
+
+  expect(client.rawRequest).toHaveBeenCalledTimes(1)
+})
+
+test('can handle arrays when installing apps', async () => {
+  const client = {
+    rawRequest: jest.fn()
+  }
+
+  await installApp(client, {
+    spaceId,
+    environmentId: [environmentId, environmentId],
+    appId
+  })
+
+  expect(client.rawRequest).toHaveBeenCalledTimes(2)
 })
