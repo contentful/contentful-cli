@@ -3,7 +3,7 @@ import { ClientAPI } from 'contentful-management'
 /**
  * Checks if a specified app is installed in an environment
  */
-async function isAppInstalled(
+export async function isAppInstalled(
   client: ClientAPI,
   {
     spaceId,
@@ -32,4 +32,29 @@ async function isAppInstalled(
   }
 }
 
-module.exports.isAppInstalled = isAppInstalled
+export async function installApp(
+  client: ClientAPI,
+  {
+    spaceId,
+    environmentId,
+    appId
+  }: {
+    spaceId: string
+    environmentId: string | string[]
+    appId: string
+  }
+): Promise<void> {
+  const environments = Array.isArray(environmentId)
+    ? environmentId
+    : [environmentId]
+
+  for (const environmentId of environments) {
+    await client.rawRequest({
+      method: 'PUT',
+      url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`,
+      data: {
+        parameters: {}
+      }
+    })
+  }
+}
