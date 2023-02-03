@@ -44,7 +44,7 @@ jobs:
       - run: npm run test:e2e
   osx:
     macos:
-      xcode: '12.5.1'
+      xcode: 12.5.1
     steps:
       - run: node --version
       - run: npm --version
@@ -65,23 +65,23 @@ jobs:
       - run: npm ci
       - run: npm run tsc
       - run: npm run semantic-release
-  audit: &audit
-    docker:
+  audit:
+    docker: &ref_0
       - image: cimg/node:lts
         environment:
           NPM_CONFIG_PROGRESS: false
           NPM_CONFIG_LOGLEVEL: warn
     steps:
       - checkout
-      - run: &audit_action
+      - run: &ref_1
           name: Audit
           command: |
             npm audit --audit-level=moderate
   audit-and-notify:
-    <<: *audit
+    docker: *ref_0
     steps:
       - checkout
-      - run: *audit_action
+      - run: *ref_1
       - run:
           name: Notify vulnerabilities found
           when: on_fail
@@ -92,8 +92,7 @@ workflows:
   scheduled-audit:
     triggers:
       - schedule:
-          # Run each day at midnight
-          cron: '0 0 * * *'
+          cron: 0 0 * * *
           filters:
             branches:
               only: master
