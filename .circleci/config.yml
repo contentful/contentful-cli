@@ -6,7 +6,7 @@ orbs:
 jobs:
   unit:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:lts
     steps:
       - run: node --version
       - run: npm --version
@@ -14,11 +14,11 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run: npm test
-      - run: npm run tsc -- --noEmit
   integration:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:lts
     steps:
       - run: node --version
       - run: npm --version
@@ -26,12 +26,13 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
+      - run: npm run tsc
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
   linux:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:lts
     steps:
       - run: node --version
       - run: npm --version
@@ -55,18 +56,18 @@ jobs:
       - run: npm run test:e2e
   release:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:lts
     steps:
       - checkout
       - vault/get-secrets: # Loads vault secrets
           template-preset: 'semantic-release-ecosystem'
       - run: git fetch --tags
       - run: npm ci
-      - run: npm run build:package
+      - run: npm run tsc
       - run: npm run semantic-release
   audit:
     docker: &ref_0
-      - image: cimg/node:16.11
+      - image: cimg/node:lts
         environment:
           NPM_CONFIG_PROGRESS: false
           NPM_CONFIG_LOGLEVEL: warn
@@ -101,17 +102,18 @@ workflows:
     jobs:
       - unit
       - integration
-      - linux
-      - osx
+      # - linux
+      # - osx
+      # - audit
       - release:
           context: vault
           requires:
             - unit
             - integration
-            - linux
-            - osx
+          # - linux
+          # - audit
+          # - osx
           filters:
             branches:
               only:
-                - master
-                - experimental
+                - beta

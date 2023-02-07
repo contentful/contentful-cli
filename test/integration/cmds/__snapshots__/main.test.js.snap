@@ -7,9 +7,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -27,9 +28,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -48,9 +50,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -68,9 +71,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
-  guide         A guide introducing basic concepts of working with Contentful
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
