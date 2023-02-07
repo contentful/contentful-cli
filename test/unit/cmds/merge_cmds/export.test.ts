@@ -6,7 +6,7 @@ const mockedClient = {
   rawRequest: jest.fn()
 } as unknown as ClientAPI
 
-describe.only('merge export command', () => {
+describe('merge export command', () => {
   const isAppInstalled = jest.spyOn(appInstallUtils, 'isAppInstalled')
   const installApp = jest.spyOn(appInstallUtils, 'installApp')
 
