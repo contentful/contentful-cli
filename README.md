@@ -27,9 +27,9 @@ Make sure you have [Node LTS](https://nodejs.org/en/) installed
 Then using [npm](https://npmjs.org) or [yarn](https://yarnpkg.com):
 
 ```sh
-npm install -g contenful-cli@beta
+npm install -g contenful-cli
 # Or
-yarn global add contenful-cli@beta
+yarn global add contenful-cli
 ```
 
 Please note that for the non standalone versions you need Node LTS to use the CLI.
