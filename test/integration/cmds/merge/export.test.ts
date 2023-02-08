@@ -13,7 +13,7 @@ type Result = {
 }
 
 describe('merge export snapshots', () => {
-  it('show the help properly', done => {
+  it('shows the help properly', done => {
     app()
       .run('merge export --help')
       .code(0)
