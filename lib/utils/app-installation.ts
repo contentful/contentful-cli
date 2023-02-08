@@ -1,4 +1,6 @@
 import { ClientAPI } from 'contentful-management'
+import { confirmation } from './actions'
+import { warning } from './log'
 
 /**
  * Checks if a specified app is installed in an environment
@@ -57,4 +59,99 @@ export async function installApp(
       }
     })
   }
+}
+
+const promptAppInstallationInEnvironment = async (
+  client: ClientAPI,
+  spaceId: string,
+  environmentId: string,
+  appId: string
+) => {
+  warning(
+    `The Merge app is not installed in the environment with id: ${environmentId}`
+  )
+
+  const userConfirmation = await confirmation(
+    `Do you want to install the Merge app in the environment with id: ${environmentId}`
+  )
+
+  if (userConfirmation) {
+    return false
+  }
+
+  await installApp(client, {
+    spaceId,
+    environmentId: environmentId,
+    appId
+  })
+
+  return true
+}
+
+export const checkAndInstallAppInEnvironments = async (
+  client: ClientAPI,
+  spaceId: string,
+  environmentIds: [string, string],
+  appId: string,
+  continueWithoutPrompt: boolean
+) => {
+  const appInstallations = {
+    source: await isAppInstalled(client, {
+      spaceId: spaceId,
+      environmentId: environmentIds[0],
+      appId
+    }),
+    target: await isAppInstalled(client, {
+      spaceId: spaceId,
+      environmentId: environmentIds[1],
+      appId
+    })
+  }
+
+  if (appInstallations.source && appInstallations.target) {
+    return true
+  }
+
+  // User has passed the --yes flag
+  if (continueWithoutPrompt) {
+    // Install the app in both environments. If it's already installed it will just continue.
+    await installApp(client, {
+      spaceId,
+      environmentId: environmentIds,
+      appId
+    })
+  } else {
+    if (!appInstallations.source && !appInstallations.target) {
+      warning(
+        `The Merge app is not installed in any of the environments. Environment ids: ${environmentIds[0]}, ${environmentIds[1]}`
+      )
+      const userConfirmation = await confirmation(
+        `Do you want to install the Merge app in both environments?`
+      )
+
+      if (!userConfirmation) {
+        return false
+      }
+
+      await installApp(client, {
+        spaceId,
+        environmentId: environmentIds,
+        appId
+      })
+    } else {
+      for (const env of environmentIds) {
+        const prompt = await promptAppInstallationInEnvironment(
+          client,
+          spaceId,
+          env,
+          appId
+        )
+
+        if (!prompt) {
+          return false
+        }
+      }
+    }
+  }
+  return true
 }
