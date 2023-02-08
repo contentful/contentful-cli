@@ -30,30 +30,6 @@ jobs:
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
-  linux:
-    docker:
-      - image: cimg/node:lts
-    steps:
-      - run: node --version
-      - run: npm --version
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm ci
-      - run: npm run build:standalone
-      - run: npm run test:e2e
-  osx:
-    macos:
-      xcode: 12.5.1
-    steps:
-      - run: node --version
-      - run: npm --version
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm ci
-      - run: npm run build:standalone
-      - run: npm run test:e2e
   release:
     docker:
       - image: cimg/node:lts
@@ -76,7 +52,7 @@ jobs:
       - run: &ref_1
           name: Audit
           command: |
-            npm audit --audit-level=moderate
+            npm audit --audit-level=moderate --production
   audit-and-notify:
     docker: *ref_0
     steps:
@@ -102,17 +78,13 @@ workflows:
     jobs:
       - unit
       - integration
-      # - linux
-      # - osx
-      # - audit
+      - audit
       - release:
           context: vault
           requires:
             - unit
             - integration
-          # - linux
-          # - audit
-          # - osx
+            - audit
           filters:
             branches:
               only:
