@@ -1,5 +1,5 @@
 {
-  "name": "@contentful/cli",
+  "name": "contentful-cli",
   "version": "0.0.0-determined-by-semantic-release",
   "description": "Contentful CLI tool",
   "main": "dist/contentful.js",
