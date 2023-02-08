@@ -18,7 +18,7 @@ describe('merge export command', () => {
   it('stops early if both env have the app installed', async () => {
     isAppInstalled.mockResolvedValue(true)
 
-    const ret = await checkAndInstallAppInEnvironments(
+    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
       mockedClient,
       'space',
       ['source', 'target'],
@@ -26,16 +26,16 @@ describe('merge export command', () => {
       false
     )
 
-    expect(ret).toBe(true)
+    expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)
   })
 
-  it('installs app to both apps if none of them have it installed', async () => {
+  it('installs app to both envs if none of them have it installed', async () => {
     isAppInstalled.mockResolvedValue(false)
 
     const installApp = jest.spyOn(appInstallUtils, 'installApp')
 
-    const ret = await checkAndInstallAppInEnvironments(
+    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
       mockedClient,
       'space',
       ['source', 'target'],
@@ -43,7 +43,7 @@ describe('merge export command', () => {
       true
     )
 
-    expect(ret).toBe(true)
+    expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)
     expect(installApp).toHaveBeenCalledTimes(1)
   })
@@ -51,7 +51,7 @@ describe('merge export command', () => {
   it('installs the app in the other env if only one has it installed', async () => {
     isAppInstalled.mockResolvedValueOnce(false).mockResolvedValueOnce(true)
 
-    const ret = await checkAndInstallAppInEnvironments(
+    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
       mockedClient,
       'space',
       ['source', 'target'],
@@ -59,7 +59,7 @@ describe('merge export command', () => {
       true
     )
 
-    expect(ret).toBe(true)
+    expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)
   })
 })
