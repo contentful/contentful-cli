@@ -79,7 +79,6 @@
   "dependencies": {
     "ast-types": "^0.14.2",
     "bfj": "^7.0.2",
-    "blessed": "^0.1.81",
     "bluebird": "^3.5.0",
     "boxen": "^5.1.2",
     "camelcase": "^6.0.0",
@@ -145,7 +144,6 @@
   },
   "pkg": {
     "scripts": [
-      "./node_modules/blessed/lib/widgets/*.js",
       "./output/**/*.js"
     ],
     "assets": [
