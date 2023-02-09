@@ -2,7 +2,7 @@
 
 > [Contentful's](https://www.contentful.com) command line interface tool. Use Contentful features straight from your CLI.
 
-[![npm](https://img.shields.io/npm/v/contentful-cli.svg)](https://www.npmjs.com/package/contenful-cli)
+[![npm](https://img.shields.io/npm/v/contentful-cli.svg)](https://www.npmjs.com/package/contentful-cli)
 [![Contentful](https://circleci.com/gh/contentful/contentful-cli.svg?style=shield)](https://circleci.com/gh/contentful/contentful-cli)
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
@@ -27,9 +27,9 @@ Make sure you have [Node LTS](https://nodejs.org/en/) installed
 Then using [npm](https://npmjs.org) or [yarn](https://yarnpkg.com):
 
 ```sh
-npm install -g contenful-cli
+npm install -g contentful-cli
 # Or
-yarn global add contenful-cli
+yarn global add contentful-cli
 ```
 
 Please note that for the non standalone versions you need Node LTS to use the CLI.
