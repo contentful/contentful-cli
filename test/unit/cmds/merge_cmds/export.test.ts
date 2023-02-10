@@ -1,10 +1,15 @@
-import { ClientAPI } from 'contentful-management'
-import { checkAndInstallAppInEnvironments } from '../../../../lib/cmds/merge_cmds/export'
+import { PlainClientAPI } from 'contentful-management'
+
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
 
 const mockedClient = {
-  rawRequest: jest.fn()
-} as unknown as ClientAPI
+  appInstallation: {
+    get: jest.fn()
+  },
+  raw: {
+    put: jest.fn()
+  }
+} as unknown as PlainClientAPI
 
 describe('merge export command', () => {
   const isAppInstalled = jest.spyOn(appInstallUtils, 'isAppInstalled')
@@ -18,13 +23,14 @@ describe('merge export command', () => {
   it('stops early if both env have the app installed', async () => {
     isAppInstalled.mockResolvedValue(true)
 
-    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
-      mockedClient,
-      'space',
-      ['source', 'target'],
-      'app-id',
-      false
-    )
+    const appInstalledInBothEnvs =
+      await appInstallUtils.checkAndInstallAppInEnvironments(
+        mockedClient,
+        'space',
+        ['source', 'target'],
+        'app-id',
+        false
+      )
 
     expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)
@@ -35,13 +41,14 @@ describe('merge export command', () => {
 
     const installApp = jest.spyOn(appInstallUtils, 'installApp')
 
-    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
-      mockedClient,
-      'space',
-      ['source', 'target'],
-      'app-id',
-      true
-    )
+    const appInstalledInBothEnvs =
+      await appInstallUtils.checkAndInstallAppInEnvironments(
+        mockedClient,
+        'space',
+        ['source', 'target'],
+        'app-id',
+        true
+      )
 
     expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)
@@ -51,13 +58,14 @@ describe('merge export command', () => {
   it('installs the app in the other env if only one has it installed', async () => {
     isAppInstalled.mockResolvedValueOnce(false).mockResolvedValueOnce(true)
 
-    const appInstalledInBothEnvs = await checkAndInstallAppInEnvironments(
-      mockedClient,
-      'space',
-      ['source', 'target'],
-      'app-id',
-      true
-    )
+    const appInstalledInBothEnvs =
+      await appInstallUtils.checkAndInstallAppInEnvironments(
+        mockedClient,
+        'space',
+        ['source', 'target'],
+        'app-id',
+        true
+      )
 
     expect(appInstalledInBothEnvs).toBe(true)
     expect(isAppInstalled).toHaveBeenCalledTimes(2)

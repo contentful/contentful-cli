@@ -1,7 +1,7 @@
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'
 import { success } from '../../utils/log'
-import { createManagementClient } from '../../utils/contentful-clients'
+import { createPlainClient } from '../../utils/contentful-clients'
 import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
 
 const MERGE_APP_ID = 'cQeaauOu1yUCYVhQ00atE'
@@ -27,7 +27,7 @@ module.exports.builder = (yargs: Argv) => {
     })
     .option('yes', {
       alias: 'y',
-      describe: 'Confirm merge app installation without prompt'
+      describe: 'Confirm Merge app installation without prompt'
     })
     .option('output-file', {
       alias: 'o',
@@ -57,7 +57,7 @@ const exportEnvironmentMigration = async ({
   yes = false
 }: ExportMigrationOptions) => {
   const { managementToken, activeSpaceId } = context
-  const client = await createManagementClient({
+  const client = await createPlainClient({
     accessToken: managementToken
   })
 
