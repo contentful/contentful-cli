@@ -7,7 +7,7 @@ Options:
   -h, --help                   Show help                               [boolean]
   --source-environment-id, -s  Source environment id         [string] [required]
   --target-environment-id, -t  Target environment id         [string] [required]
-  --yes, -y                    Confirm merge app installation without prompt
+  --yes, -y                    Confirm Merge app installation without prompt
   --output-file, -o            Output file. It defaults to
                                ./migrations/<timestamp>-<space-id>-<source-envir
                                onment-id>-<target-environment-id>.js    [string]"

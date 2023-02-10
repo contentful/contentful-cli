@@ -1,4 +1,4 @@
-import { ClientAPI } from 'contentful-management'
+import { PlainClientAPI } from 'contentful-management'
 import { confirmation } from './actions'
 import { warning } from './log'
 
@@ -6,7 +6,7 @@ import { warning } from './log'
  * Checks if a specified app is installed in an environment
  */
 export async function isAppInstalled(
-  client: ClientAPI,
+  client: PlainClientAPI,
   {
     spaceId,
     environmentId,
@@ -18,9 +18,10 @@ export async function isAppInstalled(
   }
 ): Promise<boolean> {
   try {
-    await client.rawRequest({
-      method: 'GET',
-      url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`
+    await client.appInstallation.get({
+      spaceId,
+      environmentId,
+      appDefinitionId: appId
     })
 
     return true
@@ -35,7 +36,7 @@ export async function isAppInstalled(
 }
 
 export async function installApp(
-  client: ClientAPI,
+  client: PlainClientAPI,
   {
     spaceId,
     environmentId,
@@ -51,18 +52,17 @@ export async function installApp(
     : [environmentId]
 
   for (const environmentId of environments) {
-    await client.rawRequest({
-      method: 'PUT',
-      url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`,
-      data: {
+    await client.raw.put(
+      `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`,
+      {
         parameters: {}
       }
-    })
+    )
   }
 }
 
 const promptAppInstallationInEnvironment = async (
-  client: ClientAPI,
+  client: PlainClientAPI,
   spaceId: string,
   environmentId: string,
   appId: string
@@ -75,13 +75,13 @@ const promptAppInstallationInEnvironment = async (
     `Do you want to install the Merge app in the environment with id: ${environmentId}`
   )
 
-  if (userConfirmation) {
+  if (!userConfirmation) {
     return false
   }
 
   await installApp(client, {
     spaceId,
-    environmentId: environmentId,
+    environmentId,
     appId
   })
 
@@ -89,26 +89,32 @@ const promptAppInstallationInEnvironment = async (
 }
 
 export const checkAndInstallAppInEnvironments = async (
-  client: ClientAPI,
+  client: PlainClientAPI,
   spaceId: string,
   environmentIds: [string, string],
   appId: string,
   continueWithoutPrompt: boolean
 ) => {
   const appInstallations = {
-    source: await isAppInstalled(client, {
-      spaceId: spaceId,
-      environmentId: environmentIds[0],
-      appId
-    }),
-    target: await isAppInstalled(client, {
-      spaceId: spaceId,
-      environmentId: environmentIds[1],
-      appId
-    })
+    source: {
+      id: environmentIds[0],
+      installed: await isAppInstalled(client, {
+        spaceId: spaceId,
+        environmentId: environmentIds[0],
+        appId
+      })
+    },
+    target: {
+      id: environmentIds[1],
+      installed: await isAppInstalled(client, {
+        spaceId: spaceId,
+        environmentId: environmentIds[1],
+        appId
+      })
+    }
   }
 
-  if (appInstallations.source && appInstallations.target) {
+  if (appInstallations.source.installed && appInstallations.target.installed) {
     return true
   }
 
@@ -121,7 +127,10 @@ export const checkAndInstallAppInEnvironments = async (
       appId
     })
   } else {
-    if (!appInstallations.source && !appInstallations.target) {
+    if (
+      !appInstallations.source.installed &&
+      !appInstallations.target.installed
+    ) {
       warning(
         `The Merge app is not installed in any of the environments. Environment ids: ${environmentIds[0]}, ${environmentIds[1]}`
       )
@@ -139,16 +148,18 @@ export const checkAndInstallAppInEnvironments = async (
         appId
       })
     } else {
-      for (const env of environmentIds) {
-        const prompt = await promptAppInstallationInEnvironment(
-          client,
-          spaceId,
-          env,
-          appId
-        )
+      for (const { installed, id } of Object.values(appInstallations)) {
+        if (!installed) {
+          const prompt = await promptAppInstallationInEnvironment(
+            client,
+            spaceId,
+            id,
+            appId
+          )
 
-        if (!prompt) {
-          return false
+          if (!prompt) {
+            return false
+          }
         }
       }
     }
