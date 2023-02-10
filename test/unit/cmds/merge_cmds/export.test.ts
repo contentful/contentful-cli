@@ -12,17 +12,11 @@ const mockedClient = {
 } as unknown as PlainClientAPI
 
 describe('merge export command', () => {
-  const isAppInstalled = jest.spyOn(appInstallUtils, 'isAppInstalled')
-  const installApp = jest.spyOn(appInstallUtils, 'installApp')
-
   beforeEach(() => {
-    isAppInstalled.mockClear()
-    installApp.mockClear()
+    jest.clearAllMocks()
   })
 
   it('stops early if both env have the app installed', async () => {
-    isAppInstalled.mockResolvedValue(true)
-
     const appInstalledInBothEnvs =
       await appInstallUtils.checkAndInstallAppInEnvironments(
         mockedClient,
@@ -33,13 +27,13 @@ describe('merge export command', () => {
       )
 
     expect(appInstalledInBothEnvs).toBe(true)
-    expect(isAppInstalled).toHaveBeenCalledTimes(2)
+    expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 
   it('installs app to both envs if none of them have it installed', async () => {
-    isAppInstalled.mockResolvedValue(false)
-
-    const installApp = jest.spyOn(appInstallUtils, 'installApp')
+    mockedClient.appInstallation.get = jest.fn().mockImplementationOnce(() => {
+      throw { name: 'NotFound' }
+    })
 
     const appInstalledInBothEnvs =
       await appInstallUtils.checkAndInstallAppInEnvironments(
@@ -51,13 +45,11 @@ describe('merge export command', () => {
       )
 
     expect(appInstalledInBothEnvs).toBe(true)
-    expect(isAppInstalled).toHaveBeenCalledTimes(2)
-    expect(installApp).toHaveBeenCalledTimes(1)
+    expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
+    expect(mockedClient.raw.put).toHaveBeenCalledTimes(2)
   })
 
   it('installs the app in the other env if only one has it installed', async () => {
-    isAppInstalled.mockResolvedValueOnce(false).mockResolvedValueOnce(true)
-
     const appInstalledInBothEnvs =
       await appInstallUtils.checkAndInstallAppInEnvironments(
         mockedClient,
@@ -68,6 +60,6 @@ describe('merge export command', () => {
       )
 
     expect(appInstalledInBothEnvs).toBe(true)
-    expect(isAppInstalled).toHaveBeenCalledTimes(2)
+    expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 })

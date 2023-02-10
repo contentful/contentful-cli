@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`merge export snapshots show the help properly: help data is incorrect 1`] = `
+exports[`merge export snapshots shows the help properly: help data is incorrect 1`] = `
 "Usage: contentful merge export
 
 Options:
