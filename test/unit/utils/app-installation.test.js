@@ -1,50 +1,82 @@
-const { isAppInstalled } = require('../../../lib/utils/app-installation')
+const {
+  isAppInstalled,
+  installApp
+} = require('../../../lib/utils/app-installation')
 
 const spaceId = 'SPACE_ID'
 const environmentId = 'ENV_ID'
 const appId = 'APP_ID'
 
-test('uses the right call parameters', async () => {
-  const client = {
-    rawRequest: jest.fn()
+const client = {
+  appInstallation: {
+    get: jest.fn()
+  },
+  raw: {
+    put: jest.fn()
   }
-  const isInstalled = await isAppInstalled(client, {
-    spaceId,
-    environmentId,
-    appId
+}
+
+describe('app installation utils', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
   })
 
-  expect(client.rawRequest).toHaveBeenCalledTimes(1)
-  expect(client.rawRequest).toHaveBeenCalledWith({
-    method: 'GET',
-    url: `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`
-  })
-})
+  test('uses the right call parameters', async () => {
+    await isAppInstalled(client, {
+      spaceId,
+      environmentId,
+      appId
+    })
 
-test('properly handles a truthy check', async () => {
-  const client = {
-    rawRequest: jest.fn()
-  }
-  const isInstalled = await isAppInstalled(client, {
-    spaceId,
-    environmentId,
-    appId
+    expect(client.appInstallation.get).toHaveBeenCalledTimes(1)
+    expect(client.appInstallation.get).toHaveBeenCalledWith({
+      spaceId,
+      environmentId,
+      appDefinitionId: appId
+    })
   })
 
-  expect(isInstalled).toBeTruthy()
-})
+  test('properly handles a truthy check', async () => {
+    const isInstalled = await isAppInstalled(client, {
+      spaceId,
+      environmentId,
+      appId
+    })
 
-test('properly handles a faulty check', async () => {
-  const client = {
-    rawRequest: jest.fn(async () => {
+    expect(isInstalled).toBeTruthy()
+  })
+
+  test('properly handles a faulty check', async () => {
+    client.appInstallation.get = jest.fn().mockImplementationOnce(async () => {
       throw { name: 'NotFound' }
     })
-  }
-  const isInstalled = await isAppInstalled(client, {
-    spaceId,
-    environmentId,
-    appId
+
+    const isInstalled = await isAppInstalled(client, {
+      spaceId,
+      environmentId,
+      appId
+    })
+
+    expect(isInstalled).toBeFalsy()
   })
 
-  expect(isInstalled).toBeFalsy()
+  test('can install an app in an environment', async () => {
+    await installApp(client, {
+      spaceId,
+      environmentId,
+      appId
+    })
+
+    expect(client.raw.put).toHaveBeenCalledTimes(1)
+  })
+
+  test('can handle arrays when installing apps', async () => {
+    await installApp(client, {
+      spaceId,
+      environmentId: [environmentId, environmentId],
+      appId
+    })
+
+    expect(client.raw.put).toHaveBeenCalledTimes(2)
+  })
 })

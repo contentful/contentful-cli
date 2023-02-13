@@ -1,4 +1,7 @@
 module.exports = {
+  transform: {
+    '\\.[jt]sx?$': 'babel-jest'
+  },
   testEnvironment: 'node',
   testEnvironmentOptions: {
     url: 'http://localhost/'
