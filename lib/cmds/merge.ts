@@ -2,7 +2,7 @@ import type { Argv } from 'yargs'
 
 module.exports.command = 'merge'
 
-module.exports.desc = 'A CLI version of the merge app'
+module.exports.desc = 'A CLI version of the Merge app'
 
 module.exports.builder = function (yargs: Argv) {
   return yargs
