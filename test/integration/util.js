@@ -2,7 +2,11 @@ import appRoot from 'app-root-path'
 import { resolve } from 'path'
 import { homedir } from 'os'
 import { createManagementClient } from '../../lib/utils/contentful-clients'
-import { createTestSpace, initClient } from '@contentful/integration-test-utils'
+import {
+  createTestEnvironment,
+  createTestSpace,
+  initClient
+} from '@contentful/integration-test-utils'
 
 module.exports.expectedDir = `${appRoot}/test/integration/expected`
 module.exports.tmpDir = `${appRoot}/test/integration/expected/tmp`
@@ -17,7 +21,7 @@ export function extractSpaceId(text) {
   return found[1]
 }
 
-const client = initClient()
+export const client = initClient()
 
 export async function createSimpleSpace(testSuiteName = 'CLI Test Space') {
   return createTestSpace({
@@ -27,6 +31,17 @@ export async function createSimpleSpace(testSuiteName = 'CLI Test Space') {
     language: 'JS',
     testSuiteName
   })
+}
+
+export async function createSimpleEnvironment(spaceId, environmentName) {
+  const space = await client.getSpace(spaceId)
+
+  return createTestEnvironment(space, environmentName)
+}
+
+export async function deleteSpace(spaceId) {
+  const space = await client.getSpace(spaceId)
+  await space.delete()
 }
 
 async function addNewCT(spaceId, name, fields) {

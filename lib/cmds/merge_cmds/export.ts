@@ -1,4 +1,10 @@
 import type { Argv } from 'yargs'
+import { handleAsyncError as handle } from '../../utils/async'
+import { success } from '../../utils/log'
+import { createPlainClient } from '../../utils/contentful-clients'
+import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
+
+const MERGE_APP_ID = 'cQeaauOu1yUCYVhQ00atE'
 
 module.exports.command = 'export'
 
@@ -19,6 +25,10 @@ module.exports.builder = (yargs: Argv) => {
       demand: true,
       describe: 'Target environment id'
     })
+    .option('yes', {
+      alias: 'y',
+      describe: 'Confirm Merge app installation without prompt'
+    })
     .option('output-file', {
       alias: 'o',
       type: 'string',
@@ -28,6 +38,7 @@ module.exports.builder = (yargs: Argv) => {
 }
 
 interface Context {
+  activeSpaceId: string
   managementToken?: string
 }
 
@@ -35,15 +46,38 @@ interface ExportMigrationOptions {
   context: Context
   sourceEnvironmentId: string
   targetEnvironmentId: string
+  yes?: boolean
   outputFile?: string
 }
 
-const exportEnvironmentMigration = ({
+const exportEnvironmentMigration = async ({
   context,
   sourceEnvironmentId,
-  targetEnvironmentId
+  targetEnvironmentId,
+  yes = false
 }: ExportMigrationOptions) => {
-  console.log('export', context, sourceEnvironmentId, targetEnvironmentId)
+  const { managementToken, activeSpaceId } = context
+  const client = await createPlainClient({
+    accessToken: managementToken
+  })
+
+  if (sourceEnvironmentId === targetEnvironmentId) {
+    throw new Error('Source and target environments cannot be the same.')
+  }
+
+  const appInstalled = await checkAndInstallAppInEnvironments(
+    client,
+    activeSpaceId,
+    [sourceEnvironmentId, targetEnvironmentId],
+    MERGE_APP_ID,
+    yes
+  )
+
+  if (!appInstalled) {
+    throw new Error('Merge app could not be installed in the environments.')
+  }
+
+  success(`Exporting environment migration...`)
 }
 
-module.exports.handler = exportEnvironmentMigration
+module.exports.handler = handle(exportEnvironmentMigration)
