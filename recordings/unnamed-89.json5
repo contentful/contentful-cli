@@ -1,0 +1,154 @@
+{
+    meta: {
+        createdAt: '2022-08-11T10:55:21.205Z',
+        host: '',
+        reqHumanReadable: true,
+        resHumanReadable: true,
+    },
+    req: {
+        headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/vnd.contentful.management.v1+json',
+        },
+        url: 'https://api.contentful.com:443/spaces/6n1wxjh06vb6/environments/master/extensions/some-other-id',
+        method: 'PUT',
+        body: {
+            extension: {
+                name: 'Sample Extension',
+                fieldTypes: [
+                    {
+                        type: 'Symbol',
+                    },
+                    {
+                        type: 'Number',
+                    },
+                ],
+                srcdoc: '<h1>Sample Extension Content</h1>\n',
+            },
+        },
+    },
+    res: {
+        status: 201,
+        headers: {
+            connection: [
+                'close',
+            ],
+            'content-length': [
+                '675',
+            ],
+            'content-type': [
+                'application/vnd.contentful.management.v1+json',
+            ],
+            'x-contentful-ratelimit-hour-remaining': [
+                '35999',
+            ],
+            'x-contentful-ratelimit-second-remaining': [
+                '9',
+            ],
+            'x-contentful-ratelimit-hour-limit': [
+                '36000',
+            ],
+            'x-contentful-ratelimit-second-limit': [
+                '10',
+            ],
+            'x-contentful-ratelimit-reset': [
+                '0',
+            ],
+            'x-contentful-route': [
+                '/spaces/:spaceId/environments/:externalEnvironmentId/extensions/:id',
+            ],
+            'strict-transport-security': [
+                'max-age=15768000',
+            ],
+            'x-content-type-options': [
+                'nosniff',
+            ],
+            server: [
+                'Contentful',
+            ],
+            'contentful-api': [
+                'cma',
+            ],
+            'contentful-upstream': [
+                'extensibility-api',
+            ],
+            'access-control-allow-origin': [
+                '*',
+            ],
+            'access-control-allow-headers': [
+                'Accept,Accept-Language,Authorization,Cache-Control,Content-Length,Content-Range,Content-Type,DNT,Destination,Expires,If-Match,If-Modified-Since,If-None-Match,Keep-Alive,Last-Modified,Origin,Pragma,Range,User-Agent,X-Http-Method-Override,X-Mx-ReqToken,X-Requested-With,X-Contentful-Version,X-Contentful-Content-Type,X-Contentful-Organization,X-Contentful-Skip-Transformation,X-Contentful-Tag-Visibility,X-Contentful-User-Agent,X-Contentful-Enable-Alpha-Feature,X-Contentful-Source-Environment,X-Contentful-Team,X-Contentful-Parent-Id,x-contentful-validate-only,X-Contentful-Skip-UI-Draft-Validation,X-Contentful-Marketplace,X-Contentful-UI-Content-Auto-Save,cf-trace',
+            ],
+            'access-control-expose-headers': [
+                'Etag',
+            ],
+            'access-control-allow-methods': [
+                'DELETE,GET,HEAD,POST,PUT,PATCH,OPTIONS',
+            ],
+            'access-control-max-age': [
+                '1728000',
+            ],
+            'cache-control': [
+                'no-store',
+            ],
+            'accept-ranges': [
+                'bytes',
+            ],
+            date: [
+                'Thu, 11 Aug 2022 10:55:21 GMT',
+            ],
+            'x-contentful-request-id': [
+                'aee0c4f6-0537-418d-8364-83d087ae4170',
+            ],
+        },
+        body: {
+            sys: {
+                type: 'Extension',
+                id: 'some-other-id',
+                version: 1,
+                createdAt: '2022-08-11T10:55:21.652Z',
+                updatedAt: '2022-08-11T10:55:21.652Z',
+                createdBy: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'User',
+                        id: '6P6JYCRMBgoOlkFeF4Y45c',
+                    },
+                },
+                updatedBy: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'User',
+                        id: '6P6JYCRMBgoOlkFeF4Y45c',
+                    },
+                },
+                space: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'Space',
+                        id: '6n1wxjh06vb6',
+                    },
+                },
+                environment: {
+                    sys: {
+                        type: 'Link',
+                        linkType: 'Environment',
+                        id: 'master',
+                    },
+                },
+                srcdocSha256: 'c22219182db54a91ae25271a21d32fdc09c349042167e767196692689a217753',
+            },
+            extension: {
+                name: 'Sample Extension',
+                fieldTypes: [
+                    {
+                        type: 'Symbol',
+                    },
+                    {
+                        type: 'Number',
+                    },
+                ],
+                srcdoc: '<h1>Sample Extension Content</h1>\n',
+            },
+        },
+    },
+}

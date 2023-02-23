@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: contentful-cli
+  description: |
+    Contentful command line interface. Use Contentful features straight from the command line.
+  annotations:
+    circleci.com/project-slug: github/contentful/contentful-cli
+    github.com/project-slug: contentful/contentful-cli
+spec:
+  type: cli
+  lifecycle: production
+  owner: group:team-dev-workflows
