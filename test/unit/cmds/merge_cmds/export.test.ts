@@ -64,7 +64,7 @@ describe('merge export command', () => {
     expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 
-  it.only('calls calls the create changeset and export migration actions', async () => {
+  it('calls calls the create changeset and export migration actions', async () => {
     mockedClient.appActionCall = {
       create: jest
         .fn()

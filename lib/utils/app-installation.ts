@@ -51,8 +51,6 @@ export async function installApp(
     ? environmentId
     : [environmentId]
 
-  console.log('Installing app in environments', environments)
-
   for (const environmentId of environments) {
     await client.raw.put(
       `/spaces/${spaceId}/environments/${environmentId}/app_installations/${appId}`,
