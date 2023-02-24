@@ -1,6 +1,7 @@
 import { PlainClientAPI } from 'contentful-management'
 
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
+import * as exportCmd from '../../../../lib/cmds/merge_cmds/export'
 
 const mockedClient = {
   appInstallation: {
@@ -61,5 +62,39 @@ describe('merge export command', () => {
 
     expect(appInstalledInBothEnvs).toBe(true)
     expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
+  })
+
+  it.only('calls calls the create changeset and export migration actions', async () => {
+    mockedClient.appActionCall = {
+      create: jest
+        .fn()
+        .mockResolvedValueOnce({
+          sys: {
+            id: 'action-id-create-changeset'
+          }
+        })
+        .mockResolvedValueOnce({
+          sys: {
+            id: 'action-id-export-migration'
+          }
+        }),
+      getCallDetails: jest.fn().mockResolvedValueOnce({
+        statusCode: 200,
+        response: {
+          body: '{"message": {"migration":"console.log(\'hello world\')"}}'
+        }
+      })
+    }
+
+    await exportCmd.callExportAppAction({
+      api: mockedClient,
+      appDefinitionId: 'app-id',
+      appActionId: 'action-id',
+      sourceEnvironmentId: 'source',
+      targetEnvironmentId: 'target',
+      spaceId: 'space'
+    })
+
+    expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(2)
   })
 })

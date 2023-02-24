@@ -1,3 +1,4 @@
+import { type PlainClientAPI } from 'contentful-management'
 import path from 'path'
 import type { Argv } from 'yargs'
 import {
@@ -6,7 +7,8 @@ import {
 } from '../../utils/app-actions'
 import {
   getAppActionId,
-  getAppDefinitionId
+  getAppDefinitionId,
+  type Host
 } from '../../utils/app-actions-config'
 import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
 import { handleAsyncError as handle } from '../../utils/async'
@@ -59,6 +61,51 @@ interface ExportMigrationOptions {
   outputFile?: string
 }
 
+export const callExportAppAction = async ({
+  api,
+  appDefinitionId,
+  appActionId,
+  sourceEnvironmentId,
+  targetEnvironmentId,
+  spaceId
+}: {
+  api: PlainClientAPI
+  appDefinitionId: string
+  appActionId: string
+  sourceEnvironmentId: string
+  targetEnvironmentId: string
+  spaceId: string
+}) => {
+  let changesetRef: string
+
+  try {
+    changesetRef = await callCreateChangeset({
+      api,
+      appDefinitionId,
+      appActionId,
+      parameters: {
+        sourceEnvironmentId,
+        targetEnvironmentId
+      },
+      spaceId,
+      environmentId: targetEnvironmentId
+    })
+  } catch (e) {
+    throw new Error('Changeset could not be created.')
+  }
+
+  const { migration } = await getExportMigration({
+    api,
+    appDefinitionId,
+    appActionId,
+    changesetRef,
+    spaceId,
+    targetEnvironmentId: targetEnvironmentId
+  })
+
+  return migration
+}
+
 const exportEnvironmentMigration = async ({
   context,
   sourceEnvironmentId,
@@ -67,7 +114,7 @@ const exportEnvironmentMigration = async ({
   outputFile
 }: ExportMigrationOptions) => {
   const { managementToken, activeSpaceId, host } = context
-  const MERGE_APP_ID = getAppDefinitionId(host)
+  const MERGE_APP_ID = getAppDefinitionId(host as Host)
   const client = await createPlainClient({
     accessToken: managementToken
   })
@@ -99,36 +146,22 @@ const exportEnvironmentMigration = async ({
     )
     await ensureDir(path.dirname(outputTarget))
   } catch (e) {
-    console.error(e)
-    throw new Error('Migration could not be exported.')
+    throw new Error('Something failed with the output file.')
   }
 
-  let changesetRef: string
-
+  let migration: string
   try {
-    changesetRef = await callCreateChangeset({
+    migration = await callExportAppAction({
       api: client,
       appDefinitionId: MERGE_APP_ID,
-      appActionId: getAppActionId('create-changeset', host),
-      parameters: {
-        sourceEnvironmentId,
-        targetEnvironmentId
-      },
-      spaceId: activeSpaceId,
-      environmentId: targetEnvironmentId
+      appActionId: getAppActionId('export-changeset', host as Host),
+      sourceEnvironmentId,
+      targetEnvironmentId,
+      spaceId: activeSpaceId
     })
   } catch (e) {
-    throw new Error('Changeset could not be created.')
+    throw new Error('Migration could not be exported.')
   }
-
-  const { migration } = await getExportMigration({
-    api: client,
-    appDefinitionId: MERGE_APP_ID,
-    appActionId: getAppActionId('export-changeset', host),
-    changesetRef,
-    spaceId: activeSpaceId,
-    targetEnvironmentId: targetEnvironmentId
-  })
 
   await writeFileP(outputTarget, migration)
 
