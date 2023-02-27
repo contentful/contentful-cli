@@ -1,0 +1,28 @@
+# https://glebbahmutov.com/blog/trying-github-actions/
+name: update-branch
+on:
+  push:
+    branches:
+      - master
+  # or update the branch X manually
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout 🛎
+        # https://github.com/actions/checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update Git branch beta
+        run: |
+          git config user.name "Update branch"
+          git config user.email github-actions@github.com
+          git checkout beta
+          git rebase master
+      - name: Push the updated beta branch
+        run: |
+          git push origin beta
