@@ -1,9 +1,9 @@
 # https://glebbahmutov.com/blog/trying-github-actions/
 name: update-branch
 on:
-  # update the branch X every night
-  schedule:
-    - cron: '0 0 */3 * *'
+  push:
+    branches:
+      - master
   # or update the branch X manually
   workflow_dispatch:
 
