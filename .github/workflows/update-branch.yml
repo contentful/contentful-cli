@@ -3,7 +3,7 @@ name: update-branch
 on:
   # update the branch X every night
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 0 */3 * *'
   # or update the branch X manually
   workflow_dispatch:
 
