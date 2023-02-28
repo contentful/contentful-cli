@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { createSimpleSpace } = require('../../../util')
+import { createSimpleSpace, replaceCopyrightYear } from '../../../util'
 
 const bin = join(__dirname, './../../../../../', 'bin')
 
@@ -21,7 +21,8 @@ test('should create, list and delete environment', done => {
         `space environment create --space-id ${space.sys.id} --environment-id createListDelete --name "Create List Delete"`
       )
       .expect(result => {
-        const resultText = result.stdout.trim()
+        const text = result.stdout.trim()
+        const resultText = replaceCopyrightYear(text)
         expect(resultText).toMatchSnapshot()
       })
       .code(0)

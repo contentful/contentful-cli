@@ -1,5 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
+import { replaceCopyrightYear } from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
 const org = process.env.CLI_E2E_ORG_ID
@@ -13,7 +14,8 @@ test('should print help message', done => {
     .run('organization list --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)

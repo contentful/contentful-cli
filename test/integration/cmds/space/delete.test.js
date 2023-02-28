@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { createSimpleSpace } = require('../../util')
+import { createSimpleSpace, replaceCopyrightYear } from '../../util'
 const { readFile, writeFile } = require('fs/promises')
 const { homedir } = require('os')
 const { resolve } = require('path')
@@ -22,7 +22,8 @@ test('should print help message', done => {
     .run('space delete --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('space delete')
     })
     .end(done)
@@ -33,7 +34,8 @@ test('should print help message and exit 1 when no args', done => {
     .run('space delete')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('space delete')
     })
     .end(done)

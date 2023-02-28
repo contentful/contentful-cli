@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { createSimpleSpace } = require('../../../util')
+import { createSimpleSpace, replaceCopyrightYear } from '../../../util'
 
 const bin = join(__dirname, './../../../../../', 'bin')
 
@@ -18,7 +18,8 @@ test('should exit 1 when no args', done => {
     .run('space environment create')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -29,7 +30,8 @@ test('should print help message', done => {
     .run('space environment create --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -41,7 +43,8 @@ test('should create environment with id and name provided', done => {
       `space environment create --space-id ${space.sys.id} --environment-id staging --name Staging`
     )
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot()
     })
     .code(0)
