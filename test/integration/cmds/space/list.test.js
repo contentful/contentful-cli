@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
-import { createSimpleSpace } from '../../util'
+import { createSimpleSpace, replaceCopyrightYear } from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
 
@@ -19,7 +19,8 @@ test('should print help message', done => {
     .run('space list --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)

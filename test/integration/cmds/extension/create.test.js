@@ -1,6 +1,6 @@
 const nixt = require('nixt')
 const { resolve } = require('path')
-const { createSimpleSpace } = require('../../util')
+import { createSimpleSpace, replaceCopyrightYear } from '../../util'
 
 const bin = resolve(__dirname, './../../../../', 'bin')
 const configPath = resolve(__dirname, 'fixtures', 'sample-extension.json')
@@ -23,7 +23,8 @@ test('should print help message', done => {
     .run('extension create --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)

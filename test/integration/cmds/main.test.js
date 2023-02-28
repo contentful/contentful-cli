@@ -1,5 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
+import { replaceCopyrightYear } from '../util'
 
 const packageVersion = require('../../../package.json').version
 const bin = join(__dirname, './../../../', 'bin')
@@ -13,7 +14,8 @@ test('should return code 1 when errors exist no args', done => {
     .run('')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -24,7 +26,8 @@ test('should print help message', done => {
     .run('--help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -36,7 +39,8 @@ test('should print help message on shortcut', done => {
     .code(0)
     .stdout(/Usage: contentful <cmd> \[args\]/)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -47,7 +51,8 @@ test('should print help message on wrong subcommand', done => {
     .run('lolbar')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)

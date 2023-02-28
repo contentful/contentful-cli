@@ -1,5 +1,6 @@
 const nixt = require('nixt')
 const { join } = require('path')
+import { replaceCopyrightYear } from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
 
@@ -12,7 +13,8 @@ test('should exit 1 when no args', done => {
     .run('space create')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(() => {
@@ -25,7 +27,8 @@ test('should print help message', done => {
     .run('space create --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)

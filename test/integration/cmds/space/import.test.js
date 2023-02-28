@@ -1,6 +1,10 @@
 const nixt = require('nixt')
 const { join } = require('path')
-const { createSimpleSpace, expectedDir } = require('../../util')
+import {
+  createSimpleSpace,
+  expectedDir,
+  replaceCopyrightYear
+} from '../../util'
 
 const bin = join(__dirname, './../../../../', 'bin')
 
@@ -22,7 +26,8 @@ test('should print help message', done => {
     .run('space import --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
@@ -33,7 +38,8 @@ test('should exit 1 when no args', done => {
     .run('space import')
     .code(1)
     .expect(result => {
-      const resultText = result.stderr.trim()
+      const text = result.stderr.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot(
         'wrong response in case of no args provided'
       )

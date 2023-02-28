@@ -43,3 +43,9 @@ async function addNewCT(spaceId, name, fields) {
 }
 
 module.exports.addNewCT = addNewCT
+
+function replaceCopyrightYear(text) {
+  return text.replace(/(?<=Copyright\s).[0-9]+/g, '2013')
+}
+
+module.exports.replaceCopyrightYear = replaceCopyrightYear

@@ -8,6 +8,7 @@ import { handleAsyncError as handle } from '../utils/async'
 import { highlightStyle, pathStyle } from '../utils/styles'
 import { Argv } from 'yargs'
 import { tokenInfo } from '../utils/token-info'
+import { copyright } from '../utils/copyright'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
@@ -30,7 +31,7 @@ export const builder = (yargs: Argv) =>
       [
         'See more at:',
         'https://github.com/contentful/contentful-cli/tree/master/docs/login',
-        'Copyright 2019 Contentful'
+        copyright
       ].join('\n')
     )
 

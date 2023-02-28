@@ -1,5 +1,6 @@
 const nixt = require('nixt')
 const { resolve } = require('path')
+import { replaceCopyrightYear } from '../../util'
 
 const bin = resolve(__dirname, './../../../../', 'bin')
 
@@ -14,7 +15,8 @@ test('should print help message', done => {
     .run('extension update --help')
     .code(0)
     .expect(result => {
-      const resultText = result.stdout.trim()
+      const text = result.stdout.trim()
+      const resultText = replaceCopyrightYear(text)
       expect(resultText).toMatchSnapshot('help data is incorrect')
     })
     .end(done)
