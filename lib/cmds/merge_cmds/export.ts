@@ -64,14 +64,16 @@ interface ExportMigrationOptions {
 export const callExportAppAction = async ({
   api,
   appDefinitionId,
-  appActionId,
+  createChangesetActionId,
+  exportActionId,
   sourceEnvironmentId,
   targetEnvironmentId,
   spaceId
 }: {
   api: PlainClientAPI
   appDefinitionId: string
-  appActionId: string
+  createChangesetActionId: string
+  exportActionId: string
   sourceEnvironmentId: string
   targetEnvironmentId: string
   spaceId: string
@@ -82,7 +84,7 @@ export const callExportAppAction = async ({
     changesetRef = await callCreateChangeset({
       api,
       appDefinitionId,
-      appActionId,
+      appActionId: createChangesetActionId,
       parameters: {
         sourceEnvironmentId,
         targetEnvironmentId
@@ -97,7 +99,7 @@ export const callExportAppAction = async ({
   const { migration } = await getExportMigration({
     api,
     appDefinitionId,
-    appActionId,
+    appActionId: exportActionId,
     changesetRef,
     spaceId,
     targetEnvironmentId: targetEnvironmentId
@@ -154,12 +156,17 @@ const exportEnvironmentMigration = async ({
     migration = await callExportAppAction({
       api: client,
       appDefinitionId: MERGE_APP_ID,
-      appActionId: getAppActionId('export-changeset', host as Host),
+      createChangesetActionId: getAppActionId('create-changeset', host as Host),
+      exportActionId: getAppActionId('export-changeset', host as Host),
       sourceEnvironmentId,
       targetEnvironmentId,
       spaceId: activeSpaceId
     })
   } catch (e) {
+    if (e instanceof Error) {
+      throw e.message
+    }
+
     throw new Error('Migration could not be exported.')
   }
 
