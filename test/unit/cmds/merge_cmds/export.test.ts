@@ -8,7 +8,11 @@ const mockedClient = {
     get: jest.fn()
   },
   raw: {
-    put: jest.fn()
+    put: jest.fn(),
+    getDefaultParams: jest.fn()
+  },
+  environmentAlias: {
+    getMany: jest.fn().mockResolvedValue({ items: [] })
   }
 } as unknown as PlainClientAPI
 
