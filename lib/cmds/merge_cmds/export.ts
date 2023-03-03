@@ -1,10 +1,20 @@
+import { type PlainClientAPI } from 'contentful-management'
+import path from 'path'
 import type { Argv } from 'yargs'
-import { handleAsyncError as handle } from '../../utils/async'
-import { success } from '../../utils/log'
-import { createPlainClient } from '../../utils/contentful-clients'
+import {
+  callCreateChangeset,
+  getExportMigration
+} from '../../utils/app-actions'
+import {
+  getAppActionId,
+  getAppDefinitionId,
+  type Host
+} from '../../utils/app-actions-config'
 import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
-
-const MERGE_APP_ID = 'cQeaauOu1yUCYVhQ00atE'
+import { handleAsyncError as handle } from '../../utils/async'
+import { createPlainClient } from '../../utils/contentful-clients'
+import { ensureDir, getPath, writeFileP } from '../../utils/fs'
+import { success } from '../../utils/log'
 
 module.exports.command = 'export'
 
@@ -39,6 +49,7 @@ module.exports.builder = (yargs: Argv) => {
 
 interface Context {
   activeSpaceId: string
+  host?: string
   managementToken?: string
 }
 
@@ -50,13 +61,65 @@ interface ExportMigrationOptions {
   outputFile?: string
 }
 
+export const callExportAppAction = async ({
+  api,
+  appDefinitionId,
+  createChangesetActionId,
+  exportActionId,
+  sourceEnvironmentId,
+  targetEnvironmentId,
+  spaceId
+}: {
+  api: PlainClientAPI
+  appDefinitionId: string
+  createChangesetActionId: string
+  exportActionId: string
+  sourceEnvironmentId: string
+  targetEnvironmentId: string
+  spaceId: string
+}) => {
+  let changesetRef: string
+
+  try {
+    changesetRef = await callCreateChangeset({
+      api,
+      appDefinitionId,
+      appActionId: createChangesetActionId,
+      parameters: {
+        sourceEnvironmentId,
+        targetEnvironmentId
+      },
+      spaceId,
+      // We use the target environment as this environment needs to have the merge app installed
+      // and the context environment might not have it installed and not need it. Using directly
+      // the target env saves us installations. We could have used the source environment also.
+      environmentId: targetEnvironmentId
+    })
+  } catch (e) {
+    throw new Error('Changeset could not be created.')
+  }
+
+  const { migration } = await getExportMigration({
+    api,
+    appDefinitionId,
+    appActionId: exportActionId,
+    changesetRef,
+    spaceId,
+    targetEnvironmentId: targetEnvironmentId
+  })
+
+  return migration
+}
+
 const exportEnvironmentMigration = async ({
   context,
   sourceEnvironmentId,
   targetEnvironmentId,
-  yes = false
+  yes = false,
+  outputFile
 }: ExportMigrationOptions) => {
-  const { managementToken, activeSpaceId } = context
+  const { managementToken, activeSpaceId, host } = context
+  const MERGE_APP_ID = getAppDefinitionId(host as Host)
   const client = await createPlainClient({
     accessToken: managementToken
   })
@@ -77,7 +140,42 @@ const exportEnvironmentMigration = async ({
     throw new Error('Merge app could not be installed in the environments.')
   }
 
-  success(`Exporting environment migration...`)
+  let outputTarget: string
+  try {
+    outputTarget = getPath(
+      outputFile ||
+        path.join(
+          'migrations',
+          `${Date.now()}-${activeSpaceId}-${sourceEnvironmentId}-${targetEnvironmentId}.js`
+        )
+    )
+    await ensureDir(path.dirname(outputTarget))
+  } catch (e) {
+    throw new Error('Something failed with the output file.')
+  }
+
+  let migration: string
+  try {
+    migration = await callExportAppAction({
+      api: client,
+      appDefinitionId: MERGE_APP_ID,
+      createChangesetActionId: getAppActionId('create-changeset', host as Host),
+      exportActionId: getAppActionId('export-changeset', host as Host),
+      sourceEnvironmentId,
+      targetEnvironmentId,
+      spaceId: activeSpaceId
+    })
+  } catch (e) {
+    if (e instanceof Error) {
+      throw e.message
+    }
+
+    throw new Error('Migration could not be exported.')
+  }
+
+  await writeFileP(outputTarget, migration)
+
+  success(`✅ Migration exported to ${outputTarget}.`)
 }
 
 module.exports.handler = handle(exportEnvironmentMigration)
