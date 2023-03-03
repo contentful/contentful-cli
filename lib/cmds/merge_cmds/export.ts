@@ -90,6 +90,9 @@ export const callExportAppAction = async ({
         targetEnvironmentId
       },
       spaceId,
+      // We use the target environment as this environment needs to have the merge app installed
+      // and the context environment might not have it installed and not need it. Using directly
+      // the target env saves us installations. We could have used the source environment also.
       environmentId: targetEnvironmentId
     })
   } catch (e) {
