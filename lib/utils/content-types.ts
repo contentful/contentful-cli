@@ -1,4 +1,3 @@
-import { Patch } from '@contentful/jsondiffpatch'
 import chalk from 'chalk'
 import getContentfulCollection from 'contentful-collection'
 import { ContentTypeProps, PlainClientAPI } from 'contentful-management'
@@ -23,7 +22,7 @@ export type Changeset =
   | {
       changeType: 'update'
       entity: Entity
-      patch: Patch
+      patch: unknown
     }
 
 export function getContentType({
