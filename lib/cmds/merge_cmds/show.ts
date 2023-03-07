@@ -12,8 +12,8 @@ import {
 } from '../../utils/app-actions-config'
 import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
 import { handleAsyncError as handle } from '../../utils/async'
+import { Changeset, getContentType, printDiff } from '../../utils/content-types'
 import { createPlainClient } from '../../utils/contentful-clients'
-import { success } from '../../utils/log'
 
 module.exports.command = 'show'
 
@@ -81,7 +81,7 @@ const showEnvironmentChangeset = async ({
     throw new Error('Merge app could not be installed in the environments.')
   }
 
-  const { result } = await callAppAction<
+  const appActionCall = callAppAction<
     AppActionCategoryParams['CreateChangeset'],
     { changeset: Changeset }
   >({
@@ -98,14 +98,23 @@ const showEnvironmentChangeset = async ({
     }
   })
 
+  const [targetContentTypes, appActionResult] = await Promise.all([
+    getContentType({
+      client,
+      environmentId: targetEnvironmentId,
+      spaceId: activeSpaceId
+    }),
+    appActionCall
+  ])
+
+  const { result } = appActionResult
+
   if (isResultWithError(result)) {
     throw result.errorMessage
   }
 
-  const { items } = result.message.changeset
-
-  success('Diff succesfully created: ')
-  console.log(JSON.stringify(items, null, 2))
+  const { items: changeset } = result.message.changeset
+  printDiff(targetContentTypes, changeset as Changeset[])
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)
