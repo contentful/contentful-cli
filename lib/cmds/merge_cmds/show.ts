@@ -3,7 +3,7 @@ import {
   callAppAction,
   isResultWithError
 } from '@contentful/app-action-utils'
-import { Changeset } from '@contentful/changeset-types'
+import { PlainClientAPI } from 'contentful-management'
 import type { Argv } from 'yargs'
 import {
   getAppActionId,
@@ -38,6 +38,65 @@ module.exports.builder = (yargs: Argv) => {
       alias: 'y',
       describe: 'Confirm Merge app installation without prompt'
     })
+}
+
+export const getChangesetAndTargetContentType = async ({
+  client,
+  activeSpaceId,
+  host,
+  appDefinitionId,
+  sourceEnvironmentId,
+  targetEnvironmentId
+}: {
+  client: PlainClientAPI
+  activeSpaceId: string
+  host: Host
+  appDefinitionId: string
+  sourceEnvironmentId: string
+  targetEnvironmentId: string
+}) => {
+  const appActionCall = callAppAction<
+    AppActionCategoryParams['CreateChangeset'],
+    {
+      changeset: {
+        sys: {
+          type: 'Changeset'
+        }
+        items: Array<unknown>
+      }
+    }
+  >({
+    api: client,
+    appDefinitionId,
+    appActionId: getAppActionId('create-changeset', host),
+    parameters: {
+      sourceEnvironmentId,
+      targetEnvironmentId
+    },
+    additionalParameters: {
+      spaceId: activeSpaceId,
+      environmentId: targetEnvironmentId
+    }
+  })
+
+  const [targetContentType, appActionResult] = await Promise.all([
+    getContentType({
+      client,
+      environmentId: targetEnvironmentId,
+      spaceId: activeSpaceId
+    }),
+    appActionCall
+  ])
+
+  const { result } = appActionResult
+
+  if (isResultWithError(result)) {
+    throw result.errorMessage
+  }
+
+  const { items: changeset } = result.message.changeset
+
+  return { targetContentType, changeset: changeset as Changeset[] }
 }
 
 interface Context {
@@ -81,40 +140,17 @@ const showEnvironmentChangeset = async ({
     throw new Error('Merge app could not be installed in the environments.')
   }
 
-  const appActionCall = callAppAction<
-    AppActionCategoryParams['CreateChangeset'],
-    { changeset: Changeset }
-  >({
-    api: client,
-    appDefinitionId: MERGE_APP_ID,
-    appActionId: getAppActionId('create-changeset', host as Host),
-    parameters: {
+  const { targetContentType, changeset } =
+    await getChangesetAndTargetContentType({
+      client,
+      activeSpaceId,
+      host: host as Host,
+      appDefinitionId: MERGE_APP_ID,
       sourceEnvironmentId,
       targetEnvironmentId
-    },
-    additionalParameters: {
-      spaceId: activeSpaceId,
-      environmentId: targetEnvironmentId
-    }
-  })
+    })
 
-  const [targetContentTypes, appActionResult] = await Promise.all([
-    getContentType({
-      client,
-      environmentId: targetEnvironmentId,
-      spaceId: activeSpaceId
-    }),
-    appActionCall
-  ])
-
-  const { result } = appActionResult
-
-  if (isResultWithError(result)) {
-    throw result.errorMessage
-  }
-
-  const { items: changeset } = result.message.changeset
-  printDiff(targetContentTypes, changeset as Changeset[])
+  printDiff(targetContentType, changeset)
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)

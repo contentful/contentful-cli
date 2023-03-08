@@ -2,6 +2,18 @@ import chalk from 'chalk'
 import getContentfulCollection from 'contentful-collection'
 import { ContentTypeProps, PlainClientAPI } from 'contentful-management'
 
+type Patch =
+  | {
+      op: 'remove' | 'replace'
+      path: string
+      value: string
+    }
+  | {
+      op: 'add'
+      path: string
+      value: Record<string, unknown>
+    }
+
 type Entity = {
   sys: {
     id: string
@@ -22,7 +34,7 @@ export type Changeset =
   | {
       changeType: 'update'
       entity: Entity
-      patch: unknown
+      patch: Patch[]
     }
 
 export function getContentType({
@@ -45,6 +57,31 @@ export function getContentType({
       }
     )
   )
+}
+
+export function printUpdate(patches: Patch[], contentType: ContentTypeProps) {
+  for (const patch of patches) {
+    const pathParts = patch.path.split('/').filter(Boolean)
+    const field = contentType.fields[Number(pathParts[1])]
+
+    if (patch.op === 'remove') {
+      console.log(
+        chalk.red(`\t- (ID: ${field.id}) Field ${field?.name} was deleted`)
+      )
+    } else if (patch.op === 'replace') {
+      console.log(
+        chalk.blue(
+          `\t~ (ID: ${field.id}) Property ${pathParts[2]} was updated to ${patch.value} in field ${field?.name}`
+        )
+      )
+    } else if (patch.op === 'add') {
+      console.log(
+        chalk.green(
+          `\t+ (ID: ${patch.value?.id}) Property ${field.name} was added`
+        )
+      )
+    }
+  }
 }
 
 export function printDiff(target: ContentTypeProps[], changeset: Changeset[]) {
@@ -76,6 +113,7 @@ export function printDiff(target: ContentTypeProps[], changeset: Changeset[]) {
             `~ (ID: ${contentType.sys.id}) ${contentType.sys.type} called ${contentType.name} was updated`
           )
         )
+        printUpdate(change.patch, contentType)
       }
     }
   }
