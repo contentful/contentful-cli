@@ -37,7 +37,7 @@ export const builder = (yargs: Argv) => {
 
 function showSuccess(space: Space, env = 'master') {
   success(
-    `Now sssusing the '${env}' Environment of Space ${highlightStyle(
+    `Now using the '${env}' Environment of Space ${highlightStyle(
       space.name
     )} (${highlightStyle(
       space.sys.id
