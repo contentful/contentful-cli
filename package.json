@@ -151,7 +151,8 @@
       "./dist/**/*.js"
     ],
     "assets": [
-      "./node_modules/figlet/fonts/Standard.flf"
+      "./node_modules/figlet/fonts/Standard.flf",
+      "./node_modules/axios/dist/node/axios.cjs"
     ]
   },
   "lint-staged": {
