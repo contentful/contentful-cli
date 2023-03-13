@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "npm run tsc && pkg --targets node12-macos-x64,node12-linux-x64,node12-win-x64 --out-dir build .",
+    "build:standalone": "npm run tsc && pkg .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
@@ -66,7 +66,7 @@
     "lint-staged": "^13.0.0",
     "nixt": "^0.5.1",
     "nyc": "^15.0.0",
-    "pkg": "^5.0.0",
+    "pkg": "^5.8.1",
     "rimraf": "^3.0.2",
     "semantic-release": "^20.1.1",
     "stream-buffers": "^3.0.2",
@@ -141,8 +141,14 @@
     }
   },
   "pkg": {
+    "targets": [
+      "node18-macos-x64",
+      "node18-linux-x64",
+      "node18-win-x64"
+    ],
+    "outputPath": "build",
     "scripts": [
-      "./output/**/*.js"
+      "./dist/**/*.js"
     ],
     "assets": [
       "./node_modules/figlet/fonts/Standard.flf"
