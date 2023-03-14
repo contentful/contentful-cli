@@ -185,7 +185,28 @@
       ],
       "@semantic-release/release-notes-generator",
       "@semantic-release/npm",
-      "@semantic-release/github"
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "build/contentful-cli-macos-*.zip",
+              "name": "contentful-cli-macos-${nextRelease.version}.zip",
+              "label": "MacOS executable"
+            },
+            {
+              "path": "build/contentful-cli-linux-*.zip",
+              "name": "contentful-cli-linux-${nextRelease.version}.zip",
+              "label": "Linux executable"
+            },
+            {
+              "path": "build/contentful-cli-win-*.zip",
+              "name": "contentful-cli-win-${nextRelease.version}.zip",
+              "label": "Windows executable"
+            }
+          ]
+        }
+      ]
     ]
   }
 }
