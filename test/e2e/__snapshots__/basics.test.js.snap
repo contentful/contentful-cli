@@ -8,8 +8,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -17,7 +19,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2013 Contentful"
+Copyright 2023 Contentful"
 `;
 
 exports[`should print help message on shortcut 1`] = `
@@ -28,8 +30,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -37,7 +41,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2013 Contentful"
+Copyright 2023 Contentful"
 `;
 
 exports[`should print help message on wrong subcommand 1`] = `
@@ -48,8 +52,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -57,7 +63,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2013 Contentful
+Copyright 2023 Contentful
 Please specify a command."
 `;
 
@@ -69,8 +75,10 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
+  init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
@@ -78,6 +86,6 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2013 Contentful
+Copyright 2023 Contentful
 Please specify a command."
 `;
