@@ -64,7 +64,7 @@ jobs:
       - run: git fetch --tags
       - run: npm ci
       - run: npm run tsc
-      - run: npm run build:standalone
+      - run: npm run build:package
       - run: npm run semantic-release
   audit:
     docker: &ref_0
