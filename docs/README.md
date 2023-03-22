@@ -10,6 +10,7 @@ Commands:
   init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
+  merge         A CLI version of the Merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
 
