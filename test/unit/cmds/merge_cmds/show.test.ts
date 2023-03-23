@@ -1,8 +1,9 @@
 import { ContentTypeProps, PlainClientAPI } from 'contentful-management'
-
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
-import * as contentTypesUtils from '../../../../lib/utils/content-types'
+import { ContentTypeApiHelper } from '../../../../lib/utils/merge/content-type-api-helper'
+import * as printer from '../../../../lib/utils/merge/print-changeset-messages'
 import * as showCmd from '../../../../lib/cmds/merge_cmds/show'
+import { ChangesetItem } from '../../../../lib/utils/merge/types'
 
 const mockedClient = {
   appInstallation: {
@@ -347,7 +348,7 @@ describe('merge show command', () => {
     expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 
-  it('calls calls the create changeset actions', async () => {
+  it('call the create changeset actions', async () => {
     mockedClient.appActionCall = {
       create: jest.fn().mockResolvedValueOnce({
         sys: {
@@ -363,7 +364,7 @@ describe('merge show command', () => {
     }
 
     jest
-      .spyOn(contentTypesUtils, 'getContentType')
+      .spyOn(ContentTypeApiHelper, 'getAll')
       .mockResolvedValueOnce([{}] as ContentTypeProps[])
 
     await showCmd.getChangesetAndTargetContentType({
@@ -376,29 +377,6 @@ describe('merge show command', () => {
     })
 
     expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(1)
-    expect(contentTypesUtils.getContentType).toHaveBeenCalledTimes(1)
-  })
-
-  it.only('shows the diff properly', () => {
-    jest.spyOn(contentTypesUtils, 'printDiff')
-    const consoleSpy = jest.spyOn(console, 'log')
-    const { targetContentType, changeset } = showTestData
-
-    contentTypesUtils.printDiff(
-      targetContentType as ContentTypeProps[],
-      changeset as contentTypesUtils.Changeset[]
-    )
-
-    expect(consoleSpy.mock.calls.map(x => x[0])).toEqual([
-      'Here is what would change in the target environment: ',
-      '+ (ID: toBeDeletedType) ToBeDeletedType ContentType added',
-      '- (ID: newType) ContentType called NewType was deleted',
-      '~ (ID: toBeModifiedType) ContentType called ToBeModifiedType was updated',
-      '\t- (ID: number) Field number was deleted',
-      '\t~ (ID: yes) Property name was updated to yes in field No',
-      '\t+ (ID: numberEditted) Property number was added'
-    ])
-
-    expect(console.log).toHaveBeenCalledTimes(7)
+    expect(ContentTypeApiHelper.getAll).toHaveBeenCalledTimes(1)
   })
 })

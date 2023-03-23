@@ -12,8 +12,10 @@ import {
 } from '../../utils/app-actions-config'
 import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
 import { handleAsyncError as handle } from '../../utils/async'
-import { Changeset, getContentType, printDiff } from '../../utils/content-types'
 import { createPlainClient } from '../../utils/contentful-clients'
+import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
+import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
+import { ChangesetItem } from '../../utils/merge/types'
 
 module.exports.command = 'show'
 
@@ -25,13 +27,13 @@ module.exports.builder = (yargs: Argv) => {
     .option('source-environment-id', {
       alias: 's',
       type: 'string',
-      demand: true,
+      demandOption: true,
       describe: 'Source environment id'
     })
     .option('target-environment-id', {
       alias: 't',
       type: 'string',
-      demand: true,
+      demandOption: true,
       describe: 'Target environment id'
     })
     .option('yes', {
@@ -80,7 +82,7 @@ export const getChangesetAndTargetContentType = async ({
   })
 
   const [targetContentType, appActionResult] = await Promise.all([
-    getContentType({
+    ContentTypeApiHelper.getAll({
       client,
       environmentId: targetEnvironmentId,
       spaceId: activeSpaceId
@@ -96,7 +98,7 @@ export const getChangesetAndTargetContentType = async ({
 
   const { items: changeset } = result.message.changeset
 
-  return { targetContentType, changeset: changeset as Changeset[] }
+  return { targetContentType, changeset: changeset as ChangesetItem[] }
 }
 
 interface Context {
@@ -150,7 +152,8 @@ const showEnvironmentChangeset = async ({
       targetEnvironmentId
     })
 
-  printDiff(targetContentType, changeset)
+  const message = printChangesetMessages(targetContentType, changeset)
+  console.log(message)
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)

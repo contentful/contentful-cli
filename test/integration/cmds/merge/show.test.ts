@@ -39,7 +39,7 @@ describe('merge show command args validation', () => {
 
   it('should exit 1 when no source environment', done => {
     app()
-      .run('merge show --t target')
+      .run('merge show -t target')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
@@ -50,7 +50,7 @@ describe('merge show command args validation', () => {
 
   it('should exit 1 when no target environment', done => {
     app()
-      .run('merge show --s source')
+      .run('merge show -se source')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
@@ -61,7 +61,7 @@ describe('merge show command args validation', () => {
 
   it('should exit 1 when no space id passed or in context', done => {
     app()
-      .run('merge show --s source --t source')
+      .run('merge show -s source --t source')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
