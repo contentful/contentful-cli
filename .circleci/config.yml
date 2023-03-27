@@ -16,6 +16,8 @@ jobs:
       - run: npm ci
       - run: npm run tsc
       - run: npm test
+      - store_test_results:
+          path: ./reports/unit-tests.xml
   integration:
     docker:
       - image: cimg/node:lts
@@ -30,6 +32,8 @@ jobs:
       - run:
           command: npm run test:integration:ci
           no_output_timeout: 20m
+      - store_test_results:
+          path: ./reports/integration-tests.xml
   linux:
     docker:
       - image: cimg/node:lts
@@ -42,6 +46,8 @@ jobs:
       - run: npm ci
       - run: npm run build:standalone
       - run: npm run test:e2e
+      - store_test_results:
+          path: ./reports/e2e-tests.xml
   osx:
     macos:
       xcode: 12.5.1
@@ -54,6 +60,8 @@ jobs:
       - run: npm ci
       - run: npm run build:standalone
       - run: npm run test:e2e
+      - store_test_results:
+          path: ./reports/e2e-tests.xml
   release:
     docker:
       - image: cimg/node:lts
