@@ -93,7 +93,8 @@ describe('merge export command', () => {
     await exportCmd.callExportAppAction({
       api: mockedClient,
       appDefinitionId: 'app-id',
-      appActionId: 'action-id',
+      exportActionId: 'action-id',
+      createChangesetActionId: 'action-id',
       sourceEnvironmentId: 'source',
       targetEnvironmentId: 'target',
       spaceId: 'space'
