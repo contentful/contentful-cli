@@ -26,13 +26,13 @@ module.exports.builder = (yargs: Argv) => {
   return yargs
     .usage('Usage: contentful merge show')
     .option('source-environment-id', {
-      alias: 's',
+      alias: 'se',
       type: 'string',
       demandOption: true,
       describe: 'Source environment id'
     })
     .option('target-environment-id', {
-      alias: 't',
+      alias: 'te',
       type: 'string',
       demandOption: true,
       describe: 'Target environment id'
