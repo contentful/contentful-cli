@@ -26,13 +26,13 @@ module.exports.builder = (yargs: Argv) => {
     .option('source-environment-id', {
       alias: 's',
       type: 'string',
-      demand: true,
+      demandOption: true,
       describe: 'Source environment id'
     })
     .option('target-environment-id', {
       alias: 't',
       type: 'string',
-      demand: true,
+      demandOption: true,
       describe: 'Target environment id'
     })
     .option('yes', {
