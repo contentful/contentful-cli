@@ -14,8 +14,9 @@ import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
 import { handleAsyncError as handle } from '../../utils/async'
 import { createPlainClient } from '../../utils/contentful-clients'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
+import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
-import { ChangesetItem } from '../../utils/merge/types'
+import { ChangesetItem, MergeContext } from '../../utils/merge/types'
 
 module.exports.command = 'show'
 
@@ -25,13 +26,13 @@ module.exports.builder = (yargs: Argv) => {
   return yargs
     .usage('Usage: contentful merge show')
     .option('source-environment-id', {
-      alias: 's',
+      alias: 'se',
       type: 'string',
       demandOption: true,
       describe: 'Source environment id'
     })
     .option('target-environment-id', {
-      alias: 't',
+      alias: 'te',
       type: 'string',
       demandOption: true,
       describe: 'Target environment id'
@@ -101,14 +102,8 @@ export const getChangesetAndTargetContentType = async ({
   return { targetContentType, changeset: changeset as ChangesetItem[] }
 }
 
-interface Context {
-  activeSpaceId: string
-  host: string
-  managementToken?: string
-}
-
 interface ShowChangesetProps {
-  context: Context
+  context: MergeContext
   sourceEnvironmentId: string
   targetEnvironmentId: string
   yes?: boolean
@@ -120,34 +115,21 @@ const showEnvironmentChangeset = async ({
   targetEnvironmentId,
   yes = false
 }: ShowChangesetProps) => {
-  const { managementToken, activeSpaceId, host } = context
-  const MERGE_APP_ID = getAppDefinitionId(host as Host)
-  const client = await createPlainClient({
-    accessToken: managementToken
-  })
-
-  if (sourceEnvironmentId === targetEnvironmentId) {
-    throw new Error('Source and target environments cannot be the same.')
-  }
-
-  const appInstalled = await checkAndInstallAppInEnvironments(
-    client,
-    activeSpaceId,
-    [sourceEnvironmentId, targetEnvironmentId],
-    MERGE_APP_ID,
-    yes
+  const { activeSpaceId, host, client, mergeAppId } = await prepareMergeCommand(
+    {
+      context,
+      sourceEnvironmentId,
+      targetEnvironmentId,
+      yes
+    }
   )
-
-  if (!appInstalled) {
-    throw new Error('Merge app could not be installed in the environments.')
-  }
 
   const { targetContentType, changeset } =
     await getChangesetAndTargetContentType({
       client,
       activeSpaceId,
       host: host as Host,
-      appDefinitionId: MERGE_APP_ID,
+      appDefinitionId: mergeAppId,
       sourceEnvironmentId,
       targetEnvironmentId
     })

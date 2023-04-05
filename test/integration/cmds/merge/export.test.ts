@@ -39,7 +39,7 @@ describe('merge export command args validation', () => {
 
   it('should exit 1 when no source environment', done => {
     app()
-      .run('merge export --t target')
+      .run('merge export --te target')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
@@ -50,7 +50,7 @@ describe('merge export command args validation', () => {
 
   it('should exit 1 when no target environment', done => {
     app()
-      .run('merge export --s source')
+      .run('merge export --se source')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
@@ -61,7 +61,7 @@ describe('merge export command args validation', () => {
 
   it('should exit 1 when no space id passed or in context', done => {
     app()
-      .run('merge export --s source --t source')
+      .run('merge export --se source --te source')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
@@ -72,7 +72,7 @@ describe('merge export command args validation', () => {
 
   it('should exit 1 when source and target are the same', done => {
     app()
-      .run('merge export --s source --t source --space-id space')
+      .run('merge export --se source --te source --space-id space')
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()

@@ -1,8 +1,11 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+# Contentful CLI - `merge export` command
 
-exports[`merge export snapshots shows the help properly: help data is incorrect 1`] = `
-"Usage: contentful merge export
+Export diff between two environments as a migration.
 
+## Usage
+
+```
+Usage: contentful merge export
 Options:
   -h, --help                     Show help                             [boolean]
   --source-environment-id, --se  Source environment id       [string] [required]
@@ -10,5 +13,11 @@ Options:
   --yes, -y                      Confirm Merge app installation without prompt
   --output-file, -o              Output file. It defaults to
                                  ./migrations/<timestamp>-<space-id>-<source-env
-                                 ironment-id>-<target-environment-id>.js[string]"
-`;
+                                 ironment-id>-<target-environment-id>.js[string]
+```
+
+### Example
+
+```sh
+contentful merge export --source-environment-id staging --target-environment-id master
+```

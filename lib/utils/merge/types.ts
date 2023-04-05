@@ -1,3 +1,5 @@
+import { Host } from '../app-actions-config'
+
 export interface BaseOperation {
   path: string
 }
@@ -56,3 +58,9 @@ export type ChangesetItem =
   | AddChangesetItem
   | DeleteChangesetItem
   | UpdateChangesetItem
+
+export interface MergeContext {
+  activeSpaceId: string
+  host?: Host
+  managementToken?: string
+}

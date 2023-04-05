@@ -5,16 +5,12 @@ import {
   callCreateChangeset,
   getExportMigration
 } from '../../utils/app-actions'
-import {
-  getAppActionId,
-  getAppDefinitionId,
-  type Host
-} from '../../utils/app-actions-config'
-import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
+import { getAppActionId, type Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
-import { createPlainClient } from '../../utils/contentful-clients'
 import { ensureDir, getPath, writeFileP } from '../../utils/fs'
 import { success } from '../../utils/log'
+import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
+import { MergeContext } from '../../utils/merge/types'
 
 module.exports.command = 'export'
 
@@ -24,13 +20,13 @@ module.exports.builder = (yargs: Argv) => {
   return yargs
     .usage('Usage: contentful merge export')
     .option('source-environment-id', {
-      alias: 's',
+      alias: 'se',
       type: 'string',
       demandOption: true,
       describe: 'Source environment id'
     })
     .option('target-environment-id', {
-      alias: 't',
+      alias: 'te',
       type: 'string',
       demandOption: true,
       describe: 'Target environment id'
@@ -47,14 +43,8 @@ module.exports.builder = (yargs: Argv) => {
     })
 }
 
-interface Context {
-  activeSpaceId: string
-  host?: string
-  managementToken?: string
-}
-
 interface ExportMigrationOptions {
-  context: Context
+  context: MergeContext
   sourceEnvironmentId: string
   targetEnvironmentId: string
   yes?: boolean
@@ -118,27 +108,14 @@ const exportEnvironmentMigration = async ({
   yes = false,
   outputFile
 }: ExportMigrationOptions) => {
-  const { managementToken, activeSpaceId, host } = context
-  const MERGE_APP_ID = getAppDefinitionId(host as Host)
-  const client = await createPlainClient({
-    accessToken: managementToken
-  })
-
-  if (sourceEnvironmentId === targetEnvironmentId) {
-    throw new Error('Source and target environments cannot be the same.')
-  }
-
-  const appInstalled = await checkAndInstallAppInEnvironments(
-    client,
-    activeSpaceId,
-    [sourceEnvironmentId, targetEnvironmentId],
-    MERGE_APP_ID,
-    yes
+  const { activeSpaceId, host, client, mergeAppId } = await prepareMergeCommand(
+    {
+      context,
+      sourceEnvironmentId,
+      targetEnvironmentId,
+      yes
+    }
   )
-
-  if (!appInstalled) {
-    throw new Error('Merge app could not be installed in the environments.')
-  }
 
   let outputTarget: string
   try {
@@ -158,7 +135,7 @@ const exportEnvironmentMigration = async ({
   try {
     migration = await callExportAppAction({
       api: client,
-      appDefinitionId: MERGE_APP_ID,
+      appDefinitionId: mergeAppId,
       createChangesetActionId: getAppActionId('create-changeset', host as Host),
       exportActionId: getAppActionId('export-changeset', host as Host),
       sourceEnvironmentId,
