@@ -63,3 +63,10 @@ test('ensureDir rethrows on no ENOENT errors', async function () {
     await rmdirP(parentDir)
   }
 })
+
+test('getPath returns absolute path for relative path', function () {
+  const path = 'some/random/path'
+  const expectedPath = `${process.cwd()}/${path}`
+
+  expect(fsUtils.getPath(path)).toBe(expectedPath)
+})
