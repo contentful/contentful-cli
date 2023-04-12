@@ -31,6 +31,11 @@ module.exports.builder = (yargs: Argv) => {
       demandOption: true,
       describe: 'Target environment id'
     })
+    .option('space-id', {
+      alias: 's',
+      describe: 'ID of the space that holds the environment',
+      type: 'string'
+    })
     .option('yes', {
       alias: 'y',
       describe: 'Confirm Merge app installation without prompt'

@@ -5,14 +5,8 @@ import {
 } from '@contentful/app-action-utils'
 import { PlainClientAPI } from 'contentful-management'
 import type { Argv } from 'yargs'
-import {
-  getAppActionId,
-  getAppDefinitionId,
-  Host
-} from '../../utils/app-actions-config'
-import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
+import { getAppActionId, Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
-import { createPlainClient } from '../../utils/contentful-clients'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
@@ -36,6 +30,11 @@ module.exports.builder = (yargs: Argv) => {
       type: 'string',
       demandOption: true,
       describe: 'Target environment id'
+    })
+    .option('space-id', {
+      alias: 's',
+      describe: 'ID of the space that holds the environment',
+      type: 'string'
     })
     .option('yes', {
       alias: 'y',

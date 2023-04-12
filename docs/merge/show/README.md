@@ -1,6 +1,6 @@
 # Contentful CLI - `merge show` command
 
-Show diff between two environments.
+Show diff in content types between two environments.
 
 ## Usage
 
@@ -10,6 +10,8 @@ Options:
   -h, --help                     Show help                             [boolean]
   --source-environment-id, --se  Source environment id       [string] [required]
   --target-environment-id, --te  Target environment id       [string] [required]
+  --space-id, -s                 ID of the space that holds the environment
+                                                                        [string]
   --yes, -y                      Confirm Merge app installation without prompt
 ```
 
