@@ -8,7 +8,7 @@ import {
 import { getAppActionId, type Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
 import { ensureDir, getPath, writeFileP } from '../../utils/fs'
-import { success } from '../../utils/log'
+import { error, success } from '../../utils/log'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { MergeContext } from '../../utils/merge/types'
 
@@ -88,17 +88,25 @@ export const callExportAppAction = async ({
   } catch (e) {
     throw new Error('Changeset could not be created.')
   }
+  try {
+    const { migration } = await getExportMigration({
+      api,
+      appDefinitionId,
+      appActionId: exportActionId,
+      changesetRef,
+      spaceId,
+      targetEnvironmentId: targetEnvironmentId
+    })
 
-  const { migration } = await getExportMigration({
-    api,
-    appDefinitionId,
-    appActionId: exportActionId,
-    changesetRef,
-    spaceId,
-    targetEnvironmentId: targetEnvironmentId
-  })
-
-  return migration
+    return migration
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.message === 'PollTimeout') {
+        throw new Error('Migration could not be due to a timeout.')
+      }
+      throw new Error('Migration could not be exported.')
+    }
+  }
 }
 
 const exportEnvironmentMigration = async ({
@@ -131,7 +139,7 @@ const exportEnvironmentMigration = async ({
     throw new Error('Something failed with the output file.')
   }
 
-  let migration: string
+  let migration: string | undefined
   try {
     migration = await callExportAppAction({
       api: client,
@@ -142,6 +150,10 @@ const exportEnvironmentMigration = async ({
       targetEnvironmentId,
       spaceId: activeSpaceId
     })
+
+    if (!migration) {
+      throw new Error('Migration could not be exported.')
+    }
   } catch (e) {
     if (e instanceof Error) {
       throw e.message
@@ -155,4 +167,4 @@ const exportEnvironmentMigration = async ({
   success(`✅ Migration exported to ${outputTarget}.`)
 }
 
-module.exports.handler = handle(exportEnvironmentMigration)
+module.exports.handler = handle(exportEnvironmentMigration, error)

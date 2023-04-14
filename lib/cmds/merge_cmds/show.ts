@@ -5,18 +5,14 @@ import {
 } from '@contentful/app-action-utils'
 import { PlainClientAPI } from 'contentful-management'
 import type { Argv } from 'yargs'
-import {
-  getAppActionId,
-  getAppDefinitionId,
-  Host
-} from '../../utils/app-actions-config'
-import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
+import { getAppActionId, Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
-import { createPlainClient } from '../../utils/contentful-clients'
+import { error } from '../../utils/log'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
 import { ChangesetItem, MergeContext } from '../../utils/merge/types'
+import { errorEmoji } from '../../utils/emojis'
 
 module.exports.command = 'show'
 
@@ -49,7 +45,8 @@ export const getChangesetAndTargetContentType = async ({
   host,
   appDefinitionId,
   sourceEnvironmentId,
-  targetEnvironmentId
+  targetEnvironmentId,
+  timeout
 }: {
   client: PlainClientAPI
   activeSpaceId: string
@@ -57,6 +54,7 @@ export const getChangesetAndTargetContentType = async ({
   appDefinitionId: string
   sourceEnvironmentId: string
   targetEnvironmentId: string
+  timeout?: number
 }) => {
   const appActionCall = callAppAction<
     AppActionCategoryParams['CreateChangeset'],
@@ -79,7 +77,8 @@ export const getChangesetAndTargetContentType = async ({
     additionalParameters: {
       spaceId: activeSpaceId,
       environmentId: targetEnvironmentId
-    }
+    },
+    timeout
   })
 
   const [targetContentType, appActionResult] = await Promise.all([
@@ -124,18 +123,26 @@ const showEnvironmentChangeset = async ({
     }
   )
 
-  const { targetContentType, changeset } =
-    await getChangesetAndTargetContentType({
-      client,
-      activeSpaceId,
-      host: host as Host,
-      appDefinitionId: mergeAppId,
-      sourceEnvironmentId,
-      targetEnvironmentId
-    })
-
-  const message = printChangesetMessages(targetContentType, changeset)
-  console.log(message)
+  try {
+    const { targetContentType, changeset } =
+      await getChangesetAndTargetContentType({
+        client,
+        activeSpaceId,
+        host: host as Host,
+        appDefinitionId: mergeAppId,
+        sourceEnvironmentId,
+        targetEnvironmentId
+      })
+    const message = printChangesetMessages(targetContentType, changeset)
+    console.log(message)
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.message === 'PollTimeout') {
+        error(`${errorEmoji} The command timed out. Please try again.`)
+        process.exit(1)
+      }
+    }
+  }
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)
