@@ -2,7 +2,8 @@ import { ContentTypeProps, PlainClientAPI } from 'contentful-management'
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
 import { ContentTypeApiHelper } from '../../../../lib/utils/merge/content-type-api-helper'
 import * as showCmd from '../../../../lib/cmds/merge_cmds/show'
-import { errorEmoji } from '../../../../lib/utils/emojis'
+
+import { mergeErrors } from '../../../../lib/utils/merge/errors'
 
 const mockedClient = {
   appInstallation: {
@@ -407,9 +408,7 @@ describe('merge show command', () => {
         sourceEnvironmentId: 'source',
         targetEnvironmentId: 'target'
       })
-    }).rejects.toThrowError(
-      `${errorEmoji} The migration took too long to generate. Please try again.`
-    )
+    }).rejects.toThrowError(mergeErrors['PollTimeout'])
 
     expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(1)
     expect(ContentTypeApiHelper.getAll).toHaveBeenCalledTimes(1)

@@ -3,7 +3,7 @@ import { PlainClientAPI } from 'contentful-management'
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
 import * as appActionUtils from '../../../../lib/utils/app-actions'
 import * as exportCmd from '../../../../lib/cmds/merge_cmds/export'
-import { errorEmoji } from '../../../../lib/utils/emojis'
+import { mergeErrors } from '../../../../lib/utils/merge/errors'
 
 const mockedClient = {
   appInstallation: {
@@ -141,8 +141,6 @@ describe('merge export command', () => {
         targetEnvironmentId: 'target',
         spaceId: 'space'
       })
-    }).rejects.toThrow(
-      `${errorEmoji} The migration took too long to generate. Please try again.`
-    )
+    }).rejects.toThrow(mergeErrors['PollTimeout'])
   })
 })

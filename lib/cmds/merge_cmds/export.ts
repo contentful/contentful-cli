@@ -12,6 +12,7 @@ import { error, success } from '../../utils/log'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { MergeContext } from '../../utils/merge/types'
 import { errorEmoji } from '../../utils/emojis'
+import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'export'
 
@@ -102,10 +103,8 @@ export const callExportAppAction = async ({
     return migration
   } catch (e) {
     if (e instanceof Error) {
-      if (e.message === 'PollTimeout') {
-        throw new Error(
-          `${errorEmoji} The migration took too long to generate. Please try again.`
-        )
+      if (e.message in mergeErrors) {
+        throw new Error(mergeErrors[e.message as keyof typeof mergeErrors])
       }
     }
     throw new Error(`${errorEmoji} Migration could not be exported.`)

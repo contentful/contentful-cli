@@ -13,6 +13,7 @@ import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
 import { ChangesetItem, MergeContext } from '../../utils/merge/types'
 import { errorEmoji } from '../../utils/emojis'
+import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'show'
 
@@ -101,9 +102,9 @@ export const getChangesetAndTargetContentType = async ({
   const { result } = appActionResult.value
 
   if (isResultWithError(result)) {
-    if (result.errorMessage === 'PollTimeout') {
+    if (result.errorMessage in mergeErrors) {
       throw new Error(
-        `${errorEmoji} The migration took too long to generate. Please try again.`
+        mergeErrors[result.errorMessage as keyof typeof mergeErrors]
       )
     }
     throw result.errorMessage
