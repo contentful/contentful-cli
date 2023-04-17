@@ -81,7 +81,7 @@ export const getChangesetAndTargetContentType = async ({
     timeout
   })
 
-  const [targetContentType, appActionResult] = await Promise.all([
+  const [targetContentType, appActionResult] = await Promise.allSettled([
     ContentTypeApiHelper.getAll({
       client,
       environmentId: targetEnvironmentId,
@@ -89,16 +89,32 @@ export const getChangesetAndTargetContentType = async ({
     }),
     appActionCall
   ])
+  if (
+    targetContentType.status === 'rejected' ||
+    appActionResult.status === 'rejected'
+  ) {
+    throw new Error(
+      `${errorEmoji} There was an error generating the migration. Please try again.`
+    )
+  }
 
-  const { result } = appActionResult
+  const { result } = appActionResult.value
 
   if (isResultWithError(result)) {
+    if (result.errorMessage === 'PollTimeout') {
+      throw new Error(
+        `${errorEmoji} The migration took too long to generate. Please try again.`
+      )
+    }
     throw result.errorMessage
   }
 
   const { items: changeset } = result.message.changeset
 
-  return { targetContentType, changeset: changeset as ChangesetItem[] }
+  return {
+    targetContentType: targetContentType.value,
+    changeset: changeset as ChangesetItem[]
+  }
 }
 
 interface ShowChangesetProps {
@@ -108,7 +124,7 @@ interface ShowChangesetProps {
   yes?: boolean
 }
 
-const showEnvironmentChangeset = async ({
+export const showEnvironmentChangeset = async ({
   context,
   sourceEnvironmentId,
   targetEnvironmentId,
@@ -137,10 +153,9 @@ const showEnvironmentChangeset = async ({
     console.log(message)
   } catch (e) {
     if (e instanceof Error) {
-      if (e.message === 'PollTimeout') {
-        error(`${errorEmoji} The command timed out. Please try again.`)
-        process.exit(1)
-      }
+      error(e.message)
+    } else {
+      error(e)
     }
   }
 }

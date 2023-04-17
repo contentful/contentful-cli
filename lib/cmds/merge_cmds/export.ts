@@ -11,6 +11,7 @@ import { ensureDir, getPath, writeFileP } from '../../utils/fs'
 import { error, success } from '../../utils/log'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { MergeContext } from '../../utils/merge/types'
+import { errorEmoji } from '../../utils/emojis'
 
 module.exports.command = 'export'
 
@@ -102,10 +103,12 @@ export const callExportAppAction = async ({
   } catch (e) {
     if (e instanceof Error) {
       if (e.message === 'PollTimeout') {
-        throw new Error('Migration could not be due to a timeout.')
+        throw new Error(
+          `${errorEmoji} The migration took too long to generate. Please try again.`
+        )
       }
-      throw new Error('Migration could not be exported.')
     }
+    throw new Error(`${errorEmoji} Migration could not be exported.`)
   }
 }
 

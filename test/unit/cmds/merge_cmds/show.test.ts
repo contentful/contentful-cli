@@ -1,9 +1,8 @@
 import { ContentTypeProps, PlainClientAPI } from 'contentful-management'
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
 import { ContentTypeApiHelper } from '../../../../lib/utils/merge/content-type-api-helper'
-import * as printer from '../../../../lib/utils/merge/print-changeset-messages'
 import * as showCmd from '../../../../lib/cmds/merge_cmds/show'
-import { ChangesetItem } from '../../../../lib/utils/merge/types'
+import { errorEmoji } from '../../../../lib/utils/emojis'
 
 const mockedClient = {
   appInstallation: {
@@ -348,7 +347,7 @@ describe('merge show command', () => {
     expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 
-  it('call the create changeset actions', async () => {
+  it('calls the create changeset actions', async () => {
     mockedClient.appActionCall = {
       create: jest.fn().mockResolvedValueOnce({
         sys: {
@@ -375,6 +374,42 @@ describe('merge show command', () => {
       sourceEnvironmentId: 'source',
       targetEnvironmentId: 'target'
     })
+
+    expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(1)
+    expect(ContentTypeApiHelper.getAll).toHaveBeenCalledTimes(1)
+  })
+
+  it('catches the error and shows a pretty output', async () => {
+    mockedClient.appActionCall = {
+      create: jest.fn().mockResolvedValueOnce({
+        sys: {
+          id: 'action-id-create-changeset'
+        }
+      }),
+      getCallDetails: jest.fn().mockResolvedValueOnce({
+        statusCode: 200,
+        response: {
+          body: '{"errorMessage": "PollTimeout"}'
+        }
+      })
+    }
+
+    jest
+      .spyOn(ContentTypeApiHelper, 'getAll')
+      .mockResolvedValueOnce([{}] as ContentTypeProps[])
+
+    await expect(async () => {
+      await showCmd.getChangesetAndTargetContentType({
+        client: mockedClient,
+        activeSpaceId: 'space',
+        host: 'api.flinkly.com',
+        appDefinitionId: 'app-id',
+        sourceEnvironmentId: 'source',
+        targetEnvironmentId: 'target'
+      })
+    }).rejects.toThrowError(
+      `${errorEmoji} The migration took too long to generate. Please try again.`
+    )
 
     expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(1)
     expect(ContentTypeApiHelper.getAll).toHaveBeenCalledTimes(1)
