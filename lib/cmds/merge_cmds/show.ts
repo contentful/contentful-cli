@@ -95,17 +95,15 @@ export const getChangesetAndTargetContentType = async ({
     appActionResult.status === 'rejected'
   ) {
     throw new Error(
-      `${errorEmoji} There was an error generating the migration. Please try again.`
+      `${errorEmoji} There was an error generating the diff. Please try again.`
     )
   }
 
   const { result } = appActionResult.value
 
   if (isResultWithError(result)) {
-    if (result.errorMessage in mergeErrors) {
-      throw new Error(
-        mergeErrors[result.errorMessage as keyof typeof mergeErrors]
-      )
+    if (result.errorMessage === 'PollTimeout') {
+      throw new Error(mergeErrors['ShowPollTimeout'])
     }
     throw result.errorMessage
   }

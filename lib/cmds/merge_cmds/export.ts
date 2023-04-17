@@ -103,11 +103,11 @@ export const callExportAppAction = async ({
     return migration
   } catch (e) {
     if (e instanceof Error) {
-      if (e.message in mergeErrors) {
-        throw new Error(mergeErrors[e.message as keyof typeof mergeErrors])
+      if (e.message === 'PollTimeout') {
+        throw new Error(mergeErrors['ExportPollTimeout'])
       }
     }
-    throw new Error(`${errorEmoji} Migration could not be exported.`)
+    throw new Error(mergeErrors['MigrationCouldNotBeExported'])
   }
 }
 
@@ -154,14 +154,14 @@ const exportEnvironmentMigration = async ({
     })
 
     if (!migration) {
-      throw new Error('Migration could not be exported.')
+      throw new Error(mergeErrors['MigrationCouldNotBeExported'])
     }
   } catch (e) {
     if (e instanceof Error) {
       throw e.message
     }
 
-    throw new Error('Migration could not be exported.')
+    throw new Error(mergeErrors['MigrationCouldNotBeExported'])
   }
 
   await writeFileP(outputTarget, migration)
