@@ -7,12 +7,10 @@ import { PlainClientAPI } from 'contentful-management'
 import type { Argv } from 'yargs'
 import { getAppActionId, Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
-import { error } from '../../utils/log'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
 import { ChangesetItem, MergeContext } from '../../utils/merge/types'
-import { errorEmoji } from '../../utils/emojis'
 import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'show'
@@ -46,8 +44,7 @@ export const getChangesetAndTargetContentType = async ({
   host,
   appDefinitionId,
   sourceEnvironmentId,
-  targetEnvironmentId,
-  timeout
+  targetEnvironmentId
 }: {
   client: PlainClientAPI
   activeSpaceId: string
@@ -55,7 +52,6 @@ export const getChangesetAndTargetContentType = async ({
   appDefinitionId: string
   sourceEnvironmentId: string
   targetEnvironmentId: string
-  timeout?: number
 }) => {
   const appActionCall = callAppAction<
     AppActionCategoryParams['CreateChangeset'],
@@ -78,8 +74,7 @@ export const getChangesetAndTargetContentType = async ({
     additionalParameters: {
       spaceId: activeSpaceId,
       environmentId: targetEnvironmentId
-    },
-    timeout
+    }
   })
 
   const [targetContentType, appActionResult] = await Promise.allSettled([
@@ -94,9 +89,7 @@ export const getChangesetAndTargetContentType = async ({
     targetContentType.status === 'rejected' ||
     appActionResult.status === 'rejected'
   ) {
-    throw new Error(
-      `${errorEmoji} There was an error generating the diff. Please try again.`
-    )
+    throw new Error(mergeErrors['ErrorInDiffCreation'])
   }
 
   const { result } = appActionResult.value
@@ -105,7 +98,7 @@ export const getChangesetAndTargetContentType = async ({
     if (result.errorMessage === 'PollTimeout') {
       throw new Error(mergeErrors['ShowPollTimeout'])
     }
-    throw result.errorMessage
+    throw new Error(result.errorMessage)
   }
 
   const { items: changeset } = result.message.changeset
@@ -138,25 +131,17 @@ export const showEnvironmentChangeset = async ({
     }
   )
 
-  try {
-    const { targetContentType, changeset } =
-      await getChangesetAndTargetContentType({
-        client,
-        activeSpaceId,
-        host: host as Host,
-        appDefinitionId: mergeAppId,
-        sourceEnvironmentId,
-        targetEnvironmentId
-      })
-    const message = printChangesetMessages(targetContentType, changeset)
-    console.log(message)
-  } catch (e) {
-    if (e instanceof Error) {
-      error(e.message)
-    } else {
-      error(e)
-    }
-  }
+  const { targetContentType, changeset } =
+    await getChangesetAndTargetContentType({
+      client,
+      activeSpaceId,
+      host: host as Host,
+      appDefinitionId: mergeAppId,
+      sourceEnvironmentId,
+      targetEnvironmentId
+    })
+  const message = printChangesetMessages(targetContentType, changeset)
+  console.log(message)
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)
