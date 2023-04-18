@@ -116,7 +116,7 @@ interface ShowChangesetProps {
   yes?: boolean
 }
 
-export const showEnvironmentChangeset = async ({
+const showEnvironmentChangeset = async ({
   context,
   sourceEnvironmentId,
   targetEnvironmentId,

@@ -94,7 +94,7 @@ export const getExportMigration = async ({
   })
 
   if (isResultWithError(result)) {
-    throw result.errorMessage
+    throw new Error(result.errorMessage)
   }
 
   return result.message
