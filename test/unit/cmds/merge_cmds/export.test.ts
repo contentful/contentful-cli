@@ -1,7 +1,9 @@
 import { PlainClientAPI } from 'contentful-management'
 
 import * as appInstallUtils from '../../../../lib/utils/app-installation'
+import * as appActionUtils from '../../../../lib/utils/app-actions'
 import * as exportCmd from '../../../../lib/cmds/merge_cmds/export'
+import { mergeErrors } from '../../../../lib/utils/merge/errors'
 
 const mockedClient = {
   appInstallation: {
@@ -68,7 +70,7 @@ describe('merge export command', () => {
     expect(mockedClient.appInstallation.get).toHaveBeenCalledTimes(2)
   })
 
-  it('calls calls the create changeset and export migration actions', async () => {
+  it('calls the create changeset and export migration actions', async () => {
     mockedClient.appActionCall = {
       create: jest
         .fn()
@@ -101,5 +103,44 @@ describe('merge export command', () => {
     })
 
     expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(2)
+  })
+
+  it('catches the error and shows a pretty output', async () => {
+    jest.spyOn(appActionUtils, 'getExportMigration').mockImplementation(() => {
+      throw new Error('PollTimeout')
+    })
+
+    mockedClient.appActionCall = {
+      create: jest
+        .fn()
+        .mockResolvedValueOnce({
+          sys: {
+            id: 'action-id-create-changeset'
+          }
+        })
+        .mockResolvedValueOnce({
+          sys: {
+            id: 'action-id-export-migration'
+          }
+        }),
+      getCallDetails: jest.fn().mockResolvedValueOnce({
+        statusCode: 200,
+        response: {
+          body: '{"message": "[]"}'
+        }
+      })
+    }
+
+    await expect(async () => {
+      await exportCmd.callExportAppAction({
+        api: mockedClient,
+        appDefinitionId: 'app-id',
+        exportActionId: 'action-id',
+        createChangesetActionId: 'action-id',
+        sourceEnvironmentId: 'source',
+        targetEnvironmentId: 'target',
+        spaceId: 'space'
+      })
+    }).rejects.toThrow(mergeErrors['PollTimeout'])
   })
 })

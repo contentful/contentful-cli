@@ -11,6 +11,7 @@ import { ensureDir, getPath, writeFileP } from '../../utils/fs'
 import { success } from '../../utils/log'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { MergeContext } from '../../utils/merge/types'
+import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'export'
 
@@ -86,19 +87,26 @@ export const callExportAppAction = async ({
       environmentId: targetEnvironmentId
     })
   } catch (e) {
-    throw new Error('Changeset could not be created.')
+    throw new Error(mergeErrors['ErrorInDiffCreation'])
   }
 
-  const { migration } = await getExportMigration({
-    api,
-    appDefinitionId,
-    appActionId: exportActionId,
-    changesetRef,
-    spaceId,
-    targetEnvironmentId: targetEnvironmentId
-  })
+  try {
+    const { migration } = await getExportMigration({
+      api,
+      appDefinitionId,
+      appActionId: exportActionId,
+      changesetRef,
+      spaceId,
+      targetEnvironmentId: targetEnvironmentId
+    })
 
-  return migration
+    return migration
+  } catch (e) {
+    if ((e as Error)?.message === 'PollTimeout') {
+      throw new Error(mergeErrors['ExportPollTimeout'])
+    }
+    throw new Error(mergeErrors['MigrationCouldNotBeExported'])
+  }
 }
 
 const exportEnvironmentMigration = async ({
@@ -128,27 +136,20 @@ const exportEnvironmentMigration = async ({
     )
     await ensureDir(path.dirname(outputTarget))
   } catch (e) {
-    throw new Error('Something failed with the output file.')
+    throw new Error(
+      'Something failed with the output file. Ensure the path exists and is writable.'
+    )
   }
 
-  let migration: string
-  try {
-    migration = await callExportAppAction({
-      api: client,
-      appDefinitionId: mergeAppId,
-      createChangesetActionId: getAppActionId('create-changeset', host as Host),
-      exportActionId: getAppActionId('export-changeset', host as Host),
-      sourceEnvironmentId,
-      targetEnvironmentId,
-      spaceId: activeSpaceId
-    })
-  } catch (e) {
-    if (e instanceof Error) {
-      throw e.message
-    }
-
-    throw new Error('Migration could not be exported.')
-  }
+  const migration = await callExportAppAction({
+    api: client,
+    appDefinitionId: mergeAppId,
+    createChangesetActionId: getAppActionId('create-changeset', host as Host),
+    exportActionId: getAppActionId('export-changeset', host as Host),
+    sourceEnvironmentId,
+    targetEnvironmentId,
+    spaceId: activeSpaceId
+  })
 
   await writeFileP(outputTarget, migration)
 
