@@ -83,3 +83,16 @@ describe('merge show command args validation', () => {
       .end(done)
   })
 })
+
+describe('merge show displays the diff between two envs', () => {
+  it('displays the diff correctly', done => {
+    app()
+      .run('merge show --se master --te beta --space-id t7gnd9bsbzjy')
+      .code(0)
+      .expect(({ stdout }: Result) => {
+        const resultText = stdout.trim()
+        expect(resultText).toContain('~Changed')
+      })
+      .end(done)
+  })
+})
