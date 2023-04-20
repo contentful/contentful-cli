@@ -72,7 +72,8 @@ jobs:
       - run: git fetch --tags
       - run: npm ci
       - run: npm run tsc
-      - run: npm run build:package
+      # The build is automatically executed in a prepublishOnly script to ensure that the package.json with the updated version
+      # is being packaged
       - run: npm run semantic-release
   audit:
     docker: &ref_0
