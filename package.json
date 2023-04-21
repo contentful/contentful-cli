@@ -31,6 +31,7 @@
     "test:e2e": "JEST_SUITE_NAME=\"Unit Tests\" JEST_JUNIT_OUTPUT_NAME=\"e2e-tests.xml\" cross-env jest --testPathPattern=test/e2e --verbose",
     "precommit": "npm run prettier:write && lint-staged",
     "prepush": "jest --changedSince master test/unit/**",
+    "prepublishOnly": "npm run build:package",
     "prettier": "prettier --config .prettierrc \"./*.js\" \"{./lib,./test,./docs,.}/**/*.{js,json,md}\"",
     "prettier:write": "npm run prettier -- --write",
     "prettier:debug": "npm run prettier -- --debug-check",
