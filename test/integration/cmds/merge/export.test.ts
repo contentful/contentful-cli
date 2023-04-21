@@ -83,3 +83,16 @@ describe('merge export command args validation', () => {
       .end(done)
   })
 })
+
+describe('merge exports outputs the diff between two envs', () => {
+  it('runs correctly', done => {
+    app()
+      .run('merge export --se master --te beta --space-id t7gnd9bsbzjy')
+      .code(0)
+      .expect(({ stdout }: Result) => {
+        const resultText = stdout.trim()
+        expect(resultText).toContain('Migration exported to')
+      })
+      .end(done)
+  })
+})

@@ -78,7 +78,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "@contentful/app-action-utils": "^1.2.1",
+    "@contentful/app-action-utils": "^1.2.3",
     "ast-types": "^0.14.2",
     "bfj": "^7.0.2",
     "bluebird": "^3.5.0",

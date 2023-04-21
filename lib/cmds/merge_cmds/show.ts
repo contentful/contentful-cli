@@ -5,18 +5,13 @@ import {
 } from '@contentful/app-action-utils'
 import { PlainClientAPI } from 'contentful-management'
 import type { Argv } from 'yargs'
-import {
-  getAppActionId,
-  getAppDefinitionId,
-  Host
-} from '../../utils/app-actions-config'
-import { checkAndInstallAppInEnvironments } from '../../utils/app-installation'
+import { getAppActionId, Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
-import { createPlainClient } from '../../utils/contentful-clients'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
 import { ChangesetItem, MergeContext } from '../../utils/merge/types'
+import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'show'
 
@@ -82,7 +77,7 @@ export const getChangesetAndTargetContentType = async ({
     }
   })
 
-  const [targetContentType, appActionResult] = await Promise.all([
+  const [targetContentType, appActionResult] = await Promise.allSettled([
     ContentTypeApiHelper.getAll({
       client,
       environmentId: targetEnvironmentId,
@@ -90,16 +85,28 @@ export const getChangesetAndTargetContentType = async ({
     }),
     appActionCall
   ])
+  if (
+    targetContentType.status === 'rejected' ||
+    appActionResult.status === 'rejected'
+  ) {
+    throw new Error(mergeErrors['ErrorInDiffCreation'])
+  }
 
-  const { result } = appActionResult
+  const { result } = appActionResult.value
 
   if (isResultWithError(result)) {
-    throw result.errorMessage
+    if (result.errorMessage === 'PollTimeout') {
+      throw new Error(mergeErrors['ShowPollTimeout'])
+    }
+    throw new Error(result.errorMessage)
   }
 
   const { items: changeset } = result.message.changeset
 
-  return { targetContentType, changeset: changeset as ChangesetItem[] }
+  return {
+    targetContentType: targetContentType.value,
+    changeset: changeset as ChangesetItem[]
+  }
 }
 
 interface ShowChangesetProps {
@@ -133,7 +140,6 @@ const showEnvironmentChangeset = async ({
       sourceEnvironmentId,
       targetEnvironmentId
     })
-
   const message = printChangesetMessages(targetContentType, changeset)
   console.log(message)
 }
