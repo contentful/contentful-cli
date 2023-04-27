@@ -32,7 +32,7 @@ export type Operation =
 type EntityLink = {
   sys: {
     id: string
-    linkType: string
+    linkType: 'ContentType' | 'EditorInterface'
     type: 'Link'
   }
 }
