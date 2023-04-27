@@ -140,7 +140,17 @@ const showEnvironmentChangeset = async ({
       sourceEnvironmentId,
       targetEnvironmentId
     })
-  const message = printChangesetMessages(targetContentType, changeset)
+
+  // We show only content type changes for now.
+  // This filter can be removed once we support editor interfaces.
+  const contentTypeChangeset = changeset.filter(
+    changesetItem => changesetItem.entity.sys.linkType === 'ContentType'
+  )
+
+  const message = printChangesetMessages(
+    targetContentType,
+    contentTypeChangeset
+  )
   console.log(message)
 }
 
