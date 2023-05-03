@@ -1,4 +1,6 @@
+import chalk from 'chalk'
 import { type PlainClientAPI } from 'contentful-management'
+import { Listr, PRESET_TIMER } from 'listr2'
 import path from 'path'
 import type { Argv } from 'yargs'
 import {
@@ -8,10 +10,10 @@ import {
 import { getAppActionId, type Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
 import { ensureDir, getPath, writeFileP } from '../../utils/fs'
-import { success } from '../../utils/log'
+import { success, error } from '../../utils/log'
+import { mergeErrors } from '../../utils/merge/errors'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { MergeContext } from '../../utils/merge/types'
-import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'export'
 
@@ -52,6 +54,18 @@ interface ExportMigrationOptions {
   outputFile?: string
 }
 
+type Context = {
+  api: PlainClientAPI
+  appDefinitionId: string
+  createChangesetActionId: string
+  exportActionId: string
+  sourceEnvironmentId: string
+  targetEnvironmentId: string
+  spaceId: string
+  changesetRef?: string
+  migration?: string
+}
+
 export const callExportAppAction = async ({
   api,
   appDefinitionId,
@@ -68,45 +82,84 @@ export const callExportAppAction = async ({
   sourceEnvironmentId: string
   targetEnvironmentId: string
   spaceId: string
-}) => {
-  let changesetRef: string
+}): Promise<Context> => {
+  return new Listr(
+    [
+      {
+        title: chalk`Create migration export for source: {bold.yellow ${sourceEnvironmentId}} and target: {bold.yellow ${targetEnvironmentId}}`,
+        task: (ctx, rootTask) =>
+          rootTask.newListr([
+            {
+              title: 'Compute differences',
+              task: async (ctx: Context, task) => {
+                task.output = 'calculating differences'
+                const actionResponse = await callCreateChangeset({
+                  api: ctx.api,
+                  appDefinitionId: ctx.appDefinitionId,
+                  appActionId: ctx.createChangesetActionId,
+                  parameters: {
+                    sourceEnvironmentId: ctx.sourceEnvironmentId,
+                    targetEnvironmentId: ctx.targetEnvironmentId
+                  },
+                  spaceId: ctx.spaceId,
+                  // We use the target environment as this environment needs to have the merge app installed
+                  // and the context environment might not have it installed and not need it. Using directly
+                  // the target env saves us installations. We could have used the source environment also.
+                  environmentId: ctx.targetEnvironmentId
+                }).catch(() => {
+                  throw new Error(mergeErrors['ErrorInDiffCreation'])
+                })
 
-  try {
-    changesetRef = await callCreateChangeset({
-      api,
-      appDefinitionId,
-      appActionId: createChangesetActionId,
-      parameters: {
+                task.output = 'fetching differences'
+                // wait for changeset to be settled
+                await new Promise(resolve => setTimeout(resolve, 1000 * 5))
+                // eslint-disable-next-line require-atomic-updates
+                ctx.changesetRef = actionResponse
+                // ctx.changesetRef = actionResponse.sys.id
+              }
+            },
+            {
+              title: 'Create migration',
+              task: async ctx => {
+                const { migration } = await getExportMigration({
+                  api: ctx.api,
+                  appDefinitionId: ctx.appDefinitionId,
+                  appActionId: ctx.exportActionId,
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  changesetRef: ctx.changesetRef!,
+                  spaceId: ctx.spaceId,
+                  targetEnvironmentId: ctx.targetEnvironmentId
+                }).catch(e => {
+                  if ((e as Error)?.message === 'PollTimeout') {
+                    throw new Error(mergeErrors['ExportPollTimeout'])
+                  }
+                  throw new Error(mergeErrors['MigrationCouldNotBeExported'])
+                })
+
+                // eslint-disable-next-line require-atomic-updates
+                ctx.migration = migration
+
+                rootTask.title = chalk`🎉 Created migration export for source: {bold.yellow ${ctx.sourceEnvironmentId}} and target: {bold.yellow ${ctx.targetEnvironmentId}}`
+              }
+            }
+          ])
+      }
+    ],
+    {
+      ctx: {
+        api,
+        appDefinitionId: appDefinitionId,
+        createChangesetActionId,
+        exportActionId,
         sourceEnvironmentId,
-        targetEnvironmentId
+        targetEnvironmentId,
+        spaceId: spaceId
       },
-      spaceId,
-      // We use the target environment as this environment needs to have the merge app installed
-      // and the context environment might not have it installed and not need it. Using directly
-      // the target env saves us installations. We could have used the source environment also.
-      environmentId: targetEnvironmentId
-    })
-  } catch (e) {
-    throw new Error(mergeErrors['ErrorInDiffCreation'])
-  }
-
-  try {
-    const { migration } = await getExportMigration({
-      api,
-      appDefinitionId,
-      appActionId: exportActionId,
-      changesetRef,
-      spaceId,
-      targetEnvironmentId: targetEnvironmentId
-    })
-
-    return migration
-  } catch (e) {
-    if ((e as Error)?.message === 'PollTimeout') {
-      throw new Error(mergeErrors['ExportPollTimeout'])
+      rendererOptions: {
+        timer: PRESET_TIMER
+      }
     }
-    throw new Error(mergeErrors['MigrationCouldNotBeExported'])
-  }
+  ).run()
 }
 
 const exportEnvironmentMigration = async ({
@@ -141,7 +194,7 @@ const exportEnvironmentMigration = async ({
     )
   }
 
-  const migration = await callExportAppAction({
+  const result = await callExportAppAction({
     api: client,
     appDefinitionId: mergeAppId,
     createChangesetActionId: getAppActionId('create-changeset', host as Host),
@@ -151,9 +204,12 @@ const exportEnvironmentMigration = async ({
     spaceId: activeSpaceId
   })
 
-  await writeFileP(outputTarget, migration)
-
-  success(`✅ Migration exported to ${outputTarget}.`)
+  if (result.migration) {
+    await writeFileP(outputTarget, result.migration)
+    success(`✅ Migration exported to ${outputTarget}.`)
+  } else {
+    error(`failed to save migration file!`)
+  }
 }
 
 module.exports.handler = handle(exportEnvironmentMigration)

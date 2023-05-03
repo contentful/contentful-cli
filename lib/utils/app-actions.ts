@@ -53,6 +53,24 @@ export const callCreateChangeset = async ({
   return createResponse.sys.id
 }
 
+export const callCreateChangesetWithResponse = async ({
+  api,
+  appDefinitionId,
+  appActionId,
+  parameters,
+  environmentId,
+  spaceId
+}: CallCreateChangesetParams) => {
+  const params = {
+    appDefinitionId,
+    appActionId,
+    ...(environmentId ? { environmentId } : {}),
+    ...(spaceId ? { spaceId } : {})
+  }
+
+  return await api.appActionCall.createWithResponse(params, { parameters })
+}
+
 type GetExportMigrationParams = {
   api: PlainClientAPI
   appDefinitionId: string

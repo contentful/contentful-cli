@@ -3,15 +3,17 @@ import {
   callAppAction,
   isResultWithError
 } from '@contentful/app-action-utils'
+import chalk from 'chalk'
 import { PlainClientAPI } from 'contentful-management'
+import { Listr, PRESET_TIMER } from 'listr2'
 import type { Argv } from 'yargs'
 import { getAppActionId, Host } from '../../utils/app-actions-config'
 import { handleAsyncError as handle } from '../../utils/async'
 import { ContentTypeApiHelper } from '../../utils/merge/content-type-api-helper'
+import { mergeErrors } from '../../utils/merge/errors'
 import { prepareMergeCommand } from '../../utils/merge/prepare-merge-command'
 import { printChangesetMessages } from '../../utils/merge/print-changeset-messages'
 import { ChangesetItem, MergeContext } from '../../utils/merge/types'
-import { mergeErrors } from '../../utils/merge/errors'
 
 module.exports.command = 'show'
 
@@ -130,28 +132,45 @@ const showEnvironmentChangeset = async ({
       yes
     }
   )
+  const asyncOperations = await new Listr(
+    [
+      {
+        title: chalk`Create diff for source: {bold.yellow ${sourceEnvironmentId}} and target: {bold.yellow ${targetEnvironmentId}}`,
+        task: async (ctx, task) => {
+          const { targetContentType, changeset } =
+            await getChangesetAndTargetContentType({
+              client,
+              activeSpaceId,
+              host: host as Host,
+              appDefinitionId: mergeAppId,
+              sourceEnvironmentId,
+              targetEnvironmentId
+            })
 
-  const { targetContentType, changeset } =
-    await getChangesetAndTargetContentType({
-      client,
-      activeSpaceId,
-      host: host as Host,
-      appDefinitionId: mergeAppId,
-      sourceEnvironmentId,
-      targetEnvironmentId
-    })
+          // We show only content type changes for now.
+          // This filter can be removed once we support editor interfaces.
+          const contentTypeChangeset = changeset.filter(
+            changesetItem => changesetItem.entity.sys.linkType === 'ContentType'
+          )
 
-  // We show only content type changes for now.
-  // This filter can be removed once we support editor interfaces.
-  const contentTypeChangeset = changeset.filter(
-    changesetItem => changesetItem.entity.sys.linkType === 'ContentType'
-  )
+          task.title = chalk`🎉 Created diff for source: {bold.yellow ${sourceEnvironmentId}} and target: {bold.yellow ${targetEnvironmentId}}`
+          ctx.output = printChangesetMessages(
+            targetContentType,
+            contentTypeChangeset
+          )
+        }
+      }
+    ],
+    {
+      ctx: { output: '' },
+      rendererOptions: {
+        timer: PRESET_TIMER
+      }
+    }
+  ).run()
 
-  const message = printChangesetMessages(
-    targetContentType,
-    contentTypeChangeset
-  )
-  console.log(message)
+  console.log('\n')
+  console.log(asyncOperations.output)
 }
 
 module.exports.handler = handle(showEnvironmentChangeset)
