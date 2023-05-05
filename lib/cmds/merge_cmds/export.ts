@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { type PlainClientAPI } from 'contentful-management'
-import { Listr, PRESET_TIMER } from 'listr2'
+import Listr from 'listr'
 import path from 'path'
 import type { Argv } from 'yargs'
 import {
@@ -83,83 +83,68 @@ export const callExportAppAction = async ({
   targetEnvironmentId: string
   spaceId: string
 }): Promise<Context> => {
-  return new Listr(
-    [
-      {
-        title: chalk`Create migration export for source: {bold.yellow ${sourceEnvironmentId}} and target: {bold.yellow ${targetEnvironmentId}}`,
-        task: (ctx, rootTask) =>
-          rootTask.newListr([
-            {
-              title: 'Compute differences',
-              task: async (ctx: Context, task) => {
-                task.output = 'calculating differences'
-                const actionResponse = await callCreateChangeset({
-                  api: ctx.api,
-                  appDefinitionId: ctx.appDefinitionId,
-                  appActionId: ctx.createChangesetActionId,
-                  parameters: {
-                    sourceEnvironmentId: ctx.sourceEnvironmentId,
-                    targetEnvironmentId: ctx.targetEnvironmentId
-                  },
-                  spaceId: ctx.spaceId,
-                  // We use the target environment as this environment needs to have the merge app installed
-                  // and the context environment might not have it installed and not need it. Using directly
-                  // the target env saves us installations. We could have used the source environment also.
-                  environmentId: ctx.targetEnvironmentId
-                }).catch(() => {
-                  throw new Error(mergeErrors['ErrorInDiffCreation'])
-                })
-
-                task.output = 'fetching differences'
-                // wait for changeset to be settled
-                await new Promise(resolve => setTimeout(resolve, 1000 * 5))
-                // eslint-disable-next-line require-atomic-updates
-                ctx.changesetRef = actionResponse
-                // ctx.changesetRef = actionResponse.sys.id
-              }
-            },
-            {
-              title: 'Create migration',
-              task: async ctx => {
-                const { migration } = await getExportMigration({
-                  api: ctx.api,
-                  appDefinitionId: ctx.appDefinitionId,
-                  appActionId: ctx.exportActionId,
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  changesetRef: ctx.changesetRef!,
-                  spaceId: ctx.spaceId,
-                  targetEnvironmentId: ctx.targetEnvironmentId
-                }).catch(e => {
-                  if ((e as Error)?.message === 'PollTimeout') {
-                    throw new Error(mergeErrors['ExportPollTimeout'])
-                  }
-                  throw new Error(mergeErrors['MigrationCouldNotBeExported'])
-                })
-
-                // eslint-disable-next-line require-atomic-updates
-                ctx.migration = migration
-
-                rootTask.title = chalk`🎉 Created migration export for source: {bold.yellow ${ctx.sourceEnvironmentId}} and target: {bold.yellow ${ctx.targetEnvironmentId}}`
-              }
-            }
-          ])
-      }
-    ],
+  return new Listr([
     {
-      ctx: {
-        api,
-        appDefinitionId: appDefinitionId,
-        createChangesetActionId,
-        exportActionId,
-        sourceEnvironmentId,
-        targetEnvironmentId,
-        spaceId: spaceId
-      },
-      rendererOptions: {
-        timer: PRESET_TIMER
+      title: 'Compute differences',
+      // use wrapTask
+      task: async (ctx: Context, task) => {
+        task.output = chalk`calculating differences`
+        const actionResponse = await callCreateChangeset({
+          api: ctx.api,
+          appDefinitionId: ctx.appDefinitionId,
+          appActionId: ctx.createChangesetActionId,
+          parameters: {
+            sourceEnvironmentId: ctx.sourceEnvironmentId,
+            targetEnvironmentId: ctx.targetEnvironmentId
+          },
+          spaceId: ctx.spaceId,
+          // We use the target environment as this environment needs to have the merge app installed
+          // and the context environment might not have it installed and not need it. Using directly
+          // the target env saves us installations. We could have used the source environment also.
+          environmentId: ctx.targetEnvironmentId
+        }).catch(() => {
+          throw new Error(mergeErrors['ErrorInDiffCreation'])
+        })
+
+        task.output = chalk`fetching differences`
+        // wait for changeset to be settled
+        await new Promise(resolve => setTimeout(resolve, 1000 * 8))
+        // eslint-disable-next-line require-atomic-updates
+        ctx.changesetRef = actionResponse
+        // ctx.changesetRef = actionResponse.sys.id
+      }
+    },
+    {
+      title: chalk`Create migration`,
+      task: async ctx => {
+        const { migration } = await getExportMigration({
+          api: ctx.api,
+          appDefinitionId: ctx.appDefinitionId,
+          appActionId: ctx.exportActionId,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          changesetRef: ctx.changesetRef!,
+          spaceId: ctx.spaceId,
+          targetEnvironmentId: ctx.targetEnvironmentId
+        }).catch(e => {
+          if ((e as Error)?.message === 'PollTimeout') {
+            throw new Error(mergeErrors['ExportPollTimeout'])
+          }
+          throw new Error(mergeErrors['MigrationCouldNotBeExported'])
+        })
+
+        // eslint-disable-next-line require-atomic-updates
+        ctx.migration = migration
       }
     }
-  ).run()
+  ]).run({
+    api,
+    appDefinitionId: appDefinitionId,
+    createChangesetActionId,
+    exportActionId,
+    sourceEnvironmentId,
+    targetEnvironmentId,
+    spaceId: spaceId
+  })
 }
 
 const exportEnvironmentMigration = async ({
