@@ -20,7 +20,7 @@
     "test": "npm run test:coverage",
     "test:coverage": "nyc npm run test:unit",
     "test:html-coverage": "nyc --reporter=html npm run test:unit",
-    "test:unit": "JEST_SUITE_NAME=\"Unit Tests\" JEST_JUNIT_OUTPUT_NAME=\"unit-tests.xml\" jest --runInBand test/unit/** --verbose",
+    "test:unit": "JEST_SUITE_NAME=\"Unit Tests\" JEST_JUNIT_OUTPUT_NAME=\"unit-tests.xml\" NODE_OPTIONS=--experimental-vm-modules jest --runInBand test/unit/** --verbose",
     "test:unit:watch": "jest test/unit/** --verbose --watch",
     "tsc": "tsc",
     "tsc:watch": "tsc --watch",
