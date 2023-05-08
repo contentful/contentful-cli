@@ -97,7 +97,7 @@
     "execa": "^5.0.0",
     "figlet": "^1.2.0",
     "find-up": "^5.0.0",
-    "https-proxy-agent": "^5.0.0",
+    "https-proxy-agent": "^6.1.0",
     "inquirer": "^8.0.0",
     "inquirer-autocomplete-prompt": "^2.0.0",
     "inquirer-select-directory": "^1.2.0",
