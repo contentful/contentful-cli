@@ -15,7 +15,7 @@ const mockedClient = {
   },
   environmentAlias: {
     getMany: jest.fn().mockResolvedValue({ items: [] })
-  }
+  },
 } as unknown as PlainClientAPI
 
 describe('merge export command', () => {
@@ -89,7 +89,8 @@ describe('merge export command', () => {
         response: {
           body: '{"message": {"migration":"console.log(\'hello world\')"}}'
         }
-      })
+      }),
+      createWithResponse: jest.fn()
     }
 
     await exportCmd.callExportAppAction({
@@ -128,7 +129,8 @@ describe('merge export command', () => {
         response: {
           body: '{"message": "[]"}'
         }
-      })
+      }),
+      createWithResponse: jest.fn()
     }
 
     await expect(async () => {
