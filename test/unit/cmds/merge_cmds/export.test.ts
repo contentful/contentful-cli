@@ -15,7 +15,7 @@ const mockedClient = {
   },
   environmentAlias: {
     getMany: jest.fn().mockResolvedValue({ items: [] })
-  },
+  }
 } as unknown as PlainClientAPI
 
 describe('merge export command', () => {
@@ -90,7 +90,15 @@ describe('merge export command', () => {
           body: '{"message": {"migration":"console.log(\'hello world\')"}}'
         }
       }),
-      createWithResponse: jest.fn()
+      createWithResponse: jest.fn().mockResolvedValue({
+        statusCode: 200,
+        sys: {
+          id: 'action-id-export-migration'
+        },
+        response: {
+          body: '{"message": {"migration":"console.log(\'hello world\')"}}'
+        }
+      })
     }
 
     await exportCmd.callExportAppAction({
@@ -103,7 +111,10 @@ describe('merge export command', () => {
       spaceId: 'space'
     })
 
-    expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(2)
+    expect(mockedClient.appActionCall.create).toHaveBeenCalledTimes(1)
+    expect(mockedClient.appActionCall.createWithResponse).toHaveBeenCalledTimes(
+      1
+    )
   })
 
   it('catches the error and shows a pretty output', async () => {

@@ -4,7 +4,7 @@ import Listr from 'listr'
 import path from 'path'
 import type { Argv } from 'yargs'
 import {
-  callCreateChangeset,
+  callCreateChangesetWithResponse,
   getExportMigration
 } from '../../utils/app-actions'
 import { getAppActionId, type Host } from '../../utils/app-actions-config'
@@ -89,7 +89,7 @@ export const callExportAppAction = async ({
       // use wrapTask
       task: async (ctx: Context, task) => {
         task.output = chalk`calculating differences`
-        const actionResponse = await callCreateChangeset({
+        const actionResponse = await callCreateChangesetWithResponse({
           api: ctx.api,
           appDefinitionId: ctx.appDefinitionId,
           appActionId: ctx.createChangesetActionId,
@@ -107,11 +107,8 @@ export const callExportAppAction = async ({
         })
 
         task.output = chalk`fetching differences`
-        // wait for changeset to be settled
-        await new Promise(resolve => setTimeout(resolve, 1000 * 8))
         // eslint-disable-next-line require-atomic-updates
-        ctx.changesetRef = actionResponse
-        // ctx.changesetRef = actionResponse.sys.id
+        ctx.changesetRef = actionResponse.sys.id
       }
     },
     {
