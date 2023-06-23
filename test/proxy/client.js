@@ -1,5 +1,5 @@
 const { createClient } = require('contentful-management')
-const HttpsProxyAgent = require('https-proxy-agent')
+const { HttpsProxyAgent } = require('https-proxy-agent')
 const { ssl, space, token } = require('yargs').argv
 
 const envKeys = ['http_proxy', 'https_proxy']
