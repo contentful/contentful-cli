@@ -65,7 +65,7 @@ export const builder = (yargs: Argv) => {
     })
     .option('host', {
       describe: 'Management API host',
-      type: 'string',
+      type: 'string'
     })
     .option('proxy', {
       describe:
