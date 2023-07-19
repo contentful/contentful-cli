@@ -22,6 +22,7 @@ Options:
                              not publish it           [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
   --host                     Management API host
+                                        [string] [default: "api.contentful.com"]
   --proxy                    Proxy configuration in HTTP auth format:
                              [http|https]://host:port or
                              [http|https]://user:password@host:port     [string]
