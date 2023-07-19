@@ -39,7 +39,6 @@ Options:
   --max-allowed-limit     How many items per page per request
                                                         [number] [default: 1000]
   --host                  Management API host
-                                        [string] [default: "api.contentful.com"]
   --proxy                 Proxy configuration in HTTP auth format:
                           [http|https]://host:port or
                           [http|https]://user:password@host:port        [string]
