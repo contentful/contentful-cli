@@ -83,7 +83,7 @@
     "ast-types": "^0.14.2",
     "bfj": "^7.0.2",
     "bluebird": "^3.5.0",
-    "boxen": "^5.1.2",
+    "boxen": "^7.1.1",
     "camelcase": "^6.0.0",
     "chalk": "^2.4.1",
     "cli-highlight": "^2.1.11",
