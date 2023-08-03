@@ -120,7 +120,7 @@
     "yargs": "~13.3.2"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=16"
   },
   "files": [
     "dist",
