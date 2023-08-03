@@ -91,7 +91,7 @@
     "command-exists": "^1.2.7",
     "contentful-collection": "^0.0.4",
     "contentful-export": "^7.19.0",
-    "contentful-import": "^8.5.35",
+    "contentful-import": "^9.0.0",
     "contentful-management": "^10.35.3",
     "contentful-migration": "^4.12.5",
     "emojic": "^1.1.11",
@@ -120,7 +120,7 @@
     "yargs": "~13.3.2"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=16"
   },
   "files": [
     "dist",
