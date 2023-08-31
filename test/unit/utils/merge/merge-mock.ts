@@ -97,6 +97,21 @@ export const ContentModel = [
         validations: [],
         disabled: false,
         omitted: false
+      },
+      {
+        id: 'rich',
+        name: 'rich',
+        type: 'RichText',
+        localized: false,
+        required: false,
+        validations: [
+          {
+            enabledMarks: ['bold', 'italic', 'underline', 'code'],
+            message: 'Only bold, underline, code, and italic marks are allowed'
+          }
+        ],
+        disabled: false,
+        omitted: false
       }
     ]
   },
@@ -394,6 +409,16 @@ export const ChangesetItemsMock: ChangesetItem[] = [
         op: 'replace',
         path: '/fields/3/omitted',
         value: true
+      },
+      {
+        op: 'move',
+        from: '/fields/1/validations/0',
+        path: '/fields/1/validations/1'
+      },
+      {
+        op: 'move',
+        from: '/fields/4/validations/0/enabledMarks/1',
+        path: '/fields/4/validations/0/enabledMarks/3'
       },
       { op: 'move', from: '/fields/0', path: '/fields/1' },
       { op: 'move', from: '/fields/3', path: '/fields/2' }

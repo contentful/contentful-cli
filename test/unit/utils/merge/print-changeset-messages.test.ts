@@ -39,6 +39,18 @@ describe('A print changeset messages function', () => {
 
   ~Changed
    type: Field
+   id: firstContentType
+   property: validations
+   position: order changed
+
+  ~Changed
+   type: Field
+   id: rich
+   property: validations -> enabledMarks
+   position: order changed
+
+  ~Changed
+   type: Field
    id: name
    position: moved down
 

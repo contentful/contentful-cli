@@ -34,6 +34,8 @@ export const fieldChange = (operation: Operation): string => {
   return operation.path.split('/')[3]
 }
 
+// Util functions for move operations
+
 export const isNestedMoveOperation = (operation: Operation): boolean => {
   return (
     operation.op === 'move' &&
@@ -41,7 +43,17 @@ export const isNestedMoveOperation = (operation: Operation): boolean => {
   )
 }
 
-export const getLastIndexFromPath = (path: string) => {
+export const getLastIndexFromPath = (path: string): number => {
   const stringIndex = path.split('/').pop() as string
-  return parseInt(stringIndex, 10) || 0
+  const lastIndex = parseInt(stringIndex, 10)
+  if (isNaN(lastIndex)) {
+    return -1
+  }
+  return lastIndex
 }
+
+export const getNestedPropertyNames = (operation: Operation) =>
+  operation.path
+    .split('/')
+    // we want any property that is within fields, we filter out indices
+    .filter(x => x !== 'fields' && x !== '' && isNaN(parseInt(x, 10)))

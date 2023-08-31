@@ -8,6 +8,7 @@ import {
   getChangeKey,
   getFieldIdForIndex,
   getLastIndexFromPath,
+  getNestedPropertyNames,
   isNestedMoveOperation
 } from './utils'
 
@@ -147,12 +148,24 @@ export function createMessageLogStructure(
         }
 
         const fieldValueChange = fieldChange(operation)
-        if (fieldValueChange && fieldValueChange.length > 0) {
-          messages.push(
-            Formatter.record(
-              `property: ${Formatter.property(fieldValueChange)}`
+        const isNestedMove = isNestedMoveOperation(operation)
+
+        if (fieldValueChange) {
+          if (isNestedMove) {
+            const propChain = getNestedPropertyNames(operation)
+
+            messages.push(
+              Formatter.record(
+                `property: ${Formatter.property(propChain.join(' -> '))}`
+              )
             )
-          )
+          } else if (fieldValueChange.length > 0) {
+            messages.push(
+              Formatter.record(
+                `property: ${Formatter.property(fieldValueChange)}`
+              )
+            )
+          }
         }
 
         if (isChangeOperation) {
@@ -172,7 +185,7 @@ export function createMessageLogStructure(
         }
 
         if (isMoveOperation) {
-          if (isNestedMoveOperation(operation)) {
+          if (isNestedMove) {
             messages.push(Formatter.record(`position: order changed`))
           } else {
             const fromIndex = getLastIndexFromPath(operation.from)
