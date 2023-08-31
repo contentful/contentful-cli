@@ -41,21 +41,20 @@ const valueTypeFormatter = (value: string | number | boolean) => {
   if (typeof value === 'string') {
     return `"${value}"`
   }
-  if (typeof value === 'boolean') {
-    return chalk.magenta(value.toString())
-  }
   return value
 }
 
 const arrowSymbol = (direction: 'up' | 'down') =>
   direction === 'up' ? '↑' : '↓'
 
+const tab = (width: 1 | 2 | 3) => ' '.repeat(width)
+
 const Formatter = {
-  type: (value: string) => chalk.bold(value),
   id: (value: string) => chalk.yellow(value),
   value: (value: string | number | boolean) => valueTypeFormatter(value),
-  record: (value: string) => chalk.italic(value),
-  property: (value: string) => chalk.yellow(value)
+  title: (value: string) => tab(1) + value,
+  subtitle: (value: string) => tab(3) + value,
+  details: (value: string) => tab(3) + chalk.bold.dim(value)
 }
 
 export function createMessageLogStructure(
@@ -74,8 +73,8 @@ export function createMessageLogStructure(
         changeType: 'add',
         level: 0,
         messages: [
-          Formatter.record(`type: ${Formatter.type('ContentType')}`),
-          Formatter.record(`id: ${Formatter.id(item.entity.sys.id)}`)
+          Formatter.title('ContentType'),
+          Formatter.title(`id: ${Formatter.id(item.entity.sys.id)}`)
         ]
       }
     })
@@ -88,8 +87,8 @@ export function createMessageLogStructure(
         changeType: 'delete',
         level: 0,
         messages: [
-          Formatter.record(`type: ${Formatter.type('ContentType')}`),
-          Formatter.record(`id: ${Formatter.id(item.entity.sys.id)}`)
+          Formatter.title('ContentType'),
+          Formatter.title(`id: ${Formatter.id(item.entity.sys.id)}`)
         ]
       }
     })
@@ -104,8 +103,8 @@ export function createMessageLogStructure(
         changeType: 'update',
         level: 0,
         messages: [
-          Formatter.record(`type: ${Formatter.type('ContentType')}`),
-          Formatter.record(`id: ${Formatter.id(item.entity.sys.id)}`)
+          Formatter.title('ContentType'),
+          Formatter.title(`id: ${Formatter.id(item.entity.sys.id)}`)
         ]
       })
 
@@ -135,19 +134,15 @@ export function createMessageLogStructure(
           if (isAddOperation) {
             key = operation.value.id
           }
-          messages.push(Formatter.record(`type: ${Formatter.type('Field')}`))
+          messages.push(Formatter.title('Field'))
         } else {
-          messages.push(
-            Formatter.record(`type: ${Formatter.type('ContentType')}`)
-          )
+          messages.push(Formatter.title('ContentType'))
         }
 
         if (isFieldValueChange) {
-          messages.push(Formatter.record(`id: ${Formatter.id(key)}`))
+          messages.push(Formatter.subtitle(`id: ${Formatter.id(key)}`))
         } else {
-          messages.push(
-            Formatter.record(`property: ${Formatter.property(key)}`)
-          )
+          messages.push(Formatter.details(`property: ${key}`))
         }
 
         const fieldValueChange = fieldChange(operation)
@@ -158,45 +153,40 @@ export function createMessageLogStructure(
             const propChain = getNestedPropertyNames(operation)
 
             messages.push(
-              Formatter.record(
-                `property: ${Formatter.property(propChain.join(' -> '))}`
-              )
+              Formatter.details(`property: ${propChain.join(' -> ')}`)
             )
           } else if (fieldValueChange.length > 0) {
-            messages.push(
-              Formatter.record(
-                `property: ${Formatter.property(fieldValueChange)}`
-              )
-            )
+            messages.push(Formatter.details(`property: ${fieldValueChange}`))
           }
         }
 
         if (isChangeOperation) {
           messages.push(
-            Formatter.record(`value: ${Formatter.value(operation.value)}`)
+            Formatter.details(`value: ${Formatter.value(operation.value)}`)
           )
         }
 
         if (isAddOperation) {
-          messages.push(
-            Formatter.record(
-              `value: ${Formatter.value(
-                truncate(JSON.stringify(operation.value), { length: 48 })
-              )}`
-            )
+          const stringifiedValue = JSON.stringify(operation.value, null, 2)
+          const valueInLines = stringifiedValue.split('\n') as string[]
+
+          // we display the first three lines, and indicate that it's truncated with "..."
+          messages.push(Formatter.details(`value:`))
+          ;[...valueInLines.slice(1, 4), '  ...'].map(line =>
+            messages.push(Formatter.details(line))
           )
         }
 
         if (isMoveOperation) {
           if (isNestedMove) {
-            messages.push(Formatter.record(`position: ↕ order changed`))
+            messages.push(Formatter.details(`position: ↕ order changed`))
           } else {
             const fromIndex = getLastIndexFromPath(operation.from)
             const toIndex = getLastIndexFromPath(operation.path)
             const direction = fromIndex < toIndex ? 'down' : 'up'
 
             messages.push(
-              Formatter.record(
+              Formatter.details(
                 `position: ${arrowSymbol(direction)} moved ${direction}`
               )
             )

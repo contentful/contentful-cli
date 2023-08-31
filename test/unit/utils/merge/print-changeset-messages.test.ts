@@ -6,81 +6,89 @@ describe('A print changeset messages function', () => {
   it('prints a formatted message of many changes', () => {
     const result = printChangesetMessages(ContentModel, ChangesetItemsMock)
     expect(stripAnsi(result)).toEqual(`-Deleted
- type: ContentType
- id: toBeDeletedContentType
+  ContentType
+  id: toBeDeletedContentType
 
 +Added
- type: ContentType
- id: product
+  ContentType
+  id: product
 
 +Added
- type: ContentType
- id: simpleContentType
+  ContentType
+  id: simpleContentType
 
 ~Changed
- type: ContentType
- id: secondContentType
+  ContentType
+  id: secondContentType
 
   ~Changed
-   type: ContentType
-   property: description
-   value: "This is a new description"
+    ContentType
+      property: description
+      value: "This is a new description"
 
   ~Changed
-   type: ContentType
-   property: name
-   value: "Second Content typeeee"
+    ContentType
+      property: name
+      value: "Second Content typeeee"
 
   ~Changed
-   type: Field
-   id: salePrice
-   property: omitted
-   value: true
+    Field
+      id: salePrice
+      property: omitted
+      value: true
 
   ~Changed
-   type: Field
-   id: some-field
-   property: validations
-   position: ↕ order changed
+    Field
+      id: some-field
+      property: validations
+      position: ↕ order changed
 
   ~Changed
-   type: Field
-   id: rich
-   property: validations -> enabledMarks
-   position: ↕ order changed
+    Field
+      id: rich
+      property: validations -> enabledMarks
+      position: ↕ order changed
 
   ~Changed
-   type: Field
-   id: name
-   position: ↓ moved down
+    Field
+      id: name
+      position: ↓ moved down
 
   ~Changed
-   type: Field
-   id: salePrice
-   position: ↑ moved up
+    Field
+      id: salePrice
+      position: ↑ moved up
 
 ~Changed
- type: ContentType
- id: firstContentType
+  ContentType
+  id: firstContentType
 
   ~Changed
-   type: ContentType
-   property: displayField
-   value: "aSimpleTextFieldChanged"
+    ContentType
+      property: displayField
+      value: "aSimpleTextFieldChanged"
 
   -Deleted
-   type: Field
-   id: aSimpleTextField
+    Field
+      id: aSimpleTextField
 
   +Added
-   type: Field
-   id: aSimpleTextFieldChanged
-   value: "{"id":"aSimpleTextFieldChanged","name":"A Sim..."
+    Field
+      id: aSimpleTextFieldChanged
+      value:
+        "id": "aSimpleTextFieldChanged",
+        "name": "A Simple Text field - with a new name",
+        "type": "Symbol",
+        ...
 
   +Added
-   type: Field
-   id: image
-   value: "{"id":"image","name":"image","type":"Link","l..."
+    Field
+      id: image
+      value:
+        "id": "image",
+        "name": "image",
+        "type": "Link",
+        ...
 
 `)
   })
