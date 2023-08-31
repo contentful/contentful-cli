@@ -20,11 +20,11 @@ export const getFieldIdForIndex = (
   return 'unknown'
 }
 
-export const fieldIndex = (operation: Operation): number => {
-  if (!operation.path.startsWith('/fields')) {
+export const fieldIndex = (path: string): number => {
+  if (!path.startsWith('/fields')) {
     return -1
   }
-  return parseInt(operation.path.split('/')[2])
+  return parseInt(path.split('/')[2])
 }
 
 export const fieldChange = (operation: Operation): string => {
@@ -33,3 +33,27 @@ export const fieldChange = (operation: Operation): string => {
   }
   return operation.path.split('/')[3]
 }
+
+// Util functions for move operations
+
+export const isNestedMoveOperation = (operation: Operation): boolean => {
+  return (
+    operation.op === 'move' &&
+    operation.path.split('/').filter(x => x !== '').length > 2
+  )
+}
+
+export const getLastIndexFromPath = (path: string): number => {
+  const stringIndex = path.split('/').pop() as string
+  const lastIndex = parseInt(stringIndex, 10)
+  if (isNaN(lastIndex)) {
+    return -1
+  }
+  return lastIndex
+}
+
+export const getNestedPropertyNames = (operation: Operation) =>
+  operation.path
+    .split('/')
+    // we want any property that is within fields, we filter out indices
+    .filter(x => x !== 'fields' && x !== '' && isNaN(parseInt(x, 10)))

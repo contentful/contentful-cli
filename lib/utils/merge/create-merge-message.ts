@@ -6,7 +6,10 @@ import {
   fieldChange,
   fieldIndex,
   getChangeKey,
-  getFieldIdForIndex
+  getFieldIdForIndex,
+  getLastIndexFromPath,
+  getNestedPropertyNames,
+  isNestedMoveOperation
 } from './utils'
 
 type MessageChangeType = 'add' | 'delete' | 'update'
@@ -43,6 +46,9 @@ const valueTypeFormatter = (value: string | number | boolean) => {
   }
   return value
 }
+
+const arrowSymbol = (direction: 'up' | 'down') =>
+  direction === 'up' ? '↑' : '↓'
 
 const Formatter = {
   type: (value: string) => chalk.bold(value),
@@ -110,12 +116,19 @@ export function createMessageLogStructure(
         const isFieldValueChange = operation.path.startsWith('/fields/')
         const isChangeOperation = operation.op === 'replace'
         const isAddOperation = operation.op === 'add'
+        const isMoveOperation = operation.op === 'move'
 
         if (isFieldValueChange) {
+          // if it is a field move operation, we need the initial field index
+          // to retrieve the field id
+          const indexForFieldId = isMoveOperation
+            ? fieldIndex(operation.from)
+            : fieldIndex(operation.path)
+
           key = getFieldIdForIndex(
             targetModel,
             item.entity.sys.id,
-            fieldIndex(operation)
+            indexForFieldId
           )
 
           // at this point, the field doesn't exist on the target model
@@ -138,12 +151,24 @@ export function createMessageLogStructure(
         }
 
         const fieldValueChange = fieldChange(operation)
-        if (fieldValueChange && fieldValueChange.length > 0) {
-          messages.push(
-            Formatter.record(
-              `property: ${Formatter.property(fieldValueChange)}`
+        const isNestedMove = isNestedMoveOperation(operation)
+
+        if (fieldValueChange) {
+          if (isNestedMove) {
+            const propChain = getNestedPropertyNames(operation)
+
+            messages.push(
+              Formatter.record(
+                `property: ${Formatter.property(propChain.join(' -> '))}`
+              )
             )
-          )
+          } else if (fieldValueChange.length > 0) {
+            messages.push(
+              Formatter.record(
+                `property: ${Formatter.property(fieldValueChange)}`
+              )
+            )
+          }
         }
 
         if (isChangeOperation) {
@@ -160,6 +185,22 @@ export function createMessageLogStructure(
               )}`
             )
           )
+        }
+
+        if (isMoveOperation) {
+          if (isNestedMove) {
+            messages.push(Formatter.record(`position: ↕ order changed`))
+          } else {
+            const fromIndex = getLastIndexFromPath(operation.from)
+            const toIndex = getLastIndexFromPath(operation.path)
+            const direction = fromIndex < toIndex ? 'down' : 'up'
+
+            messages.push(
+              Formatter.record(
+                `position: ${arrowSymbol(direction)} moved ${direction}`
+              )
+            )
+          }
         }
 
         contentTypeMessages.push({
