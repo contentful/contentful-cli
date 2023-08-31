@@ -47,6 +47,9 @@ const valueTypeFormatter = (value: string | number | boolean) => {
   return value
 }
 
+const arrowSymbol = (direction: 'up' | 'down') =>
+  direction === 'up' ? '↑' : '↓'
+
 const Formatter = {
   type: (value: string) => chalk.bold(value),
   id: (value: string) => chalk.yellow(value),
@@ -186,13 +189,17 @@ export function createMessageLogStructure(
 
         if (isMoveOperation) {
           if (isNestedMove) {
-            messages.push(Formatter.record(`position: order changed`))
+            messages.push(Formatter.record(`position: ↕ order changed`))
           } else {
             const fromIndex = getLastIndexFromPath(operation.from)
             const toIndex = getLastIndexFromPath(operation.path)
             const direction = fromIndex < toIndex ? 'down' : 'up'
 
-            messages.push(Formatter.record(`position: moved ${direction}`))
+            messages.push(
+              Formatter.record(
+                `position: ${arrowSymbol(direction)} moved ${direction}`
+              )
+            )
           }
         }
 
