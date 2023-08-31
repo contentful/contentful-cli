@@ -63,8 +63,8 @@ export const ContentModel = [
         omitted: false
       },
       {
-        id: 'firstContentType',
-        name: 'first content type',
+        id: 'some-field',
+        name: 'some field',
         type: 'Link',
         localized: false,
         required: false,

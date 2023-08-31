@@ -39,7 +39,7 @@ describe('A print changeset messages function', () => {
 
   ~Changed
    type: Field
-   id: firstContentType
+   id: some-field
    property: validations
    position: order changed
 
