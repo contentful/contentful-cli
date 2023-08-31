@@ -20,11 +20,11 @@ export const getFieldIdForIndex = (
   return 'unknown'
 }
 
-export const fieldIndex = (operation: Operation): number => {
-  if (!operation.path.startsWith('/fields')) {
+export const fieldIndex = (path: string): number => {
+  if (!path.startsWith('/fields')) {
     return -1
   }
-  return parseInt(operation.path.split('/')[2])
+  return parseInt(path.split('/')[2])
 }
 
 export const fieldChange = (operation: Operation): string => {
@@ -32,4 +32,16 @@ export const fieldChange = (operation: Operation): string => {
     return ''
   }
   return operation.path.split('/')[3]
+}
+
+export const isNestedMoveOperation = (operation: Operation): boolean => {
+  return (
+    operation.op === 'move' &&
+    operation.path.split('/').filter(x => x !== '').length > 2
+  )
+}
+
+export const getLastIndexFromPath = (path: string) => {
+  const stringIndex = path.split('/').pop() as string
+  return parseInt(stringIndex, 10) || 0
 }

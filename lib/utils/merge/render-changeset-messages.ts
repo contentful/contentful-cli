@@ -14,7 +14,8 @@ function StringRenderer({ indentString = spacer.repeat(2) }) {
 const ChangeTypeToIndicatorMap: Record<string, string> = {
   add: '+Added',
   delete: '-Deleted',
-  update: '~Changed'
+  update: '~Changed',
+  move: '~Changed'
 }
 export function renderChangesetMessages(messages: Message[]): string {
   const renderer = StringRenderer({})

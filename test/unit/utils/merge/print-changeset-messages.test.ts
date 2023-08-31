@@ -37,6 +37,16 @@ describe('A print changeset messages function', () => {
    property: omitted
    value: true
 
+  ~Changed
+   type: Field
+   id: name
+   position: moved down
+
+  ~Changed
+   type: Field
+   id: salePrice
+   position: moved up
+
 ~Changed
  type: ContentType
  id: firstContentType

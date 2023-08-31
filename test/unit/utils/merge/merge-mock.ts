@@ -394,7 +394,9 @@ export const ChangesetItemsMock: ChangesetItem[] = [
         op: 'replace',
         path: '/fields/3/omitted',
         value: true
-      }
+      },
+      { op: 'move', from: '/fields/0', path: '/fields/1' },
+      { op: 'move', from: '/fields/3', path: '/fields/2' }
     ]
   },
   {

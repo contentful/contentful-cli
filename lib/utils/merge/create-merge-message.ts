@@ -6,7 +6,9 @@ import {
   fieldChange,
   fieldIndex,
   getChangeKey,
-  getFieldIdForIndex
+  getFieldIdForIndex,
+  getLastIndexFromPath,
+  isNestedMoveOperation
 } from './utils'
 
 type MessageChangeType = 'add' | 'delete' | 'update'
@@ -110,12 +112,19 @@ export function createMessageLogStructure(
         const isFieldValueChange = operation.path.startsWith('/fields/')
         const isChangeOperation = operation.op === 'replace'
         const isAddOperation = operation.op === 'add'
+        const isMoveOperation = operation.op === 'move'
 
         if (isFieldValueChange) {
+          // if it is a field move operation, we need the initial field index
+          // to retrieve the field id
+          const indexForFieldId = isMoveOperation
+            ? fieldIndex(operation.from)
+            : fieldIndex(operation.path)
+
           key = getFieldIdForIndex(
             targetModel,
             item.entity.sys.id,
-            fieldIndex(operation)
+            indexForFieldId
           )
 
           // at this point, the field doesn't exist on the target model
@@ -160,6 +169,18 @@ export function createMessageLogStructure(
               )}`
             )
           )
+        }
+
+        if (isMoveOperation) {
+          if (isNestedMoveOperation(operation)) {
+            messages.push(Formatter.record(`position: order changed`))
+          } else {
+            const fromIndex = getLastIndexFromPath(operation.from)
+            const toIndex = getLastIndexFromPath(operation.path)
+            const direction = fromIndex < toIndex ? 'down' : 'up'
+
+            messages.push(Formatter.record(`position: moved ${direction}`))
+          }
         }
 
         contentTypeMessages.push({
