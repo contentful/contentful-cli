@@ -50,7 +50,7 @@ jobs:
           path: ./reports/e2e-tests.xml
   osx:
     macos:
-      xcode: 12.5.1
+      xcode: 14.3.1
     steps:
       - run: node --version
       - run: npm --version
