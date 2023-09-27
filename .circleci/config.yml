@@ -71,6 +71,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
       - run: npm run build:standalone
+      - run: test -d node_modules/esprima && echo "esprima exists" || echo "esprima does not exist"
       - run: npm run test:e2e
       - store_test_results:
           path: ./reports/e2e-tests.xml
