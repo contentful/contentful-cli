@@ -71,7 +71,7 @@
     "nixt": "^0.5.1",
     "nyc": "^15.0.0",
     "pkg": "^5.8.1",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.4",
     "semantic-release": "^21.0.0",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
