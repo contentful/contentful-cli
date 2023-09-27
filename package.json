@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "npm run tsc && pkg .",
+    "build:standalone": "npm run tsc && pkg --debug .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
