@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "audit": "resolve-audit",
-    "build:standalone": "npm run tsc && pkg --debug .",
+    "build:standalone": "npm run tsc && pkg .",
     "build:package": "npm run build:standalone && script/package",
     "lint": "eslint bin lib test",
     "test": "npm run test:coverage",
@@ -81,7 +81,7 @@
   "dependencies": {
     "@contentful/app-action-utils": "^1.2.3",
     "ast-types": "^0.14.2",
-    "bfj": "^7.0.2",
+    "big-json": "^3.2.0",
     "bluebird": "^3.5.0",
     "boxen": "^5.1.2",
     "camelcase": "^6.0.0",

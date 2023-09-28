@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   vault: contentful/vault@1
+  macos: circleci/macos@2.4.0
 
 jobs:
   unit:
@@ -53,16 +54,7 @@ jobs:
       xcode: 14.3.1
     resource_class: macos.m1.medium.gen1
     steps:
-      - run:
-          command: |
-            #!/usr/bin/env bash
-            if [ "$(uname -m)" = "arm64" ]; then
-                /usr/sbin/softwareupdate --install-rosetta --agree-to-license
-            else
-                echo "Rosetta 2 can only be installed on Apple Silicon!"
-                exit 1
-            fi
-          name: Installing Rosetta 2
+      - macos/install-rosetta
       - run: nvm install 18.5.0 && nvm alias default 18.5.0
       - run: node --version
       - run: npm --version
@@ -71,7 +63,6 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run: npm ci
       - run: npm run build:standalone
-      - run: test -d node_modules/esprima && echo "esprima exists" || echo "esprima does not exist"
       - run: npm run test:e2e
       - store_test_results:
           path: ./reports/e2e-tests.xml
