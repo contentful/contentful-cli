@@ -29,6 +29,7 @@
     "test:integration:ci": "NODE_ENV=test JEST_SUITE_NAME=\"Integration Tests\" JEST_JUNIT_OUTPUT_NAME=\"integration-tests.xml\" concurrently \"npm:talkback-proxy\" \"npm:test:jest -- --runInBand\" --success first --kill-others",
     "test:integration:update": "NODE_ENV=test concurrently \"npm:talkback-proxy\" \"npm:test:jest -- --updateSnapshot --runInBand\" --success first --kill-others",
     "test:e2e": "JEST_SUITE_NAME=\"Unit Tests\" JEST_JUNIT_OUTPUT_NAME=\"e2e-tests.xml\" cross-env jest --testPathPattern=test/e2e --verbose",
+    "postinstall": "patch-package",
     "precommit": "npm run prettier:write && lint-staged",
     "prepush": "jest --changedSince master test/unit/**",
     "prepublishOnly": "npm run build:package",
@@ -70,6 +71,7 @@
     "lint-staged": "^14.0.0",
     "nixt": "^0.5.1",
     "nyc": "^15.0.0",
+    "patch-package": "^8.0.0",
     "pkg": "^5.8.1",
     "rimraf": "^3.0.2",
     "semantic-release": "^22.0.5",
@@ -120,7 +122,7 @@
     "yargs": "~13.3.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "files": [
     "dist",
