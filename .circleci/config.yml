@@ -2,11 +2,12 @@ version: 2.1
 
 orbs:
   vault: contentful/vault@1
+  macos: circleci/macos@2.4.0
 
 jobs:
   unit:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:18.15.0
     steps:
       - run: node --version
       - run: npm --version
@@ -20,7 +21,7 @@ jobs:
           path: ./reports/unit-tests.xml
   integration:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:18.15.0
     steps:
       - run: node --version
       - run: npm --version
@@ -36,7 +37,7 @@ jobs:
           path: ./reports/integration-tests.xml
   linux:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:18.15.0
     steps:
       - run: node --version
       - run: npm --version
@@ -51,8 +52,10 @@ jobs:
   osx:
     macos:
       xcode: 14.3.1
-    resource_class: macos.x86.medium.gen2
+    resource_class: macos.m1.medium.gen1
     steps:
+      - macos/install-rosetta
+      - run: nvm install 18.15.0 && nvm alias default 18.15.0
       - run: node --version
       - run: npm --version
       - checkout
@@ -65,7 +68,7 @@ jobs:
           path: ./reports/e2e-tests.xml
   release:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/node:18.15.0
     steps:
       - checkout
       - vault/get-secrets: # Loads vault secrets
@@ -78,7 +81,7 @@ jobs:
       - run: npm run semantic-release
   audit:
     docker: &ref_0
-      - image: cimg/node:lts
+      - image: cimg/node:18.15.0
         environment:
           NPM_CONFIG_PROGRESS: false
           NPM_CONFIG_LOGLEVEL: warn

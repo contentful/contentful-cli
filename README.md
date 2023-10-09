@@ -125,7 +125,7 @@ Simply run:
 # Run all unit tests
 npm run test:unit:watch
 # Or run specific tests
-npx jest /test/unit/cmds/* --watch
+npx jest test/unit/cmds/* --watch
 ```
 
 See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
