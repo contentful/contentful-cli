@@ -29,9 +29,6 @@ updates:
     - dependency-name: husky
       versions:
         - ">=5.0.0"
-    - dependency-name: semantic-release  # requires node >= 20
-      versions:
-        - ">=22.0.0"
     commit-message:
       prefix: build
       include: scope
