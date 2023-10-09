@@ -94,7 +94,7 @@
     "contentful-collection": "^0.0.4",
     "contentful-export": "^7.19.0",
     "contentful-import": "^9.0.0",
-    "contentful-management": "^10.35.3",
+    "contentful-management": "^11.0.1",
     "contentful-migration": "^4.16.0",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
