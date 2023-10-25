@@ -48,6 +48,36 @@ test('login - without error', async () => {
   expect(result).toBe(mockedRcConfig.managementToken)
 })
 
+test('login - uses host from config', async () => {
+  await loginHandler({
+    context: {
+      host: 'api.eu.contentful.com'
+    }
+  })
+
+  if (['win32', 'darwin'].includes(process.platform)) {
+    expect(open).toHaveBeenCalled()
+    expect(
+      mocks.open.mock.calls[0][0].includes(
+        'https://be.eu.contentful.com/oauth/'
+      )
+    ).toBeTruthy()
+  }
+})
+
+test('login - uses default host without host in config', async () => {
+  await loginHandler({
+    context: {}
+  })
+
+  if (['win32', 'darwin'].includes(process.platform)) {
+    expect(open).toHaveBeenCalled()
+    expect(
+      mocks.open.mock.calls[0][0].includes('https://be.contentful.com/oauth')
+    ).toBeTruthy()
+  }
+})
+
 test('login - user abort', async () => {
   mocks.confirmation.mockResolvedValueOnce(false)
 

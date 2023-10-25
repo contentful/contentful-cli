@@ -12,8 +12,18 @@ import { copyright } from '../utils/copyright'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
-const REDIRECT_URI = 'https://www.contentful.com/developers/cli-oauth-page/'
-const oAuthURL = `https://be.contentful.com/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage&action=cli`
+
+export const getOauthURL = (host?: string) => {
+  const REDIRECT_URI = 'https://www.contentful.com/developers/cli-oauth-page/'
+  let oAuthURL = `https://be.contentful.com/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage&action=cli`
+
+  if (host) {
+    const url = host.replace('api.', '')
+    oAuthURL = `https://be.${url}/oauth/authorize?response_type=token&client_id=${APP_ID}&redirect_uri=${REDIRECT_URI}&scope=content_management_manage&action=cli`
+  }
+
+  return oAuthURL
+}
 
 export const command = 'login'
 
@@ -37,6 +47,7 @@ export const builder = (yargs: Argv) =>
 
 interface Context {
   managementToken?: string
+  host?: string
 }
 
 interface LoginProps {
@@ -48,7 +59,7 @@ export const login = async ({
   context,
   managementToken: managementTokenFlag
 }: LoginProps) => {
-  const { managementToken } = context
+  const { managementToken, host } = context
 
   let token
   if (managementTokenFlag) {
@@ -82,6 +93,8 @@ export const login = async ({
       return
     }
 
+    const oAuthURL = getOauthURL(host)
+    
     // We open the browser window only on Windows and OSX since this might fail or open the wrong browser on Linux.
     if (['win32', 'darwin'].includes(process.platform)) {
       await open(oAuthURL, {
