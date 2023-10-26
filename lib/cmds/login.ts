@@ -94,7 +94,7 @@ export const login = async ({
     }
 
     const oAuthURL = getOauthURL(host)
-    
+
     // We open the browser window only on Windows and OSX since this might fail or open the wrong browser on Linux.
     if (['win32', 'darwin'].includes(process.platform)) {
       await open(oAuthURL, {
