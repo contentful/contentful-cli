@@ -1,0 +1,13 @@
+diff --git a/node_modules/contentful-export/node_modules/bfj/src/match.js b/node_modules/contentful-export/node_modules/bfj/src/match.js
+index 54e63b6..94c3437 100644
+--- a/node_modules/contentful-export/node_modules/bfj/src/match.js
++++ b/node_modules/contentful-export/node_modules/bfj/src/match.js
+@@ -4,7 +4,7 @@ const check = require('check-types')
+ const DataStream = require('./datastream')
+ const events = require('./events')
+ const Hoopy = require('hoopy')
+-const jsonpath = require('jsonpath')
++const jsonpath = require('jsonpath/jsonpath.min')
+ const walk = require('./walk')
+ 
+ const DEFAULT_BUFFER_LENGTH = 1024
