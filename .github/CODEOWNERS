@@ -1,2 +1,4 @@
-*   @contentful/team-phoenix
+* @contentful/team-developer-experience
+
 lib/cmds/init @contentful/team-core-experience
+
