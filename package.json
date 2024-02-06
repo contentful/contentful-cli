@@ -109,7 +109,7 @@
     "open": "^8.0.5",
     "patch-package": "^8.0.0",
     "path": "^0.12.7",
-    "prettier": "^2.0.2",
+    "prettier": "^3.2.5",
     "recast": "^0.23.2",
     "rxjs": "^7.3.0",
     "shell-escape": "^0.2.0",
