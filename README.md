@@ -68,6 +68,16 @@ When multiple proxy configurations exists, precedence is taken in this form:
 2. `https_proxy` takes precedence over `.contentfulrc.json`
 3. `https_proxy` takes precedence over `http_proxy`
 
+## Configuring the CLI for EU usage
+
+You can override the host configuration in your `.contentfulrc.json` via:
+
+```sh
+contentful config add --host api.eu.contentful.com
+```
+
+Then any subsequent command will use the EU host. E.g. `contentful login` will log you in to your EU Contentful instance.
+
 ## :rescue_worker_helmet: Troubleshooting
 
 - Unable to connect to Contentful through your Proxy? Try settings `rawProxy: true` in your `.contentfulrc.json` via:
