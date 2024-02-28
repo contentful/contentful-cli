@@ -16,13 +16,14 @@ Options:
   --space-id              ID of Space with source data                  [string]
   --environment-id        ID of Environment with source data
                                                     [string] [default: "master"]
-  --management-token      Contentful management API token               [string]
+  
+  --management-token, --mt  Contentful management API token             [string]
+  --delivery-token, --dt    Contentful delivery API token               [string]
   --export-dir            Defines the path for storing the export json file
                           (default path is the current directory)       [string]
   --include-drafts        Include drafts in the exported entries
                                                       [boolean] [default: false]
-  --include-archived      Include archived entries in the exported entries
-                                                      [boolean] [default: false]
+ 
   --skip-content-model    Skip exporting content models
                                                       [boolean] [default: false]
   --skip-content          Skip exporting assets and entries
@@ -43,6 +44,8 @@ Options:
   --proxy                 Proxy configuration in HTTP auth format:
                           [http|https]://host:port or
                           [http|https]://user:password@host:port        [string]
+  --include-archived      Include archived entries in the exported entries
+                                                      [boolean] [default: false]
   --raw-proxy             Pass proxy config to Axios instead of creating a 
                           custom httpsAgent.                           [boolean]
   --error-log-file        Full path to the error log file               [string]
@@ -54,6 +57,12 @@ Options:
   --use-verbose-renderer  Display progress in new lines instead of displaying a
                           busy spinner and the status in the same line. Useful
                           for CI.                     [boolean] [default: false]
+                          
+  --timeout               Timeout in milliseconds for API calls
+                                                       [number] [default: 20000]
+  --retry-limit           How many times to retry before an operation fails
+                                                          [number] [default: 10]
+  --header, -H            Pass an additional HTTP Header                [string]
   --config                An optional configuration JSON file containing all the
                           options for a single run
 ```
