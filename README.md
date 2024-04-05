@@ -13,12 +13,12 @@
 - Manage spaces - list, create, delete,...
 - Export your space to a JSON file.
 - Import your space from a JSON file.
-- Execute migration scripts written in the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/master/README.md#reference-documentation)
-- Generate migration scripts for the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/master/README.md#reference-documentation) from existing spaces.
+- Execute migration scripts written in the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/main/README.md#reference-documentation)
+- Generate migration scripts for the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/main/README.md#reference-documentation) from existing spaces.
 - Seed your space with example data.
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
-- Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
+- Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/main/docs).
 
 ## :cloud: Installation
 
@@ -46,7 +46,7 @@ contentful space --help
 
 ## :books: Documentation
 
-More detailed documentation for every command can be found in the [docs section](https://github.com/contentful/contentful-cli/tree/master/docs).
+More detailed documentation for every command can be found in the [docs section](https://github.com/contentful/contentful-cli/tree/main/docs).
 
 ## Using the CLI tool with a proxy
 

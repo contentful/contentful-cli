@@ -109,7 +109,7 @@ workflows:
           cron: 0 0 * * *
           filters:
             branches:
-              only: master
+              only: main
     jobs:
       - audit-and-notify
   build_and_test:
@@ -130,5 +130,5 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
                 - beta
