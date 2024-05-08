@@ -9,6 +9,7 @@ import { highlightStyle, pathStyle } from '../utils/styles'
 import { Argv } from 'yargs'
 import { tokenInfo } from '../utils/token-info'
 import { copyright } from '../utils/copyright'
+import { logFeedbackNudge } from './feedback'
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
@@ -130,6 +131,8 @@ export const login = async ({
   console.log(`\n${chalk.green('Great!')} You've successfully logged in!`)
 
   await tokenInfo()
+
+  logFeedbackNudge()
 
   return token
 }
