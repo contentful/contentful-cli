@@ -17,7 +17,7 @@ export const builder = (yargs: Argv) =>
       ].join('\n')
     )
 
-export const feedback = () => {
+export const feedback = async () => {
   open('https://87dc93gvoy0.typeform.com/to/d1RgWfZX')
 }
 
