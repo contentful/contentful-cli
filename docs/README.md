@@ -7,6 +7,7 @@ Commands:
   config        Manage and list your configs
   content-type  Manage and list your space content types           [aliases: ct]
   extension     Manage and list your extensions
+  feedback      Send feedback to Contentful
   init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
