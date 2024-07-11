@@ -54,6 +54,18 @@ export const builder = (yargs: Argv) => {
       type: 'boolean',
       default: false
     })
+    .option('skip-asset-updates', {
+      describe:
+        'Skips asset updates. Skips updating existing assets, only new ones are created. Useful for incremental imports',
+      type: 'boolean',
+      default: false
+    })
+    .option('skip-content-updates', {
+      describe:
+        'Skips content updates. Skips updating existing content, only new content are created. Useful for incremental imports',
+      type: 'boolean',
+      default: false
+    })
     .option('update', {
       describe: 'Update entries if they already exist',
       type: 'boolean',
@@ -117,6 +129,8 @@ interface ImportSpaceProps {
   header?: string
   proxy?: string
   content?: object
+  skipAssetUpdates: boolean
+  skipContentUpdates: boolean
 }
 
 interface Options {
@@ -125,6 +139,8 @@ interface Options {
   managementApplication: string
   managementFeature: string
   managementToken?: string
+  skipAssetUpdates: boolean
+  skipContentUpdates: boolean
   host?: string
   headers: string
   proxy?: string
@@ -136,7 +152,7 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     warning('The --update option has been deprecated and will be ignored.')
   }
 
-  const { context, feature = 'space-import' } = argv
+  const { context, skipAssetUpdates, skipContentUpdates, feature = 'space-import' } = argv
   const {
     managementToken,
     activeSpaceId,
@@ -152,6 +168,8 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     environmentId: activeEnvironmentId,
     managementApplication: `contentful.cli/${version}`,
     managementFeature: feature,
+    skipAssetUpdates,
+    skipContentUpdates,
     managementToken,
     host,
     headers: getHeadersFromOption(argv.header)
