@@ -53,6 +53,8 @@ export const getSpace = async (context: any) => {
           ...context,
           activeSpaceId: space.sys.id
         },
+        skipAssetUpdates: false,
+        skipContentUpdates: false,
         content: initialContent
       })
     } else {
