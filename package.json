@@ -49,7 +49,7 @@
     "@types/jest": "^28.1.6",
     "@types/listr": "^0.14.4",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^20.1.2",
+    "@types/node": "^22.3.0",
     "@types/yargs": "^13.0.12",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
