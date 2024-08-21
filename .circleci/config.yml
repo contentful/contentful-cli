@@ -90,7 +90,7 @@ jobs:
       - run: &ref_1
           name: Audit
           command: |
-            npm audit --audit-level=moderate --production
+            npm audit --audit-level=moderate --omit=dev
   audit-and-notify:
     docker: *ref_0
     steps:
