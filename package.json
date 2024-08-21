@@ -83,7 +83,7 @@
     "@contentful/app-action-utils": "^1.2.3",
     "ast-types": "^0.14.2",
     "bluebird": "^3.5.0",
-    "boxen": "^5.1.2",
+    "boxen": "^8.0.1",
     "camelcase": "^6.0.0",
     "chalk": "^4.1.2",
     "cli-highlight": "^2.1.11",
