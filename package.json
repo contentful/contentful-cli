@@ -90,7 +90,7 @@
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
     "contentful-collection": "^0.0.4",
-    "contentful-export": "7.19.156",
+    "contentful-export": "7.19.157",
     "contentful-import": "9.4.61",
     "contentful-management": "^11.0.1",
     "contentful-migration": "^4.21.0",
