@@ -23,7 +23,6 @@ describe('organization export snapshots', () => {
       .code(0)
       .expect(({ stdout }: Result) => {
         const resultText = stdout.trim()
-
         expect(resultText).toMatchSnapshot('help data is incorrect')
       })
       .end(done)
