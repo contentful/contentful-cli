@@ -1,6 +1,7 @@
 import nixt from 'nixt'
 import { join } from 'path'
 const bin = join(__dirname, './../../../../', 'bin')
+const { replaceCopyrightYear } = require('../../util')
 
 const organizationId = process.env.CLI_E2E_ORG_ID
 const org = process.env.CLI_E2E_ORG_ID
@@ -17,12 +18,13 @@ type Result = {
 const cmd = 'organization export'
 
 describe('organization export snapshots', () => {
-  it('shows the help properly', done => {
+  test('should print help message', done => {
     app()
       .run(`${cmd} --help`)
       .code(0)
-      .expect(({ stdout }: Result) => {
-        const resultText = stdout.trim()
+      .expect(result => {
+        const text = result.stdout.trim()
+        const resultText = replaceCopyrightYear(text)
         expect(resultText).toMatchSnapshot('help data is incorrect')
       })
       .end(done)
