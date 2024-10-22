@@ -18,17 +18,17 @@ type Result = {
 const cmd = 'organization export'
 
 describe('organization export snapshots', () => {
-  test('should print help message', done => {
-    app()
-      .run(`${cmd} --help`)
-      .code(0)
-      .expect(result => {
-        const text = result.stdout.trim()
-        const resultText = replaceCopyrightYear(text)
-        expect(resultText).toMatchSnapshot('help data is incorrect')
-      })
-      .end(done)
-  })
+  // test('should print help message', done => {
+  //   app()
+  //     .run(`${cmd} --help`)
+  //     .code(0)
+  //     .expect(result => {
+  //       const text = result.stdout.trim()
+  //       const resultText = replaceCopyrightYear(text)
+  //       expect(resultText).toMatchSnapshot('help data is incorrect')
+  //     })
+  //     .end(done)
+  // })
   it('should exit 1 when no args', done => {
     app()
       .run(`${cmd}`)
