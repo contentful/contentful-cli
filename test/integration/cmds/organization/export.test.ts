@@ -20,9 +20,10 @@ describe('organization export snapshots', () => {
   it('shows the help properly', done => {
     app()
       .run(`${cmd} --help`)
-      .code(1)
+      .code(0)
       .expect(({ stdout }: Result) => {
         const resultText = stdout.trim()
+
         expect(resultText).toMatchSnapshot('help data is incorrect')
       })
       .end(done)
@@ -33,6 +34,7 @@ describe('organization export snapshots', () => {
       .code(1)
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
+
         expect(resultText).toContain('Usage: contentful organization export')
       })
       .end(done)
