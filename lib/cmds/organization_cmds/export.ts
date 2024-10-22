@@ -84,7 +84,7 @@ async function organizationExport({
           {
             title: 'Exporting Concepts',
             task: async () => {
-              ctx.concepts = await cursorPaginate({
+              ctx.taxonomy.concepts = await cursorPaginate({
                 queryPage: pageUrl =>
                   client.concept.getMany({
                     organizationId,
@@ -96,7 +96,7 @@ async function organizationExport({
           {
             title: 'Exporting Concept Schemes',
             task: async () => {
-              ctx.conceptSchemes = await cursorPaginate({
+              ctx.taxonomy.conceptSchemes = await cursorPaginate({
                 queryPage: pageUrl =>
                   client.conceptScheme.getMany({
                     organizationId,
@@ -110,7 +110,9 @@ async function organizationExport({
     }
   ])
 
-  const result = await tasks.run({ concepts: [], conceptSchemes: [] })
+  const result = await tasks.run({
+    taxonomy: { concepts: [], conceptSchemes: [] }
+  })
 
   if (outputFile) {
     await writeFileP(outputTarget, JSON.stringify(result, null, 2))
