@@ -8,7 +8,7 @@ import { copyright } from '../../utils/copyright'
 import { cursorPaginate } from '../../utils/cursor-pagninate'
 import { ensureDir, getPath, writeFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
-import { success } from '../../utils/log'
+import { success, log } from '../../utils/log'
 
 module.exports.command = 'export'
 
@@ -112,7 +112,12 @@ async function organizationExport({
 
   const result = await tasks.run({ concepts: [], conceptSchemes: [] })
 
-  await writeFileP(outputTarget, JSON.stringify(result, null, 2))
+  if (outputFile) {
+    await writeFileP(outputTarget, JSON.stringify(result, null, 2))
+  } else {
+    log(JSON.stringify(result, null, 2))
+  }
+
   success(`✅ Organization data exported to ${outputTarget}`)
 }
 
