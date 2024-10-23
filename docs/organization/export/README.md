@@ -16,6 +16,9 @@ Options:
   --save-file               Save the export as a json file
                                                          [boolean] [default: true]
 
+  --silent                  Suppress any log output
+                                                         [boolean] [default: false]
+
   --header                  Pass an additional HTTP Header
   --output-file             Output file.
                                         [string] [default: ./migrations/<timestamp>-<organization-id>.json]

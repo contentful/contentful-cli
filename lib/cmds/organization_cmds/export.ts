@@ -44,6 +44,12 @@ module.exports.builder = (yargs: Argv) => {
       type: 'boolean',
       default: true
     })
+    .option('silent', {
+      alias: 'S',
+      type: 'boolean',
+      describe: 'Suppress any log output',
+      default: false
+    })
     .epilog(
       [
         'See more at:',
@@ -59,6 +65,7 @@ interface Params {
   organizationId: string
   outputFile?: string
   saveFile?: boolean
+  silent?: boolean
 }
 
 async function organizationExport({
@@ -66,7 +73,8 @@ async function organizationExport({
   header,
   organizationId,
   outputFile,
-  saveFile
+  saveFile,
+  silent
 }: Params) {
   const { managementToken } = context
 
@@ -83,39 +91,42 @@ async function organizationExport({
   )
   await ensureDir(path.dirname(outputTarget))
 
-  const tasks = new Listr([
-    {
-      title: 'Exporting Organization',
-      task: async ctx => {
-        return new Listr([
-          {
-            title: 'Exporting Concepts',
-            task: async () => {
-              ctx.taxonomy.concepts = await cursorPaginate({
-                queryPage: pageUrl =>
-                  client.concept.getMany({
-                    organizationId,
-                    query: { pageUrl }
-                  })
-              })
+  const tasks = new Listr(
+    [
+      {
+        title: 'Exporting Organization',
+        task: async ctx => {
+          return new Listr([
+            {
+              title: 'Exporting Concepts',
+              task: async () => {
+                ctx.taxonomy.concepts = await cursorPaginate({
+                  queryPage: pageUrl =>
+                    client.concept.getMany({
+                      organizationId,
+                      query: { pageUrl }
+                    })
+                })
+              }
+            },
+            {
+              title: 'Exporting Concept Schemes',
+              task: async () => {
+                ctx.taxonomy.conceptSchemes = await cursorPaginate({
+                  queryPage: pageUrl =>
+                    client.conceptScheme.getMany({
+                      organizationId,
+                      query: { pageUrl }
+                    })
+                })
+              }
             }
-          },
-          {
-            title: 'Exporting Concept Schemes',
-            task: async () => {
-              ctx.taxonomy.conceptSchemes = await cursorPaginate({
-                queryPage: pageUrl =>
-                  client.conceptScheme.getMany({
-                    organizationId,
-                    query: { pageUrl }
-                  })
-              })
-            }
-          }
-        ])
+          ])
+        }
       }
-    }
-  ])
+    ],
+    { renderer: silent ? 'silent' : 'default' }
+  )
 
   const result = await tasks.run({
     taxonomy: { concepts: [], conceptSchemes: [] }
@@ -127,7 +138,7 @@ async function organizationExport({
     log(JSON.stringify(result, null, 2))
   }
 
-  success(`✅ Organization data exported to ${outputTarget}`)
+  !silent && success(`✅ Organization data exported to ${outputTarget}`)
 }
 
 module.exports.organizationExport = organizationExport

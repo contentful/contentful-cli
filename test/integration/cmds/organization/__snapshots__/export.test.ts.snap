@@ -14,6 +14,7 @@ Options:
                                                                         [string]
   --save-file               Save the export as a json file
                                                        [boolean] [default: true]
+  --silent, -S              suppress any log output   [boolean] [default: false]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/organization/expor
