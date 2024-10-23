@@ -68,4 +68,20 @@ describe('organization export snapshots', () => {
       })
       .end(done)
   })
+  it('should suppress any log output when silent is true', done => {
+    app()
+      .run(`${cmd} --organization-id ${organizationId} --silent=true`)
+      .code(0)
+      .expect(({ stdout }: Result) => {
+        const resultText = stdout.trim()
+
+        expect(resultText).not.toContain('Exporting Concepts')
+        expect(resultText).not.toContain('Exporting Concepts')
+        expect(resultText).not.toContain('Exporting Concept Schemes')
+        expect(resultText).not.toContain('Organization data exported to')
+        expect(resultText).not.toContain('concepts')
+        expect(resultText).not.toContain('conceptSchemes')
+      })
+      .end(done)
+  })
 })
