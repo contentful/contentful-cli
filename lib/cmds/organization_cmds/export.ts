@@ -39,6 +39,11 @@ module.exports.builder = (yargs: Argv) => {
       describe:
         'Output file. It defaults to ./migrations/<timestamp>-<organization-id>.json'
     })
+    .option('save-file', {
+      describe: 'Save the export as a json file',
+      type: 'boolean',
+      default: true
+    })
     .epilog(
       [
         'See more at:',
@@ -53,13 +58,15 @@ interface Params {
   header?: string
   organizationId: string
   outputFile?: string
+  saveFile?: boolean
 }
 
 async function organizationExport({
   context,
   header,
   organizationId,
-  outputFile
+  outputFile,
+  saveFile
 }: Params) {
   const { managementToken } = context
 
@@ -114,7 +121,7 @@ async function organizationExport({
     taxonomy: { concepts: [], conceptSchemes: [] }
   })
 
-  if (outputFile) {
+  if (saveFile) {
     await writeFileP(outputTarget, JSON.stringify(result, null, 2))
   } else {
     log(JSON.stringify(result, null, 2))
