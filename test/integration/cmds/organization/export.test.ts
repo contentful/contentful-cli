@@ -54,7 +54,7 @@ describe('organization export snapshots', () => {
   })
   it('should return concepts / concepts scheme', done => {
     app()
-      .run(`${cmd} --organization-id ${organizationId}`)
+      .run(`${cmd} --organization-id ${organizationId} --save-file=false`)
       .code(0)
       .expect(({ stdout }: Result) => {
         const resultText = stdout.trim()

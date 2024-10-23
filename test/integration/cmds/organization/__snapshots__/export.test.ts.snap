@@ -12,6 +12,8 @@ Options:
   --output-file, -o         Output file. It defaults to
                             ./migrations/<timestamp>-<organization-id>.json
                                                                         [string]
+  --save-file               Save the export as a json file
+                                                       [boolean] [default: true]
 
 See more at:
 https://github.com/contentful/contentful-cli/tree/master/docs/organization/expor
