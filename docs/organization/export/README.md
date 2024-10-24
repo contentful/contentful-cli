@@ -7,7 +7,7 @@ This command helps you export organization data to a json file
 ```
 contentful organization export
 
-export a space data to a json file
+export an organization's data to a json file
 
 Options:
   -h, --help                Show help                                    [boolean]

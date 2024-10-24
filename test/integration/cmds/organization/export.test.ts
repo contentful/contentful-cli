@@ -17,7 +17,7 @@ type Result = {
 
 const cmd = 'organization export'
 
-describe('organization export snapshots', () => {
+describe('organization export', () => {
   test('should print help message', done => {
     app()
       .run(`${cmd} --help`)
