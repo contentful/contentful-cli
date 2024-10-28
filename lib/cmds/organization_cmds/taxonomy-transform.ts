@@ -9,7 +9,12 @@ import { cursorPaginate } from '../../utils/cursor-pagninate'
 import { ensureDir, getPath, readFileP, writeFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
 import { success, log } from '../../utils/log'
-import { ConceptProps, ConceptSchemeProps } from 'contentful-management'
+import {
+  ConceptProps,
+  ConceptSchemeProps,
+  CreateConceptProps,
+  CreateConceptSchemeProps
+} from 'contentful-management'
 import * as Papa from 'papaparse'
 
 module.exports.command = 'taxonomy-transform'
@@ -90,9 +95,9 @@ interface TransformContext {
   }
   taxonomy: {
     // the current contentful state for concepts
-    concepts: Array<ConceptProps>
+    concepts: Array<ConceptProps | CreateConceptProps>
     // the current contentful state for concept schemes
-    conceptSchemes: Array<ConceptSchemeProps>
+    conceptSchemes: Array<ConceptSchemeProps | CreateConceptSchemeProps>
     // adds a concept
     addConcept: (concept: Omit<ConceptProps, 'sys'>, id?: string) => void
     // updates a concept
@@ -125,26 +130,34 @@ const transformContext: TransformContext = {
 }
 
 transformContext.taxonomy.addConcept = (concept, id) => {
-  transformContext.taxonomy.concepts.push({
-    sys: {
-      id: id || Date.now().toString()
-    } as unknown as ConceptProps['sys'],
-    ...concept
-  })
+  if (id) {
+    transformContext.taxonomy.concepts.push({
+      sys: {
+        id
+      } as unknown as ConceptProps['sys'],
+      ...concept
+    })
+  } else {
+    transformContext.taxonomy.concepts.push(concept)
+  }
 }
 
 transformContext.taxonomy.addConceptScheme = (conceptScheme, id) => {
-  transformContext.taxonomy.conceptSchemes.push({
-    sys: {
-      id: id || Date.now().toString()
-    } as unknown as ConceptSchemeProps['sys'],
-    ...conceptScheme
-  })
+  if (id) {
+    transformContext.taxonomy.conceptSchemes.push({
+      sys: {
+        id
+      } as unknown as ConceptSchemeProps['sys'],
+      ...conceptScheme
+    })
+  } else {
+    transformContext.taxonomy.conceptSchemes.push(conceptScheme)
+  }
 }
 
 transformContext.taxonomy.updateConcept = (concept, id) => {
   const index = transformContext.taxonomy.concepts.findIndex(
-    c => c.sys.id === id
+    c => (c as ConceptProps).sys?.id === id
   )
   if (index !== -1) {
     transformContext.taxonomy.concepts[index] = concept
@@ -153,7 +166,7 @@ transformContext.taxonomy.updateConcept = (concept, id) => {
 
 transformContext.taxonomy.updateConceptScheme = (conceptScheme, id) => {
   const index = transformContext.taxonomy.conceptSchemes.findIndex(
-    c => c.sys.id === id
+    c => (c as ConceptSchemeProps).sys?.id === id
   )
   if (index !== -1) {
     transformContext.taxonomy.conceptSchemes[index] = conceptScheme
@@ -219,9 +232,7 @@ async function taxonomyTransform({
               title: 'Transforming data',
               task: async () => {
                 const filePath = path.resolve(process.cwd(), transformFile)
-                console.log('debug')
                 const transform = await import(filePath)
-                console.log({ transform })
 
                 await transform.default(ctx)
               }
