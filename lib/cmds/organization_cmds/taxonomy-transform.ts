@@ -76,6 +76,233 @@ interface Params {
   silent?: boolean
 }
 
+const defaultLocale = 'en-US'
+
+class Taxonomy {
+  private existingConcepts: Array<Concept>
+  private addedConcepts: Array<Concept>
+  private updatedConcepts: Array<Concept>
+
+  constructor() {
+    this.addedConcepts = []
+    this.updatedConcepts = []
+    this.existingConcepts = []
+  }
+
+  toJson() {
+    return {
+      concepts: [
+        ...this.existingConcepts.map(concept => concept.toJson()),
+        ...this.addedConcepts.map(concept => concept.toJson()),
+        ...this.updatedConcepts.map(concept => concept.toJson())
+      ]
+    }
+  }
+
+  setExistingConcepts(concepts: Array<ConceptProps>) {
+    this.existingConcepts = concepts.map(
+      concept => new Concept(concept.sys.id, concept)
+    )
+  }
+
+  addConcept(
+    id: string,
+    init: Partial<Omit<CreateConceptProps, 'id'>> & {
+      prefLabel: CreateConceptProps['prefLabel']
+    }
+  ) {
+    if (this.existingConcepts.find(concept => concept.toJson().id === id)) {
+      throw new Error(
+        `Concept with id ${id} already exists, use updateConcept instead`
+      )
+    }
+
+    const concept = new Concept(id, init)
+
+    this.addedConcepts.push(concept)
+
+    return concept
+  }
+
+  getConcept(id: string) {
+    const existingConcept = this.existingConcepts.find(
+      concept => concept.toJson().id === id
+    )
+
+    if (!existingConcept) {
+      throw new Error(`Concept with id ${id} does not exist, use addConcept`)
+    }
+
+    this.updatedConcepts.push(existingConcept)
+    return existingConcept
+  }
+}
+
+class Concept {
+  private model: CreateConceptProps & { id: string }
+
+  public constructor(
+    id: string,
+    init: Partial<Omit<CreateConceptProps, 'id'>> & {
+      prefLabel: CreateConceptProps['prefLabel']
+    }
+  ) {
+    this.model = { id, ...init }
+  }
+
+  toJson() {
+    return structuredClone(this.model)
+  }
+
+  setUri(uri: string | null) {
+    this.model.uri = uri
+    return this
+  }
+
+  setDefinition(definition: string | null) {
+    if (!this.model.definition) {
+      this.model.definition = {}
+    }
+    this.model.definition[defaultLocale] = definition
+    return this
+  }
+
+  addAltLabel(altLabel: string) {
+    if (!this.model.altLabels) {
+      this.model.altLabels = { [defaultLocale]: [] }
+    }
+    this.model.altLabels[defaultLocale].push(altLabel)
+    return this
+  }
+
+  removeAltLabel(altLabel: string) {
+    if (this.model.altLabels) {
+      this.model.altLabels[defaultLocale] = this.model.altLabels[
+        defaultLocale
+      ].filter(label => label !== altLabel)
+    }
+    return this
+  }
+
+  addHiddenLabel(hiddenLabel: string) {
+    if (!this.model.hiddenLabels) {
+      this.model.hiddenLabels = { [defaultLocale]: [] }
+    }
+    this.model.hiddenLabels[defaultLocale].push(hiddenLabel)
+    return this
+  }
+
+  removeHiddenLabel(hiddenLabel: string) {
+    if (this.model.hiddenLabels) {
+      this.model.hiddenLabels[defaultLocale] = this.model.hiddenLabels[
+        defaultLocale
+      ].filter(label => label !== hiddenLabel)
+    }
+    return this
+  }
+
+  setEditorialNote(editorialNote: string | null) {
+    if (!this.model.editorialNote) {
+      this.model.editorialNote = {}
+    }
+    this.model.editorialNote[defaultLocale] = editorialNote
+    return this
+  }
+
+  setHistoryNote(historyNote: string | null) {
+    if (!this.model.historyNote) {
+      this.model.historyNote = {}
+    }
+    this.model.historyNote[defaultLocale] = historyNote
+    return this
+  }
+
+  setExample(example: string | null) {
+    if (!this.model.example) {
+      this.model.example = {}
+    }
+    this.model.example[defaultLocale] = example
+    return this
+  }
+
+  setNote(note: string | null) {
+    if (!this.model.note) {
+      this.model.note = {}
+    }
+    this.model.note[defaultLocale] = note
+    return this
+  }
+
+  setScopeNote(scopeNote: string | null) {
+    if (!this.model.scopeNote) {
+      this.model.scopeNote = {}
+    }
+    this.model.scopeNote[defaultLocale] = scopeNote
+    return this
+  }
+
+  addNotation(notation: string) {
+    if (!this.model.notations) {
+      this.model.notations = []
+    }
+    this.model.notations.push(notation)
+    return this
+  }
+
+  removeNotation(notation: string) {
+    if (this.model.notations) {
+      this.model.notations = this.model.notations.filter(n => n !== notation)
+    }
+    return this
+  }
+
+  addBroader(conceptId: string) {
+    if (!this.model.broader) {
+      this.model.broader = []
+    }
+    this.model.broader.push({
+      sys: {
+        id: conceptId,
+        type: 'Link',
+        linkType: 'TaxonomyConcept'
+      }
+    })
+    return this
+  }
+
+  removeBroader(conceptId: string) {
+    if (this.model.broader) {
+      this.model.broader = this.model.broader.filter(
+        concept => concept.sys.id !== conceptId
+      )
+    }
+    return this
+  }
+
+  addRelated(conceptId: string) {
+    if (!this.model.related) {
+      this.model.related = []
+    }
+    this.model.related.push({
+      sys: {
+        id: conceptId,
+        type: 'Link',
+        linkType: 'TaxonomyConcept'
+      }
+    })
+    return this
+  }
+
+  removeRelated(conceptId: string) {
+    if (this.model.related) {
+      this.model.related = this.model.related.filter(
+        concept => concept.sys.id !== conceptId
+      )
+    }
+    return this
+  }
+}
+
 interface TransformContext {
   csv: {
     // parses any CSV to a JSON
@@ -93,23 +320,7 @@ interface TransformContext {
     // reads any file from disc
     readFile: typeof readFileP
   }
-  taxonomy: {
-    // the current contentful state for concepts
-    concepts: Array<ConceptProps | CreateConceptProps>
-    // the current contentful state for concept schemes
-    conceptSchemes: Array<ConceptSchemeProps | CreateConceptSchemeProps>
-    // adds a concept
-    addConcept: (concept: Omit<ConceptProps, 'sys'>, id?: string) => void
-    // updates a concept
-    updateConcept: (concept: ConceptProps, id: string) => void
-    // adds a concept scheme
-    addConceptScheme: (
-      conceptScheme: Omit<ConceptSchemeProps, 'sys'>,
-      id?: string
-    ) => void
-    // updates a concept scheme
-    updateConceptScheme: (conceptScheme: ConceptSchemeProps, id: string) => void
-  }
+  taxonomy: Taxonomy
 }
 
 const transformContext: TransformContext = {
@@ -119,58 +330,7 @@ const transformContext: TransformContext = {
   fs: {
     readFile: readFileP
   },
-  taxonomy: {
-    concepts: [],
-    conceptSchemes: [],
-    addConcept: () => {},
-    updateConcept: () => {},
-    addConceptScheme: () => {},
-    updateConceptScheme: () => {}
-  }
-}
-
-transformContext.taxonomy.addConcept = (concept, id) => {
-  if (id) {
-    transformContext.taxonomy.concepts.push({
-      sys: {
-        id
-      } as unknown as ConceptProps['sys'],
-      ...concept
-    })
-  } else {
-    transformContext.taxonomy.concepts.push(concept)
-  }
-}
-
-transformContext.taxonomy.addConceptScheme = (conceptScheme, id) => {
-  if (id) {
-    transformContext.taxonomy.conceptSchemes.push({
-      sys: {
-        id
-      } as unknown as ConceptSchemeProps['sys'],
-      ...conceptScheme
-    })
-  } else {
-    transformContext.taxonomy.conceptSchemes.push(conceptScheme)
-  }
-}
-
-transformContext.taxonomy.updateConcept = (concept, id) => {
-  const index = transformContext.taxonomy.concepts.findIndex(
-    c => (c as ConceptProps).sys?.id === id
-  )
-  if (index !== -1) {
-    transformContext.taxonomy.concepts[index] = concept
-  }
-}
-
-transformContext.taxonomy.updateConceptScheme = (conceptScheme, id) => {
-  const index = transformContext.taxonomy.conceptSchemes.findIndex(
-    c => (c as ConceptSchemeProps).sys?.id === id
-  )
-  if (index !== -1) {
-    transformContext.taxonomy.conceptSchemes[index] = conceptScheme
-  }
+  taxonomy: new Taxonomy()
 }
 
 async function taxonomyTransform({
@@ -207,19 +367,22 @@ async function taxonomyTransform({
             {
               title: 'Exporting Concepts',
               task: async () => {
-                ctx.taxonomy.concepts = await cursorPaginate({
-                  queryPage: pageUrl =>
-                    client.concept.getMany({
-                      organizationId,
-                      query: { pageUrl }
-                    })
-                })
+                ctx.taxonomy.setExistingConcepts(
+                  await cursorPaginate({
+                    queryPage: pageUrl =>
+                      client.concept.getMany({
+                        organizationId,
+                        query: { pageUrl }
+                      })
+                  })
+                )
               }
             },
             {
               title: 'Exporting Concept Schemes',
               task: async () => {
-                ctx.taxonomy.conceptSchemes = await cursorPaginate({
+                // TODO: add concept schemes
+                await cursorPaginate({
                   queryPage: pageUrl =>
                     client.conceptScheme.getMany({
                       organizationId,
@@ -229,7 +392,7 @@ async function taxonomyTransform({
               }
             },
             {
-              title: 'Transforming data',
+              title: 'Running transform script',
               task: async () => {
                 const filePath = path.resolve(process.cwd(), transformFile)
                 const transform = await import(filePath)
@@ -244,7 +407,9 @@ async function taxonomyTransform({
     { renderer: silent ? 'silent' : 'default' }
   )
 
-  const result = await tasks.run(transformContext)
+  await tasks.run(transformContext)
+
+  const result = transformContext.taxonomy.toJson()
 
   if (saveFile) {
     await writeFileP(outputTarget, JSON.stringify(result, null, 2))
