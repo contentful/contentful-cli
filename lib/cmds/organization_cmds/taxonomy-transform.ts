@@ -78,30 +78,75 @@ interface Params {
 
 const defaultLocale = 'en-US'
 
-class Taxonomy {
-  private existingConcepts: Array<Concept>
-  private addedConcepts: Array<Concept>
-  private updatedConcepts: Array<Concept>
+export class Taxonomy {
+  private concepts: {
+    existing: Array<Concept>
+    added: Array<Concept>
+    updated: Array<Concept>
+  }
+
+  private conceptSchemes: {
+    existing: Array<ConceptScheme>
+    added: Array<ConceptScheme>
+    updated: Array<ConceptScheme>
+  }
 
   constructor() {
-    this.addedConcepts = []
-    this.updatedConcepts = []
-    this.existingConcepts = []
+    this.concepts = {
+      existing: [],
+      added: [],
+      updated: []
+    }
+
+    this.conceptSchemes = {
+      existing: [],
+      added: [],
+      updated: []
+    }
   }
 
   toJson() {
+    const updatedConcepts = this.concepts.updated.map(
+      concept => concept.toJson().id
+    )
+    const updatedConceptsSchemes = this.conceptSchemes.updated.map(
+      conceptScheme => conceptScheme.toJson().id
+    )
+
     return {
       concepts: [
-        ...this.existingConcepts.map(concept => concept.toJson()),
-        ...this.addedConcepts.map(concept => concept.toJson()),
-        ...this.updatedConcepts.map(concept => concept.toJson())
+        ...this.concepts.existing
+          .filter(concept => !updatedConcepts.includes(concept.toJson().id))
+          .map(concept => concept.toJson()),
+        ...this.concepts.added.map(concept => concept.toJson()),
+        ...this.concepts.updated.map(concept => concept.toJson())
+      ],
+      conceptSchemes: [
+        ...this.conceptSchemes.existing
+          .filter(
+            conceptScheme =>
+              !updatedConceptsSchemes.includes(conceptScheme.toJson().id)
+          )
+          .map(conceptScheme => conceptScheme.toJson()),
+        ...this.conceptSchemes.added.map(conceptScheme =>
+          conceptScheme.toJson()
+        ),
+        ...this.conceptSchemes.updated.map(conceptScheme =>
+          conceptScheme.toJson()
+        )
       ]
     }
   }
 
   setExistingConcepts(concepts: Array<ConceptProps>) {
-    this.existingConcepts = concepts.map(
+    this.concepts.existing = concepts.map(
       concept => new Concept(concept.sys.id, concept)
+    )
+  }
+
+  setExistingConceptSchemes(conceptSchemes: Array<ConceptSchemeProps>) {
+    this.conceptSchemes.existing = conceptSchemes.map(
+      conceptScheme => new ConceptScheme(conceptScheme.sys.id, conceptScheme)
     )
   }
 
@@ -111,30 +156,179 @@ class Taxonomy {
       prefLabel: CreateConceptProps['prefLabel']
     }
   ) {
-    if (this.existingConcepts.find(concept => concept.toJson().id === id)) {
-      throw new Error(
-        `Concept with id ${id} already exists, use updateConcept instead`
-      )
+    if (this.concepts.existing.find(concept => concept.toJson().id === id)) {
+      return null
+    }
+
+    if (this.concepts.added.find(concept => concept.toJson().id === id)) {
+      return null
     }
 
     const concept = new Concept(id, init)
 
-    this.addedConcepts.push(concept)
+    this.concepts.added.push(concept)
 
     return concept
   }
 
   getConcept(id: string) {
-    const existingConcept = this.existingConcepts.find(
+    const existingConcept = this.concepts.existing.find(
       concept => concept.toJson().id === id
     )
 
     if (!existingConcept) {
-      throw new Error(`Concept with id ${id} does not exist, use addConcept`)
+      return null
     }
 
-    this.updatedConcepts.push(existingConcept)
+    this.concepts.updated.push(existingConcept)
+
     return existingConcept
+  }
+
+  addConceptScheme(
+    id: string,
+    init: Partial<Omit<CreateConceptSchemeProps, 'id'>> & {
+      prefLabel: CreateConceptSchemeProps['prefLabel']
+    }
+  ) {
+    if (
+      this.conceptSchemes.existing.find(
+        conceptScheme => conceptScheme.toJson().id === id
+      )
+    ) {
+      return null
+    }
+
+    const conceptScheme = new ConceptScheme(id, init)
+
+    this.conceptSchemes.added.push(conceptScheme)
+
+    return conceptScheme
+  }
+
+  getConceptScheme(id: string) {
+    const existingConceptScheme = this.conceptSchemes.existing.find(
+      conceptScheme => conceptScheme.toJson().id === id
+    )
+
+    if (!existingConceptScheme) {
+      return null
+    }
+
+    this.conceptSchemes.updated.push(existingConceptScheme)
+
+    return existingConceptScheme
+  }
+}
+
+class ConceptScheme {
+  private model: CreateConceptSchemeProps & { id: string }
+
+  public constructor(
+    id: string,
+    init: Partial<Omit<CreateConceptSchemeProps, 'id'>> & {
+      prefLabel: CreateConceptSchemeProps['prefLabel']
+    }
+  ) {
+    this.model = { id, ...init }
+  }
+
+  toJson() {
+    return structuredClone(this.model)
+  }
+
+  setUri(uri: string | null) {
+    this.model.uri = uri
+    return this
+  }
+
+  setDefinition(definition: string | null) {
+    if (!this.model.definition) {
+      this.model.definition = {}
+    }
+    this.model.definition[defaultLocale] = definition
+    return this
+  }
+
+  setPrefLabel(prefLabel: string) {
+    if (!this.model.prefLabel) {
+      this.model.prefLabel = {}
+    }
+    this.model.prefLabel[defaultLocale] = prefLabel
+    return this
+  }
+
+  addTopConcept(conceptId: string) {
+    if (!this.model.topConcepts) {
+      this.model.topConcepts = []
+    }
+    this.model.topConcepts.push({
+      sys: {
+        id: conceptId,
+        type: 'Link',
+        linkType: 'TaxonomyConcept'
+      }
+    })
+
+    this.model.totalConcepts = (this.model.totalConcepts || 0) + 1
+
+    return this
+  }
+
+  removeTopConcept(conceptId: string) {
+    if (this.model.topConcepts) {
+      this.model.topConcepts = this.model.topConcepts.filter(
+        concept => concept.sys.id !== conceptId
+      )
+    }
+    if (this.model.concepts) {
+      this.model.concepts = this.model.concepts.filter(
+        concept => concept.sys.id !== conceptId
+      )
+    }
+
+    this.model.totalConcepts = this.model.totalConcepts
+      ? this.model.totalConcepts - 1
+      : 0
+
+    return this
+  }
+
+  addConcept(conceptId: string) {
+    if (!this.model.concepts) {
+      this.model.concepts = []
+    }
+    this.model.concepts.push({
+      sys: {
+        id: conceptId,
+        type: 'Link',
+        linkType: 'TaxonomyConcept'
+      }
+    })
+
+    this.model.totalConcepts = (this.model.totalConcepts || 0) + 1
+
+    return this
+  }
+
+  removeConcept(conceptId: string) {
+    if (this.model.concepts) {
+      if (!this.model.concepts.find(concept => concept.sys.id === conceptId)) {
+        throw new Error(
+          `Concept with id ${conceptId} does not exist in Concept Scheme`
+        )
+      }
+
+      this.model.concepts = this.model.concepts.filter(
+        concept => concept.sys.id !== conceptId
+      )
+
+      this.model.totalConcepts = this.model.totalConcepts
+        ? this.model.totalConcepts - 1
+        : 0
+    }
+
+    return this
   }
 }
 
@@ -319,6 +513,7 @@ interface TransformContext {
   fs: {
     // reads any file from disc
     readFile: typeof readFileP
+    cwd: typeof process.cwd
   }
   taxonomy: Taxonomy
 }
@@ -328,7 +523,8 @@ const transformContext: TransformContext = {
     parse: Papa.parse
   },
   fs: {
-    readFile: readFileP
+    readFile: readFileP,
+    cwd: process.cwd
   },
   taxonomy: new Taxonomy()
 }
@@ -381,14 +577,15 @@ async function taxonomyTransform({
             {
               title: 'Exporting Concept Schemes',
               task: async () => {
-                // TODO: add concept schemes
-                await cursorPaginate({
-                  queryPage: pageUrl =>
-                    client.conceptScheme.getMany({
-                      organizationId,
-                      query: { pageUrl }
-                    })
-                })
+                ctx.taxonomy.setExistingConceptSchemes(
+                  await cursorPaginate({
+                    queryPage: pageUrl =>
+                      client.conceptScheme.getMany({
+                        organizationId,
+                        query: { pageUrl }
+                      })
+                  })
+                )
               }
             },
             {
