@@ -175,6 +175,13 @@ export class Taxonomy {
     const existingConcept = this.concepts.existing.find(
       concept => concept.toJson().id === id
     )
+    const addedConcept = this.concepts.added.find(
+      concept => concept.toJson().id === id
+    )
+
+    if (addedConcept) {
+      return addedConcept
+    }
 
     if (!existingConcept) {
       return null
@@ -333,7 +340,7 @@ class ConceptScheme {
 }
 
 class Concept {
-  private model: CreateConceptProps & { id: string }
+  private model: CreateConceptProps & { id: string } & { logs: string }
 
   public constructor(
     id: string,
@@ -341,7 +348,7 @@ class Concept {
       prefLabel: CreateConceptProps['prefLabel']
     }
   ) {
-    this.model = { id, ...init }
+    this.model = { id, ...init, logs: '' }
   }
 
   toJson() {
@@ -351,6 +358,10 @@ class Concept {
   setUri(uri: string | null) {
     this.model.uri = uri
     return this
+  }
+
+  addLogs(txt: string) {
+    this.model.logs += txt
   }
 
   setDefinition(definition: string | null) {
@@ -461,6 +472,7 @@ class Concept {
         linkType: 'TaxonomyConcept'
       }
     })
+
     return this
   }
 
@@ -608,13 +620,13 @@ async function taxonomyTransform({
 
   const result = transformContext.taxonomy.toJson()
 
-  if (saveFile) {
-    await writeFileP(outputTarget, JSON.stringify(result, null, 2))
-  } else {
-    log(JSON.stringify(result, null, 2))
-  }
+  // if (saveFile) {
+  //   await writeFileP(outputTarget, JSON.stringify(result, null, 2))
+  // } else {
+  log(JSON.stringify(result, null, 2))
+  // }
 
-  !silent && success(`✅ Organization data exported to ${outputTarget}`)
+  //!silent && success(`✅ Organization data exported to ${outputTarget}`)
 }
 
 module.exports.taxonomyTransform = taxonomyTransform
