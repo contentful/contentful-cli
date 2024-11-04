@@ -13,7 +13,7 @@ Options:
                             nization-id>-transformed.json               [string]
   --transform-file, -t      File used to transform the taxonomy data
                                                              [string] [required]
-  --save-file               Save the export as a json file
+  --save-file               Save the transformed taxonomies as a json file
                                                        [boolean] [default: true]
   --silent, -S              Suppress any log output   [boolean] [default: false]"
 `;
