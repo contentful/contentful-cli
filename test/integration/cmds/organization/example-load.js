@@ -1,11 +1,12 @@
+const path = require('path')
+
 module.exports = async function ({ csv, taxonomy, fs }) {
   const csvFile = await fs.readFile(
-    fs.cwd() +
-      '/docs/organization/taxonomy-transform/examples/example-spreadsheet.csv'
+    path.resolve(
+      fs.cwd() + '/../test/integration/cmds/organization/example.csv'
+    )
   )
   const { data } = await csv.parse(csvFile.toString(), { header: true })
-
-  console.log(taxonomy.addConcept)
 
   for (const row of data) {
     taxonomy.addConcept(row['Animal Group'], {

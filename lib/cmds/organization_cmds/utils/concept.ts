@@ -1,5 +1,5 @@
 import { CreateConceptProps } from 'contentful-management'
-import { defaultLocale } from './taxonomy-transform'
+import { defaultLocale } from '../taxonomy-transform'
 
 export class Concept {
   private model: CreateConceptProps & { id: string }

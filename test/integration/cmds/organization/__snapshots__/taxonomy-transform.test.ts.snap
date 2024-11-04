@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`organization taxonomy-transform should print help message: taxonomy-transform help data is correct 1`] = `
+"Usage: contentful organization taxonomy-transform
+
+Options:
+  -h, --help                Show help                                  [boolean]
+  --management-token, --mt  Contentful management API token             [string]
+  --organization-id, --oid  ID of Organization with source data
+                                                             [string] [required]
+  --header, -H              Pass an additional HTTP Header              [string]
+  --output-file, -o         Output file. It defaults to ./data/<timestamp>-<orga
+                            nization-id>-transformed.json               [string]
+  --transform-file, -t      File used to transform the taxonomy data
+                                                             [string] [required]
+  --save-file               Save the export as a json file
+                                                       [boolean] [default: true]
+  --silent, -S              Suppress any log output   [boolean] [default: false]"
+`;

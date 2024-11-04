@@ -10,7 +10,7 @@ import { ensureDir, getPath, readFileP, writeFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
 import { success, log } from '../../utils/log'
 import * as Papa from 'papaparse'
-import { Taxonomy } from './taxonomy'
+import { Taxonomy } from './utils/taxonomy'
 
 module.exports.command = 'taxonomy-transform'
 
@@ -49,7 +49,7 @@ module.exports.builder = (yargs: Argv) => {
       demandOption: true
     })
     .option('save-file', {
-      describe: 'Save the export as a json file',
+      describe: 'Save the transformed taxonomies as a json file',
       type: 'boolean',
       default: true
     })
@@ -186,11 +186,12 @@ async function taxonomyTransform({
 
   if (saveFile) {
     await writeFileP(outputTarget, JSON.stringify(result, null, 2))
+    !silent &&
+      success(`✅ Data transformed successfully and saved to ${outputTarget}`)
   } else {
     log(JSON.stringify(result, null, 2))
+    !silent && success(`✅ Data transformed successfully`)
   }
-
-  !silent && success(`✅ Organization data exported to ${outputTarget}`)
 }
 
 module.exports.taxonomyTransform = taxonomyTransform
