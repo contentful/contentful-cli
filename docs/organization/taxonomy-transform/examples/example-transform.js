@@ -23,8 +23,7 @@ module.exports = async function ({ csv, taxonomy, fs }) {
   }
 
   const csvFile = await fs.readFile(
-    fs.cwd() +
-      '/docs/organization/taxonomy-transform/examples/animals-spreadsheet.csv'
+    fs.cwd() + '/docs/organization/taxonomy-transform/examples/example-data.csv'
   )
   const { data } = await csv.parse(csvFile.toString(), { header: false })
   let conceptScheme = null
@@ -38,7 +37,6 @@ module.exports = async function ({ csv, taxonomy, fs }) {
       conceptScheme = taxonomy.addConceptScheme(row[0], {
         prefLabel: row[1]
       })
-      //   conceptSchemeId = row[0]
     } else {
       const notEmptyIndex = row.findIndex((c, index) => c != '' && index > 0)
       let concept = taxonomy.getConcept(row[0])
