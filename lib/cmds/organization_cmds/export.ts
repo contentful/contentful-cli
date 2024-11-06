@@ -37,7 +37,7 @@ module.exports.builder = (yargs: Argv) => {
       alias: 'o',
       type: 'string',
       describe:
-        'Output file. It defaults to ./migrations/<timestamp>-<organization-id>.json'
+        'Output file. It defaults to ./data/<timestamp>-<organization-id>.json'
     })
     .option('save-file', {
       describe: 'Save the export as a json file',

@@ -10,8 +10,7 @@ Options:
                                                              [string] [required]
   --header, -H              Pass an additional HTTP Header              [string]
   --output-file, -o         Output file. It defaults to
-                            ./migrations/<timestamp>-<organization-id>.json
-                                                                        [string]
+                            ./data/<timestamp>-<organization-id>.json   [string]
   --save-file               Save the export as a json file
                                                        [boolean] [default: true]
   --silent, -S              Suppress any log output   [boolean] [default: false]
