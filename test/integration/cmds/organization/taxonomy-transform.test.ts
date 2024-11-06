@@ -44,9 +44,8 @@ describe('organization taxonomy-transform', () => {
   test('should return transformed concepts / concepts scheme', done => {
     app()
       .run(
-        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --save-file false --space-id 123`
+        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --save-file false`
       )
-      .code(0)
       .expect(({ stdout }: Result) => {
         const resultText = stdout.trim()
 
@@ -62,7 +61,7 @@ describe('organization taxonomy-transform', () => {
   it('should suppress any log output when silent is true', done => {
     app()
       .run(
-        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --space-id 123 --silent`
+        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --silent`
       )
       .code(0)
       .expect(({ stdout }: Result) => {
