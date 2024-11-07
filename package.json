@@ -92,7 +92,7 @@
     "command-exists": "^1.2.7",
     "contentful-collection": "^0.0.4",
     "contentful-export": "7.19.159",
-    "contentful-import": "9.4.65",
+    "contentful-import": "9.4.67",
     "contentful-management": "^11.36.1",
     "contentful-migration": "^4.21.0",
     "emojic": "^1.1.11",
