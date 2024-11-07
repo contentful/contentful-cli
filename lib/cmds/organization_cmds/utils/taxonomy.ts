@@ -80,11 +80,11 @@ export class Taxonomy {
       concept => concept.toJson().id === id
     )
 
-    if (!existingConcept || !addedConcept) {
+    if (!existingConcept && !addedConcept) {
       return null
     }
 
-    if (existingConcept) {
+    if (existingConcept && !addedConcept) {
       this.concepts.upsert.push(existingConcept)
     }
 
@@ -105,6 +105,14 @@ export class Taxonomy {
       return null
     }
 
+    if (
+      this.conceptSchemes.upsert.find(
+        conceptScheme => conceptScheme.toJson().id === id
+      )
+    ) {
+      return null
+    }
+
     const conceptScheme = new ConceptScheme(id, init)
 
     this.conceptSchemes.upsert.push(conceptScheme)
@@ -117,12 +125,18 @@ export class Taxonomy {
       conceptScheme => conceptScheme.toJson().id === id
     )
 
-    if (!existingConceptScheme) {
+    const addedConceptScheme = this.conceptSchemes.upsert.find(
+      conceptScheme => conceptScheme.toJson().id === id
+    )
+
+    if (!existingConceptScheme && !addedConceptScheme) {
       return null
     }
 
-    this.conceptSchemes.upsert.push(existingConceptScheme)
+    if (existingConceptScheme && !addedConceptScheme) {
+      this.conceptSchemes.upsert.push(existingConceptScheme)
+    }
 
-    return existingConceptScheme
+    return addedConceptScheme || existingConceptScheme
   }
 }

@@ -22,6 +22,14 @@ export class Concept {
     return this
   }
 
+  setPrefLabel(prefLabel: string) {
+    if (!this.model.prefLabel) {
+      this.model.prefLabel = {}
+    }
+    this.model.prefLabel[defaultLocale] = prefLabel
+    return this
+  }
+
   setDefinition(definition: string | null) {
     if (!this.model.definition) {
       this.model.definition = {}

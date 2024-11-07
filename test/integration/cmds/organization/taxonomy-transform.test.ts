@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs'
 import nixt from 'nixt'
 import { join } from 'path'
 const bin = join(__dirname, './../../../../', 'bin')
@@ -61,7 +62,7 @@ describe('organization taxonomy-transform', () => {
   it('should suppress any log output when silent is true', done => {
     app()
       .run(
-        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --silent`
+        `${cmd} --organization-id ${organizationId} -t ../test/integration/cmds/organization/example-load.js --silent -o output.json`
       )
       .code(0)
       .expect(({ stdout }: Result) => {
@@ -72,6 +73,12 @@ describe('organization taxonomy-transform', () => {
         expect(resultText).not.toContain('Running transform script')
         expect(resultText).not.toContain('concepts')
         expect(resultText).not.toContain('conceptSchemes')
+
+        const transformedData = readFileSync(
+          join(__dirname, './../../../../bin/', 'output.json'),
+          'utf8'
+        )
+        expect(transformedData).toMatchSnapshot('transformed data is correct')
       })
       .end(done)
   })

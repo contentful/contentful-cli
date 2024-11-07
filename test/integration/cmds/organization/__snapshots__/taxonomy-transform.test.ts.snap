@@ -11,9 +11,335 @@ Options:
   --header, -H              Pass an additional HTTP Header              [string]
   --output-file, -o         Output file. It defaults to ./data/<timestamp>-<orga
                             nization-id>-transformed.json               [string]
-  --transform-file, -t      File used to transform the taxonomy data
+  --transform-script, -t    Script used to transform the taxonomy data
                                                              [string] [required]
   --save-file               Save the transformed taxonomies as a json file
                                                        [boolean] [default: true]
-  --silent, -S              Suppress any log output   [boolean] [default: false]"
+  --silent, -s              Suppress any log output   [boolean] [default: false]"
+`;
+
+exports[`organization taxonomy-transform should suppress any log output when silent is true: transformed data is correct 1`] = `
+"{
+  \\"concepts\\": [
+    {
+      \\"id\\": \\"Mammals\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Mammals\\"
+      }
+    },
+    {
+      \\"id\\": \\"Carnivores\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Carnivores\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Mammals\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Beagle\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Beagle\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Handling large carnivores, Feeding protocols, Safety procedures\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Carnivores\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Herbivores\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Herbivores\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Mammals\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Elephant\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Elephant\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Large animal handling, Medical care for large mammals\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Herbivores\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Giraffe\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Giraffe\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Giraffe care techniques, Enclosure management\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Herbivores\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Birds\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Birds\\"
+      }
+    },
+    {
+      \\"id\\": \\"Aquatic\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Aquatic\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Birds\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Penguin\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Penguin\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Cold environment handling, Feeding techniques\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Aquatic\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Reptiles\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Reptiles\\"
+      }
+    },
+    {
+      \\"id\\": \\"Venomous\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Venomous\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Reptiles\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Snake\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Snake\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Safe handling, Venom management\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Venomous\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Non-Venomous\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Non-Venomous\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Reptiles\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Tortoise\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Tortoise\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Shell care, Enclosure maintenance\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Non-Venomous\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Fish\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Fish\\"
+      }
+    },
+    {
+      \\"id\\": \\"Freshwater\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Freshwater\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Fish\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Koi\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Koi\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Water quality management, Feeding\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Freshwater\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Amphibians\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Amphibians\\"
+      }
+    },
+    {
+      \\"id\\": \\"Frogs\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Frogs\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Amphibians\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Poison Dart Frog\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Poison Dart Frog\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Safe handling, Enclosure management\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Frogs\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Invertebrates\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Invertebrates\\"
+      }
+    },
+    {
+      \\"id\\": \\"Arthropods\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Arthropods\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Invertebrates\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    },
+    {
+      \\"id\\": \\"Tarantula\\",
+      \\"prefLabel\\": {
+        \\"en-US\\": \\"Tarantula\\"
+      },
+      \\"definition\\": {
+        \\"en-US\\": \\"Tarantulas are hairy spiders\\"
+      },
+      \\"broader\\": [
+        {
+          \\"sys\\": {
+            \\"id\\": \\"Arthropods\\",
+            \\"type\\": \\"Link\\",
+            \\"linkType\\": \\"TaxonomyConcept\\"
+          }
+        }
+      ]
+    }
+  ],
+  \\"conceptSchemes\\": []
+}"
 `;

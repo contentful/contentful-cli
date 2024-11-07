@@ -42,9 +42,9 @@ module.exports.builder = (yargs: Argv) => {
       describe:
         'Output file. It defaults to ./data/<timestamp>-<organization-id>-transformed.json'
     })
-    .option('transform-file', {
+    .option('transform-script', {
       alias: 't',
-      describe: 'File used to transform the taxonomy data',
+      describe: 'Script used to transform the taxonomy data',
       type: 'string',
       demandOption: true
     })
@@ -54,7 +54,7 @@ module.exports.builder = (yargs: Argv) => {
       default: true
     })
     .option('silent', {
-      alias: 'S',
+      alias: 's',
       type: 'boolean',
       describe: 'Suppress any log output',
       default: false
@@ -66,14 +66,14 @@ interface Params {
   header?: string
   organizationId: string
   outputFile?: string
-  transformFile: string
+  transformScript: string
   saveFile?: boolean
   silent?: boolean
 }
 
 export const defaultLocale = 'en-US'
 
-interface TransformContext {
+export interface TransformContext {
   csv: {
     // parses any CSV to a JSON
     parse:
@@ -111,7 +111,7 @@ async function taxonomyTransform({
   organizationId,
   outputFile,
   saveFile,
-  transformFile,
+  transformScript,
   silent
 }: Params) {
   const { managementToken } = context
@@ -167,7 +167,7 @@ async function taxonomyTransform({
             {
               title: 'Running transform script',
               task: async () => {
-                const filePath = path.resolve(process.cwd(), transformFile)
+                const filePath = path.resolve(process.cwd(), transformScript)
                 const transform = await import(filePath)
 
                 await transform.default(ctx)
