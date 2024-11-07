@@ -80,7 +80,7 @@ export class Taxonomy {
       concept => concept.toJson().id === id
     )
 
-    if (!existingConcept || !addedConcept) {
+    if (!existingConcept && !addedConcept) {
       return null
     }
 
