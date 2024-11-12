@@ -4,8 +4,15 @@ import {
   CreateConceptProps,
   CreateConceptSchemeProps
 } from 'contentful-management'
-import { Concept } from './concept'
-import { ConceptScheme } from './concept-scheme'
+import { Concept, CreateConceptWithIdProps } from './concept'
+import { ConceptScheme, CreateConceptSchemeWithIdProps } from './concept-scheme'
+
+export type TaxonomyJson = {
+  taxonomy: {
+    concepts: Array<ConceptProps | CreateConceptWithIdProps>
+    conceptSchemes: Array<ConceptSchemeProps | CreateConceptSchemeWithIdProps>
+  }
+}
 
 export class Taxonomy {
   private concepts: {
@@ -30,12 +37,14 @@ export class Taxonomy {
     }
   }
 
-  toJson() {
+  toJson(): TaxonomyJson {
     return {
-      concepts: this.concepts.upsert.map(concept => concept.toJson()),
-      conceptSchemes: this.conceptSchemes.upsert.map(conceptScheme =>
-        conceptScheme.toJson()
-      )
+      taxonomy: {
+        concepts: this.concepts.upsert.map(concept => concept.toJson()),
+        conceptSchemes: this.conceptSchemes.upsert.map(conceptScheme =>
+          conceptScheme.toJson()
+        )
+      }
     }
   }
 
@@ -57,11 +66,13 @@ export class Taxonomy {
       prefLabel: CreateConceptProps['prefLabel']
     }
   ) {
-    if (this.concepts.existing.find(concept => concept.toJson().id === id)) {
+    if (
+      this.concepts.existing.find(concept => concept.toJson().sys.id === id)
+    ) {
       return null
     }
 
-    if (this.concepts.upsert.find(concept => concept.toJson().id === id)) {
+    if (this.concepts.upsert.find(concept => concept.toJson().sys.id === id)) {
       return null
     }
 
@@ -74,10 +85,10 @@ export class Taxonomy {
 
   getConcept(id: string) {
     const existingConcept = this.concepts.existing.find(
-      concept => concept.toJson().id === id
+      concept => concept.toJson().sys.id === id
     )
     const addedConcept = this.concepts.upsert.find(
-      concept => concept.toJson().id === id
+      concept => concept.toJson().sys.id === id
     )
 
     if (!existingConcept && !addedConcept) {
@@ -99,7 +110,7 @@ export class Taxonomy {
   ) {
     if (
       this.conceptSchemes.existing.find(
-        conceptScheme => conceptScheme.toJson().id === id
+        conceptScheme => conceptScheme.toJson().sys.id === id
       )
     ) {
       return null
@@ -107,7 +118,7 @@ export class Taxonomy {
 
     if (
       this.conceptSchemes.upsert.find(
-        conceptScheme => conceptScheme.toJson().id === id
+        conceptScheme => conceptScheme.toJson().sys.id === id
       )
     ) {
       return null
@@ -122,11 +133,11 @@ export class Taxonomy {
 
   getConceptScheme(id: string) {
     const existingConceptScheme = this.conceptSchemes.existing.find(
-      conceptScheme => conceptScheme.toJson().id === id
+      conceptScheme => conceptScheme.toJson().sys.id === id
     )
 
     const addedConceptScheme = this.conceptSchemes.upsert.find(
-      conceptScheme => conceptScheme.toJson().id === id
+      conceptScheme => conceptScheme.toJson().sys.id === id
     )
 
     if (!existingConceptScheme && !addedConceptScheme) {
