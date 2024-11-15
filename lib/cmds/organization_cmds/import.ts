@@ -131,7 +131,7 @@ async function importCommand(params: OrgImportParams) {
               }
             },
             {
-              title: 'Import taxonomies',
+              title: 'Import taxonomy',
               task: async ctx => {
                 return taxonomyImport(params, ctx)
               }
@@ -146,6 +146,8 @@ async function importCommand(params: OrgImportParams) {
   await tasks
     .run(importContext)
     .catch(err => {
+      importContext.requestQueue.clear()
+
       log.push({
         ts: new Date().toISOString(),
         level: 'error',
