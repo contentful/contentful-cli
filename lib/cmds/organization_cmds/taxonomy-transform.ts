@@ -10,7 +10,7 @@ import { ensureDir, getPath, readFileP, writeFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
 import { success, log } from '../../utils/log'
 import * as Papa from 'papaparse'
-import { Taxonomy } from './utils/taxonomy'
+import { Taxonomy } from './taxonomy/taxonomy'
 
 module.exports.command = 'taxonomy-transform'
 
