@@ -62,9 +62,6 @@ Note: at the time of writing, the unit tests depend on the environment variables
 Simply run:
 
 ```sh
-# runs all three kinds of tests and generates a coverage report
-npm test
-
 # runs Node.js unit tests without coverage.
 npm run test:unit
 
