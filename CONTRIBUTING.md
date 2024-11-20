@@ -34,16 +34,65 @@ This project uses the [Angular JS Commit Message Conventions](https://docs.googl
 
 # Running tests
 
+## Unit tests
+
+*Note: at the time of writing, the unit tests depend on the environment variables the integration tests use (see next heading below). Therefore please ensure they're set before executing the tests.*
+
+Simply run:
+
+```sh
+# runs Node.js unit tests without coverage.
+npm run test:unit
+
+# Run all unit tests
+npm run test:unit:watch
+
+# Or run specific tests
+npx jest test/unit/cmds/* --watch
+```
+
+See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
+
+
+## Integration tests
+
+To run integration tests locally, [talkback](https://github.com/ijpiantanida/talkback) is used as a proxy to record and playback http requests
+
+1. Prepare build in prep for integration tests
+```sh
+npm run build:standalone
+```
+
+1. In another terminal shell run your preferred tests
+```sh
+# Ensure environment variables are set to for the Ecosystem Integration Test Org (`Contentful - Ecosystem (for integration test org)` in password vault)
+export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
+export CLI_E2E_ORG_ID='<organization_id>'
+
+# Run all integration tests
+npm run test:integration
+
+# Or run specific tests
+npm run talkback-proxy
+npx jest test/integration/cmds/space/* --watch
+```
+
+## Updating Snapshots
+
+You might need to update snapshots and it's challenging with the recordings.
+
+Tip: run tests without recordings to update the snapshots.
+
+```
+npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
+```
+
 This project has unit and integration tests. Both of these run on both Node.js and Browser environments.
 
 Both of these test environments are setup to deal with Babel and code transpiling, so there's no need to worry about that
 
-- `npm test` runs all three kinds of tests and generates a coverage report
-- `npm run test:unit` runs Node.js unit tests without coverage.
-
 # Other tasks
 
 - `npm run clean` removes any built files
-- `npm run build` builds node package
 - `npm run build:standalone` build standalone binary version
 - `npm run dev` live rebuild - very useful when working on a feature
