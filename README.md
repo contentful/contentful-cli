@@ -104,51 +104,7 @@ contentful config add --raw-proxy
    npm link
    ```
 
-## :robot: Testing
 
-### Integration tests
-
-To run integration tests locally, you'll need the following:
-
-1. Set environment variables in `.jest/env.js` (can be found in 1Password)
-   ```js
-   process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN = '<cma_auth_token>'
-   process.env.CLI_E2E_ORG_ID = '<organization_id>'
-   ```
-2. Run [talkback](https://github.com/ijpiantanida/talkback) proxy to record and playback http requests
-   ```sh
-   npm run talkback-proxy
-   ```
-3. In another terminal shell run your preferred tests
-   ```sh
-   ## Run all integration tests
-   npm run test:jest
-   ## Or run specific tests
-   npx jest test/integration/cmds/space/* --watch
-   ```
-
-### Unit tests
-
-Simply run:
-
-```sh
-# Run all unit tests
-npm run test:unit:watch
-# Or run specific tests
-npx jest test/unit/cmds/* --watch
-```
-
-See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
-
-### Updating Snapshots
-
-You might need to update snapshots and it's challenging with the recordings.
-
-Tip: run tests without recordings to update the snapshots.
-
-```
-npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
-```
 
 ## :question: Support
 

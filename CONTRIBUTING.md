@@ -34,12 +34,62 @@ This project uses the [Angular JS Commit Message Conventions](https://docs.googl
 
 # Running tests
 
+## Integration tests
+
+To run integration tests locally, you'll need the following:
+
+1. Run [talkback](https://github.com/ijpiantanida/talkback) proxy to record and playback http requests
+```sh
+   npm run talkback-proxy
+```
+1. In another terminal shell run your preferred tests
+```sh
+# Ensure environment variables are set to for the Ecosystem Integration Test Org (`Contentful - Ecosystem (for integration test org)` in password vault)
+export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
+export CLI_E2E_ORG_ID='<organization_id>'
+
+# Run all integration tests
+npm run test:jest
+
+# Or run specific tests
+npx jest test/integration/cmds/space/* --watch
+```
+
+## Unit tests
+
+Note: at the time of writing, the unit tests depend on the environment variables the integration tests use (see previous heading above). Therefore please ensure they're set before executing the tests. 
+
+Simply run:
+
+```sh
+# runs all three kinds of tests and generates a coverage report
+npm test
+
+# runs Node.js unit tests without coverage.
+npm run test:unit
+
+# Run all unit tests
+npm run test:unit:watch
+
+# Or run specific tests
+npx jest test/unit/cmds/* --watch
+```
+
+See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
+
+## Updating Snapshots
+
+You might need to update snapshots and it's challenging with the recordings.
+
+Tip: run tests without recordings to update the snapshots.
+
+```
+npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
+```
+
 This project has unit and integration tests. Both of these run on both Node.js and Browser environments.
 
 Both of these test environments are setup to deal with Babel and code transpiling, so there's no need to worry about that
-
-- `npm test` runs all three kinds of tests and generates a coverage report
-- `npm run test:unit` runs Node.js unit tests without coverage.
 
 # Other tasks
 
