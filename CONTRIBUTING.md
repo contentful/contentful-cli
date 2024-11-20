@@ -36,12 +36,8 @@ This project uses the [Angular JS Commit Message Conventions](https://docs.googl
 
 ## Integration tests
 
-To run integration tests locally, you'll need the following:
+To run integration tests locally, [talkback](https://github.com/ijpiantanida/talkback) is used as a proxy to record and playback http requests
 
-1. Run [talkback](https://github.com/ijpiantanida/talkback) proxy to record and playback http requests
-```sh
-   npm run talkback-proxy
-```
 1. In another terminal shell run your preferred tests
 ```sh
 # Ensure environment variables are set to for the Ecosystem Integration Test Org (`Contentful - Ecosystem (for integration test org)` in password vault)
@@ -49,7 +45,7 @@ export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
 export CLI_E2E_ORG_ID='<organization_id>'
 
 # Run all integration tests
-npm run test:jest
+npm run test:integration
 
 # Or run specific tests
 npx jest test/integration/cmds/space/* --watch
