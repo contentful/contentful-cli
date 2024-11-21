@@ -86,19 +86,19 @@ describe('organization import', () => {
         const [concept0, concept1, concept2, scheme0] = await Promise.all([
           cmaClient.concept.get({
             conceptId: 'concept0',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           }),
           cmaClient.concept.get({
             conceptId: 'concept1',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           }),
           cmaClient.concept.get({
             conceptId: 'concept2',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           }),
           cmaClient.conceptScheme.get({
             conceptSchemeId: 'scheme0',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           })
         ])
 
@@ -131,11 +131,11 @@ describe('organization import', () => {
         const [concept0, scheme0] = await Promise.all([
           cmaClient.concept.get({
             conceptId: 'concept0',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           }),
           cmaClient.conceptScheme.get({
             conceptSchemeId: 'scheme0',
-            organizationId // TODO: this is optional? correct?
+            organizationId
           })
         ])
 
