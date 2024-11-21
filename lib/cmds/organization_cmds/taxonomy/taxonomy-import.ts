@@ -1,17 +1,19 @@
 import Listr from 'listr'
 import { OrgImportContext, OrgImportParams } from '../import'
-import { ConceptProps } from 'contentful-management'
-import { CreateConceptWithIdProps } from './concept'
 import { omit } from 'lodash'
-import {
-  ConceptScheme,
-  ConceptSchemeProps
-} from 'contentful-management/dist/typings/entities/concept-scheme'
+import { ConceptProps, ConceptSchemeProps } from 'contentful-management'
+import { CreateConceptWithIdProps } from './concept'
 import { CreateConceptSchemeWithIdProps } from './concept-scheme'
+
+const entityHasVersion = <T extends { sys: any }>(
+  obj: T
+): obj is T & { sys: { version: number } } => {
+  return 'sys' in obj && 'version' in obj.sys
+}
 
 const taxonomyImport = async (
   params: OrgImportParams,
-  contex: OrgImportContext
+  context: OrgImportContext
 ) => {
   const { organizationId, silent } = params
 
@@ -20,12 +22,12 @@ const taxonomyImport = async (
       {
         title: 'copy context',
         task: async ctx => {
-          ctx = contex
+          ctx = context
         }
       },
       {
         title: 'Create concepts',
-        task: async ctx => {
+        task: async (ctx: OrgImportContext) => {
           const concepts = ctx.data.taxonomy?.concepts || []
 
           if (!concepts.length) {
@@ -35,11 +37,20 @@ const taxonomyImport = async (
           await Promise.all(
             concepts.map((concept: ConceptProps | CreateConceptWithIdProps) =>
               ctx.requestQueue.add(() => {
+                if (entityHasVersion(concept)) {
+                  return ctx.cmaClient.concept.updatePut(
+                    {
+                      organizationId: organizationId,
+                      conceptId: concept.sys.id,
+                      version: concept.sys.version
+                    },
+                    omit(concept, ['broader', 'related'])
+                  )
+                }
                 return ctx.cmaClient.concept.createWithId(
                   {
                     organizationId: organizationId,
-                    conceptId: concept.sys.id,
-                    version: (concept as ConceptProps).sys.version
+                    conceptId: concept.sys.id
                   },
                   omit(concept, ['broader', 'related'])
                 )
@@ -50,81 +61,77 @@ const taxonomyImport = async (
       },
       {
         title: 'Add broader relations',
-        task: async ctx => {
+        task: async (ctx: OrgImportContext) => {
           const concepts = ctx.data.taxonomy?.concepts
 
           if (!concepts) {
             return
           }
 
-          await Promise.all(
-            concepts.map((concept: ConceptProps) => {
-              const { broader } = concept
+          for (const concept of concepts) {
+            const { broader } = concept
 
-              if (!broader || !broader.length) {
-                return
-              }
+            if (!broader || !broader.length) {
+              return
+            }
 
-              const version = concept.sys.version || 1
+            const version = entityHasVersion(concept) ? concept.sys.version : 1
 
-              return ctx.cmaClient.concept.update(
+            await ctx.cmaClient.concept.patch(
+              {
+                organizationId: organizationId,
+                conceptId: concept.sys.id,
+                version
+              },
+              [
                 {
-                  organizationId: organizationId,
-                  conceptId: concept.sys.id,
-                  version
-                },
-                [
-                  {
-                    op: 'add',
-                    path: '/broader',
-                    value: broader
-                  }
-                ]
-              )
-            })
-          )
+                  op: 'add',
+                  path: '/broader',
+                  value: broader
+                }
+              ]
+            )
+          }
         }
       },
       {
         title: 'Add related relations',
-        task: async ctx => {
+        task: async (ctx: OrgImportContext) => {
           const concepts = ctx.data.taxonomy?.concepts
 
           if (!concepts) {
             return
           }
 
-          await Promise.all(
-            concepts.map((concept: ConceptProps) => {
-              const { related } = concept
+          for (const concept of concepts) {
+            const { related } = concept
 
-              if (!related || !related.length) {
-                return
-              }
+            if (!related || !related.length) {
+              return
+            }
 
-              const version = concept.sys.version || 1
+            const version = entityHasVersion(concept) ? concept.sys.version : 1
 
-              return ctx.cmaClient.concept.update(
+            await ctx.cmaClient.concept.patch(
+              {
+                organizationId: organizationId,
+                conceptId: concept.sys.id,
+                version
+              },
+              [
                 {
-                  organizationId: organizationId,
-                  conceptId: concept.sys.id,
-                  version
-                },
-                [
-                  {
-                    op: 'add',
-                    path: '/related',
-                    value: related
-                  }
-                ]
-              )
-            })
-          )
+                  op: 'add',
+                  path: '/related',
+                  value: related
+                }
+              ]
+            )
+          }
         }
       },
       {
         title: 'Create concept schemes',
-        task: async ctx => {
+        task: async (ctx: OrgImportContext) => {
           const conceptSchemes = ctx.data.taxonomy?.conceptSchemes || []
 
           if (!conceptSchemes.length) {
@@ -138,14 +145,25 @@ const taxonomyImport = async (
                   | ConceptSchemeProps
                   | CreateConceptSchemeWithIdProps
               ) =>
-                ctx.requestQueue.add(() =>
-                  ctx.cmaClient.conceptScheme.create(
+                ctx.requestQueue.add(() => {
+                  if (entityHasVersion(conceptScheme)) {
+                    return ctx.cmaClient.conceptScheme.updatePut(
+                      {
+                        organizationId: organizationId,
+                        conceptSchemeId: conceptScheme.sys.id,
+                        version: conceptScheme.sys.version
+                      },
+                      conceptScheme
+                    )
+                  }
+                  return ctx.cmaClient.conceptScheme.createWithId(
                     {
-                      organizationId: organizationId
+                      organizationId: organizationId,
+                      conceptSchemeId: conceptScheme.sys.id
                     },
                     conceptScheme
                   )
-                )
+                })
             )
           )
         }

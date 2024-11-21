@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import Listr from 'listr'
 import { noop } from 'lodash'
-import path from 'path'
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'
 import { createPlainClient } from '../../utils/contentful-clients'
-import { readFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
 import { TaxonomyJson } from './taxonomy/taxonomy'
 import PQueue from 'p-queue'
@@ -16,6 +14,7 @@ import {
 } from 'contentful-batch-libs/dist/logging'
 import taxonomyImport from './taxonomy/taxonomy-import'
 import { PlainClientAPI } from 'contentful-management'
+import { readContentFile } from './utils/read-content-file'
 
 module.exports.command = 'import'
 
@@ -23,7 +22,7 @@ module.exports.desc = 'import organization level entities'
 
 module.exports.builder = (yargs: Argv) => {
   return yargs
-    .usage('Usage: contentful organization taxonomy-transform')
+    .usage('Usage: contentful organization import')
     .option('management-token', {
       alias: 'mt',
       describe: 'Contentful management API token',
@@ -69,24 +68,13 @@ export interface OrgImportParams {
 
 export interface OrgImportContext {
   data: {
-    taxonomy?: TaxonomyJson
+    taxonomy?: TaxonomyJson['taxonomy']
   }
   requestQueue: PQueue
-  cmaClient: PlainClientAPI | null
+  cmaClient: PlainClientAPI
 }
 
 const ONE_SECOND = 1000
-
-const importContext: OrgImportContext = {
-  data: {},
-  requestQueue: new PQueue({
-    concurrency: 1,
-    interval: ONE_SECOND,
-    intervalCap: 1,
-    carryoverConcurrencyCount: true
-  }),
-  cmaClient: null
-}
 
 interface ErrorMessage {
   ts: string
@@ -99,13 +87,24 @@ async function importCommand(params: OrgImportParams) {
     params
   const { managementToken } = context
 
-  importContext.cmaClient = await createPlainClient({
+  const cmaClient = await createPlainClient({
     accessToken: managementToken,
     feature: 'org-import',
     headers: getHeadersFromOption(header),
     throttle: 8,
     logHandler: noop
   })
+
+  const importContext: OrgImportContext = {
+    data: {},
+    requestQueue: new PQueue({
+      concurrency: 1,
+      interval: ONE_SECOND,
+      intervalCap: 1,
+      carryoverConcurrencyCount: true
+    }),
+    cmaClient
+  }
 
   const log: ErrorMessage[] = []
   setupLogging(log)
@@ -119,11 +118,7 @@ async function importCommand(params: OrgImportParams) {
             {
               title: 'Read content file',
               task: async ctx => {
-                const content = await readFileP(
-                  path.resolve(__dirname, contentFile),
-                  'utf8'
-                )
-                const data = JSON.parse(content)
+                const data = await readContentFile(contentFile)
 
                 if (data.taxonomy) {
                   ctx.data.taxonomy = data.taxonomy
@@ -165,7 +160,7 @@ async function importCommand(params: OrgImportParams) {
     })
 }
 
-module.exports.import = importCommand
+module.exports.organizationImport = importCommand
 
 module.exports.handler = handle(importCommand)
 
