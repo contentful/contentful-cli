@@ -1,6 +1,4 @@
 /* 
-    should print help message when correct arguments are not provided
-
     should create concept if doesn't exist
         ensure we check relations too
     
@@ -22,6 +20,11 @@ const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
 
+type Result = {
+  stderr: string
+  stdout: string
+}
+
 const cmd = 'organization import'
 
 describe('organization import', () => {
@@ -32,6 +35,18 @@ describe('organization import', () => {
       .expect(result => {
         const text = result.stdout.trim()
         expect(text).toMatchSnapshot('organization import help data is correct')
+      })
+      .end(done)
+  })
+
+  test.only('should print help message when correct arguments are not provided', done => {
+    app()
+      .run(`${cmd}`)
+      .code(1)
+      .expect(({ stderr }: Result) => {
+        const resultText = stderr.trim()
+
+        expect(resultText).toContain('Usage: contentful organization import')
       })
       .end(done)
   })
