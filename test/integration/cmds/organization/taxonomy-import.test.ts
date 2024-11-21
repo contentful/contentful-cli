@@ -1,17 +1,3 @@
-/* 
-    
-        
-    
-    should create concept-scheme if doesn't exist
-        also check top concepts
-    
-    should update concept if already exists
-        ensure we check relations too
-    
-    should update concept-scheme if already exists
-        also check top concepts
-*/
-
 import nixt from 'nixt'
 import { join } from 'path'
 const bin = join(__dirname, './../../../../', 'bin')
@@ -41,7 +27,7 @@ describe('organization import', () => {
       cmaClient.conceptScheme.delete({
         organizationId,
         conceptSchemeId: 'scheme0',
-        version: 1
+        version: 2
       }),
       cmaClient.concept.delete({
         organizationId,
@@ -56,7 +42,7 @@ describe('organization import', () => {
       cmaClient.concept.delete({
         organizationId,
         conceptId: 'concept0',
-        version: 2
+        version: 3
       })
     ])
   })
@@ -127,7 +113,36 @@ describe('organization import', () => {
 
         done()
       })
+  })
 
-    // TODO: ensure we check relations too
+  test(`should update concept and scheme`, done => {
+    app()
+      .run(
+        `${cmd} --organization-id ${organizationId} --content-file ../test/integration/cmds/organization/example-taxonomy-update.json`
+      )
+      .expect(async ({ stdout }: Result) => {
+        const resultText = stdout.trim()
+
+        expect(resultText).toContain('Create concepts')
+        expect(resultText).toContain('Add concept relations')
+        expect(resultText).toContain('Create concept schemes')
+      })
+      .end(async () => {
+        const [concept0, scheme0] = await Promise.all([
+          cmaClient.concept.get({
+            conceptId: 'concept0',
+            organizationId // TODO: this is optional? correct?
+          }),
+          cmaClient.conceptScheme.get({
+            conceptSchemeId: 'scheme0',
+            organizationId // TODO: this is optional? correct?
+          })
+        ])
+
+        expect(concept0.prefLabel['en-US']).toContain('Updated Animals')
+        expect(scheme0.prefLabel['en-US']).toContain('Updated Scheme')
+
+        done()
+      })
   })
 })
