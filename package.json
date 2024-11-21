@@ -4,7 +4,7 @@
   "description": "Contentful CLI tool",
   "main": "dist/contentful.js",
   "bin": {
-    "contentful": "bin/contentful.js"
+    "ctfl": "bin/contentful.js"
   },
   "repository": {
     "type": "git",
@@ -94,7 +94,7 @@
     "contentful-collection": "^0.0.4",
     "contentful-export": "7.19.165",
     "contentful-import": "9.4.72",
-    "contentful-management": "^11.36.1",
+    "contentful-management": "^11.39.0",
     "contentful-migration": "^4.21.0",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
