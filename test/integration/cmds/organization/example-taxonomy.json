@@ -42,15 +42,7 @@
         "sys": {
           "id": "concept2"
         },
-        "broader": [
-          {
-            "sys": {
-              "id": "concept0",
-              "type": "Link",
-              "linkType": "TaxonomyConcept"
-            }
-          }
-        ],
+        "broader": [],
         "uri": null,
         "prefLabel": {
           "en-US": "Plants"

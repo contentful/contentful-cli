@@ -51,7 +51,7 @@ describe('organization import', () => {
       cmaClient.concept.delete({
         organizationId,
         conceptId: 'concept1',
-        version: 1
+        version: 2
       }),
       cmaClient.concept.delete({
         organizationId,
@@ -87,14 +87,13 @@ describe('organization import', () => {
   test(`should create concepts and scheme if doesn't exist`, done => {
     app()
       .run(
-        `${cmd} --organization-id ${organizationId} --content-file ../../../../../test/integration/cmds/organization/example-taxonomy.json`
+        `${cmd} --organization-id ${organizationId} --content-file ../test/integration/cmds/organization/example-taxonomy.json`
       )
       .expect(async ({ stdout }: Result) => {
         const resultText = stdout.trim()
 
         expect(resultText).toContain('Create concepts')
-        expect(resultText).toContain('Add broader relations')
-        expect(resultText).toContain('Add related relations')
+        expect(resultText).toContain('Add concept relations')
         expect(resultText).toContain('Create concept schemes')
       })
       .end(async () => {
@@ -119,10 +118,13 @@ describe('organization import', () => {
 
         expect(concept0.prefLabel['en-US']).toContain('Animals')
         expect(concept1.prefLabel['en-US']).toContain('Primates')
-        console.log({ concept1 })
-        expect(concept1.broader[0].sys.id).toContain(concept0.sys.id)
         expect(concept2.prefLabel['en-US']).toContain('Plants')
         expect(scheme0.prefLabel['en-US']).toContain('Scheme')
+
+        expect(concept1.broader[0].sys.id).toContain(concept0.sys.id)
+        expect(concept0.related[0].sys.id).toContain(concept2.sys.id)
+        expect(concept2.related[0].sys.id).toContain(concept0.sys.id)
+
         done()
       })
 

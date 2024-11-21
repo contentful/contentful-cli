@@ -60,7 +60,7 @@ const taxonomyImport = async (
         }
       },
       {
-        title: 'Add broader relations',
+        title: 'Add concept relations',
         task: async (ctx: OrgImportContext) => {
           const concepts = ctx.data.taxonomy?.concepts
 
@@ -69,9 +69,27 @@ const taxonomyImport = async (
           }
 
           for (const concept of concepts) {
-            const { broader } = concept
+            const { broader, related } = concept
 
-            if (!broader || !broader.length) {
+            const operations = []
+
+            if (broader && broader.length > 0) {
+              operations.push({
+                op: 'add',
+                path: '/broader',
+                value: broader
+              })
+            }
+
+            if (related && related.length > 0) {
+              operations.push({
+                op: 'add',
+                path: '/related',
+                value: related
+              })
+            }
+
+            if (!operations.length) {
               return
             }
 
@@ -83,48 +101,7 @@ const taxonomyImport = async (
                 conceptId: concept.sys.id,
                 version
               },
-              [
-                {
-                  op: 'add',
-                  path: '/broader',
-                  value: broader
-                }
-              ]
-            )
-          }
-        }
-      },
-      {
-        title: 'Add related relations',
-        task: async (ctx: OrgImportContext) => {
-          const concepts = ctx.data.taxonomy?.concepts
-
-          if (!concepts) {
-            return
-          }
-
-          for (const concept of concepts) {
-            const { related } = concept
-
-            if (!related || !related.length) {
-              return
-            }
-
-            const version = entityHasVersion(concept) ? concept.sys.version : 1
-
-            await ctx.cmaClient.concept.patch(
-              {
-                organizationId: organizationId,
-                conceptId: concept.sys.id,
-                version
-              },
-              [
-                {
-                  op: 'add',
-                  path: '/related',
-                  value: related
-                }
-              ]
+              operations as any[]
             )
           }
         }
