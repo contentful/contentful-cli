@@ -1,4 +1,4 @@
-import { CollectionProp, ConceptProps } from 'contentful-management'
+import { ConceptProps } from 'contentful-management'
 import organizationExport from '../../../../lib/cmds/organization_cmds/export'
 import { createPlainClient } from '../../../../lib/utils/contentful-clients'
 
@@ -85,7 +85,7 @@ afterEach(() => {
   mockCreatePlainClient.mockClear()
 })
 
-test.only('initializes client', async () => {
+test('initializes client', async () => {
   await organizationExport({
     context: {
       managementToken: 'managementToken'
