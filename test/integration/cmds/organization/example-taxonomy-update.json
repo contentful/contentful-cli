@@ -1,0 +1,28 @@
+{
+  "taxonomy": {
+    "concepts": [
+      {
+        "sys": {
+          "id": "concept0",
+          "version": 2
+        },
+        "uri": null,
+        "prefLabel": {
+          "en-US": "Updated Animals"
+        }
+      }
+    ],
+    "conceptSchemes": [
+      {
+        "sys": {
+          "id": "scheme0",
+          "version": 1
+        },
+        "uri": null,
+        "prefLabel": {
+          "en-US": "Updated Scheme"
+        }
+      }
+    ]
+  }
+}

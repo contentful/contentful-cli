@@ -194,3 +194,6 @@ contentful-import-error-log-*.json
 reports
 
 data/*
+
+# integration test output
+bin/output.json

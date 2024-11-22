@@ -1,8 +1,12 @@
 import { CreateConceptProps } from 'contentful-management'
 import { defaultLocale } from '../taxonomy-transform'
 
+export type CreateConceptWithIdProps = CreateConceptProps & {
+  sys: { id: string }
+}
+
 export class Concept {
-  private model: CreateConceptProps & { id: string }
+  private model: CreateConceptWithIdProps
 
   public constructor(
     id: string,
@@ -10,7 +14,7 @@ export class Concept {
       prefLabel: CreateConceptProps['prefLabel']
     }
   ) {
-    this.model = { id, ...init }
+    this.model = { sys: { id }, ...init }
   }
 
   toJson() {

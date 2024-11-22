@@ -1,0 +1,103 @@
+{
+  "taxonomy": {
+    "concepts": [
+      {
+        "sys": {
+          "id": "concept0"
+        },
+        "broader": [],
+        "related": [
+          {
+            "sys": {
+              "id": "concept2",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          }
+        ],
+        "uri": null,
+        "prefLabel": {
+          "en-US": "Animals"
+        }
+      },
+      {
+        "sys": {
+          "id": "concept1"
+        },
+        "broader": [
+          {
+            "sys": {
+              "id": "concept0",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          }
+        ],
+        "uri": "http://www.wikidata.org/entity/Q3665646",
+        "prefLabel": {
+          "en-US": "Primates"
+        }
+      },
+      {
+        "sys": {
+          "id": "concept2"
+        },
+        "broader": [],
+        "uri": null,
+        "prefLabel": {
+          "en-US": "Plants"
+        }
+      }
+    ],
+    "conceptSchemes": [
+      {
+        "sys": {
+          "id": "scheme0"
+        },
+        "uri": null,
+        "prefLabel": {
+          "en-US": "Scheme"
+        },
+        "topConcepts": [
+          {
+            "sys": {
+              "id": "concept0",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          },
+          {
+            "sys": {
+              "id": "concept2",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          }
+        ],
+        "concepts": [
+          {
+            "sys": {
+              "id": "concept0",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          },
+          {
+            "sys": {
+              "id": "concept1",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          },
+          {
+            "sys": {
+              "id": "concept2",
+              "type": "Link",
+              "linkType": "TaxonomyConcept"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
