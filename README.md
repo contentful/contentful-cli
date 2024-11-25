@@ -73,10 +73,10 @@ When multiple proxy configurations exists, precedence is taken in this form:
 You can override the host configuration in your `.contentfulrc.json` via:
 
 ```sh
-contentful config add --host api.eu.contentful.com
+contentful config add --host api.eu.contentful.com --host-delivery cdn.eu.contentful.com
 ```
 
-Then any subsequent command will use the EU host. E.g. `contentful login` will log you in to your EU Contentful instance.
+Then any subsequent command will use the EU hosts. E.g. `contentful login` will log you in to your EU Contentful instance.
 
 ## :rescue_worker_helmet: Troubleshooting
 
