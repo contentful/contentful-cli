@@ -46,6 +46,9 @@ export class ConceptScheme {
     if (!this.model.topConcepts) {
       this.model.topConcepts = []
     }
+    if (this.model.topConcepts.find(concept => concept.sys.id === conceptId)) {
+      return this
+    }
     this.model.topConcepts.push({
       sys: {
         id: conceptId,
@@ -81,6 +84,9 @@ export class ConceptScheme {
   addConcept(conceptId: string) {
     if (!this.model.concepts) {
       this.model.concepts = []
+    }
+    if (this.model.concepts.find(concept => concept.sys.id === conceptId)) {
+      return this
     }
     this.model.concepts.push({
       sys: {

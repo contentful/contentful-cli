@@ -135,6 +135,9 @@ export class Concept {
     if (!this.model.broader) {
       this.model.broader = []
     }
+    if (this.model.broader.some(concept => concept.sys.id === conceptId)) {
+      return this
+    }
     this.model.broader.push({
       sys: {
         id: conceptId,
@@ -157,6 +160,9 @@ export class Concept {
   addRelated(conceptId: string) {
     if (!this.model.related) {
       this.model.related = []
+    }
+    if (this.model.related.some(concept => concept.sys.id === conceptId)) {
+      return this
     }
     this.model.related.push({
       sys: {

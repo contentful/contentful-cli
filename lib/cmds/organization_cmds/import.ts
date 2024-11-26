@@ -91,14 +91,13 @@ async function importCommand(params: OrgImportParams) {
     accessToken: managementToken,
     feature: 'org-import',
     headers: getHeadersFromOption(header),
-    throttle: 8,
     logHandler: noop
   })
 
   const importContext: OrgImportContext = {
     data: {},
     requestQueue: new PQueue({
-      concurrency: 1,
+      concurrency: 7,
       interval: ONE_SECOND,
       intervalCap: 1,
       carryoverConcurrencyCount: true

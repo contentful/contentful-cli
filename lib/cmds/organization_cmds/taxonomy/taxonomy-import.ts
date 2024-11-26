@@ -90,10 +90,12 @@ const taxonomyImport = async (
             }
 
             if (!operations.length) {
-              return
+              continue
             }
 
-            const version = entityHasVersion(concept) ? concept.sys.version : 1
+            const version = entityHasVersion(concept)
+              ? concept.sys.version + 1
+              : 1
 
             await ctx.cmaClient.concept.patch(
               {
