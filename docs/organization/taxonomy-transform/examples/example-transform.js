@@ -35,22 +35,30 @@ module.exports = async function ({ csv, taxonomy, fs }) {
     //Cocneptscheme
     if (row[1] != '') {
       conceptScheme = taxonomy.addConceptScheme(row[0], {
-        prefLabel: row[1]
+        prefLabel: { 'en-US': row[1] }
       })
+
+      if (!conceptScheme) {
+        conceptScheme = taxonomy.getConceptScheme(row[0])
+      }
     } else {
       const notEmptyIndex = row.findIndex((c, index) => c != '' && index > 0)
       let concept = taxonomy.getConcept(row[0])
 
       if (!concept) {
         concept = taxonomy.addConcept(row[0], {
-          prefLabel: row[notEmptyIndex]
+          prefLabel: { 'en-US': row[notEmptyIndex] }
         })
       }
 
       conceptScheme.addConcept(row[0])
+
       parent = findParent(data, i)
+
       if (parent) {
         concept.addBroader(parent)
+      } else {
+        conceptScheme.addTopConcept(row[0])
       }
     }
   }
