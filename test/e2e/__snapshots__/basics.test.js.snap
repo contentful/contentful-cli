@@ -20,7 +20,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2024 Contentful"
+Copyright 2025 Contentful"
 `;
 
 exports[`should print help message on shortcut 1`] = `
@@ -43,7 +43,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2024 Contentful"
+Copyright 2025 Contentful"
 `;
 
 exports[`should print help message on wrong subcommand 1`] = `
@@ -66,7 +66,7 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2024 Contentful
+Copyright 2025 Contentful
 Please specify a command."
 `;
 
@@ -90,6 +90,6 @@ Options:
   -h, --help     Show help                                             [boolean]
   -v, --version  Show current version                                  [boolean]
 
-Copyright 2024 Contentful
+Copyright 2025 Contentful
 Please specify a command."
 `;
