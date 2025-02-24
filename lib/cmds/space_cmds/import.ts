@@ -54,6 +54,16 @@ export const builder = (yargs: Argv) => {
       type: 'boolean',
       default: false
     })
+    .option('skip-content-updates', {
+      describe: 'Skips updating existing content, only creates new entries.',
+      type: 'boolean',
+      default: false
+    })
+    .option('skip-asset-updates', {
+      describe: 'Skips updating existing assets, only creates new assets.',
+      type: 'boolean',
+      default: false
+    })
     .option('update', {
       describe: 'Update entries if they already exist',
       type: 'boolean',
