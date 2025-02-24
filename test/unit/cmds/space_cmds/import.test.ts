@@ -23,6 +23,8 @@ test('it should pass all args to contentful-import', async () => {
     skipLocales: false,
     host: 'api.contentful.com',
     skipContentPublishing: false,
+    skipContentUpdates: true,
+    skipAssetUpdates: true,
     managementApplication: `contentful.cli/${version}`,
     managementFeature: 'space-import'
   }
@@ -33,7 +35,9 @@ test('it should pass all args to contentful-import', async () => {
     spaceId: 'spaceId',
     environmentId: undefined,
     host: undefined,
-    headers: {}
+    headers: {},
+    skipContentUpdates: true,
+    skipAssetUpdates: true
   }
   expect(contentfulImport.mock.calls[0][0]).toEqual(result)
   expect(contentfulImport).toHaveBeenCalledTimes(1)

@@ -16,6 +16,10 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
+  --skip-content-updates     Skips updating existing content, only creates new
+                             entries.                 [boolean] [default: false]
+  --skip-asset-updates       Skips updating existing assets, only creates new
+                             assets.                  [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
   --host                     Management API host                        [string]
   --proxy                    Proxy configuration in HTTP auth format:
@@ -49,6 +53,10 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
+  --skip-content-updates     Skips updating existing content, only creates new
+                             entries.                 [boolean] [default: false]
+  --skip-asset-updates       Skips updating existing assets, only creates new
+                             assets.                  [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
   --host                     Management API host                        [string]
   --proxy                    Proxy configuration in HTTP auth format:
