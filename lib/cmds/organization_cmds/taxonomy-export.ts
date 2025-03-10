@@ -1,6 +1,6 @@
 import Listr from 'listr'
 import { noop } from 'lodash'
-import path, { format } from 'path'
+import path from 'path'
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'
 import { createPlainClient } from '../../utils/contentful-clients'
@@ -13,7 +13,10 @@ import { ConceptProps, ConceptSchemeProps } from 'contentful-management'
 import { buildTree } from './taxonomy/buildTree'
 
 module.exports.command = 'taxonomy-export'
-module.exports.desc = 'export your taxonomy as a csv file'
+
+module.exports.desc = 'export your taxonomy with different formats'
+
+type ConceptAndChild = ConceptProps & { children: ConceptAndChild[] }
 
 enum ExportTaxonomyFormat {
   JSON = 'json',
@@ -43,18 +46,18 @@ module.exports.builder = (yargs: Argv) => {
       alias: 'o',
       type: 'string',
       describe:
-        'Output file. It defaults to ./data/<timestamp>-<organization-id>.csv'
+        'Output file. It defaults to ./data/<timestamp>-<organization-id>.json'
+    })
+    .option('save-file', {
+      describe: 'Save the export as a json file',
+      type: 'boolean',
+      default: true
     })
     .option('silent', {
       alias: 'S',
       type: 'boolean',
       describe: 'Suppress any log output',
       default: false
-    })
-    .option('save-file', {
-      describe: 'Save the export as a json file',
-      type: 'boolean',
-      default: true
     })
     .option('format', {
       alias: 'F',
@@ -79,12 +82,8 @@ interface Params {
   outputFile?: string
   saveFile?: boolean
   silent?: boolean
-  format?: 'json' | 'csv'
+  format?: ExportTaxonomyFormat
 }
-
-type ConceptAndChild = ConceptProps & { children: ConceptAndChild[] }
-
-const taxonomyTree: Record<string, ConceptAndChild> = {}
 
 async function taxonomyExport({
   context,
@@ -93,9 +92,11 @@ async function taxonomyExport({
   outputFile,
   saveFile,
   silent,
-  format = 'csv'
+  format
 }: Params) {
   const { managementToken } = context
+
+  const taxonomyTree: Record<string, ConceptAndChild> = {}
 
   const client = await createPlainClient({
     accessToken: managementToken,
@@ -232,7 +233,7 @@ async function taxonomyExport({
     }
   }
 
-  !silent && success(`✅ Taxonomy data exported to ${outputTarget}`)
+  !silent && success(`✅ Organization data exported to ${outputTarget}`)
 }
 
 module.exports.taxonomyExport = taxonomyExport

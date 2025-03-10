@@ -1,11 +1,11 @@
 import nixt from 'nixt'
 import { join } from 'path'
 const bin = join(__dirname, './../../../../', 'bin')
-import { createClient, PlainClientAPI } from 'contentful-management'
+const { replaceCopyrightYear } = require('../../util')
 
 const organizationId = process.env.CLI_E2E_ORG_ID
+const org = process.env.CLI_E2E_ORG_ID
 
-const { replaceCopyrightYear } = require('../../util')
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 }
@@ -15,9 +15,9 @@ type Result = {
   stdout: string
 }
 
-const cmd = 'taxonomy export'
+const cmd = 'organization taxonomy-export'
 
-describe.only('taxonomy export', () => {
+describe('organization export', () => {
   test('should print help message', done => {
     app()
       .run(`${cmd} --help`)
@@ -60,9 +60,10 @@ describe.only('taxonomy export', () => {
         const resultText = stdout.trim()
 
         expect(resultText).toContain('Exporting Concepts')
-        expect(resultText).toContain('Exporting Concepts')
         expect(resultText).toContain('Exporting Concept Schemes')
-        expect(resultText).toContain('Taxonomy data exported to')
+        expect(resultText).toContain('Organization data exported to')
+        expect(resultText).toContain('concepts')
+        expect(resultText).toContain('conceptSchemes')
       })
       .end(done)
   })
@@ -74,9 +75,10 @@ describe.only('taxonomy export', () => {
         const resultText = stdout.trim()
 
         expect(resultText).not.toContain('Exporting Concepts')
-        expect(resultText).not.toContain('Exporting Concepts')
         expect(resultText).not.toContain('Exporting Concept Schemes')
-        expect(resultText).not.toContain('Taxonomy data exported to')
+        expect(resultText).not.toContain('Organization data exported to')
+        expect(resultText).not.toContain('concepts')
+        expect(resultText).not.toContain('conceptSchemes')
       })
       .end(done)
   })
