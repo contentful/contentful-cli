@@ -1,6 +1,6 @@
 import Listr from 'listr'
 import { noop } from 'lodash'
-import path from 'path'
+import path, { format } from 'path'
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'
 import { createPlainClient } from '../../utils/contentful-clients'
@@ -14,6 +14,11 @@ import { buildTree } from './taxonomy/buildTree'
 
 module.exports.command = 'taxonomy-export'
 module.exports.desc = 'export your taxonomy as a csv file'
+
+enum ExportTaxonomyFormat {
+  JSON = 'json',
+  CSV = 'csv'
+}
 
 module.exports.builder = (yargs: Argv) => {
   return yargs
@@ -54,8 +59,9 @@ module.exports.builder = (yargs: Argv) => {
     .option('format', {
       alias: 'F',
       type: 'string',
-      describe: 'Suppress any log output',
-      default: 'json'
+      describe: 'format of the export file',
+      default: 'json',
+      choices: Object.values(ExportTaxonomyFormat)
     })
     .epilog(
       [
