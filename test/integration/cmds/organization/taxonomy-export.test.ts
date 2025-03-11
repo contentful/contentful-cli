@@ -36,7 +36,7 @@ describe('organization export', () => {
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
 
-        expect(resultText).toContain('Usage: contentful organization export')
+        expect(resultText).toContain('Usage: contentful taxonomy export')
       })
       .end(done)
   })
@@ -61,7 +61,7 @@ describe('organization export', () => {
 
         expect(resultText).toContain('Exporting Concepts')
         expect(resultText).toContain('Exporting Concept Schemes')
-        expect(resultText).toContain('Organization data exported to')
+        expect(resultText).toContain('Taxonomy data exported to')
         expect(resultText).toContain('concepts')
         expect(resultText).toContain('conceptSchemes')
       })
@@ -76,7 +76,7 @@ describe('organization export', () => {
 
         expect(resultText).not.toContain('Exporting Concepts')
         expect(resultText).not.toContain('Exporting Concept Schemes')
-        expect(resultText).not.toContain('Organization data exported to')
+        expect(resultText).not.toContain('Taxonomy data exported to')
         expect(resultText).not.toContain('concepts')
         expect(resultText).not.toContain('conceptSchemes')
       })

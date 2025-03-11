@@ -10,13 +10,11 @@ import { ensureDir, getPath, writeFileP } from '../../utils/fs'
 import { getHeadersFromOption } from '../../utils/headers'
 import { success, log } from '../../utils/log'
 import { ConceptProps, ConceptSchemeProps } from 'contentful-management'
-import { buildTree } from './taxonomy/buildTree'
+import { buildTree, Nested } from './taxonomy/buildTree'
 
 module.exports.command = 'taxonomy-export'
 
 module.exports.desc = 'export your taxonomy with different formats'
-
-type ConceptAndChild = ConceptProps & { children: ConceptAndChild[] }
 
 enum ExportTaxonomyFormat {
   JSON = 'json',
@@ -25,7 +23,7 @@ enum ExportTaxonomyFormat {
 
 module.exports.builder = (yargs: Argv) => {
   return yargs
-    .usage('Usage: contentful organization export')
+    .usage('Usage: contentful taxonomy export')
     .option('management-token', {
       alias: 'mt',
       describe: 'Contentful management API token',
@@ -96,7 +94,7 @@ async function taxonomyExport({
 }: Params) {
   const { managementToken } = context
 
-  const taxonomyTree: Record<string, ConceptAndChild> = {}
+  const taxonomyTree: Record<string, Nested<ConceptProps>> = {}
 
   const client = await createPlainClient({
     accessToken: managementToken,
@@ -109,16 +107,19 @@ async function taxonomyExport({
   let maxDepth = 1
   const csvExports: string[] = []
 
-  const findAllHeirachy = (taxonomyTree: ConceptAndChild[], depth: number) => {
+  const findAllHeirachy = (
+    taxonomyTree: Nested<ConceptProps>[],
+    depth: number
+  ) => {
     maxDepth = Math.max(maxDepth, depth)
 
-    for (let i = 0; i < taxonomyTree.length; i++) {
+    for (let childIndex = 0; childIndex < taxonomyTree.length; childIndex++) {
       csvExports.push(
-        `${',,'.repeat(depth + 1)}${taxonomyTree[i].sys.id},${
-          taxonomyTree[i].prefLabel['en-US']
+        `${',,'.repeat(depth + 1)}${taxonomyTree[childIndex].sys.id},${
+          taxonomyTree[childIndex].prefLabel['en-US']
         }`
       )
-      findAllHeirachy(taxonomyTree[i].children, depth + 1)
+      findAllHeirachy(taxonomyTree[childIndex].children, depth + 1)
     }
   }
 
@@ -233,7 +234,7 @@ async function taxonomyExport({
     }
   }
 
-  !silent && success(`✅ Organization data exported to ${outputTarget}`)
+  !silent && success(`✅ Taxonomy data exported to ${outputTarget}`)
 }
 
 module.exports.taxonomyExport = taxonomyExport

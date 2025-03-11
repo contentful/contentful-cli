@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`organization export should print help message: help data is correct 1`] = `
-"Usage: contentful organization export
+"Usage: contentful taxonomy export
 
 Options:
   -h, --help                Show help                                  [boolean]
