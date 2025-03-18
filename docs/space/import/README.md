@@ -20,6 +20,14 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
+  --upload-assets            Uses local asset files and uploads them instead of
+                             pointing to the URLs of previously uploaded assets.
+                             Requires assets-directory.
+                                                      [boolean] [default: false]
+  --assets-directory         Path to a directory with an asset export made using
+                             the downloadAssets option to upload those files
+                             instead of pointing to the URLs of previously
+                             uploaded assets. Requires upload-assets.   [string]
   --error-log-file           Full path to the error log file            [string]
   --host                     Management API host
                                         [string] [default: "api.contentful.com"]
