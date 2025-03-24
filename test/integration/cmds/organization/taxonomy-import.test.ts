@@ -27,22 +27,22 @@ describe('organization import', () => {
       cmaClient.conceptScheme.delete({
         organizationId,
         conceptSchemeId: 'scheme0',
-        version: 2
-      }),
-      cmaClient.concept.delete({
-        organizationId,
-        conceptId: 'concept2',
         version: 1
       }),
-      cmaClient.concept.delete({
-        organizationId,
-        conceptId: 'concept1',
-        version: 2
-      }),
+      // cmaClient.concept.delete({
+      //   organizationId,
+      //   conceptId: 'concept2',
+      //   version: 1
+      // }),
+      // cmaClient.concept.delete({
+      //   organizationId,
+      //   conceptId: 'concept1',
+      //   version: 2
+      // }),
       cmaClient.concept.delete({
         organizationId,
         conceptId: 'concept0',
-        version: 3
+        version: 1
       })
     ])
   })
