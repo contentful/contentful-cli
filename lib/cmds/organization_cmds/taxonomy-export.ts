@@ -188,7 +188,7 @@ async function taxonomyExport({
       'Concept scheme id',
       'Concept scheme preferred label'
     ]
-    result.taxonomy.conceptSchemes.map((scheme: ConceptSchemeProps) => {
+    result.taxonomy.conceptSchemes.forEach((scheme: ConceptSchemeProps) => {
       const conceptInSchemeIds = scheme.concepts.map(c => c.sys.id)
 
       const concepts = result.taxonomy.concepts.filter((c: ConceptProps) =>
