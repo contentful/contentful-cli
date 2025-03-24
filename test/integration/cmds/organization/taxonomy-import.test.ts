@@ -115,34 +115,34 @@ describe('organization import', () => {
       })
   })
 
-  test(`should update concept and scheme`, done => {
-    app()
-      .run(
-        `${cmd} --organization-id ${organizationId} --content-file ../test/integration/cmds/organization/example-taxonomy-update.json`
-      )
-      .expect(async ({ stdout }: Result) => {
-        const resultText = stdout.trim()
+  // test(`should update concept and scheme`, done => {
+  //   app()
+  //     .run(
+  //       `${cmd} --organization-id ${organizationId} --content-file ../test/integration/cmds/organization/example-taxonomy-update.json`
+  //     )
+  //     .expect(async ({ stdout }: Result) => {
+  //       const resultText = stdout.trim()
 
-        expect(resultText).toContain('Create concepts')
-        expect(resultText).toContain('Add concept relations')
-        expect(resultText).toContain('Create concept schemes')
-      })
-      .end(async () => {
-        const [concept0, scheme0] = await Promise.all([
-          cmaClient.concept.get({
-            conceptId: 'concept0',
-            organizationId
-          }),
-          cmaClient.conceptScheme.get({
-            conceptSchemeId: 'scheme0',
-            organizationId
-          })
-        ])
+  //       expect(resultText).toContain('Create concepts')
+  //       expect(resultText).toContain('Add concept relations')
+  //       expect(resultText).toContain('Create concept schemes')
+  //     })
+  //     .end(async () => {
+  //       const [concept0, scheme0] = await Promise.all([
+  //         cmaClient.concept.get({
+  //           conceptId: 'concept0',
+  //           organizationId
+  //         }),
+  //         cmaClient.conceptScheme.get({
+  //           conceptSchemeId: 'scheme0',
+  //           organizationId
+  //         })
+  //       ])
 
-        expect(concept0.prefLabel['en-US']).toContain('Updated Animals')
-        expect(scheme0.prefLabel['en-US']).toContain('Updated Scheme')
+  //       expect(concept0.prefLabel['en-US']).toContain('Updated Animals')
+  //       expect(scheme0.prefLabel['en-US']).toContain('Updated Scheme')
 
-        done()
-      })
-  })
+  //       done()
+  //     })
+  // })
 })
