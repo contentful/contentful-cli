@@ -4,7 +4,7 @@
   "description": "Contentful CLI tool",
   "main": "dist/contentful.js",
   "bin": {
-    "ctfl": "bin/contentful.js"
+    "contentful": "bin/contentful.js"
   },
   "repository": {
     "type": "git",
