@@ -49,7 +49,7 @@ describe('organization import', () => {
 
   test(`should create concepts and scheme if doesn't exist`, done => {
     app()
-      .run(`${cmd} --organization-id ${organizationId}`)
+      .run(`${cmd} --organization-id ${organizationId} --silent=false`)
       .expect(async ({ stdout }: Result) => {
         const resultText = stdout.trim()
         console.log(resultText)
