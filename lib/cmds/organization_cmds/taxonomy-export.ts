@@ -1,5 +1,5 @@
 import Listr from 'listr'
-import { noop } from 'lodash'
+import { max, noop } from 'lodash'
 import path from 'path'
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'
@@ -73,6 +73,32 @@ module.exports.builder = (yargs: Argv) => {
     )
 }
 
+export const findAllHeirachyAndMaxDepth = (
+  taxonomyTree: Nested<ConceptProps>[],
+  depth: number,
+  csvExports: string[]
+): number => {
+  let maxDepth = depth
+
+  for (let childIndex = 0; childIndex < taxonomyTree.length; childIndex++) {
+    csvExports.push(
+      `${',,'.repeat(depth + 1)}${taxonomyTree[childIndex].sys.id},${
+        taxonomyTree[childIndex].prefLabel['en-US']
+      }`
+    )
+    maxDepth = Math.max(
+      findAllHeirachyAndMaxDepth(
+        taxonomyTree[childIndex].children,
+        depth + 1,
+        csvExports
+      ),
+      depth
+    )
+  }
+
+  return maxDepth
+}
+
 interface Params {
   context: { managementToken: string }
   header?: string
@@ -106,22 +132,6 @@ async function taxonomyExport({
 
   let maxDepth = 1
   const csvExports: string[] = []
-
-  const findAllHeirachy = (
-    taxonomyTree: Nested<ConceptProps>[],
-    depth: number
-  ) => {
-    maxDepth = Math.max(maxDepth, depth)
-
-    for (let childIndex = 0; childIndex < taxonomyTree.length; childIndex++) {
-      csvExports.push(
-        `${',,'.repeat(depth + 1)}${taxonomyTree[childIndex].sys.id},${
-          taxonomyTree[childIndex].prefLabel['en-US']
-        }`
-      )
-      findAllHeirachy(taxonomyTree[childIndex].children, depth + 1)
-    }
-  }
 
   const outputTarget = getPath(
     outputFile ||
@@ -209,7 +219,10 @@ async function taxonomyExport({
       })
 
       csvExports.push(`${scheme.sys.id},${scheme.prefLabel['en-US']},`)
-      findAllHeirachy(tree, 0)
+      maxDepth = Math.max(
+        findAllHeirachyAndMaxDepth(tree, 0, csvExports),
+        maxDepth
+      )
     })
 
     Array.from(Array(maxDepth).keys()).forEach(d =>

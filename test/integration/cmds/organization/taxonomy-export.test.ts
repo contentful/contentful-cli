@@ -17,7 +17,7 @@ type Result = {
 
 const cmd = 'organization taxonomy-export'
 
-describe('organization export', () => {
+describe.only('organization export', () => {
   test('should print help message', done => {
     app()
       .run(`${cmd} --help`)
