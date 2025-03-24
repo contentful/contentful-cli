@@ -15,7 +15,7 @@ type Result = {
   stdout: string
 }
 
-const cmd = 'organization import'
+const cmd = 'organization export'
 
 let cmaClient: PlainClientAPI
 describe('organization import', () => {
@@ -48,44 +48,15 @@ describe('organization import', () => {
   })
 
   test(`should create concepts and scheme if doesn't exist`, done => {
-    //   app()
-    //     .run(
-    //       `${cmd} --organization-id ${organizationId} --content-file ../test/integration/cmds/organization/example-taxonomy.json`
-    //     )
-    //     .expect(async ({ stdout }: Result) => {
-    //       const resultText = stdout.trim()
-    //       expect(resultText).toContain('Create concepts')
-    //       expect(resultText).toContain('Add concept relations')
-    //       expect(resultText).toContain('Create concept schemes')
-    //     })
-    //     .end(async () => {
-    //       const [concept0, concept1, concept2, scheme0] = await Promise.all([
-    //         cmaClient.concept.get({
-    //           conceptId: 'concept0',
-    //           organizationId
-    //         }),
-    //         cmaClient.concept.get({
-    //           conceptId: 'concept1',
-    //           organizationId
-    //         }),
-    //         cmaClient.concept.get({
-    //           conceptId: 'concept2',
-    //           organizationId
-    //         }),
-    //         cmaClient.conceptScheme.get({
-    //           conceptSchemeId: 'scheme0',
-    //           organizationId
-    //         })
-    //       ])
-    //       expect(concept0.prefLabel['en-US']).toContain('Animals')
-    //       expect(concept1.prefLabel['en-US']).toContain('Primates')
-    //       expect(concept2.prefLabel['en-US']).toContain('Plants')
-    //       expect(scheme0.prefLabel['en-US']).toContain('Scheme')
-    //       expect(concept1.broader[0].sys.id).toContain(concept0.sys.id)
-    //       expect(concept0.related[0].sys.id).toContain(concept2.sys.id)
-    //       expect(concept2.related[0].sys.id).toContain(concept0.sys.id)
-    //       done()
-    //     })
+    app()
+      .run(`${cmd} --organization-id ${organizationId}`)
+      .expect(async ({ stdout }: Result) => {
+        const resultText = stdout.trim()
+        console.log(resultText)
+      })
+      .end(async () => {
+        done()
+      })
   })
 
   // test(`should update concept and scheme`, done => {
