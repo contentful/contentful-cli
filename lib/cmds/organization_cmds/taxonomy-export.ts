@@ -237,7 +237,7 @@ async function taxonomyExport({
         [...[csvExportTitle.join(',')], ...csvExports].join('\n')
       )
     } else {
-      log(JSON.stringify(result, null, 2))
+      log([...[csvExportTitle.join(',')], ...csvExports].join('\n'))
     }
   } else {
     if (saveFile) {
@@ -247,7 +247,7 @@ async function taxonomyExport({
     }
   }
 
-  !silent && success(`✅ Taxonomy data exported to ${outputTarget}`)
+  !silent && saveFile && success(`✅ Taxonomy data exported to ${outputTarget}`)
 }
 
 module.exports.taxonomyExport = taxonomyExport
