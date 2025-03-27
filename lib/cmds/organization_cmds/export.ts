@@ -138,7 +138,9 @@ async function organizationExport({
     log(JSON.stringify(result, null, 2))
   }
 
-  !silent && success(`✅ Organization data exported to ${outputTarget}`)
+  !silent &&
+    saveFile &&
+    success(`✅ Organization data exported to ${outputTarget}`)
 }
 
 module.exports.organizationExport = organizationExport

@@ -15,7 +15,7 @@ type Result = {
   stdout: string
 }
 
-const cmd = 'organization export'
+const cmd = 'organization taxonomy-export'
 
 describe('organization export', () => {
   test('should print help message', done => {
@@ -36,7 +36,7 @@ describe('organization export', () => {
       .expect(({ stderr }: Result) => {
         const resultText = stderr.trim()
 
-        expect(resultText).toContain('Usage: contentful organization export')
+        expect(resultText).toContain('Usage: contentful taxonomy export')
       })
       .end(done)
   })
@@ -60,7 +60,6 @@ describe('organization export', () => {
         const resultText = stdout.trim()
 
         expect(resultText).toContain('Exporting Concepts')
-        expect(resultText).toContain('Exporting Concepts')
         expect(resultText).toContain('Exporting Concept Schemes')
         expect(resultText).toContain('concepts')
         expect(resultText).toContain('conceptSchemes')
@@ -75,9 +74,8 @@ describe('organization export', () => {
         const resultText = stdout.trim()
 
         expect(resultText).not.toContain('Exporting Concepts')
-        expect(resultText).not.toContain('Exporting Concepts')
         expect(resultText).not.toContain('Exporting Concept Schemes')
-        expect(resultText).not.toContain('Organization data exported to')
+        expect(resultText).not.toContain('Taxonomy data exported to')
         expect(resultText).not.toContain('concepts')
         expect(resultText).not.toContain('conceptSchemes')
       })
