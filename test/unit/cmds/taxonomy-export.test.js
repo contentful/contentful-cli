@@ -2,7 +2,7 @@ const {
   buildTree
 } = require('../../../lib/cmds/organization_cmds/taxonomy/buildTree')
 const {
-  findAllHeirachyAndMaxDepth
+  findAllHierarchyAndMaxDepth
 } = require('../../../lib/cmds/organization_cmds/taxonomy-export')
 
 // concept:1 -> concept:2 -> concept:4
@@ -98,10 +98,10 @@ test('buildTree results', async () => {
   expect(tree[0].children[0].children[0].sys.id).toBe('concept4')
 })
 
-test('findAllHeirachyAndMaxDepth results', async () => {
+test('findAllHierarchyAndMaxDepth results', async () => {
   const exportsCsv = []
 
-  const maxDepth = findAllHeirachyAndMaxDepth(tree, 0, exportsCsv)
+  const maxDepth = findAllHierarchyAndMaxDepth(tree, 0, exportsCsv)
   expect(maxDepth).toBe(2)
   expect(exportsCsv[0]).toBe(',,concept1,concept1')
   expect(exportsCsv[1]).toBe(',,,,concept2,concept2')
