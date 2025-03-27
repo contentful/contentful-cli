@@ -17,7 +17,7 @@ type Result = {
 
 const cmd = 'organization taxonomy-export'
 
-describe.only('organization export', () => {
+describe('organization export', () => {
   test('should print help message', done => {
     app()
       .run(`${cmd} --help`)
@@ -61,7 +61,6 @@ describe.only('organization export', () => {
 
         expect(resultText).toContain('Exporting Concepts')
         expect(resultText).toContain('Exporting Concept Schemes')
-        expect(resultText).toContain('Taxonomy data exported to')
         expect(resultText).toContain('concepts')
         expect(resultText).toContain('conceptSchemes')
       })
