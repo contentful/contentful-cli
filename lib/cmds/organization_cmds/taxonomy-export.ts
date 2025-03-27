@@ -73,7 +73,7 @@ module.exports.builder = (yargs: Argv) => {
     )
 }
 
-export const findAllHeirachyAndMaxDepth = (
+export const findAllHierarchyAndMaxDepth = (
   taxonomyTree: Nested<ConceptProps>[],
   depth: number,
   csvExports: string[]
@@ -87,7 +87,7 @@ export const findAllHeirachyAndMaxDepth = (
       }`
     )
     maxDepth = Math.max(
-      findAllHeirachyAndMaxDepth(
+      findAllHierarchyAndMaxDepth(
         taxonomyTree[childIndex].children,
         depth + 1,
         csvExports
@@ -183,12 +183,12 @@ async function taxonomyExport({
     taxonomy: { concepts: [], conceptSchemes: [] }
   })
 
-  result.taxonomy.concepts.map((concept: ConceptProps) => {
+  result.taxonomy.concepts.forEach((concept: ConceptProps) => {
     taxonomyTree[concept.sys.id] = { ...concept, children: [] }
   })
 
-  result.taxonomy.concepts.map((concept: ConceptProps) => {
-    concept.broader.map(broader => {
+  result.taxonomy.concepts.forEach((concept: ConceptProps) => {
+    concept.broader.forEach(broader => {
       taxonomyTree[broader.sys.id].children.push(taxonomyTree[concept.sys.id])
     })
   })
@@ -220,7 +220,7 @@ async function taxonomyExport({
 
       csvExports.push(`${scheme.sys.id},${scheme.prefLabel['en-US']},`)
       maxDepth = Math.max(
-        findAllHeirachyAndMaxDepth(tree, 0, csvExports),
+        findAllHierarchyAndMaxDepth(tree, 0, csvExports),
         maxDepth
       )
     })
