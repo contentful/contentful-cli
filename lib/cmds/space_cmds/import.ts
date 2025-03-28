@@ -64,6 +64,17 @@ export const builder = (yargs: Argv) => {
       type: 'boolean',
       default: false
     })
+    .option('upload-assets', {
+      describe: 'Uses local asset files and uploads them instead of pointing to the URLs of previously uploaded assets. Requires assets-directory',
+      type: 'boolean',
+      default: false
+    })
+    .implies('upload-assets', 'assets-directory')
+    .option('assets-directory', {
+      describe: 'Path to a directory with an asset export made using the downloadAssets option to upload those files instead of pointing to the URLs of previously uploaded assets. Requires upload-assets',
+      type: 'string'
+    })
+    .implies('assets-directory', 'upload-assets')
     .option('update', {
       describe: 'Update entries if they already exist',
       type: 'boolean',

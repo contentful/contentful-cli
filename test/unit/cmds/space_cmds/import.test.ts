@@ -25,6 +25,8 @@ test('it should pass all args to contentful-import', async () => {
     skipContentPublishing: false,
     skipContentUpdates: true,
     skipAssetUpdates: true,
+    uploadAssets: true,
+    assetsDirectory: '.',
     managementApplication: `contentful.cli/${version}`,
     managementFeature: 'space-import'
   }
