@@ -1,16 +1,58 @@
-const yargs = require('yargs')
-const { getContext } = require('../context')
-const config = require('../config')
-const { assertLoggedIn, assertSpaceIdProvided } = require('./assertions')
-const { handleAsyncError: handle } = require('./async')
+import yargs from 'yargs'
+import { getContext } from '../context'
+import config from '../config'
+import { assertLoggedIn, assertSpaceIdProvided } from './assertions'
+import { handleAsyncError as handle } from './async'
 
-module.exports.getCommand = () => {
-  const { fullCommands } = yargs.getContext()
-  const cmd = fullCommands.join(' ')
+interface CommandResult {
+  cmd: string
+}
+
+interface ContextBuildArguments {
+  managementToken?: string
+  spaceId?: string
+  activeSpaceId?: string
+  environmentId?: string
+  activeEnvironmentId?: string
+  insecure?: boolean | string
+  host?: string
+  rawProxy?: boolean
+  proxy?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
+
+interface Context {
+  managementToken?: string
+  activeSpaceId?: string
+  activeEnvironmentId?: string
+  insecure?: boolean
+  host?: string
+  rawProxy?: boolean
+  proxy?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
+
+interface ContextResult {
+  context: Context
+}
+
+interface AssertContextParams extends ContextResult {
+  cmd?: string
+}
+
+export function getCommand(): CommandResult {
+  // Access yargs internal context safely
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const yargsContext = (yargs as any).getContext?.() || { fullCommands: [] }
+  const cmd = yargsContext.fullCommands?.join(' ') || ''
   return { cmd }
 }
 
-module.exports.buildContext = async argv => {
+export async function buildContext(
+  argv: ContextBuildArguments
+): Promise<ContextResult> {
   const {
     managementToken,
     spaceId,
@@ -64,14 +106,20 @@ module.exports.buildContext = async argv => {
   return { context }
 }
 
-module.exports.assertContext = async params => {
+export async function assertContext(
+  params: AssertContextParams
+): Promise<void> {
   const { cmd, context } = params
   const { noAuthNeeded, noSpaceIdNeeded } = config
 
   if (cmd && !noAuthNeeded.includes(cmd)) {
-    handle(assertLoggedIn)(context)
+    // We need to use type assertion to get around TypeScript's type checking
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handle(assertLoggedIn)(context as any)
   }
   if (cmd && !noSpaceIdNeeded.includes(cmd)) {
-    handle(assertSpaceIdProvided)(context)
+    // We need to use type assertion to get around TypeScript's type checking
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handle(assertSpaceIdProvided)(context as any)
   }
 }
