@@ -1,6 +1,10 @@
-const emojic = require('emojic')
+import emojic = require('emojic')
 
-const numberMap = {
+interface NumberMap {
+  [key: string]: string
+}
+
+const numberMap: NumberMap = {
   0: 'zero',
   1: 'one',
   2: 'two',
@@ -13,12 +17,12 @@ const numberMap = {
   9: 'nine'
 }
 
-module.exports.welcomeEmoji = `${emojic.wave} `
-module.exports.successEmoji = `${emojic.sparkles} `
-module.exports.errorEmoji = `${emojic.rotatingLight} `
-module.exports.infoEmoji = `${emojic.bulb} `
+export const welcomeEmoji = `${emojic.wave} `
+export const successEmoji = `${emojic.sparkles} `
+export const errorEmoji = `${emojic.rotatingLight} `
+export const infoEmoji = `${emojic.bulb} `
 
-function generateNumberEmoji(number) {
+export function generateNumberEmoji(number: number): string {
   if (process.platform !== 'darwin') {
     return number.toString()
   }
@@ -26,5 +30,3 @@ function generateNumberEmoji(number) {
     .toString()
     .replace(/\d/g, match => `${emojic[numberMap[match]]} `)
 }
-
-module.exports.generateNumberEmoji = generateNumberEmoji
