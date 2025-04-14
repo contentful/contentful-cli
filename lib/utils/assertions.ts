@@ -1,8 +1,16 @@
-const { getContext } = require('../context')
-const { PreconditionFailedError } = require('./error')
-const { highlightStyle } = require('./styles')
+import { getContext } from '../context'
+import { PreconditionFailedError } from './error'
+import { highlightStyle } from './styles'
 
-async function assertLoggedIn({ managementToken, paramName } = {}) {
+interface AssertLoggedInOptions {
+  managementToken?: string
+  paramName?: string
+}
+
+export async function assertLoggedIn({
+  managementToken,
+  paramName
+}: AssertLoggedInOptions = {}): Promise<void> {
   let noToken = !managementToken
   if (!managementToken) {
     const context = await getContext()
@@ -18,9 +26,15 @@ async function assertLoggedIn({ managementToken, paramName } = {}) {
   }
 }
 
-module.exports.assertLoggedIn = assertLoggedIn
+interface AssertSpaceIdProvidedOptions {
+  spaceId?: string
+  activeSpaceId?: string
+}
 
-async function assertSpaceIdProvided({ spaceId, activeSpaceId } = {}) {
+export async function assertSpaceIdProvided({
+  spaceId,
+  activeSpaceId
+}: AssertSpaceIdProvidedOptions = {}): Promise<void> {
   let noSpaceId = !spaceId && !activeSpaceId
   if (noSpaceId) {
     const context = await getContext()
@@ -34,5 +48,3 @@ async function assertSpaceIdProvided({ spaceId, activeSpaceId } = {}) {
     )
   }
 }
-
-module.exports.assertSpaceIdProvided = assertSpaceIdProvided
