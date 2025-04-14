@@ -1,35 +1,36 @@
-const fs = require('fs')
-const { promisify } = require('util')
-const { isAbsolute, resolve } = require('path')
+import fs from 'fs'
+import { promisify } from 'util'
+import { isAbsolute, resolve } from 'path'
 
 const accessP = promisify(fs.access)
 const mkdirP = promisify(fs.mkdir)
 
-module.exports.writeFileP = promisify(fs.writeFile)
-module.exports.readFileP = promisify(fs.readFile)
+export const writeFileP = promisify(fs.writeFile)
+export const readFileP = promisify(fs.readFile)
 
-module.exports.currentDir = () => process.cwd()
+export const currentDir = (): string => process.cwd()
 
-function getPath(path) {
+export function getPath(path: string): string {
   if (isAbsolute(path)) {
     return path
   }
 
-  return resolve(module.exports.currentDir(), path)
+  return resolve(currentDir(), path)
 }
 
-module.exports.getPath = getPath
+interface NodeError extends Error {
+  code?: string
+}
 
-async function ensureDir(dirPath) {
+export async function ensureDir(dirPath: string): Promise<void> {
   try {
     await accessP(dirPath)
-  } catch (e) {
-    if (e.code !== 'ENOENT') {
+  } catch (e: unknown) {
+    const error = e as NodeError
+    if (error.code !== 'ENOENT') {
       throw e
     }
 
     await mkdirP(dirPath)
   }
 }
-
-module.exports.ensureDir = ensureDir
