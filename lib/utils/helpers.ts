@@ -1,4 +1,9 @@
-module.exports.getId = ({ id, _: args }) => {
+interface GetIdOptions {
+  id?: string
+  _: string[]
+}
+
+export function getId({ id, _: args }: GetIdOptions): string | undefined {
   if (id) {
     return id
   }
