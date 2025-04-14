@@ -1,16 +1,16 @@
-const { marked } = require('marked')
-const chalk = require('chalk')
+import { marked, Renderer } from 'marked'
+import chalk from 'chalk'
 
-const {
+import {
   codeStyle,
   pathStyle,
   headingStyle,
   blockQuoteStyle,
   htmlStyle,
   pathTextStyle
-} = require('./styles')
+} from './styles'
 
-function CustomRenderer() {
+function createCustomRenderer(): Renderer {
   const renderer = new marked.Renderer()
 
   // Block Level Methods
@@ -50,12 +50,12 @@ function CustomRenderer() {
   return renderer
 }
 
-const sanitizeString = (string = '') => {
+const sanitizeString = (string = ''): string => {
   return string.replace(/([^\r\n])(```)(.*)/g, '$1\n```$3\n')
 }
 
-module.exports = string =>
+export default (string?: string): string =>
   marked(sanitizeString(string), {
-    renderer: CustomRenderer(),
+    renderer: createCustomRenderer(),
     smartypants: true
   })
