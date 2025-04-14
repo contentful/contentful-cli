@@ -1,29 +1,35 @@
-function PreconditionFailedError(message) {
-  this.message = message
-  this.stack = Error().stack
+export class PreconditionFailedError extends Error {
+  constructor(message?: string) {
+    super(message)
+    this.name = 'PreconditionFailedError'
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, PreconditionFailedError)
+    }
+  }
 }
 
-module.exports.PreconditionFailedError = PreconditionFailedError
+export class InvalidConfigOptionsError extends Error {
+  constructor(message?: string) {
+    super(message)
+    this.name = 'InvalidConfigOptionsError'
 
-PreconditionFailedError.prototype = Object.create(Error.prototype)
-PreconditionFailedError.prototype.name = 'PreconditionFailedError'
-
-function InvalidConfigOptionsError(message) {
-  this.message = message
-  this.stack = Error().stack
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, InvalidConfigOptionsError)
+    }
+  }
 }
 
-module.exports.InvalidConfigOptionsError = InvalidConfigOptionsError
+export class ValidationError extends Error {
+  constructor(message?: string) {
+    super(message)
+    this.name = 'ValidationError'
 
-InvalidConfigOptionsError.prototype = Object.create(Error.prototype)
-InvalidConfigOptionsError.prototype.name = 'InvalidConfigOptionsError'
-
-function ValidationError(message) {
-  this.message = message
-  this.stack = Error().stack
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ValidationError)
+    }
+  }
 }
-
-module.exports.ValidationError = ValidationError
-
-ValidationError.prototype = Object.create(Error.prototype)
-ValidationError.prototype.name = 'ValidationError'
