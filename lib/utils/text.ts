@@ -1,25 +1,23 @@
-const Table = require('cli-table3')
-const wrapAnsi = require('wrap-ansi')
-const figlet = require('figlet')
-const chalk = require('chalk')
+import Table from 'cli-table3'
+import wrapAnsi from 'wrap-ansi'
+import figlet from 'figlet'
+import chalk from 'chalk'
 
 const MIN_COLUMNS = 40
 const MAX_COLUMNS = process.stdout.columns || 80
 const DEFAULT_COLUMNS = MAX_COLUMNS >= MIN_COLUMNS ? MAX_COLUMNS : MIN_COLUMNS
 
-module.exports.DEFAULT_COLUMNS = DEFAULT_COLUMNS
+export { DEFAULT_COLUMNS }
 
-function wrap(text, columns) {
+export function wrap(text: string, columns?: number): string {
   return wrapAnsi(text, columns || DEFAULT_COLUMNS, {
     trim: false
   })
 }
 
-module.exports.wrap = wrap
-
-function frame(text, inline = false, wrapText = true) {
+export function frame(text: string, inline = false, wrapText = true): string {
   const width = DEFAULT_COLUMNS - 2
-  const options = {
+  const options: Table.TableConstructorOptions = {
     colWidths: [width]
   }
 
@@ -39,26 +37,18 @@ function frame(text, inline = false, wrapText = true) {
   return table.toString()
 }
 
-module.exports.frame = frame
-
-function asciiText(text) {
+export function asciiText(text: string): string {
   if (process.stdout.columns <= 78) {
     return chalk.bold(text)
   }
   return figlet.textSync(text)
 }
 
-module.exports.asciiText = asciiText
-
-function separator(customWidth) {
-  let width = customWidth || MAX_COLUMNS
+export function separator(customWidth?: number): string {
+  const width = customWidth || MAX_COLUMNS
   return chalk.dim(Array.from(Array(width + 1)).join('═'))
 }
 
-module.exports.separator = separator
-
-function indent(text) {
+export function indent(text: string): string {
   return `\n${text}`.replace(/\s*[\n\r]\s*/g, '\n    ')
 }
-
-module.exports.indent = indent
