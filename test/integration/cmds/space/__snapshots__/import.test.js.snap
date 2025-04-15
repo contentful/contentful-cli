@@ -30,6 +30,12 @@ Options:
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
   --header, -H               Pass an additional HTTP Header             [string]
+  --upload-assets            Upload local asset files downloaded via the
+                             --downloadAssets option of the export. Requires
+                             \`assetsDirectory\`        [boolean] [default: false]
+  --assets-directory         Path to a directory with an asset export made using
+                             the --downloadAssets option of the export. Requires
+                             \`uploadAssets\`                             [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
@@ -67,6 +73,12 @@ Options:
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
   --header, -H               Pass an additional HTTP Header             [string]
+  --upload-assets            Upload local asset files downloaded via the
+                             --downloadAssets option of the export. Requires
+                             \`assetsDirectory\`        [boolean] [default: false]
+  --assets-directory         Path to a directory with an asset export made using
+                             the --downloadAssets option of the export. Requires
+                             \`uploadAssets\`                             [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 
