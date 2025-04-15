@@ -1,8 +1,9 @@
 module.exports = {
   testTimeout: 15000,
   transform: {
-    '\\.[jt]sx?$': 'babel-jest'
+    '.[jt]sx?$': 'ts-jest'
   },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   testEnvironment: 'node',
   testEnvironmentOptions: {
     url: 'http://localhost/'
