@@ -1,16 +1,29 @@
-const path = require('path')
-const zlib = require('zlib')
+import path from 'path'
+import zlib from 'zlib'
 
-const axios = require('axios')
-const Listr = require('listr')
-const tar = require('tar')
-const {mkdirp} = require('mkdirp')
+import axios from 'axios'
+import Listr from 'listr'
+import tar from 'tar'
+import { mkdirp } from 'mkdirp'
 
-function getLatestGitHubRelease(repo, destination) {
+interface ReleaseContext {
+  latestReleaseInfo: {
+    tarball_url: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any
+  }
+  latestReleaseZipLocation: string
+  latestReleaseTarballStream: NodeJS.ReadableStream
+}
+
+export function getLatestGitHubRelease(
+  repo: string,
+  destination: string
+): Listr {
   return new Listr([
     {
       title: `Fetching release information of ${repo}`,
-      task: async ctx => {
+      task: async (ctx: ReleaseContext) => {
         const response = await axios({
           url: `https://api.github.com/repos/${repo}/releases/latest`
         })
@@ -19,7 +32,8 @@ function getLatestGitHubRelease(repo, destination) {
     },
     {
       title: `Downloading latest release of ${repo}`,
-      task: async ctx => {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      task: async (ctx: ReleaseContext) => {
         ctx.latestReleaseZipLocation = path.join(
           destination,
           'latest-release.tar.gz'
@@ -33,12 +47,12 @@ function getLatestGitHubRelease(repo, destination) {
     },
     {
       title: `Unpacking latest release of ${repo}`,
-      task: async ctx => {
+      task: async (ctx: ReleaseContext) => {
         await mkdirp(destination)
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
           try {
             ctx.latestReleaseTarballStream
-              .pipe(zlib.Unzip())
+              .pipe(zlib.createUnzip())
               .pipe(
                 new tar.Unpack({
                   cwd: destination,
@@ -55,5 +69,3 @@ function getLatestGitHubRelease(repo, destination) {
     }
   ])
 }
-
-module.exports.getLatestGitHubRelease = getLatestGitHubRelease

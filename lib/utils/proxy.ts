@@ -1,8 +1,20 @@
-const { parse, format } = require('url')
-const { toInteger } = require('lodash')
-const { HttpsProxyAgent } = require('https-proxy-agent')
+import { parse, format } from 'url'
+import { toInteger } from 'lodash'
+import { HttpsProxyAgent } from 'https-proxy-agent'
 
-function serializeAuth({ username, password } = {}) {
+interface Auth {
+  username?: string
+  password?: string
+}
+
+interface ProxyObject {
+  host: string
+  port: number
+  auth?: Auth
+  isHttps?: boolean
+}
+
+function serializeAuth({ username, password }: Auth = {}): string {
   if (!username) {
     return ''
   }
@@ -14,19 +26,19 @@ function serializeAuth({ username, password } = {}) {
   return `${username}:${password}`
 }
 
-function parseAuth(authString) {
+function parseAuth(authString: string | null): Auth {
   // authString may be a falsy value like `null`
   const [username, password] = (authString || '').split(':')
   return { username, password }
 }
 
-function proxyStringToObject(proxyString) {
+export function proxyStringToObject(proxyString: string): ProxyObject {
   if (!proxyString.startsWith('http')) {
     return proxyStringToObject(`http://${proxyString}`)
   }
 
   const {
-    hostname: host,
+    hostname,
     port: portString,
     auth: authString,
     protocol
@@ -35,6 +47,7 @@ function proxyStringToObject(proxyString) {
   const auth = parseAuth(authString)
   const port = toInteger(portString)
   const isHttps = protocol === 'https:'
+  const host = hostname || ''
 
   if (!auth.username) {
     return { host, port, isHttps }
@@ -48,9 +61,7 @@ function proxyStringToObject(proxyString) {
   }
 }
 
-module.exports.proxyStringToObject = proxyStringToObject
-
-function proxyObjectToString(proxyObject) {
+export function proxyObjectToString(proxyObject: ProxyObject): string {
   if (typeof proxyObject !== 'object' || proxyObject.constructor !== Object) {
     throw new Error('Object required')
   }
@@ -58,22 +69,28 @@ function proxyObjectToString(proxyObject) {
   const auth = serializeAuth(authObject)
   const protocol = isHttps ? 'https' : 'http'
 
-  const formatted = format({ protocol, hostname, port, auth })
+  const formatted = format({
+    protocol,
+    hostname,
+    port,
+    auth
+  })
 
   // Ugly fix for Node 6 vs Node 8 behavior
   return formatted.replace(/^\/\//, '')
 }
 
-module.exports.proxyObjectToString = proxyObjectToString
-
-function agentFromProxy(proxy) {
+export function agentFromProxy(proxy: ProxyObject | null): {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  httpsAgent?: any
+} {
   if (!proxy) {
     return {}
   }
 
   const { host, port } = proxy
-  const httpsAgent = new HttpsProxyAgent({ host, port })
+  // HttpsProxyAgent expects a URL string
+  const proxyUrl = `http://${host}:${port}`
+  const httpsAgent = new HttpsProxyAgent(proxyUrl)
   return { httpsAgent }
 }
-
-module.exports.agentFromProxy = agentFromProxy

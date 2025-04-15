@@ -10,14 +10,16 @@
  * getHeadersFromOption(['Accept: Any', 'X-Version: 1'])
  * // -> {Accept: 'Any', 'X-Version': '1'}
  */
-function getHeadersFromOption(value) {
+export function getHeadersFromOption(
+  value?: string | string[]
+): Record<string, string> {
   if (!value) {
     return {}
   }
 
   const values = Array.isArray(value) ? value : [value]
 
-  return values.reduce((headers, value) => {
+  return values.reduce<Record<string, string>>((headers, value) => {
     value = value.trim()
 
     const separatorIndex = value.indexOf(':')
@@ -36,5 +38,3 @@ function getHeadersFromOption(value) {
     }
   }, {})
 }
-
-module.exports.getHeadersFromOption = getHeadersFromOption
