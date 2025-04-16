@@ -26,7 +26,9 @@ test('it should pass all args to contentful-import', async () => {
     skipContentUpdates: true,
     skipAssetUpdates: true,
     managementApplication: `contentful.cli/${version}`,
-    managementFeature: 'space-import'
+    managementFeature: 'space-import',
+    uploadAssets: true,
+    assetsDirectory: 'assets'
   }
   await importSpace(stubArgv)
   const result = {
@@ -37,7 +39,9 @@ test('it should pass all args to contentful-import', async () => {
     host: undefined,
     headers: {},
     skipContentUpdates: true,
-    skipAssetUpdates: true
+    skipAssetUpdates: true,
+    uploadAssets: true,
+    assetsDirectory: 'assets'
   }
   expect(contentfulImport.mock.calls[0][0]).toEqual(result)
   expect(contentfulImport).toHaveBeenCalledTimes(1)

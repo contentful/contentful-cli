@@ -22,7 +22,9 @@ module.exports.desc = 'import organization level entities'
 
 module.exports.builder = (yargs: Argv) => {
   return yargs
-    .usage('Usage: contentful organization import')
+    .usage(
+      'Usage: contentful organization import --content-file <path/to/content-file.json>'
+    )
     .option('management-token', {
       alias: 'mt',
       describe: 'Contentful management API token',
