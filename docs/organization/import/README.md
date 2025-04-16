@@ -28,4 +28,4 @@ contentful organization import --content-file <path/to/content_file.json> --orga
 ## Limitations
 
 - This tool only imports **Taxonomy** entities. Any other Organization level entities will not be imported.
-- For Space scoped entites (Entries, Assets, Apps etc) see [space command](https://github.com/contentful/contentful-cli/blob/main/docs/space/import/README.md)
+- For Space scoped entities (Entries, Assets, Apps etc) see [space command](https://github.com/contentful/contentful-cli/blob/main/docs/space/import/README.md)
