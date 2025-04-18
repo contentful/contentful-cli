@@ -108,6 +108,17 @@ export const builder = (yargs: Argv) => {
       type: 'string',
       describe: 'Pass an additional HTTP Header'
     })
+    .option('upload-assets', {
+      describe:
+        'Upload local asset files downloaded via the --downloadAssets option of the export. Requires `assetsDirectory`',
+      type: 'boolean',
+      default: false
+    })
+    .option('assets-directory', {
+      describe:
+        'Path to a directory with an asset export made using the --downloadAssets option of the export. Requires `uploadAssets`',
+      type: 'string'
+    })
     .config(
       'config',
       'An optional configuration JSON file containing all the options for a single run'
@@ -138,6 +149,8 @@ interface ImportSpaceProps {
   header?: string
   proxy?: string
   content?: object
+  uploadAssets?: string
+  assetsDirectory?: string
 }
 
 interface Options {
@@ -150,6 +163,8 @@ interface Options {
   headers: string
   proxy?: string
   rawProxy?: string
+  uploadAssets?: string
+  assetsDirectory?: string
 }
 
 export const importSpace = async (argv: ImportSpaceProps) => {
@@ -157,7 +172,12 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     warning('The --update option has been deprecated and will be ignored.')
   }
 
-  const { context, feature = 'space-import' } = argv
+  const {
+    context,
+    feature = 'space-import',
+    uploadAssets,
+    assetsDirectory
+  } = argv
   const {
     managementToken,
     activeSpaceId,
@@ -167,6 +187,12 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     rawProxy
   } = context
 
+  if (uploadAssets && !assetsDirectory) {
+    throw new Error(
+      'The --upload-assets option requires the --assets-directory option to be set.'
+    )
+  }
+
   const options: Options = {
     ...argv,
     spaceId: activeSpaceId,
@@ -175,7 +201,9 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     managementFeature: feature,
     managementToken,
     host,
-    headers: getHeadersFromOption(argv.header)
+    headers: getHeadersFromOption(argv.header),
+    uploadAssets,
+    assetsDirectory
   }
 
   if (proxy) {

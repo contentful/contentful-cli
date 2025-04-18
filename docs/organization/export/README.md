@@ -37,3 +37,7 @@ contentful organization export
   "taxonomy": {"concepts": [], "conceptSchemes": []},
 }
 ```
+
+## Related
+
+[organization import](https://github.com/contentful/contentful-cli/blob/main/docs/organization/export/README.md)

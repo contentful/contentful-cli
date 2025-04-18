@@ -28,9 +28,12 @@ Options:
                              the downloadAssets option to upload those files
                              instead of pointing to the URLs of previously
                              uploaded assets. Requires upload-assets.   [string]
+  --skip-content-updates     Skips updating existing content, only creates new
+                             entries.                 [boolean] [default: false]
+  --skip-asset-updates       Skips updating existing assets, only creates new
+                             assets.                  [boolean] [default: false]
   --error-log-file           Full path to the error log file            [string]
-  --host                     Management API host
-                                        [string] [default: "api.contentful.com"]
+  --host                     Management API host                        [string]
   --proxy                    Proxy configuration in HTTP auth format:
                              [http|https]://host:port or
                              [http|https]://user:password@host:port     [string]
@@ -39,6 +42,12 @@ Options:
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
   --header, -H               Pass an additional HTTP Header             [string]
+  --upload-assets            Upload local asset files downloaded via the
+                             --downloadAssets option of the export. Requires
+                             `assetsDirectory`        [boolean] [default: false]
+  --assets-directory         Path to a directory with an asset export made using
+                             the --downloadAssets option of the export. Requires
+                             `uploadAssets`                             [string]
   --config                   An optional configuration JSON file containing all
                              the options for a single run
 ```
