@@ -45,7 +45,7 @@ Options:
   --proxy                   Proxy configuration in HTTP auth format:
                             [http|https]://host:port or
                             [http|https]://user:password@host:port        [string]
-  --raw-proxy               Pass proxy config to Axios instead of creating a 
+  --raw-proxy               Pass proxy config to Axios instead of creating a
                             custom httpsAgent.                           [boolean]
   --error-log-file          Full path to the error log file               [string]
   --query-entries           Exports only entries that matches these queries[array]
@@ -84,3 +84,4 @@ contentful space export
 - This tool currently does **not** support the export of space memberships.
 - Exported webhooks with credentials will be exported as normal webhooks. Credentials should be added manually afterwards.
 - UI extensions will not be exported
+- If a space is configured to use the [embargoed assets feature](https://www.contentful.com/help/media/embargoed-assets/), certain options will need to be set to use the space export/import tooling. When exporting content, the `downloadAssets` option must be set to `true`. This will download the asset files to your local machine. Then, when importing content, the `uploadAssets` option must be set to `true` and the `assetsDirectory` must be set to the directory that contains all of the exported asset folders.
