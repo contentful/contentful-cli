@@ -64,6 +64,8 @@ describe('organization export', () => {
         expect(resultText).toContain('Exporting Concept Schemes')
         expect(resultText).toContain('concepts')
         expect(resultText).toContain('conceptSchemes')
+
+        console.log('**********', resultText)
       })
       .end(done)
   })
