@@ -30,9 +30,9 @@ const {
 const {
   organizationImport
 } = require('../../../../lib/cmds/organization_cmds/import')
-const { migrateDataCenter } = require('../../../../lib/cmds/migrate_cmds/datacenter')
+const { migrateRegion } = require('../../../../lib/cmds/sync_cmds/region')
 
-describe('migrateDataCenter', () => {
+describe('migrateRegion', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     fs.existsSync.mockReturnValue(false)
@@ -56,7 +56,7 @@ describe('migrateDataCenter', () => {
       header: []
     }
 
-    await migrateDataCenter(argv)
+    await migrateRegion(argv)
 
     expect(runContentfulExport).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -66,7 +66,7 @@ describe('migrateDataCenter', () => {
         host: 'api.eu.contentful.com',
         useVerboseRenderer: false,
         managementApplication: `contentful.cli/${version}`,
-        managementFeature: 'migrate-datacenter'
+        managementFeature: 'migrate-region'
       })
     )
 
@@ -78,7 +78,7 @@ describe('migrateDataCenter', () => {
         host: 'api.contentful.com',
         useVerboseRenderer: false,
         managementApplication: `contentful.cli/${version}`,
-        managementFeature: 'migrate-datacenter'
+        managementFeature: 'migrate-region'
       })
     )
 
@@ -102,7 +102,7 @@ describe('migrateDataCenter', () => {
       header: []
     }
 
-    await migrateDataCenter(argv)
+    await migrateRegion(argv)
 
     expect(organizationExport).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -138,7 +138,7 @@ describe('migrateDataCenter', () => {
       header: []
     }
 
-    await expect(migrateDataCenter(argv)).rejects.toThrow(
+    await expect(migrateRegion(argv)).rejects.toThrow(
       '--source-org-id and --target-org-id are required when --include-taxonomies is set'
     )
   })
