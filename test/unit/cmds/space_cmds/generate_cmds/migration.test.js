@@ -87,6 +87,23 @@ const editorInterfaceWithUndefined = {
   ]
 }
 
+const editorInterfaceWithMissingProperties = {
+  controls: [
+    {
+      fieldId: 'title',
+      widgetId: 'singleLine',
+      widgetNamespace: 'builtin',
+      settings: {
+        helpText: 'Valid title'
+      }
+    },
+    {
+      fieldId: 'description'
+      // Missing widgetId and widgetNamespace
+    }
+  ]
+}
+
 const EditorInterfaceNotFoundErrorMock = function () {
   this.name = 'NotFound'
 }
@@ -257,6 +274,27 @@ test('it handles undefined values in editor interface settings', async () => {
   expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
     expected
   )
+})
+
+test('it skips changeFieldControl when required parameters are undefined', async () => {
+  const validControl = changeFieldControl(
+    'bar',
+    editorInterfaceWithMissingProperties.controls[0].fieldId,
+    editorInterfaceWithMissingProperties.controls[0].widgetNamespace,
+    editorInterfaceWithMissingProperties.controls[0].widgetId,
+    editorInterfaceWithMissingProperties.controls[0].settings
+  )
+
+  const invalidControl = changeFieldControl(
+    'bar',
+    editorInterfaceWithMissingProperties.controls[1].fieldId,
+    editorInterfaceWithMissingProperties.controls[1].widgetNamespace,
+    editorInterfaceWithMissingProperties.controls[1].widgetId,
+    editorInterfaceWithMissingProperties.controls[1].settings
+  )
+
+  expect(validControl).not.toBeNull()
+  expect(invalidControl).toBeNull()
 })
 
 test('it creates the full migration script', async () => {
