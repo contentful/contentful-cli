@@ -40,6 +40,25 @@ const simpleContentType = {
   ]
 }
 
+const contentTypeWithUndefined = {
+  sys: {
+    id: 'bar'
+  },
+  name: 'Bar',
+  description: undefined,
+  displayField: undefined,
+  fields: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'Symbol',
+      required: undefined,
+      localized: undefined,
+      disabled: false
+    }
+  ]
+}
+
 const editorInterface = {
   controls: [
     {
@@ -49,6 +68,38 @@ const editorInterface = {
       settings: {
         helpText: 'the name'
       }
+    }
+  ]
+}
+
+const editorInterfaceWithUndefined = {
+  controls: [
+    {
+      fieldId: 'title',
+      widgetId: 'singleLine',
+      widgetNamespace: 'builtin',
+      settings: {
+        helpText: undefined,
+        placeholder: 'Enter title',
+        showLinkEntityAction: undefined
+      }
+    }
+  ]
+}
+
+const editorInterfaceWithMissingProperties = {
+  controls: [
+    {
+      fieldId: 'title',
+      widgetId: 'singleLine',
+      widgetNamespace: 'builtin',
+      settings: {
+        helpText: 'Valid title'
+      }
+    },
+    {
+      fieldId: 'description'
+      // Missing widgetId and widgetNamespace
     }
   ]
 }
@@ -171,6 +222,79 @@ test('it creates the editor interface', async () => {
   expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
     expected
   )
+})
+
+test('it handles undefined values in content type', async () => {
+  const programStub = b.blockStatement([createContentType(contentTypeWithUndefined)])
+
+  const expected = `module.exports = function(migration) {
+    const bar = migration.createContentType("bar").name("Bar");
+};`
+
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
+})
+
+test('it handles undefined values in field properties', async () => {
+  const programStub = b.blockStatement([
+    b.expressionStatement(
+      createField(contentTypeWithUndefined.sys.id, contentTypeWithUndefined.fields[0])
+    )
+  ])
+
+  const expected = `module.exports = function(migration) {
+    bar.createField("title").name("Title").type("Symbol").disabled(false);
+};`
+
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
+})
+
+test('it handles undefined values in editor interface settings', async () => {
+  const programStub = b.blockStatement([
+    b.expressionStatement(
+      changeFieldControl(
+        'bar',
+        editorInterfaceWithUndefined.controls[0].fieldId,
+        editorInterfaceWithUndefined.controls[0].widgetNamespace,
+        editorInterfaceWithUndefined.controls[0].widgetId,
+        editorInterfaceWithUndefined.controls[0].settings
+      )
+    )
+  ])
+
+  const expected = `module.exports = function(migration) {
+    bar.changeFieldControl("title", "builtin", "singleLine", {
+        placeholder: "Enter title"
+    });
+};`
+
+  expect(recast.prettyPrint(wrapMigrationWithBase(programStub)).code).toBe(
+    expected
+  )
+})
+
+test('it skips changeFieldControl when required parameters are undefined', async () => {
+  const validControl = changeFieldControl(
+    'bar',
+    editorInterfaceWithMissingProperties.controls[0].fieldId,
+    editorInterfaceWithMissingProperties.controls[0].widgetNamespace,
+    editorInterfaceWithMissingProperties.controls[0].widgetId,
+    editorInterfaceWithMissingProperties.controls[0].settings
+  )
+
+  const invalidControl = changeFieldControl(
+    'bar',
+    editorInterfaceWithMissingProperties.controls[1].fieldId,
+    editorInterfaceWithMissingProperties.controls[1].widgetNamespace,
+    editorInterfaceWithMissingProperties.controls[1].widgetId,
+    editorInterfaceWithMissingProperties.controls[1].settings
+  )
+
+  expect(validControl).not.toBeNull()
+  expect(invalidControl).toBeNull()
 })
 
 test('it creates the full migration script', async () => {
