@@ -113,7 +113,7 @@
     "papaparse": "^5.4.1",
     "patch-package": "^8.0.0",
     "path": "^0.12.7",
-    "prettier": "^2.0.2",
+    "prettier": "^3.6.1",
     "recast": "^0.23.2",
     "rxjs": "^7.3.0",
     "shell-escape": "^0.2.0",
