@@ -14,6 +14,7 @@ Commands:
   merge         A CLI version of the Merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
+  sync          Sync a space between Contentful regions
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -36,6 +37,7 @@ Commands:
   merge         A CLI version of the Merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
+  sync          Sync a space between Contentful regions
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -59,6 +61,7 @@ Commands:
   merge         A CLI version of the Merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
+  sync          Sync a space between Contentful regions
 
 Options:
   -h, --help     Show help                                             [boolean]
@@ -81,6 +84,7 @@ Commands:
   merge         A CLI version of the Merge app
   organization  Manage and list your organizations
   space         Manage and list your spaces
+  sync          Sync a space between Contentful regions
 
 Options:
   -h, --help     Show help                                             [boolean]
