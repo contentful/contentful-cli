@@ -66,6 +66,7 @@ export interface OrgImportParams {
   contentFile: string
   silent?: boolean
   errorLogFile?: string
+  host?: string
 }
 
 export interface OrgImportContext {
@@ -85,15 +86,23 @@ interface ErrorMessage {
 }
 
 async function importCommand(params: OrgImportParams) {
-  const { context, header, organizationId, contentFile, silent, errorLogFile } =
+  const { context, header, organizationId, contentFile, silent, errorLogFile, host } =
     params
   const { managementToken } = context
+
+  console.log(
+    '👉 CMA Host being used for taxonomy import:',
+    host || 'api.contentful.com'
+  )
+  console.log('👉 Token prefix:', managementToken)
+  console.log('👉 Organization ID:', organizationId)
 
   const cmaClient = await createPlainClient({
     accessToken: managementToken,
     feature: 'org-import',
     headers: getHeadersFromOption(header),
-    logHandler: noop
+    logHandler: noop,
+    host
   })
 
   const importContext: OrgImportContext = {
