@@ -1,12 +1,16 @@
 type AppActionTypes = 'create-changeset' | 'export-changeset'
 
-export type Host = 'api.flinkly.com' | 'api.contentful.com'
+export type Host =
+  | 'api.flinkly.com'
+  | 'api.contentful.com'
+  | 'api.eu.contentful.com'
 
 const AppDefinitionIds: {
   [host in Host]: string
 } = {
   'api.contentful.com': 'cQeaauOu1yUCYVhQ00atE',
-  'api.flinkly.com': '7tBJPpcwK1E1KqlxlMiKw5'
+  'api.flinkly.com': '7tBJPpcwK1E1KqlxlMiKw5',
+  'api.eu.contentful.com': 'cQeaauOu1yUCYVhQ00atE'
 }
 
 const ActionIds: {
@@ -19,6 +23,10 @@ const ActionIds: {
     'export-changeset': '5saqHxAG2N0xHaZYXEe5dO'
   },
   'api.contentful.com': {
+    'create-changeset': '3yquPqLswfwwbY7taePuYp',
+    'export-changeset': '2z5CsfaFfA26RrLSXPcQtS'
+  },
+  'api.eu.contentful.com': {
     'create-changeset': '3yquPqLswfwwbY7taePuYp',
     'export-changeset': '2z5CsfaFfA26RrLSXPcQtS'
   }
@@ -36,5 +44,5 @@ export const getAppActionId = (action: AppActionTypes, host?: Host) => {
   if (!host) {
     host = 'api.contentful.com'
   }
-  return ActionIds[host as Host][action as AppActionTypes]
+  return ActionIds[host as Host]?.[action as AppActionTypes]
 }
