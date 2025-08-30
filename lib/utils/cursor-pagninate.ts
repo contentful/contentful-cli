@@ -1,4 +1,4 @@
-import { CursorPaginatedCollectionProp } from 'contentful-management/dist/typings/common-types'
+import { CursorPaginatedCollectionProp } from 'contentful-management'
 
 export async function cursorPaginate<T>({
   queryPage
