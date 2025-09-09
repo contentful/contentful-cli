@@ -6,9 +6,9 @@ Change the target environment of the alias.
 
 ```
 Options:
-  --alias-id, -a               Id of the alias to create              [required]
+  --alias-id, -a               ID of the alias to update              [required]
   --target-environment-id, -e  ID of the target environment             [string]
-  --space-id, -s               ID of the space that the alias will belong to
+  --space-id, -s               ID of the space that the alias belongs to
 ```
 
 ### Example
