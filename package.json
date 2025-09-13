@@ -109,7 +109,7 @@
     "marked": "^7.0.0",
     "mkdirp": "^3.0.0",
     "open": "^8.4.2",
-    "p-queue": "^6.6.2",
+    "p-queue": "^8.1.1",
     "papaparse": "^5.4.1",
     "patch-package": "^8.0.0",
     "path": "^0.12.7",
