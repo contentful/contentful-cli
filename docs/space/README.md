@@ -12,4 +12,4 @@
 - [migration](./migration) - Parses and runs a migration script on a Contentful space.
 - [generate](./generate) - Auto-generate files related to your space. For example, migration scripts.
 - [environment](./environment) - List, create, and delete space environments.
-- [environment-alias](./environment-alias) - List and update space environment aliases.
+- [environment-alias](./environment-alias) - List, create, and update space environment aliases.
