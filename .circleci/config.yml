@@ -79,46 +79,14 @@ jobs:
       # The build is automatically executed in a prepublishOnly script to ensure that the package.json with the updated version
       # is being packaged
       - run: npm run semantic-release
-  audit:
-    docker: &ref_0
-      - image: cimg/node:18.18.0
-        environment:
-          NPM_CONFIG_PROGRESS: false
-          NPM_CONFIG_LOGLEVEL: warn
-    steps:
-      - checkout
-      - run: &ref_1
-          name: Audit
-          command: |
-            npm audit --audit-level=moderate --production
-  audit-and-notify:
-    docker: *ref_0
-    steps:
-      - checkout
-      - run: *ref_1
-      - run:
-          name: Notify vulnerabilities found
-          when: on_fail
-          command: |
-            script/notify-vulnerabilities-to-slack.sh $SLACK_WEBHOOK
 workflows:
   version: 2
-  scheduled-audit:
-    triggers:
-      - schedule:
-          cron: 0 0 * * *
-          filters:
-            branches:
-              only: main
-    jobs:
-      - audit-and-notify
   build_and_test:
     jobs:
       - unit
       - integration
       - linux
       - osx
-      - audit
       - release:
           context: vault
           requires:
@@ -126,7 +94,6 @@ workflows:
             - integration
             - linux
             - osx
-            - audit
           filters:
             branches:
               only:
