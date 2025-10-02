@@ -100,7 +100,7 @@
     "figlet": "^1.2.0",
     "find-up": "^5.0.0",
     "https-proxy-agent": "^7.0.0",
-    "inquirer": "^8.0.0",
+    "inquirer": "^12.9.6",
     "inquirer-autocomplete-prompt": "^2.0.0",
     "inquirer-select-directory": "^1.2.0",
     "listr": "^0.14.1",
