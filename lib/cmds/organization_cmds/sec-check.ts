@@ -1,0 +1,186 @@
+import type { Argv } from 'yargs'
+import { handleAsyncError as handle } from '../../utils/async'
+import { createPlainClient } from '../../utils/contentful-clients'
+import { getHeadersFromOption } from '../../utils/headers'
+import { log } from '../../utils/log'
+import { checks } from './security_checks'
+import type { SecurityContext } from './security_checks/types'
+
+module.exports.command = 'sec-check'
+
+module.exports.desc =
+  'Check if current user has owner or admin role in a Contentful organization'
+
+interface Params {
+  context?: { managementToken?: string }
+  header?: string
+  'organization-id': string
+  'management-token'?: string
+}
+
+interface MembershipItem {
+  role: string
+  user?: { sys?: { id: string } }
+}
+interface MembershipResponseShape {
+  items?: MembershipItem[]
+}
+interface MembershipAxiosLike {
+  data?: MembershipResponseShape
+  items?: MembershipItem[]
+}
+interface UserShapeSys {
+  sys?: { id?: string }
+  id?: string
+}
+interface UserAxiosLike {
+  data?: UserShapeSys
+  sys?: { id?: string }
+  id?: string
+}
+interface RawGetOptions {
+  params?: Record<string, string | number | boolean | undefined>
+}
+interface PlainClient {
+  raw: {
+    get: (path: string, opts?: RawGetOptions) => Promise<unknown>
+  }
+}
+
+function extractUserId(user: UserAxiosLike): string | null {
+  return user?.data?.sys?.id || user?.sys?.id || user?.id || null
+}
+
+function extractMembershipItems(resp: MembershipAxiosLike): MembershipItem[] {
+  return resp?.data?.items || resp?.items || []
+}
+
+module.exports.builder = function (yargs: Argv) {
+  return yargs
+    .usage(
+      'Usage: contentful organization sec-check --organization-id <organization_id>'
+    )
+    .option('organization-id', {
+      alias: 'oid',
+      describe: 'Contentful organization ID',
+      type: 'string',
+      demandOption: true
+    })
+    .option('management-token', {
+      alias: 'mt',
+      describe:
+        'Contentful management API token (overrides stored context token)',
+      type: 'string'
+    })
+    .option('header', {
+      alias: 'H',
+      type: 'string',
+      describe: 'Pass an additional HTTP Header'
+    })
+}
+
+async function securityCheck(argv: Params) {
+  const { context, header } = argv
+  const organizationId = argv['organization-id']
+  const passedToken = argv['management-token']
+  const managementToken = passedToken || (context && context.managementToken)
+
+  const results: Record<
+    string,
+    { description: string; pass: boolean; skipped?: boolean; reason?: string }
+  > = {}
+
+  if (!managementToken) {
+    for (const c of checks) {
+      results[c.id] = {
+        description: c.description,
+        pass: false,
+        reason: 'missing_token'
+      }
+    }
+    log(JSON.stringify(results))
+    process.exit(1)
+    return
+  }
+
+  const client = (await createPlainClient({
+    accessToken: managementToken,
+    feature: 'organization-sec-check',
+    headers: getHeadersFromOption(header)
+  })) as PlainClient
+
+  let userId: string | null = null
+  try {
+    const user = (await client.raw.get('/users/me')) as UserAxiosLike
+    userId = extractUserId(user)
+  } catch (_) {
+    for (const c of checks) {
+      results[c.id] = {
+        description: c.description,
+        pass: false,
+        reason: 'user_fetch_failed'
+      }
+    }
+    log(JSON.stringify(results))
+    process.exit(1)
+    return
+  }
+
+  if (!userId) {
+    for (const c of checks) {
+      results[c.id] = {
+        description: c.description,
+        pass: false,
+        reason: 'user_missing'
+      }
+    }
+    log(JSON.stringify(results))
+    process.exit(1)
+    return
+  }
+
+  let role: string | undefined
+  try {
+    const membershipResp = (await client.raw.get(
+      `/organizations/${organizationId}/organization_memberships`,
+      { params: { query: userId } }
+    )) as MembershipAxiosLike
+    const items = extractMembershipItems(membershipResp)
+    const membership =
+      items.find(m => m?.user?.sys?.id === userId) || items[0] || null
+    role = membership?.role
+  } catch (_) {
+    // ignore
+  }
+
+  const ctx: SecurityContext = { client, organizationId, userId, role }
+
+  const passed: Record<string, boolean> = {}
+  for (const check of checks) {
+    results[check.id] = { description: check.description, pass: false }
+
+    if (check.dependsOn && check.dependsOn.some(d => !passed[d])) {
+      results[check.id].skipped = true
+      results[check.id].reason = 'dependency_failed'
+      continue
+    }
+
+    try {
+      const ok = await check.run(ctx)
+      results[check.id].pass = ok
+      passed[check.id] = ok
+    } catch (_) {
+      results[check.id].reason = 'error'
+      passed[check.id] = false
+    }
+  }
+
+  log(JSON.stringify(results))
+  if (!passed['permission_check']) {
+    process.exit(1)
+  }
+}
+
+module.exports.securityCheck = securityCheck
+
+module.exports.handler = handle(securityCheck)
