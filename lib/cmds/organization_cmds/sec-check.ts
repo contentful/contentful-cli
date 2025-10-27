@@ -87,7 +87,13 @@ async function securityCheck(argv: Params) {
 
   const results: Record<
     string,
-    { description: string; pass: boolean; skipped?: boolean; reason?: string }
+    {
+      description: string
+      pass: boolean
+      skipped?: boolean
+      reason?: string
+      data?: Record<string, unknown>
+    }
   > = {}
 
   const outputResults = () => {
@@ -170,8 +176,12 @@ async function securityCheck(argv: Params) {
       pass: false
     }
     try {
-      const ok = await permissionCheck.run(ctx)
+      const res = await permissionCheck.run(ctx)
+      const ok = typeof res === 'boolean' ? res : res.pass
       results[permissionCheck.id].pass = ok
+      if (typeof res !== 'boolean' && res.data) {
+        results[permissionCheck.id].data = res.data
+      }
       passed[permissionCheck.id] = ok
       if (!ok) {
         // Exit early without running any other checks
@@ -204,8 +214,12 @@ async function securityCheck(argv: Params) {
     }
 
     try {
-      const ok = await check.run(ctx)
+      const res = await check.run(ctx)
+      const ok = typeof res === 'boolean' ? res : res.pass
       results[check.id].pass = ok
+      if (typeof res !== 'boolean' && res.data) {
+        results[check.id].data = res.data
+      }
       passed[check.id] = ok
     } catch (_) {
       results[check.id].reason = 'error'
