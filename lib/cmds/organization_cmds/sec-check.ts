@@ -110,6 +110,7 @@ async function securityCheck(argv: Params) {
       }
     }
     outputResults()
+    log('Missing management token')
     process.exit(1)
     return
   }
@@ -133,6 +134,7 @@ async function securityCheck(argv: Params) {
       }
     }
     outputResults()
+    log('Unable to determine user ID')
     process.exit(1)
     return
   }
@@ -146,6 +148,7 @@ async function securityCheck(argv: Params) {
       }
     }
     outputResults()
+    log('Unable to determine user ID')
     process.exit(1)
     return
   }
@@ -186,6 +189,7 @@ async function securityCheck(argv: Params) {
       if (!ok) {
         // Exit early without running any other checks
         outputResults()
+        log('Insufficient permissions')
         process.exit(1)
         return
       }

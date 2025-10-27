@@ -54,7 +54,8 @@ function extractUserIdFromItem(item: MembershipItem): string | null {
 
 export const ssoExemptUsersCheck: SecurityCheck = {
   id: 'sso_exempt_users',
-  description: 'Check if users are exempted from SSO restricted mode (bypass SSO).',
+  description:
+    'Check if users are exempted from SSO restricted mode (bypass SSO).',
   dependsOn: ['permission_check', 'sso_enabled', 'sso_enforced'],
   async run(ctx: SecurityContext): Promise<SecurityCheckRunResult> {
     const { client, organizationId } = ctx
