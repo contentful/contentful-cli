@@ -156,8 +156,41 @@ async function securityCheck(argv: Params) {
   const ctx: SecurityContext = { client, organizationId, userId, role }
 
   const passed: Record<string, boolean> = {}
+
+  // Find the permission_check explicitly (don't rely on ordering)
+  const permissionCheck = checks.find(c => c.id === 'permission_check')
+  if (permissionCheck) {
+    results[permissionCheck.id] = {
+      description: permissionCheck.description,
+      pass: false
+    }
+    try {
+      const ok = await permissionCheck.run(ctx)
+      results[permissionCheck.id].pass = ok
+      passed[permissionCheck.id] = ok
+      if (!ok) {
+        // Exit early without running any other checks
+        log(JSON.stringify(results))
+        process.exit(1)
+        return
+      }
+    } catch (_) {
+      results[permissionCheck.id].reason = 'error'
+      passed[permissionCheck.id] = false
+      log(JSON.stringify(results))
+      process.exit(1)
+      return
+    }
+  }
+
+  // Run remaining checks (excluding permission_check which already ran)
   for (const check of checks) {
-    results[check.id] = { description: check.description, pass: false }
+    if (check.id === 'permission_check') continue
+
+    results[check.id] = {
+      description: check.description,
+      pass: false
+    }
 
     if (check.dependsOn && check.dependsOn.some(d => !passed[d])) {
       results[check.id].skipped = true
