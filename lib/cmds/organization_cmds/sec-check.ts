@@ -90,6 +90,11 @@ async function securityCheck(argv: Params) {
     { description: string; pass: boolean; skipped?: boolean; reason?: string }
   > = {}
 
+  const outputResults = () => {
+    // Pretty-print JSON for readability
+    log(JSON.stringify(results, null, 2))
+  }
+
   if (!managementToken) {
     for (const c of checks) {
       results[c.id] = {
@@ -98,7 +103,7 @@ async function securityCheck(argv: Params) {
         reason: 'missing_token'
       }
     }
-    log(JSON.stringify(results))
+    outputResults()
     process.exit(1)
     return
   }
@@ -121,7 +126,7 @@ async function securityCheck(argv: Params) {
         reason: 'user_fetch_failed'
       }
     }
-    log(JSON.stringify(results))
+    outputResults()
     process.exit(1)
     return
   }
@@ -134,7 +139,7 @@ async function securityCheck(argv: Params) {
         reason: 'user_missing'
       }
     }
-    log(JSON.stringify(results))
+    outputResults()
     process.exit(1)
     return
   }
@@ -170,14 +175,14 @@ async function securityCheck(argv: Params) {
       passed[permissionCheck.id] = ok
       if (!ok) {
         // Exit early without running any other checks
-        log(JSON.stringify(results))
+        outputResults()
         process.exit(1)
         return
       }
     } catch (_) {
       results[permissionCheck.id].reason = 'error'
       passed[permissionCheck.id] = false
-      log(JSON.stringify(results))
+      outputResults()
       process.exit(1)
       return
     }
@@ -208,7 +213,7 @@ async function securityCheck(argv: Params) {
     }
   }
 
-  log(JSON.stringify(results))
+  outputResults()
   if (!passed['permission_check']) {
     process.exit(1)
   }
