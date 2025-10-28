@@ -189,7 +189,6 @@ async function securityCheck(argv: Params) {
       if (!ok) {
         // Exit early without running any other checks
         outputResults()
-        log('Insufficient permissions')
         process.exit(1)
         return
       }
