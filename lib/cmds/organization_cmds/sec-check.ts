@@ -185,8 +185,6 @@ async function securityCheck(argv: Params) {
         process.exit(1)
         return
       }
-      // Log success for downstream tests
-      log('Permission check passed')
     } catch (_) {
       results[permissionCheck.id].reason = 'error'
       passed[permissionCheck.id] = false
