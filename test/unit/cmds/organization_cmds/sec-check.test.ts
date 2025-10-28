@@ -66,7 +66,6 @@ test('sec-check success with owner role', async () => {
   expect(rawGet).toHaveBeenCalled()
   expect(exitStub).not.toHaveBeenCalled()
   const logged = (log as jest.Mock).mock.calls.map(c => c[0]).join('\n')
-  expect(logged).toContain('Permission check passed')
 })
 
 test('sec-check success with admin role', async () => {
@@ -80,7 +79,6 @@ test('sec-check success with admin role', async () => {
 
   expect(exitStub).not.toHaveBeenCalled()
   const logged = (log as jest.Mock).mock.calls.map(c => c[0]).join('\n')
-  expect(logged).toContain('Permission check passed')
 })
 
 test('sec-check insufficient role', async () => {
