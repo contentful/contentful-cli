@@ -181,9 +181,12 @@ async function securityCheck(argv: Params) {
       if (!ok) {
         // Exit early without running any other checks
         outputResults()
+        log('Insufficient permissions')
         process.exit(1)
         return
       }
+      // Log success for downstream tests
+      log('Permission check passed')
     } catch (_) {
       results[permissionCheck.id].reason = 'error'
       passed[permissionCheck.id] = false
