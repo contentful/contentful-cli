@@ -40,6 +40,7 @@ interface UserAxiosLike {
 }
 interface RawGetOptions {
   params?: Record<string, string | number | boolean | undefined>
+  headers?: Record<string, string>
 }
 interface PlainClient {
   raw: {

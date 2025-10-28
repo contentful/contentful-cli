@@ -2,7 +2,10 @@ export interface PlainClient {
   raw: {
     get: (
       path: string,
-      opts?: { params?: Record<string, string | number | boolean | undefined> }
+      opts?: {
+        params?: Record<string, string | number | boolean | undefined>
+        headers?: Record<string, string>
+      }
     ) => Promise<unknown>
   }
 }
