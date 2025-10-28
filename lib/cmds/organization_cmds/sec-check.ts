@@ -4,7 +4,7 @@ import { createPlainClient } from '../../utils/contentful-clients'
 import { getHeadersFromOption } from '../../utils/headers'
 import { log } from '../../utils/log'
 import { checks } from './security_checks'
-import type { SecurityContext } from './security_checks/types'
+import type { SecurityContext, PlainClient } from './security_checks/types'
 
 module.exports.command = 'sec-check'
 
@@ -37,15 +37,6 @@ interface UserAxiosLike {
   data?: UserShapeSys
   sys?: { id?: string }
   id?: string
-}
-interface RawGetOptions {
-  params?: Record<string, string | number | boolean | undefined>
-  headers?: Record<string, string>
-}
-interface PlainClient {
-  raw: {
-    get: (path: string, opts?: RawGetOptions) => Promise<unknown>
-  }
 }
 
 function extractUserId(user: UserAxiosLike): string | null {

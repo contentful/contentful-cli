@@ -1,4 +1,8 @@
-import type { SecurityCheck, SecurityContext, SecurityCheckRunResult } from './types'
+import type {
+  SecurityCheck,
+  SecurityContext,
+  SecurityCheckRunResult
+} from './types'
 
 interface AccessTokenSys {
   expiresAt?: string | null
@@ -40,7 +44,7 @@ export const activeTokensWithoutExpiryCheck: SecurityCheck = {
     const { client, organizationId } = ctx
     const basePath = `/organizations/${organizationId}/access_tokens`
 
-    const offendingTokenIds: string[] = []
+    let offendingCount = 0
     const limit = 100
     let skip = 0
     let processed = 0
@@ -73,8 +77,7 @@ export const activeTokensWithoutExpiryCheck: SecurityCheck = {
           const revoked = item?.revokedAt
           const expiresAt = item?.sys?.expiresAt
           if (revoked == null && expiresAt == null) {
-            const id = item?.sys?.id
-            if (id) offendingTokenIds.push(id)
+            offendingCount += 1
           }
           processed += 1
         }
@@ -86,11 +89,10 @@ export const activeTokensWithoutExpiryCheck: SecurityCheck = {
         else if (items.length < effectiveLimit) done = true
       }
 
-      const count = offendingTokenIds.length
       return {
-        pass: count === 0,
+        pass: offendingCount === 0,
         data: {
-          offendingCount: count
+          offendingCount
         }
       }
     } catch (_) {
