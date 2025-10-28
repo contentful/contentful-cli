@@ -89,8 +89,13 @@ async function securityCheck(argv: Params) {
   > = {}
 
   const outputResults = () => {
+    // Preserve original checks ordering in output regardless of insertion order
+    const ordered: typeof results = {}
+    for (const c of checks) {
+      if (results[c.id]) ordered[c.id] = results[c.id]
+    }
     // Pretty-print JSON for readability
-    log(JSON.stringify(results, null, 2))
+    log(JSON.stringify(ordered, null, 2))
   }
 
   if (!managementToken) {
