@@ -1,33 +1,29 @@
-import { auditLoggingConfiguredCheck } from '../../../../../../lib/cmds/organization_cmds/security_checks/audit_logging_configured'
-import type { SecurityContext } from '../../../../../../lib/cmds/organization_cmds/security_checks/types'
-import { createPlainClient } from '../../../../../../lib/utils/contentful-clients'
-
-jest.mock('../../../../../../lib/utils/contentful-clients')
-
-function mockClient(items: unknown[] | null, shouldThrow = false) {
-  const rawGet = jest.fn().mockImplementation(async (path: string) => {
-    if (shouldThrow) throw new Error('network')
-    if (path.includes('/audit_logging/configurations')) {
-      return { data: { items: items ?? [] } }
-    }
-    throw new Error('unexpected')
-  })
-  ;(createPlainClient as unknown as jest.Mock).mockResolvedValue({ raw: { get: rawGet } })
-  return rawGet
-}
+import { auditLoggingConfiguredCheck } from '../../../../../lib/cmds/organization_cmds/security_checks/audit_logging_configured'
+import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 const ORG = 'org123'
 
 describe('auditLoggingConfiguredCheck', () => {
-  test('fails when items empty', async () => {
-    mockClient([])
-    const ctx: SecurityContext = {
-      client: { raw: { get: async () => ({}) } } as any,
+  function makeCtx(items: unknown[] | null, shouldThrow = false): SecurityContext {
+    const rawGet = jest.fn().mockImplementation(async (path: string, opts?: any) => {
+      if (!path.includes('/audit_logging/configurations')) throw new Error('unexpected')
+      if (shouldThrow) throw new Error('network')
+      // assert header presence
+      if (!opts || !opts.headers || opts.headers['x-contentful-enable-alpha-feature'] !== 'audit-logging') {
+        throw new Error('missing alpha header')
+      }
+      return { data: { items: items ?? [] } }
+    })
+    return {
+      client: { raw: { get: rawGet } } as any,
       organizationId: ORG,
       userId: 'u1',
-      role: 'owner',
-      accessToken: 'token'
+      role: 'owner'
     }
+  }
+
+  test('fails when items empty', async () => {
+    const ctx = makeCtx([])
     const res = await auditLoggingConfiguredCheck.run(ctx)
     // @ts-ignore
     expect(res.pass).toBe(false)
@@ -36,14 +32,7 @@ describe('auditLoggingConfiguredCheck', () => {
   })
 
   test('passes when items present', async () => {
-    mockClient([{}, {}])
-    const ctx: SecurityContext = {
-      client: { raw: { get: async () => ({}) } } as any,
-      organizationId: ORG,
-      userId: 'u1',
-      role: 'admin',
-      accessToken: 'token'
-    }
+    const ctx = makeCtx([{}, {}])
     const res = await auditLoggingConfiguredCheck.run(ctx)
     // @ts-ignore
     expect(res.pass).toBe(true)
@@ -52,34 +41,11 @@ describe('auditLoggingConfiguredCheck', () => {
   })
 
   test('fails on fetch error', async () => {
-    mockClient(null, true)
-    const ctx: SecurityContext = {
-      client: { raw: { get: async () => ({}) } } as any,
-      organizationId: ORG,
-      userId: 'u1',
-      role: 'owner',
-      accessToken: 'token'
-    }
+    const ctx = makeCtx(null, true)
     const res = await auditLoggingConfiguredCheck.run(ctx)
     // @ts-ignore
     expect(res.pass).toBe(false)
     // @ts-ignore
     expect(res.data.error).toBe('fetch_failed')
   })
-
-  test('fails when missing token', async () => {
-    mockClient([{}])
-    const ctx: SecurityContext = {
-      client: { raw: { get: async () => ({}) } } as any,
-      organizationId: ORG,
-      userId: 'u1',
-      role: 'owner'
-    }
-    const res = await auditLoggingConfiguredCheck.run(ctx)
-    // @ts-ignore
-    expect(res.pass).toBe(false)
-    // @ts-ignore
-    expect(res.data.error).toBe('missing_token')
-  })
 })
-

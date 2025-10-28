@@ -1,5 +1,5 @@
-import { securityContactSetCheck } from '../../../../../../lib/cmds/organization_cmds/security_checks/security_contact_set'
-import type { SecurityContext } from '../../../../../../lib/cmds/organization_cmds/security_checks/types'
+import { securityContactSetCheck } from '../../../../../lib/cmds/organization_cmds/security_checks/security_contact_set'
+import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 // Minimal mock PlainClient
 function makeClient(total: number | undefined, items: unknown[] | undefined, shouldThrow = false) {
@@ -76,4 +76,3 @@ describe('securityContactSetCheck', () => {
     expect(res.data?.error).toBe('fetch_failed')
   })
 })
-
