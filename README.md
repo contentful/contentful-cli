@@ -18,6 +18,7 @@
 - Seed your space with example data.
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
 - Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
+- Run organization security & configuration checks (security contact, audit logging, access tokens, SSO, MFA) with `contentful organization sec-check` (outputs structured JSON).
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/main/docs).
 
 ## :cloud: Installation

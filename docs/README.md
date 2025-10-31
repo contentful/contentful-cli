@@ -11,7 +11,7 @@ Commands:
   init          Get started with Contentful
   login         Login to Contentful
   logout        Logout from Contentful
-  organization  Manage and list your organizations
+  organization  Manage and list your organizations (includes security checks via `sec-check`)
   space         Manage and list your spaces
 
 Options:
@@ -29,5 +29,5 @@ Copyright Contentful 2019-Present
 - [init](./init) - Get an introduction to Contentful
 - [login](./login) - Start new CLI session
 - [logout](./logout) - End CLI session
-- [organization](./organization) - Organization related commands
+- [organization](./organization) - Organization related commands (security & configuration checks with `sec-check`)
 - [space](./space) - Space related commands
