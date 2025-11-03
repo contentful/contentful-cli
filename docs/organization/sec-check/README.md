@@ -24,6 +24,10 @@ Options:
   --management-token, --mt  Contentful management API token (overrides stored
                             context token)                              [string]
   --header, -H              Pass an additional HTTP Header              [string]
+  --output-file, -o         Write JSON results to a file. If used without a
+                            filename, a default file
+                            ./data/<timestamp>-<org-id>-sec-check.json is
+                            created.                                    [string]
 ```
 
 ## Prerequisites
@@ -31,9 +35,12 @@ Options:
 
 
 ## Example
+
 ```
-contentful organization sec-check --organization-id 123456789
+contentful organization sec-check --organization-id 123456789 -o
 ```
+
+![img.png](img.png)
 
 
 Outputs JSON with fields:
