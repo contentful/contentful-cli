@@ -38,7 +38,7 @@ function extractLimit(resp: AccessTokenResponseAxiosLike): number | undefined {
 
 export const activeTokensWithoutExpiryCheck: SecurityCheck = {
   id: 'active_tokens_without_expiry',
-  description: 'Active (not revoked) access tokens without an expiration date (revokedAt=null & sys.expiresAt=null).',
+  description: 'Active (not revoked) access tokens without an expiration date.',
   dependsOn: ['permission_check'],
   async run(ctx: SecurityContext): Promise<SecurityCheckRunResult> {
     const { client, organizationId } = ctx
