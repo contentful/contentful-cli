@@ -58,7 +58,7 @@ Outputs JSON with fields:
     }
   },
   "active_tokens_without_expiry": {
-    "description": "Active (not revoked) access tokens without an expiration date (revokedAt=null & sys.expiresAt=null).",
+    "description": "Active (not revoked) access tokens without an expiration date.",
     "pass": false,
     "data": {
       "offendingCount": 6
