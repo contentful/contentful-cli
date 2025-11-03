@@ -26,6 +26,8 @@ Options:
   --header, -H              Pass an additional HTTP Header              [string]
 ```
 
+## Prerequisites
+- A Contentful Management API token with org admin/owner permissions to read organization settings.
 
 
 ## Example
