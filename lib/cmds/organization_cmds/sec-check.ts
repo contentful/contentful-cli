@@ -250,7 +250,16 @@ async function runInteractiveMode(argv: Params) {
   })
   const truncate = (str: string, max: number) => (str.length > max ? str.slice(0, max - 1) + '…' : str)
   const formatDetails = (cId: string, r: CheckResult): string => {
+    // Always show skipped reason first
     if (r.skipped && r.reason === 'dependency_failed') return '{"skipped":"dependency_failed"}'
+    if (cId === 'sso_exempt_users') {
+      const count = (r.data as any)?.exemptCount ?? 0
+      return `{"exemptCount":${count}}`
+    }
+    if (cId === 'sso_exempt_users_with_mfa_disabled') {
+      const count = (r.data as any)?.mfaDisabledCount ?? 0
+      return `{"mfaDisabledCount":${count}}`
+    }
     if (r.reason === 'error') return '{"error":true}'
     if (r.data && Object.keys(r.data).length > 0) return truncate(JSON.stringify(r.data), colWidthDetails - 2)
     if (cId === 'permission_check' && role) return truncate(JSON.stringify({ role }), colWidthDetails - 2)
