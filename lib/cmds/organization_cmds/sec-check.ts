@@ -109,7 +109,6 @@ async function securityCheck(argv: Params) {
     outputResults()
     log('Missing management token')
     process.exit(1)
-    return
   }
 
   const client = (await createPlainClient({
@@ -133,7 +132,6 @@ async function securityCheck(argv: Params) {
     outputResults()
     log('Unable to determine user ID')
     process.exit(1)
-    return
   }
 
   if (!userId) {
@@ -147,7 +145,6 @@ async function securityCheck(argv: Params) {
     outputResults()
     log('Unable to determine user ID')
     process.exit(1)
-    return
   }
 
   let role: string | undefined
@@ -188,14 +185,12 @@ async function securityCheck(argv: Params) {
         outputResults()
         log('Insufficient permissions')
         process.exit(1)
-        return
       }
     } catch (_) {
       results[permissionCheck.id].reason = 'error'
       passed[permissionCheck.id] = false
       outputResults()
       process.exit(1)
-      return
     }
   }
 
