@@ -54,20 +54,45 @@ export const activeTokensWithoutExpiryCheck: SecurityCheck = {
     // Use current timestamp for filtering future-expiring tokens (so we still retrieve indefinite tokens)
     const nowISO = new Date().toISOString()
 
+    // Prefer official SDK method if present on the plain client.
+    const sdkAccessor: any = (client as any)?.accessToken?.getManyForOrganization
+
+    async function fetchPage(currentSkip: number): Promise<AccessTokenResponseAxiosLike> {
+      if (typeof sdkAccessor === 'function') {
+        // SDK call returns a collection shape (no data wrapper)
+        try {
+          const collection = await sdkAccessor({
+            organizationId,
+            query: {
+              include: 'sys.user',
+              limit,
+              order: '-sys.createdAt',
+              skip: currentSkip,
+              'sys.expiresAt[gt]': nowISO,
+              revokedAt: ''
+            }
+          })
+          return collection as AccessTokenResponseAxiosLike
+        } catch (_) {
+          // Fall back to raw if SDK method errors
+        }
+      }
+      // Fallback: original raw request
+      return (await client.raw.get(basePath, {
+        params: {
+          include: 'sys.user',
+          limit,
+          order: '-sys.createdAt',
+          skip: currentSkip,
+          'sys.expiresAt[gt]': nowISO,
+          revokedAt: ''
+        }
+      })) as AccessTokenResponseAxiosLike
+    }
+
     try {
       while (!done) {
-        const resp = (await client.raw.get(basePath, {
-          params: {
-            include: 'sys.user',
-            limit,
-            order: '-sys.createdAt',
-            skip,
-            // Bracket param key to match API expectation
-            'sys.expiresAt[gt]': nowISO,
-            // The 'revokedAt' param (without value) is represented here as an empty string key if supported; omit value.
-            revokedAt: ''
-          }
-        })) as AccessTokenResponseAxiosLike
+        const resp = await fetchPage(skip)
 
         const items = extractItems(resp)
         if (total === undefined) total = extractTotal(resp)
