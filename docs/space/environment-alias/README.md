@@ -2,5 +2,6 @@
 
 ## Available subcommands:
 
-- [list](./list) - Lists all available Environment Aliases from a Space (currently only 'master').
+- [list](./list) - Lists all available Environment Aliases from a Space
 - [update](./update) - Changes the target Environment of the Environment Alias
+- [create](./create) - Adds a new Environment Alias for a space

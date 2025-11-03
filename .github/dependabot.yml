@@ -32,6 +32,21 @@ updates:
     - dependency-name: semantic-release
       versions:
         - ">=23.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    # https://github.com/SBoudrias/Inquirer.js/releases/tag/inquirer%409.0.0
+    - dependency-name: inquirer 
+      versions:
+        - ">=9.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    # https://github.com/sindresorhus/p-queue/releases/tag/v7.0.0
+    - dependency-name: p-queue
+      versions:
+        - ">=7.0.0"
+    # Pure ESM package. Remove from ignore when ESM is supported
+    #https://github.com/sindresorhus/open/releases/tag/v9.0.0
+    - dependency-name: open
+      versions:
+        - ">=9.0.0"
     commit-message:
       prefix: build
       include: scope
