@@ -3,15 +3,8 @@ import { join } from 'path'
 const bin = join(__dirname, './../../../../', 'bin')
 import { createClient, PlainClientAPI } from 'contentful-management'
 
-// Increase timeout for potentially slower network + retries
-jest.setTimeout(60000)
-
 const organizationId = process.env.CLI_E2E_ORG_ID
 const accessToken = process.env.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN || ''
-
-if (!organizationId) {
-  throw new Error('Missing CLI_E2E_ORG_ID env var required for taxonomy import integration tests')
-}
 
 const app = () => {
   return nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
