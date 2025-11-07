@@ -7,7 +7,7 @@ This command runs a series of security checks on a Contentful Organization.
 | `permission_check` | Validates user has sufficient privileges (owner/admin) to perform security checks  |
 | `security_contact_set` | Ensures ≥1 security contact is configured |
 | `audit_logging_configured` | Confirms audit logging is enabled |
-| `active_tokens_without_expiry` | Flags non-expiring active access tokens |
+| `active_tokens_with_long_expiry` | Flags active access tokens whose expiration date is more than 1 year in the future |
 | `sso_enabled` | Validates SSO is enabled |
 | `sso_enforced` | Validates SSO restricted mode is on |
 | `sso_exempt_users` | Flags users exempt from SSO enforcement |
@@ -64,8 +64,8 @@ Outputs JSON with fields:
       "itemCount": 1
     }
   },
-  "active_tokens_without_expiry": {
-    "description": "Active (not revoked) access tokens without an expiration date.",
+  "active_tokens_with_long_expiry": {
+    "description": "Active (not revoked) access tokens whose expiration date is more than 1 year in the future.",
     "pass": false,
     "data": {
       "offendingCount": 6

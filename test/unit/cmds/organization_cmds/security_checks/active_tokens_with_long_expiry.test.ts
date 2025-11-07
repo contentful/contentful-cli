@@ -1,4 +1,4 @@
-import { activeTokensWithoutExpiryCheck } from '../../../../../lib/cmds/organization_cmds/security_checks/active_tokens_without_expiry'
+import { activeTokensWithoutExpiryCheck } from '../../../../../lib/cmds/organization_cmds/security_checks/active_tokens_with_long_expiry'
 import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 describe('activeTokensWithoutExpiryCheck', () => {
@@ -18,8 +18,14 @@ describe('activeTokensWithoutExpiryCheck', () => {
     }, { __rawGet: rawGet })
   }
 
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000
+  const now = Date.now()
+  const withinYear = new Date(now + 100 * ONE_DAY_MS).toISOString() // ~100 days
+  const overYear = new Date(now + 400 * ONE_DAY_MS).toISOString() // > 1 year
+
   test('passes when no offending tokens', async () => {
-    const ctx = makeCtx([{ items: [ { revokedAt: '2024-01-01', sys: { expiresAt: '2025-01-01' } } ] }])
+    const ctx = makeCtx([{ items: [ { revokedAt: '2024-01-01', sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: withinYear } }, { revokedAt: null, sys: { expiresAt: null } } ] }])
+    // Note: first token is revoked so ignored; second within 1 year; third has no expiry (also ignored)
     const res = await activeTokensWithoutExpiryCheck.run(ctx)
     expect(ctx.__rawGet).toHaveBeenCalledTimes(1)
     // @ts-ignore
@@ -29,7 +35,7 @@ describe('activeTokensWithoutExpiryCheck', () => {
   })
 
   test('fails when offending tokens present', async () => {
-    const ctx = makeCtx([{ items: [ { revokedAt: null, sys: { expiresAt: null } }, { revokedAt: null, sys: { expiresAt: null } } ] }])
+    const ctx = makeCtx([{ items: [ { revokedAt: null, sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: overYear } } ] }])
     const res = await activeTokensWithoutExpiryCheck.run(ctx)
     expect(ctx.__rawGet).toHaveBeenCalledTimes(1)
     // @ts-ignore
@@ -39,10 +45,8 @@ describe('activeTokensWithoutExpiryCheck', () => {
   })
 
   test('handles multi-page pagination and aggregates offending count', async () => {
-    // First page: 100 safe tokens (revoked or with expiry)
-    const safeItems = Array.from({ length: 100 }, (_, i) => ({ revokedAt: i % 2 === 0 ? '2024-01-01' : null, sys: { expiresAt: i % 2 === 0 ? null : '2099-01-01' } }))
-    // Second page: 2 offending tokens
-    const offending = [ { revokedAt: null, sys: { expiresAt: null } }, { revokedAt: null, sys: { expiresAt: null } } ]
+    const safeItems = Array.from({ length: 100 }, (_, i) => ({ revokedAt: i % 2 === 0 ? '2024-01-01' : null, sys: { expiresAt: i % 2 === 0 ? null : withinYear } }))
+    const offending = [ { revokedAt: null, sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: overYear } } ]
     const total = safeItems.length + offending.length
     const ctx = makeCtx([
       { items: safeItems, total, limit: 100 },
@@ -69,9 +73,9 @@ describe('activeTokensWithoutExpiryCheck', () => {
   test('uses SDK accessor when available (no data wrapper)', async () => {
     const sdkFn = jest.fn().mockResolvedValue({
       items: [
-        { revokedAt: null, sys: { expiresAt: '2099-01-01' } },
-        { revokedAt: '2024-01-01', sys: { expiresAt: null } },
-        { revokedAt: null, sys: { expiresAt: null } } // offending
+        { revokedAt: null, sys: { expiresAt: overYear } }, // offending
+        { revokedAt: '2024-01-01', sys: { expiresAt: overYear } }, // revoked -> ignored
+        { revokedAt: null, sys: { expiresAt: withinYear } } // within year -> safe
       ],
       total: 3,
       limit: 100
@@ -84,7 +88,6 @@ describe('activeTokensWithoutExpiryCheck', () => {
     }
     const res = await activeTokensWithoutExpiryCheck.run(ctx)
     expect(sdkFn).toHaveBeenCalledTimes(1)
-    // raw.get should not have been needed
     // @ts-ignore
     expect(ctx.client.raw.get).not.toHaveBeenCalled()
     // @ts-ignore
@@ -95,7 +98,7 @@ describe('activeTokensWithoutExpiryCheck', () => {
 
   test('falls back to raw when SDK accessor throws', async () => {
     const sdkFn = jest.fn().mockRejectedValue(new Error('boom'))
-    const rawGet = jest.fn().mockResolvedValue({ data: { items: [ { revokedAt: null, sys: { expiresAt: null } } ], total: 1, limit: 100 } })
+    const rawGet = jest.fn().mockResolvedValue({ data: { items: [ { revokedAt: null, sys: { expiresAt: overYear } } ], total: 1, limit: 100 } })
     const ctx: SecurityContext = {
       client: { accessToken: { getManyForOrganization: sdkFn }, raw: { get: rawGet } } as any,
       organizationId: 'org1',

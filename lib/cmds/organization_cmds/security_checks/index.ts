@@ -5,14 +5,14 @@ import { ssoExemptUsersCheck } from './sso_exempt_users'
 import { ssoExemptUsersWithMfaDisabledCheck } from './sso_exempt_users_with_mfa_disabled'
 import { securityContactSetCheck } from './security_contact_set'
 import { auditLoggingConfiguredCheck } from './audit_logging_configured'
-import { activeTokensWithoutExpiryCheck } from './active_tokens_without_expiry'
+import { activeTokensWithLongExpiryCheck } from './active_tokens_with_long_expiry'
 import type { SecurityCheck } from './types'
 
 export const checks: SecurityCheck[] = [
   permissionCheck,
   securityContactSetCheck,
   auditLoggingConfiguredCheck,
-  activeTokensWithoutExpiryCheck,
+  activeTokensWithLongExpiryCheck,
   ssoEnabledCheck,
   ssoEnforcedCheck,
   ssoExemptUsersCheck,

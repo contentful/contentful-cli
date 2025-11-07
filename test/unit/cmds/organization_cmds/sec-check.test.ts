@@ -148,14 +148,21 @@ test('skips sso_enforced when sso_enabled dependency fails', async () => {
   expect(json.sso_enforced.reason).toBe('dependency_failed')
 })
 
-test('active_tokens_without_expiry fails with offending tokens present', async () => {
-  mockClient('ownerE', 'owner', { access_tokens: { data: { items: [ { revokedAt: null, sys: { id: 'tok1', expiresAt: null } }, { revokedAt: null, sys: { id: 'tok2', expiresAt: null } } ] } } })
+test.skip('active_tokens_with_long_expiry fails with offending tokens present (deprecated)', async () => {
+  // Deprecated: originally tested tokens without expiry
+})
+
+test('active_tokens_with_long_expiry fails with offending long-expiry tokens present', async () => {
+  mockClient('ownerE', 'owner', { access_tokens: { data: { items: [
+    { revokedAt: null, sys: { id: 'tok1', expiresAt: '2100-01-01T00:00:00Z' } },
+    { revokedAt: null, sys: { id: 'tok2', expiresAt: '2100-06-01T00:00:00Z' } }
+  ] } } })
   const outName = 'offending-tokens-merged.json'
   const outPath = path.join(process.cwd(), 'data', outName)
   if (fs.existsSync(outPath)) fs.unlinkSync(outPath)
   await securityCheck({ context: { managementToken: 'token' }, 'organization-id': ORG_ID, 'output-file': outName })
   const json = JSON.parse(fs.readFileSync(outPath, 'utf8'))
-  expect(json.active_tokens_without_expiry.pass).toBe(false)
-  expect(json.active_tokens_without_expiry.data.offendingCount).toBe(2)
+  expect(json.active_tokens_with_long_expiry.pass).toBe(false)
+  expect(json.active_tokens_with_long_expiry.data.offendingCount).toBe(2)
   expect(exitStub).not.toHaveBeenCalled()
 })
