@@ -16,7 +16,7 @@ jobs:
       actions: read
 
     steps:
-      - name: 'Retrieve Secrets from Vault'
+      - name: "Retrieve Secrets from Vault"
         id: vault
         uses: hashicorp/vault-action@v3.4.0
         with:
@@ -48,8 +48,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -59,6 +59,7 @@ jobs:
         with:
           path: |
             dist
+            build
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Setup npmrc file

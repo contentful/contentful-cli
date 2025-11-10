@@ -6,7 +6,7 @@ on:
       VAULT_URL:
         required: true
       CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
-        required: true     
+        required: true
       CLI_E2E_ORG_ID:
         required: true
 
@@ -32,9 +32,10 @@ jobs:
         with:
           path: |
             dist
+            build
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
-      # Prior ci publishing did not lint or format, commented out to preserve workflow  
+      # Prior ci publishing did not lint or format, commented out to preserve workflow
       # - name: Run linter
       #   run: npm run lint
 
@@ -57,8 +58,8 @@ jobs:
       #     CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
       #     CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
 
-      # - name: Run e2e tests
-      #   run: npm run test:e2e
-      #   env:
-      #     CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-      #     CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
+      - name: Run e2e tests
+        run: chmod +x build/contentful-cli-* && npm run test:e2e
+        env:
+          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+          CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
