@@ -18,7 +18,7 @@ jobs:
     secrets: inherit
 
   release:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' || github.ref == 'refs/heads/DX-535-update-to-gha-publishing')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' || github.ref == 'refs/heads/DX-535-gha-publishing')
     needs: [build, check]
     permissions:
       contents: write

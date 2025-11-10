@@ -180,7 +180,7 @@
         "prerelease": true
       },
       {
-        "name": "DX-535-update-to-gha-publishing",
+        "name": "DX-535-gha-publishing",
         "channel": "dev",
         "prerelease": true
       }
