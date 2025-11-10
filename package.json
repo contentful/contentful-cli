@@ -178,6 +178,11 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
+      },
+      {
+        "name": "DX-535-update-to-gha-publishing",
+        "channel": "dev",
+        "prerelease": true
       }
     ],
     "plugins": [

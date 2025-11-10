@@ -1,4 +1,3 @@
-.github
 .nyc_output
 coverage
 package-lock.json
