@@ -51,12 +51,11 @@ jobs:
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
           CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
 
-      # prior integration and e2e tests not passing, commented out to preserve workflow
-      # - name: Run integration tests
-      #   run: npm run test:integration:ci
-      #   env:
-      #     CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-      #     CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
+      - name: Run integration tests
+        run: npm run test:integration:ci
+        env:
+          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+          CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
 
       - name: Run e2e tests
         run: chmod +x build/contentful-cli-* && npm run test:e2e
