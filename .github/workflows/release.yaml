@@ -26,8 +26,6 @@ jobs:
           path: github-actions
           exportEnv: false
           secrets: |
-            secret/data/github/github_packages_read GITHUB_PACKAGES_READ_TOKEN | GITHUB_PACKAGES_READ_TOKEN;
-            secret/data/github/github_packages_write GITHUB_PACKAGES_WRITE_TOKEN | GITHUB_PACKAGES_WRITE_TOKEN;
             github/token/${{ github.event.repository.name }}-semantic-release token | GITHUB_TOKEN ;
       - name: Get Automation Bot User ID
         id: get-user-id
@@ -40,16 +38,18 @@ jobs:
           git config --global user.name 'contentful-automation[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+contentful-automation[bot]@users.noreply.github.com'
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: "npm"
+
+      - name: Install latest npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: npm ci
@@ -61,12 +61,10 @@ jobs:
             dist
             build
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
-
-      - name: Setup npmrc file
-        run: |
-          echo -e "//npm.pkg.github.com/:_authToken=${{ steps.vault.outputs.GITHUB_PACKAGES_WRITE_TOKEN }}\n@contentful:registry=https://npm.pkg.github.com" > ./.npmrc
       - name: Run Release
         run: |
+          echo "Starting Semantic Release Process"
+          echo "npm version: $(npm -v)"
           npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
@@ -85,5 +83,4 @@ jobs:
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Version**: ${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **GitHub Packages**: https://github.com/${{ github.repository }}/packages" >> $GITHUB_STEP_SUMMARY
           echo "- **GitHub Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY

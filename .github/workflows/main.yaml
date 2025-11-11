@@ -17,6 +17,11 @@ jobs:
     uses: ./.github/workflows/check.yaml
     secrets: inherit
 
+  e2e-tests:
+    needs: [build, check]
+    uses: ./.github/workflows/test-e2e.yaml
+    secrets: inherit
+
   release:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' || github.ref == 'refs/heads/DX-535-gha-publishing')
     needs: [build, check]

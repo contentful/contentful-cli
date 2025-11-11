@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "18"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
@@ -53,12 +53,6 @@ jobs:
 
       - name: Run integration tests
         run: npm run test:integration:ci
-        env:
-          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-          CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
-
-      - name: Run e2e tests
-        run: chmod +x build/contentful-cli-* && npm run test:e2e
         env:
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
           CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
