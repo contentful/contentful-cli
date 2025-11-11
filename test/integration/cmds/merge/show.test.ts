@@ -84,7 +84,7 @@ describe('merge show command args validation', () => {
   })
 })
 
-describe.only('merge show displays the diff between two envs', () => {
+describe('merge show displays the diff between two envs', () => {
   it('displays the diff correctly', done => {
     app()
       .run('merge show --se master --te beta --space-id t7gnd9bsbzjy')

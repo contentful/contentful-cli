@@ -85,6 +85,7 @@ describe('merge export command args validation', () => {
 })
 
 describe('merge exports outputs the diff between two envs', () => {
+  jest.setTimeout(60000)
   it('runs correctly', done => {
     app()
       .run('merge export --se master --te beta --space-id t7gnd9bsbzjy')
