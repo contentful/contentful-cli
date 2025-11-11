@@ -24,7 +24,7 @@ jobs:
 
   release:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' || github.ref == 'refs/heads/DX-535-gha-publishing')
-    needs: [build, check]
+    needs: [build, check, e2e-tests]
     permissions:
       contents: write
       id-token: write
