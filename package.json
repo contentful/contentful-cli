@@ -73,7 +73,7 @@
     "nyc": "^17.0.0",
     "pkg": "^5.8.1",
     "rimraf": "^3.0.2",
-    "semantic-release": "^22.0.12",
+    "semantic-release": "^25.0.2",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
     "talkback": "^3.0.1",
