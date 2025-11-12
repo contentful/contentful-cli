@@ -178,11 +178,6 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
-      },
-      {
-        "name": "DX-535-gha-publishing",
-        "channel": "dev",
-        "prerelease": true
       }
     ],
     "plugins": [
