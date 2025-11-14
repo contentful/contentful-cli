@@ -1,0 +1,32 @@
+name: CI
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+
+  check:
+    needs: build
+    uses: ./.github/workflows/check.yaml
+    secrets: inherit
+
+  e2e-tests:
+    needs: [build, check]
+    uses: ./.github/workflows/test-e2e.yaml
+    secrets: inherit
+
+  release:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
+    needs: [build, check, e2e-tests]
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+    uses: ./.github/workflows/release.yaml
+    secrets:
+      VAULT_URL: ${{ secrets.VAULT_URL }}

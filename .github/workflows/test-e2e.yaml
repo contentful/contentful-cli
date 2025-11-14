@@ -1,0 +1,47 @@
+name: Run Checks
+
+on:
+    workflow_call:
+        secrets:
+            VAULT_URL:
+                required: true
+            CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
+                required: true
+            CLI_E2E_ORG_ID:
+                required: true
+
+jobs:
+    e2e-tests:
+        strategy:
+            max-parallel: 1
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: "22"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Restore the build folders
+              uses: actions/cache/restore@v4
+              with:
+                  path: |
+                      dist
+                      build
+                  key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+
+            - name: Run e2e tests
+              run: chmod +x build/contentful-cli-* && npm run test:e2e
+              env:
+                  CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+                  CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
