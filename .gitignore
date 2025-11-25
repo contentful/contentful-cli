@@ -7,7 +7,6 @@ output
 *.dockerignore
 
 # NPM config
-.npmrc
 
 # Created by https://www.gitignore.io/api/vim,code,linux,macos,windows,sublimetext,node
 
