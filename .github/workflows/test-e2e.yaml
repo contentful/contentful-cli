@@ -1,5 +1,7 @@
 name: Run Checks
 
+permissions:
+      contents: read
 on:
     workflow_call:
         secrets:
