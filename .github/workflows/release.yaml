@@ -52,7 +52,9 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npx allow-scripts
 
       - name: Restore the build folders
         uses: actions/cache/restore@v4
