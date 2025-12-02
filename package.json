@@ -179,11 +179,6 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
-      },
-      {
-        "name": "workflow-permissions",
-        "channel": "dev",
-        "prerelease": true
       }
     ],
     "plugins": [
