@@ -93,7 +93,7 @@
     "contentful-batch-libs": "^10.1.1",
     "contentful-collection": "^0.0.4",
     "contentful-export": "^7.21.78",
-    "contentful-import": "9.4.127",
+    "contentful-import": "9.4.129",
     "contentful-management": "^11.39.0",
     "contentful-migration": "^4.21.0",
     "emojic": "^1.1.11",
