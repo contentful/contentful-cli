@@ -9,7 +9,7 @@ This command exports content (and optionally taxonomies if used at an Organisati
 ## Usage
 
 ```bash
-contentful region migrate \
+contentful sync region \
   --source-region na \
   --target-region eu \
   --source-space-id <source-space-id> \
