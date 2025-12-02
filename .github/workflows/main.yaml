@@ -21,7 +21,7 @@ jobs:
     secrets: inherit
 
   release:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/workflow-permissions')
     needs: [build, check, e2e-tests]
     permissions:
       contents: write
