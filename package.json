@@ -43,6 +43,7 @@
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.18.6",
     "@contentful/integration-test-utils": "^2.0.0",
+    "@lavamoat/allow-scripts": "^3.4.1",
     "@types/inquirer": "^8.2.1",
     "@types/inquirer-autocomplete-prompt": "^1.3.5",
     "@types/jest": "^28.1.6",
@@ -218,5 +219,12 @@
         }
       ]
     ]
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "$root$": true,
+      "husky": true,
+      "inquirer-select-directory>inquirer>external-editor>spawn-sync": true
+    }
   }
 }
