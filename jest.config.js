@@ -7,9 +7,7 @@ module.exports = {
   testEnvironmentOptions: {
     url: 'http://localhost/'
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(contentful-batch-libs|contentful-sdk-core|p-throttle)/)'
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(.+))'],
   setupFilesAfterEnv: ['<rootDir>/.jest/setup.js'],
   // Use this to set env variables for local development
   setupFiles: ['<rootDir>/.jest/env.js'],
