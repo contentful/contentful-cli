@@ -38,7 +38,7 @@ const taxonomyImport = async (
             concepts.map((concept: ConceptProps | CreateConceptWithIdProps) =>
               ctx.requestQueue.add(() => {
                 if (entityHasVersion(concept)) {
-                  return ctx.cmaClient.concept.updatePut(
+                  return ctx.cmaClient.concept.update(
                     {
                       organizationId: organizationId,
                       conceptId: concept.sys.id,
@@ -126,7 +126,7 @@ const taxonomyImport = async (
               ) =>
                 ctx.requestQueue.add(() => {
                   if (entityHasVersion(conceptScheme)) {
-                    return ctx.cmaClient.conceptScheme.updatePut(
+                    return ctx.cmaClient.conceptScheme.update(
                       {
                         organizationId: organizationId,
                         conceptSchemeId: conceptScheme.sys.id,
