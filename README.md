@@ -17,7 +17,7 @@
 - Generate migration scripts for the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/main/README.md#reference-documentation) from existing spaces.
 - Seed your space with example data.
 - Manage installation of [extensions](https://github.com/contentful/extensions) in a space.
-- Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
+- Please Securely login and logout with our [OAuth service](https://www.contentful.com/developers/docs/references/authentication/).
 - Run organization security & configuration checks (security contact, audit logging, access tokens, SSO, MFA) with `contentful organization sec-check`.
 - Find all available commands in the [docs section](https://github.com/contentful/contentful-cli/tree/main/docs).
 
