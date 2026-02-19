@@ -36,6 +36,7 @@ jobs:
             dist
             build
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
 
       # Prior ci publishing did not lint or format, commented out to preserve workflow
       # - name: Run linter
