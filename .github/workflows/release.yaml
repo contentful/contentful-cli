@@ -63,6 +63,7 @@ jobs:
             dist
             build
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       - name: Run Release
         run: |
           echo "Starting Semantic Release Process"

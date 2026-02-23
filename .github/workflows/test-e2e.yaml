@@ -43,6 +43,7 @@ jobs:
                       dist
                       build
                   key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+                  fail-on-cache-miss: true
 
             - name: Run e2e tests
               run: chmod +x build/contentful-cli-* && npm run test:e2e
