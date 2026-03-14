@@ -1,0 +1,31 @@
+import {createCommand} from '../../utils/command-factory'
+import {firstLocaleValue} from '../../utils/output'
+import {validateId} from '../../utils/validators'
+
+const {command, desc, builder, handler} = createCommand({
+  command: 'publish <id>',
+  desc: 'Publish an asset',
+  feature: 'asset-publish',
+  usage: 'Usage: contentful asset publish <id> [options]',
+  supportsDryRun: true,
+  handler: async (environment, argv) => {
+    const id = validateId(argv.id, 'Asset ID')
+    const asset = await environment.getAsset(id)
+    return asset.publish()
+  },
+  dryRunHandler: async (environment, argv) => {
+    const id = validateId(argv.id, 'Asset ID')
+    return environment.getAsset(id)
+  },
+  tableFormat: (asset) => ({
+    rows: [
+      ['ID', asset.sys.id],
+      ['Title', firstLocaleValue(asset.fields?.title) || '-'],
+      ['Version', String(asset.sys.version)],
+      ['Published Version', String(asset.sys.publishedVersion || '-')]
+    ]
+  }),
+  quietExtractor: (asset) => [asset.sys.id]
+})
+
+export {command, desc, builder, handler}
