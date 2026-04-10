@@ -54,7 +54,7 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "app-root-path": "^3.0.0",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "babel-jest": "^30.2.0",
     "concurrently": "^9.0.0",
     "cross-env": "^10.1.0",
@@ -222,7 +222,8 @@
     "allowScripts": {
       "$root$": true,
       "husky": true,
-      "inquirer-select-directory>inquirer>external-editor>spawn-sync": true
+      "inquirer-select-directory>inquirer>external-editor>spawn-sync": true,
+      "@yao-pkg/pkg>esbuild": true
     }
   }
 }
