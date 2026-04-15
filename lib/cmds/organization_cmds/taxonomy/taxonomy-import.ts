@@ -48,14 +48,14 @@ const taxonomyImport = async (
                   )
                 }
                 // createWithId is broken in contentful-management — it sends no X-Contentful-Version
-                // header, which the API requires on all taxonomy PUT requests. Use updatePut(version: 0)
+                // header, which the API requires on all taxonomy PUT requests. Use updatePut(version: 1)
                 // instead: same PUT endpoint, but correctly sends the header. See DX-967.
                 // TODO: revert to createWithId once the SDK fixes its implementation.
                 return ctx.cmaClient.concept.updatePut(
                   {
                     organizationId: organizationId,
                     conceptId: concept.sys.id,
-                    version: 0
+                    version: 1
                   },
                   omit(concept, ['broader', 'related'])
                 )
@@ -146,7 +146,7 @@ const taxonomyImport = async (
                     {
                       organizationId: organizationId,
                       conceptSchemeId: conceptScheme.sys.id,
-                      version: 0
+                      version: 1
                     },
                     conceptScheme
                   )

@@ -150,7 +150,7 @@ afterEach(() => {
 
 // TODO(DX-967): re-enable when contentful-management fixes concept.createWithId /
 // conceptScheme.createWithId to send X-Contentful-Version header. The CLI works around
-// the broken SDK methods by using updatePut(version: 0) for new entities — see taxonomy-import.ts.
+// the broken SDK methods by using updatePut(version: 1) for new entities — see taxonomy-import.ts.
 // Once the SDK is fixed, revert the source and this test.
 test.skip('initializes client w/ taxonomy data - createWithId', async () => {
   mockReadContentFile.mockResolvedValue({
