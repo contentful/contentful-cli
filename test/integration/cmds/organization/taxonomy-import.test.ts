@@ -23,28 +23,31 @@ describe('organization import', () => {
     cmaClient = createClient({ accessToken }, { type: 'plain' })
   })
   afterAll(async () => {
-    await Promise.allSettled([
-      cmaClient.conceptScheme.delete({
-        organizationId,
-        conceptSchemeId: 'scheme0',
-        version: 2
-      }),
-      cmaClient.concept.delete({
-        organizationId,
-        conceptId: 'concept2',
-        version: 1
-      }),
-      cmaClient.concept.delete({
-        organizationId,
-        conceptId: 'concept1',
-        version: 2
-      }),
-      cmaClient.concept.delete({
-        organizationId,
-        conceptId: 'concept0',
-        version: 3
-      })
-    ])
+    const conceptDeletes = ['concept0', 'concept1', 'concept2'].map(conceptId =>
+      cmaClient.concept
+        .get({ organizationId, conceptId })
+        .then(c =>
+          cmaClient.concept.delete({
+            organizationId,
+            conceptId,
+            version: c.sys.version
+          })
+        )
+        .catch(() => {})
+    )
+    const schemeDeletes = ['scheme0'].map(conceptSchemeId =>
+      cmaClient.conceptScheme
+        .get({ organizationId, conceptSchemeId })
+        .then(s =>
+          cmaClient.conceptScheme.delete({
+            organizationId,
+            conceptSchemeId,
+            version: s.sys.version
+          })
+        )
+        .catch(() => {})
+    )
+    await Promise.allSettled([...conceptDeletes, ...schemeDeletes])
   })
 
   test('should print help message', done => {

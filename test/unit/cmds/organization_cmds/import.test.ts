@@ -148,7 +148,11 @@ afterEach(() => {
   jest.clearAllMocks()
 })
 
-test('initializes client w/ taxonomy data - createWithId', async () => {
+// TODO(DX-967): re-enable when contentful-management fixes concept.createWithId /
+// conceptScheme.createWithId to send X-Contentful-Version header. The CLI works around
+// the broken SDK methods by using updatePut(version: 0) for new entities — see taxonomy-import.ts.
+// Once the SDK is fixed, revert the source and this test.
+test.skip('initializes client w/ taxonomy data - createWithId', async () => {
   mockReadContentFile.mockResolvedValue({
     taxonomy: {
       concepts: [
@@ -197,9 +201,17 @@ test('initializes client w/ taxonomy data - updatePut', async () => {
   expect(mockReadContentFile).toHaveBeenCalledTimes(1)
   expect(fakeClient.concept.createWithId).toHaveBeenCalledTimes(0)
   expect(fakeClient.concept.updatePut).toHaveBeenCalledTimes(2)
+  expect(fakeClient.concept.updatePut).toHaveBeenCalledWith(
+    expect.objectContaining({ version: 1 }),
+    expect.anything()
+  )
   expect(fakeClient.concept.patch).toHaveBeenCalledTimes(2)
   expect(fakeClient.conceptScheme.createWithId).toHaveBeenCalledTimes(0)
   expect(fakeClient.conceptScheme.updatePut).toHaveBeenCalledTimes(1)
+  expect(fakeClient.conceptScheme.updatePut).toHaveBeenCalledWith(
+    expect.objectContaining({ version: 1 }),
+    expect.anything()
+  )
 })
 
 test('initializes client without taxonomy data', async () => {
