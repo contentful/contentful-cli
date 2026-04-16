@@ -21,6 +21,20 @@ let cmaClient: PlainClientAPI
 describe('organization import', () => {
   beforeAll(async () => {
     cmaClient = createClient({ accessToken }, { type: 'plain' })
+
+    const [concepts, schemes] = await Promise.all([
+      cmaClient.concept.getMany({ organizationId }),
+      cmaClient.conceptScheme.getMany({ organizationId })
+    ])
+    console.log(`\n=== Pre-test taxonomy state ===`)
+    console.log(`Concepts (${concepts.items.length}):`)
+    for (const c of concepts.items) {
+      console.log(`  ${c.sys.id}  v${c.sys.version}  "${c.prefLabel?.['en-US']}"`)
+    }
+    console.log(`Concept Schemes (${schemes.items.length}):`)
+    for (const s of schemes.items) {
+      console.log(`  ${s.sys.id}  v${s.sys.version}  "${s.prefLabel?.['en-US']}"`)
+    }
   })
   afterAll(async () => {
     await Promise.allSettled([
