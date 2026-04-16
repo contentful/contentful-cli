@@ -54,6 +54,13 @@ jobs:
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
           CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
 
+      - name: Inspect taxonomy state (pre-test)
+        run: npx ts-node test/integration/cmds/organization/inspect-taxonomy.ts
+        continue-on-error: true
+        env:
+          CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
+          CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
+
       - name: Run integration tests
         run: npm run test:integration:ci
         env:
