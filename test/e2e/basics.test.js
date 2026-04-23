@@ -3,6 +3,8 @@ const { platform } = require('os')
 
 const execa = require('execa')
 
+jest.setTimeout(60000)
+
 let cmd = null
 switch (platform()) {
   case 'win32':

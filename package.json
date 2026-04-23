@@ -53,8 +53,9 @@
     "@types/yargs": "^13.0.12",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
+    "@yao-pkg/pkg": "^6.14.2",
     "app-root-path": "^3.0.0",
-    "axios": "^1.13.5",
+    "axios": "^1.15.0",
     "babel-jest": "^30.2.0",
     "concurrently": "^9.0.0",
     "cross-env": "^10.1.0",
@@ -71,7 +72,6 @@
     "lint-staged": "^16.2.3",
     "nixt": "^0.5.1",
     "nyc": "^18.0.0",
-    "pkg": "^5.8.1",
     "rimraf": "^3.0.2",
     "semantic-release": "^25.0.2",
     "stream-buffers": "^3.0.2",
@@ -89,12 +89,12 @@
     "cli-highlight": "^2.1.11",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
-    "contentful-batch-libs": "^10.1.1",
+    "contentful-batch-libs": "^11.0.0",
     "contentful-collection": "^0.0.4",
-    "contentful-export": "^7.22.4",
-    "contentful-import": "9.4.131",
-    "contentful-management": "^11.39.0",
-    "contentful-migration": "^4.21.0",
+    "contentful-export": "^8.0.0",
+    "contentful-import": "10.0.0",
+    "contentful-management": "^12.2.0",
+    "contentful-migration": "^5.0.0",
     "emojic": "^1.1.11",
     "execa": "^5.0.0",
     "figlet": "^1.2.0",
@@ -123,7 +123,7 @@
     "yargs": "~13.3.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "files": [
     "dist",
@@ -151,9 +151,9 @@
   },
   "pkg": {
     "targets": [
-      "node18-macos-x64",
-      "node18-linux-x64",
-      "node18-win-x64"
+      "node22-macos-x64",
+      "node22-linux-x64",
+      "node22-win-x64"
     ],
     "outputPath": "build",
     "scripts": [
@@ -184,6 +184,10 @@
         "@semantic-release/commit-analyzer",
         {
           "releaseRules": [
+            {
+              "breaking": true,
+              "release": "major"
+            },
             {
               "type": "build",
               "scope": "deps",
@@ -222,7 +226,8 @@
     "allowScripts": {
       "$root$": true,
       "husky": true,
-      "inquirer-select-directory>inquirer>external-editor>spawn-sync": true
+      "inquirer-select-directory>inquirer>external-editor>spawn-sync": true,
+      "@yao-pkg/pkg>esbuild": true
     }
   }
 }

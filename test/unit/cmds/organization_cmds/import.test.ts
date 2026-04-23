@@ -129,12 +129,12 @@ const createTaxonomyConceptSchemeMock = (
 const fakeClient = {
   concept: {
     createWithId: jest.fn(),
-    updatePut: jest.fn(),
+    update: jest.fn(),
     patch: jest.fn()
   },
   conceptScheme: {
     createWithId: jest.fn(),
-    updatePut: jest.fn()
+    update: jest.fn()
   }
 }
 
@@ -169,13 +169,13 @@ test('initializes client w/ taxonomy data - createWithId', async () => {
   expect(mockCreatePlainClient).toHaveBeenCalledTimes(1)
   expect(mockReadContentFile).toHaveBeenCalledTimes(1)
   expect(fakeClient.concept.createWithId).toHaveBeenCalledTimes(2)
-  expect(fakeClient.concept.updatePut).toHaveBeenCalledTimes(0)
+  expect(fakeClient.concept.update).toHaveBeenCalledTimes(0)
   expect(fakeClient.concept.patch).toHaveBeenCalledTimes(2)
   expect(fakeClient.conceptScheme.createWithId).toHaveBeenCalledTimes(1)
-  expect(fakeClient.conceptScheme.updatePut).toHaveBeenCalledTimes(0)
+  expect(fakeClient.conceptScheme.update).toHaveBeenCalledTimes(0)
 })
 
-test('initializes client w/ taxonomy data - updatePut', async () => {
+test('initializes client w/ taxonomy data - update', async () => {
   mockReadContentFile.mockResolvedValue({
     taxonomy: {
       concepts: [
@@ -196,10 +196,10 @@ test('initializes client w/ taxonomy data - updatePut', async () => {
   expect(mockCreatePlainClient).toHaveBeenCalledTimes(1)
   expect(mockReadContentFile).toHaveBeenCalledTimes(1)
   expect(fakeClient.concept.createWithId).toHaveBeenCalledTimes(0)
-  expect(fakeClient.concept.updatePut).toHaveBeenCalledTimes(2)
+  expect(fakeClient.concept.update).toHaveBeenCalledTimes(2)
   expect(fakeClient.concept.patch).toHaveBeenCalledTimes(2)
   expect(fakeClient.conceptScheme.createWithId).toHaveBeenCalledTimes(0)
-  expect(fakeClient.conceptScheme.updatePut).toHaveBeenCalledTimes(1)
+  expect(fakeClient.conceptScheme.update).toHaveBeenCalledTimes(1)
 })
 
 test('initializes client without taxonomy data', async () => {
@@ -215,8 +215,8 @@ test('initializes client without taxonomy data', async () => {
   expect(mockCreatePlainClient).toHaveBeenCalledTimes(1)
   expect(mockReadContentFile).toHaveBeenCalledTimes(1)
   expect(fakeClient.concept.createWithId).toHaveBeenCalledTimes(0)
-  expect(fakeClient.concept.updatePut).toHaveBeenCalledTimes(0)
+  expect(fakeClient.concept.update).toHaveBeenCalledTimes(0)
   expect(fakeClient.concept.patch).toHaveBeenCalledTimes(0)
   expect(fakeClient.conceptScheme.createWithId).toHaveBeenCalledTimes(0)
-  expect(fakeClient.conceptScheme.updatePut).toHaveBeenCalledTimes(0)
+  expect(fakeClient.conceptScheme.update).toHaveBeenCalledTimes(0)
 })
