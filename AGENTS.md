@@ -11,6 +11,7 @@ Read this file first. It tells you where to find context in this repo.
 | Why decisions were made | [docs/ADRs/](./docs/ADRs/) |
 | What this repo does | [README.md](./README.md) |
 | Per-command usage docs | [docs/](./docs/) |
+| Active specs/work | [docs/specs/](./docs/specs/) |
 | PR review rules | [.bito/guidelines/](./.bito/guidelines/) |
 | CLI entrypoint | `bin/contentful.js` → `dist/lib/cli.js` |
 | Command implementations | `lib/cmds/` and `lib/cmds/<parent>_cmds/` |
