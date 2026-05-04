@@ -69,6 +69,8 @@ This is a **CLI tool distributed via npm and standalone binaries**, not a runnin
 
 **Rollback** for a bad release means publishing a new patch version. Standalone binaries are attached to GitHub releases and can't be recalled, but npm versions can be deprecated via `npm deprecate`.
 
+**Diagnosing issues with a release:** Check [GitHub Issues](https://github.com/contentful/contentful-cli/issues) for user reports, npm download stats for adoption anomalies, and the the team's internal Slack channel for reports. There are no automated error reporting or telemetry systems in the CLI.
+
 ## Build & Quality
 
 ```bash

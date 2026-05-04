@@ -58,6 +58,8 @@ node bin/contentful.js login
 node bin/contentful.js content-type list --space-id <space-id>
 ```
 
+> **This is a CLI, not a service.** There is no `npm start` or long-running process. To "run it locally," build with `npm run tsc` and then invoke commands via `node bin/contentful.js <command>` or via `npm link`.
+
 ### Watch mode
 
 ```bash
