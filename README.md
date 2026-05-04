@@ -117,6 +117,10 @@ If you have other problems with Contentful not related to this library, you can 
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
+## For AI Agents
+
+If you are an AI coding agent working in this repository, read [AGENTS.md](./AGENTS.md) first. It tells you where to find architectural context, development setup, decision records, and repo-specific rules.
+
 ## :scroll: License
 
 MIT
