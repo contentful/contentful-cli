@@ -8,6 +8,8 @@ Accepted
 
 Integration tests need to exercise real CLI commands against the Contentful API, but hitting the API directly in CI is slow, flaky, and requires credentials. The tests needed a way to record and replay HTTP interactions deterministically.
 
+Talkback was introduced in August 2018 (`test(integration): Add recordings for integration tests`).
+
 ## Decision
 
 Use [talkback](https://github.com/ijpiantanida/talkback) as an HTTP proxy that records API responses as "tapes" and replays them on subsequent runs. The proxy runs alongside tests via `concurrently`:

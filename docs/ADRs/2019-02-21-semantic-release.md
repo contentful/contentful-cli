@@ -8,6 +8,8 @@ Accepted
 
 Manual versioning and publishing is error-prone and creates bottlenecks. The CLI needed a way to automatically determine version bumps from commit messages and publish to npm without human intervention.
 
+Semantic-release was adopted in February 2019 (PR #122, `config(ci): add semantic release`).
+
 ## Decision
 
 Adopt [semantic-release](https://github.com/semantic-release/semantic-release) with the Angular commit convention. Configuration in `package.json`:

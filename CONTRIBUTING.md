@@ -6,7 +6,7 @@ We appreciate any community contributions to this project, whether in the form o
 
 | Tool | Version | Notes |
 |---|---|---|
-| Node.js | 24 (see `.nvmrc`) | Use `nvm use` to switch automatically |
+| Node.js | 24 (see `.nvmrc`); >=22 supported | Use `nvm use` to switch automatically |
 | npm | 10+ | Ships with Node.js 24 |
 
 The `.npmrc` sets `ignore-scripts=true` to prevent post-install scripts from running automatically. After install, run `npx allow-scripts` to explicitly allow scripts from trusted packages (configured via `lavamoat` in `package.json`).

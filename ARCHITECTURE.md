@@ -2,7 +2,7 @@
 
 ## Overview
 
-`contentful-cli` is the official command-line interface for [Contentful](https://www.contentful.com). It provides subcommands for managing spaces, environments, content types, extensions, migrations, import/export, organization security checks, and the merge workflow. It is published to npm and also distributed as standalone binaries for macOS, Linux, and Windows.
+`contentful-cli` is the official command-line interface for [Contentful](https://www.contentful.com). It provides subcommands for managing spaces, environments, content types, extensions, migrations, import/export, cross-region sync, organization security checks, and the merge workflow. It is published to npm and also distributed as standalone binaries for macOS, Linux, and Windows.
 
 ## System Context
 
@@ -27,13 +27,13 @@ The CLI is the **user-facing entry point** for content-as-code workflows. It del
 |---|---|
 | `bin/contentful.js` | Entry point — requires compiled `dist/lib/cli.js` |
 | `lib/cli.ts` | Yargs CLI setup, top-level command registration |
-| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `organization`, etc.) |
+| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `organization`, `sync`, etc.) |
 | `lib/cmds/<cmd>_cmds/` | Subcommands (e.g., `space_cmds/create.ts`, `organization_cmds/sec-check.ts`) |
 | `lib/utils/` | Shared utilities — API clients, error handling, proxy, pagination, merge logic |
 | `lib/utils/merge/` | Merge-specific utilities (changeset rendering, content type helpers) |
 | `lib/core/events/` | Internal event system for space creation and logging |
-| `lib/config.js` | Configuration management (`.contentfulrc.json` read/write) |
-| `lib/context.js` | Context resolution — active space, environment, token |
+| `lib/config.js` | Command authorization lists (no-auth-needed, no-space-id-needed) |
+| `lib/context.js` | Context resolution — reads `.contentfulrc.json`, resolves active space, environment, token |
 | `docs/` | Per-command documentation with usage examples |
 | `test/unit/` | Unit tests (Jest) |
 | `test/integration/` | Integration tests with talkback proxy recordings |
@@ -61,7 +61,7 @@ The CLI is the **user-facing entry point** for content-as-code workflows. It del
 | `inquirer` (^8.2.7) | Interactive prompts (space selection, login, init) |
 | `listr` | Task runner UI for multi-step operations |
 | `chalk` | Terminal styling |
-| `@yao-pkg/pkg` | Standalone binary compilation ([ADR: yao-pkg migration](./docs/ADRs/2026-04-10-yao-pkg-standalone-binaries.md)) |
+| `@yao-pkg/pkg` (dev) | Standalone binary compilation ([ADR: yao-pkg migration](./docs/ADRs/2026-04-10-yao-pkg-standalone-binaries.md)) |
 
 ## Configuration
 
@@ -88,4 +88,3 @@ The CLI is the **user-facing entry point** for content-as-code workflows. It del
 - **Developers** — installed globally via `npm install -g contentful-cli` or `npx contentful-cli`
 - **CI/CD pipelines** — migration execution, import/export, environment management in automated workflows
 - **Standalone binary users** — macOS/Linux/Windows binaries attached to GitHub releases
-- **contentful/experience-design-system-sdk** — planned integration as `contentful design-system` subcommand (post-M1)
