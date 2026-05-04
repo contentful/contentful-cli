@@ -1,96 +1,158 @@
+# Contributing
+
 We appreciate any community contributions to this project, whether in the form of issues or Pull Requests.
 
-This document outlines the we'd like you to follow in terms of commit messages and code style.
+## Prerequisites
 
-It also explains what to do in case you want to setup the project locally and run tests.
+| Tool | Version | Notes |
+|---|---|---|
+| Node.js | 24 (see `.nvmrc`) | Use `nvm use` to switch automatically |
+| npm | 10+ | Ships with Node.js 24 |
 
-# Setup
+The `.npmrc` sets `ignore-scripts=true` to prevent post-install scripts from running automatically. After install, run `npx allow-scripts` to explicitly allow scripts from trusted packages (configured via `lavamoat` in `package.json`).
 
-Run `npm install` or `yarn` to install all necessary dependencies. When running `npm install` or `yarn` locally, `dist` is not compiled.
+## Getting Started
 
-All necessary dependencies are installed under `node_modules` and any necessary tools can be accessed via npm scripts. There is no need to install anything globally.
+```bash
+# Clone and install
+git clone git@github.com:contentful/contentful-cli.git
+cd contentful-cli
+npm ci
+npx allow-scripts
 
-# Code style
+# Build (compiles TypeScript to dist/)
+npm run tsc
 
-This project uses [standard](https://github.com/feross/standard). Install a relevant editor plugin if you'd like.
+# Run unit tests
+npm run test:unit
+```
 
-Everywhere where it isn't applicable, follow a style similar to the existing code.
+## Development Workflow
 
-# Commit messages and issues
+To avoid your development version colliding with a globally installed `contentful` binary, change the command name in `package.json`:
 
-This project uses the [Angular JS Commit Message Conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit), via semantic-release. See the semantic-release [Default Commit Message Format](https://github.com/semantic-release/semantic-release#default-commit-message-format) section for more details.
+```diff
+  "bin": {
+-     "contentful": "bin/contentful.js"
++     "ctfl": "bin/contentful.js"
+  }
+```
 
-**TLDR;**
+Then link your local version:
 
-- feat (feature) (e.g. `feat(scope): Implement new feature`)
-- fix (bug fix) (e.g. `fix(scope): Fix a bug`)
-- docs (documentation) (e.g. `docs(scope): Add documentation`)
-- style (formatting, missing semi colons, …) (e.g. `style(scope): Format code`)
-- refactor (e.g: `refactor(scope): Refactor feature`)
-- test (when adding missing tests) (e.g. `feat(scope): Add missing test`)
-- chore (maintain) (e.g. `chore(scope): Maintain stuff`)
+```bash
+npm link
+```
 
-**Note:** scope is optional, if there is not scope you can get rid of the parentheses
+### Watch mode
 
-# Running tests
+```bash
+# Recompile on changes
+npm run tsc:watch
 
-## Unit tests
+# Run unit tests in watch mode
+npm run test:unit:watch
+```
 
-*Note: at the time of writing, the unit tests depend on the environment variables the integration tests use (see next heading below). Therefore please ensure they're set before executing the tests.*
+## Testing
 
-Simply run:
+- **Framework:** Jest (v28) with Babel for TypeScript transpilation
+- **Coverage:** nyc with 80% line coverage threshold
+- **Unit tests:** `test/unit/` — mirrors `lib/` structure
+- **Integration tests:** `test/integration/` — uses [talkback](https://github.com/ijpiantanida/talkback) proxy to record/playback HTTP requests
+- **E2E tests:** `test/e2e/` — runs against standalone binaries on macOS and Linux
 
-```sh
-# runs Node.js unit tests without coverage.
+### Running tests
+
+```bash
+# Unit tests with coverage
+npm test
+
+# Unit tests without coverage
 npm run test:unit
 
-# Run all unit tests
-npm run test:unit:watch
+# Watch a specific test
+npx jest test/unit/cmds/space_cmds/create.test.ts --watch
 
-# Or run specific tests
-npx jest test/unit/cmds/* --watch
-```
-
-See [jest](https://jestjs.io/) documentation for more details about running tests and optional flags.
-
-
-## Integration tests
-
-To run integration tests locally, [talkback](https://github.com/ijpiantanida/talkback) is used as a proxy to record and playback http requests
-
-1. Prepare build in prep for integration tests
-```sh
-npm run build:standalone
-```
-
-1. In another terminal shell run your preferred tests
-```sh
-# Ensure environment variables are set to for the Ecosystem Integration Test Org (`Contentful - Ecosystem (for integration test org)` in password vault)
-export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
-export CLI_E2E_ORG_ID='<organization_id>'
-
-# Run all integration tests
+# Integration tests (starts talkback proxy automatically)
 npm run test:integration
 
-# Or run specific tests
-npm run talkback-proxy
-npx jest test/integration/cmds/space/* --watch
+# E2E tests (requires build:standalone first)
+npm run build:standalone
+npm run test:e2e
 ```
 
-## Updating Snapshots
+### Integration test setup
 
-You might need to update snapshots and it's challenging with the recordings.
+Integration tests require environment variables from the Contentful Ecosystem Integration Test Org:
 
-Tip: run tests without recordings to update the snapshots.
+```bash
+export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
+export CLI_E2E_ORG_ID='<organization_id>'
+```
+
+Unit tests also depend on these environment variables being set.
+
+### Updating snapshots
+
+Run tests without the talkback proxy to update snapshots:
+
+```bash
+npx jest test/integration/cmds/<path> --updateSnapshot
+```
+
+## Commit Convention
+
+This repo uses [Angular JS Commit Message Conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit) via [semantic-release](https://github.com/semantic-release/semantic-release):
 
 ```
-npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
+type(scope): description
 ```
 
-This project has unit and integration tests. Both of these run on both Node.js and Browser environments.
+Valid types: `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`
 
-Both of these test environments are setup to deal with Babel and code transpiling, so there's no need to worry about that
+Examples:
+```
+feat(space): add environment alias management
+fix(login): handle token expiration gracefully
+chore: update dependencies
+docs(merge): add usage examples
+```
 
-# Other tasks
+Pre-commit hooks (via husky) run prettier and lint-staged on changed `.js` files.
 
-- `npm run build:standalone` build standalone binary version
+**Breaking changes:** Include `BREAKING CHANGE:` in the commit footer. The `release` config in `package.json` maps `{ "breaking": true }` to a major release, and `{ "type": "build", "scope": "deps" }` to a patch release.
+
+## Branch Strategy
+
+- `main` — production releases, auto-published via semantic-release
+- `beta` — pre-release channel (`npm install contentful-cli@beta`)
+- Feature branches — any naming convention, CI runs on all branches
+
+## Release Process
+
+Releases are fully automated via [semantic-release](https://github.com/semantic-release/semantic-release) on GitHub Actions:
+
+1. Merge to `main` (or `beta` for pre-releases)
+2. CI runs: build → check (unit + integration tests) → e2e tests
+3. semantic-release analyzes commits, determines version bump
+4. Publishes to npm, creates GitHub release with standalone binaries (macOS, Linux, Windows `.zip`)
+
+Standalone binaries are built with `@yao-pkg/pkg` targeting Node 22 for macOS x64, Linux x64, and Windows x64.
+
+## Pull Requests
+
+- All CI checks must pass (build, unit tests, integration tests, e2e tests)
+- Squash merge to `main` is the standard workflow
+- Dependabot PRs are auto-approved and merge-requested via workflow
+
+## CI/CD
+
+| Job | Trigger | What it does |
+|---|---|---|
+| Build | All pushes and PRs | Compiles TypeScript, builds standalone binaries, caches `dist/` and `build/` |
+| Check | After build | Runs unit tests (with coverage) and integration tests (with talkback proxy) |
+| E2E Tests | After build + check | Runs e2e tests against standalone binaries on ubuntu and macOS |
+| Release | Push to `main` or `beta` | semantic-release: version bump, npm publish, GitHub release with binaries |
+| CodeQL | Scheduled + PRs | Static analysis for security vulnerabilities |
+| Dependabot Approve | Dependabot PRs | Auto-approves and requests merge for dependency updates |
