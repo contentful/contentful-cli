@@ -23,9 +23,14 @@ npx allow-scripts
 # Build (compiles TypeScript to dist/)
 npm run tsc
 
+# Type-check without emitting (useful during development)
+npx tsc --noEmit
+
 # Run unit tests
 npm run test:unit
 ```
+
+> **Note on linting:** ESLint is configured (`.eslintrc.json`) but linting is not enforced in CI — the lint job is currently commented out in the GitHub Actions workflow. Pre-commit hooks run `prettier` and `lint-staged` on changed `.js` files only.
 
 ## Development Workflow
 
@@ -42,6 +47,15 @@ Then link your local version:
 
 ```bash
 npm link
+```
+
+You can also run commands directly from source without linking:
+
+```bash
+# Run any CLI command from the repo
+node bin/contentful.js space list
+node bin/contentful.js login
+node bin/contentful.js content-type list --space-id <space-id>
 ```
 
 ### Watch mode
@@ -139,6 +153,14 @@ Releases are fully automated via [semantic-release](https://github.com/semantic-
 4. Publishes to npm, creates GitHub release with standalone binaries (macOS, Linux, Windows `.zip`)
 
 Standalone binaries are built with `@yao-pkg/pkg` targeting Node 22 for macOS x64, Linux x64, and Windows x64.
+
+## Adding a New Command
+
+Use an existing simple command as a reference pattern. For a top-level command, see `lib/cmds/logout.js`. For a subcommand, see `lib/cmds/space_cmds/list.ts`.
+
+Every command file exports a yargs command object with `command`, `desc`, `builder`, and `handler`. Subcommands go in `lib/cmds/<parent>_cmds/` and are auto-discovered via yargs `commandDir`.
+
+If the command doesn't require authentication, add it to the `noAuthNeeded` array in `lib/config.js`. If it doesn't require a space ID, add it to `noSpaceIdNeeded`.
 
 ## Pull Requests
 

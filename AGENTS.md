@@ -18,6 +18,18 @@ Read this file first. It tells you where to find context in this repo.
 | Shared utilities | `lib/utils/` |
 | Configuration handling | `lib/config.js` and `lib/context.js` |
 
+## Sensitive Areas
+
+These files/directories require extra caution when editing:
+
+| Path | Why |
+|---|---|
+| `lib/context.js` | Resolves auth token, space ID, and environment from `.contentfulrc.json` — bugs here break every authenticated command |
+| `lib/config.js` | Controls which commands skip auth/space-id checks — wrong entries cause silent auth bypass or false "not logged in" errors |
+| `lib/cmds/login.js` | OAuth token flow — security-sensitive, handles token storage |
+| `lib/utils/proxy.js` | HTTP proxy setup — incorrect changes can silently break all API calls for proxy users |
+| `lib/cli.ts` | Top-level yargs setup and command registration — changes here affect every command |
+
 ## Sharp Edges & Invariants
 
 - **Build before run.** The CLI requires `npm run tsc` before it can execute — `bin/contentful.js` requires `dist/lib/cli.js` which is compiled output.
@@ -50,6 +62,12 @@ Read this file first. It tells you where to find context in this repo.
 - **Developers** — `npm install -g contentful-cli` or `npx contentful-cli`
 - **CI/CD pipelines** — migration execution, environment management
 - **Standalone binary users** — macOS/Linux/Windows binaries from GitHub releases
+
+## Operational Model
+
+This is a **CLI tool distributed via npm and standalone binaries**, not a running service. There are no dashboards, alerts, or deployment rollback procedures. When the Contentful Management API is unavailable, CLI commands fail with HTTP errors propagated to stderr. There is no retry logic or circuit breaking — the API client surfaces errors directly.
+
+**Rollback** for a bad release means publishing a new patch version. Standalone binaries are attached to GitHub releases and can't be recalled, but npm versions can be deprecated via `npm deprecate`.
 
 ## Build & Quality
 
