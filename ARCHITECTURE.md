@@ -66,7 +66,6 @@ The CLI operates on Contentful's content model. Key entities and their relations
 
 The primary lifecycle is: **Space → Environment → Content Type → Entry/Asset**. Migrations modify content types within an environment. Import/export operates on entire spaces or environments.
 
-[NEEDS TEAM INPUT] Business rules around environment aliasing, content type publishing states, and entry workflow states are not fully captured in the CLI codebase — they are enforced by the CMA.
 
 ## Key Dependencies
 
@@ -130,4 +129,4 @@ There are no dashboards, alerts, or telemetry. Diagnosing issues with a release:
 
 ### Incident Playbook
 
-[NEEDS TEAM INPUT] No formal incident playbook exists for the CLI. Typical response is to triage GitHub issues and publish a patch release if a regression is confirmed.
+No formal incident playbook exists for the CLI. Typical response is to triage GitHub issues and publish a patch release if a regression is confirmed.
