@@ -2,7 +2,7 @@
 
 ## Overview
 
-`contentful-cli` is the official command-line interface for [Contentful](https://www.contentful.com). It provides subcommands for managing spaces, environments, content types, extensions, migrations, import/export, cross-region sync, organization security checks, and the merge workflow. It is published to npm and also distributed as standalone binaries for macOS, Linux, and Windows.
+`contentful-cli` is the official command-line interface for [Contentful](https://www.contentful.com). It provides subcommands for managing spaces, environments, content types, extensions, migrations, import/export, organization security checks, and the merge workflow. It is published to npm and also distributed as standalone binaries for macOS, Linux, and Windows.
 
 ## System Context
 
@@ -27,7 +27,7 @@ The CLI is the **user-facing entry point** for content-as-code workflows. It del
 |---|---|
 | `bin/contentful.js` | Entry point — requires compiled `dist/lib/cli.js` |
 | `lib/cli.ts` | Yargs CLI setup, top-level command registration |
-| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `organization`, `sync`, etc.) |
+| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `organization`, etc.) |
 | `lib/cmds/<cmd>_cmds/` | Subcommands (e.g., `space_cmds/create.ts`, `organization_cmds/sec-check.ts`) |
 | `lib/utils/` | Shared utilities — API clients, error handling, proxy, pagination, merge logic |
 | `lib/utils/merge/` | Merge-specific utilities (changeset rendering, content type helpers) |
