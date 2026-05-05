@@ -27,3 +27,4 @@ The proxy is configured in `test/proxy.js` and recorded interactions are stored 
 - Updating snapshots requires running tests without recordings first, then re-recording
 - Unit tests still depend on integration test environment variables being set (a known coupling)
 - E2E tests (separate from integration tests) run against real standalone binaries and may hit the API
+- Recorded tapes may contain non-credential identifiers from API responses (space IDs, environment IDs, user metadata) — recordings should only be made against the dedicated integration test org, never against orgs with real customer data
