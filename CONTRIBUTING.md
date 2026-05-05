@@ -201,7 +201,7 @@ If the command doesn't require authentication, add it to the `noAuthNeeded` arra
 |---|---|
 | `lib/context.js` | Resolves auth token, space ID, and environment from `.contentfulrc.json` — bugs here break every authenticated command |
 | `lib/config.js` | Controls which commands skip auth/space-id checks — wrong entries cause silent auth bypass or false "not logged in" errors |
-| `lib/cmds/login.js` | OAuth token flow — security-sensitive, handles token storage |
+| `lib/cmds/login.ts` | OAuth token flow — security-sensitive, handles token storage |
 | `lib/utils/proxy.js` | HTTP proxy setup — incorrect changes can silently break all API calls for proxy users |
 | `lib/cli.ts` | Top-level yargs setup and command registration — changes here affect every command |
 | `dist/` | Generated output — do not hand-edit, rebuild with `npm run tsc` |
