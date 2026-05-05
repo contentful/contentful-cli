@@ -14,7 +14,7 @@ You must compile TypeScript before running the CLI: `npm run tsc` (output goes t
 
 # Code style
 
-This project uses ESLint (`.eslintrc.json`) and Prettier (`.prettierrc`). Pre-commit hooks enforce formatting on changed `.js` files via `lint-staged`.
+This project uses ESLint (`.eslintrc.js`) and Prettier (`.prettierrc`). Pre-commit hooks enforce formatting on changed `.js` files via `lint-staged`.
 
 Everywhere where it isn't applicable, follow a style similar to the existing code.
 
@@ -111,7 +111,7 @@ npx tsc --noEmit         # source: tsconfig.json (type-check without emitting)
 npm run tsc:watch        # source: package.json → scripts.tsc:watch
 ```
 
-> **Note on linting:** ESLint is configured (`.eslintrc.json`) but linting is not enforced in CI — the lint job is currently commented out in the GitHub Actions workflow. Pre-commit hooks run `prettier` and `lint-staged` on changed `.js` files only.
+> **Note on linting:** ESLint is configured (`.eslintrc.js`) but linting is not enforced in CI — the lint job is currently commented out in the GitHub Actions workflow. Pre-commit hooks run `prettier` and `lint-staged` on changed `.js` files only.
 
 > **This is a CLI, not a service.** There is no `npm start` or long-running process. To "run it locally," build with `npm run tsc` and then invoke commands via `node bin/contentful.js <command>` or via `npm link`.
 
@@ -210,6 +210,5 @@ If the command doesn't require authentication, add it to the `noAuthNeeded` arra
 ## Code Style & Conventions
 
 - **Formatting:** Prettier (`.prettierrc`) — enforced via pre-commit hook on `.js` files
-- **Linting:** ESLint (`.eslintrc.json`) — configured but not enforced in CI (lint job commented out)
-- **TypeScript:** `tsconfig.json` — `strict: true`, `allowJs: true`, target `ES2022`, CommonJS output
-- **Editor config:** `.editorconfig` — 2-space indent, UTF-8, LF line endings
+- **Linting:** ESLint (`.eslintrc.js`) — configured but not enforced in CI (lint job commented out)
+- **TypeScript:** `tsconfig.json` — `strict: true`, `allowJs: true`, target `es2016`, CommonJS output
