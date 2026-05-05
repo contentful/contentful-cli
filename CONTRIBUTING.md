@@ -6,7 +6,7 @@ It also explains what to do in case you want to setup the project locally and ru
 
 # Setup
 
-Run `npm ci` to install all dependencies. The `.npmrc` sets `ignore-scripts=true`, so after install run `npx allow-scripts` to allow trusted packages to execute their post-install scripts.
+Run `npm install` to install all dependencies. The `.npmrc` sets `ignore-scripts=true` for supply chain security, so after install run `npx allow-scripts` to allow trusted packages to execute their post-install scripts. (CI uses `npm ci` for reproducibility.)
 
 All necessary dependencies are installed under `node_modules` and any necessary tools can be accessed via npm scripts. There is no need to install anything globally.
 
