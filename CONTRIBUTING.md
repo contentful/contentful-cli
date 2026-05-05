@@ -6,13 +6,15 @@ It also explains what to do in case you want to setup the project locally and ru
 
 # Setup
 
-Run `npm install` or `yarn` to install all necessary dependencies. When running `npm install` or `yarn` locally, `dist` is not compiled.
+Run `npm ci` to install all dependencies. The `.npmrc` sets `ignore-scripts=true`, so after install run `npx allow-scripts` to allow trusted packages to execute their post-install scripts.
 
 All necessary dependencies are installed under `node_modules` and any necessary tools can be accessed via npm scripts. There is no need to install anything globally.
 
+You must compile TypeScript before running the CLI: `npm run tsc` (output goes to `dist/`).
+
 # Code style
 
-This project uses [standard](https://github.com/feross/standard). Install a relevant editor plugin if you'd like.
+This project uses ESLint (`.eslintrc.json`) and Prettier (`.prettierrc`). Pre-commit hooks enforce formatting on changed `.js` files via `lint-staged`.
 
 Everywhere where it isn't applicable, follow a style similar to the existing code.
 
@@ -56,23 +58,17 @@ See [jest](https://jestjs.io/) documentation for more details about running test
 
 ## Integration tests
 
-To run integration tests locally, [talkback](https://github.com/ijpiantanida/talkback) is used as a proxy to record and playback http requests
+To run integration tests locally, [talkback](https://github.com/ijpiantanida/talkback) is used as a proxy to record and playback http requests.
 
-1. Prepare build in prep for integration tests
 ```sh
-npm run build:standalone
-```
-
-1. In another terminal shell run your preferred tests
-```sh
-# Ensure environment variables are set to for the Ecosystem Integration Test Org (`Contentful - Ecosystem (for integration test org)` in password vault)
+# Ensure environment variables are set for the Ecosystem Integration Test Org
 export CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN='<cma_auth_token>'
 export CLI_E2E_ORG_ID='<organization_id>'
 
-# Run all integration tests
+# Run all integration tests (starts talkback proxy automatically via concurrently)
 npm run test:integration
 
-# Or run specific tests
+# Or run specific tests (start proxy separately first)
 npm run talkback-proxy
 npx jest test/integration/cmds/space/* --watch
 ```
@@ -87,9 +83,7 @@ Tip: run tests without recordings to update the snapshots.
 npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
 ```
 
-This project has unit and integration tests. Both of these run on both Node.js and Browser environments.
-
-Both of these test environments are setup to deal with Babel and code transpiling, so there's no need to worry about that
+This project has unit and integration tests. Both run in Node.js. Jest uses Babel for TypeScript transpilation during tests.
 
 # Other tasks
 
