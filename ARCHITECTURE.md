@@ -28,7 +28,7 @@ The CLI is the **user-facing entry point** for content-as-code workflows. It del
 |---|---|
 | `bin/contentful.js` | Entry point — requires compiled `dist/lib/cli.js` |
 | `lib/cli.ts` | Yargs CLI setup, top-level command registration |
-| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `organization`, etc.) |
+| `lib/cmds/` | Top-level commands (`login`, `logout`, `init`, `space`, `merge`, `sync`, `organization`, etc.) |
 | `lib/cmds/<cmd>_cmds/` | Subcommands (e.g., `space_cmds/create.ts`, `organization_cmds/sec-check.ts`) |
 | `lib/utils/` | Shared utilities — API clients, error handling, proxy, pagination, merge logic |
 | `lib/utils/merge/` | Merge-specific utilities (changeset rendering, content type helpers) |
