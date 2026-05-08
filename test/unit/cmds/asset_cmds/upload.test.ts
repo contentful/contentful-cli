@@ -97,8 +97,11 @@ function makeFakeEnvironment(overrides: Record<string, any> = {}) {
 let fakeEnvironment: ReturnType<typeof makeFakeEnvironment>
 let fakeSpace: {getEnvironment: jest.Mock}
 
+let exitSpy: jest.SpyInstance
+
 beforeEach(() => {
   jest.clearAllMocks()
+  exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any)
   mockExistsSync.mockReturnValue(true)
   mockCreateReadStream.mockReturnValue(mockStream)
   fakeEnvironment = makeFakeEnvironment()
@@ -106,6 +109,10 @@ beforeEach(() => {
   mockCreateManagementClient.mockResolvedValue({
     getSpace: jest.fn().mockResolvedValue(fakeSpace)
   })
+})
+
+afterEach(() => {
+  exitSpy.mockRestore()
 })
 
 const baseArgv = {
