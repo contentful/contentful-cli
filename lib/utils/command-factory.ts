@@ -74,8 +74,7 @@ export function createCommand(config: CommandConfig): {
       .option('environment-id', {
         alias: 'e',
         type: 'string',
-        describe: 'ID of the environment to use',
-        default: 'master'
+        describe: 'ID of the environment to use'
       })
       .option('management-token', {
         alias: 'mt',

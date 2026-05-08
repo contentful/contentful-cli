@@ -65,6 +65,11 @@ const mockProcessedAsset = {
 
 function makeFakeClient(overrides: Record<string, any> = {}) {
   return {
+    locale: {
+      getMany: jest.fn().mockResolvedValue({
+        items: [{code: 'en-US', default: true}, {code: 'de-DE', default: false}]
+      })
+    },
     upload: {
       create: jest.fn().mockResolvedValue(mockUpload)
     },
@@ -203,6 +208,39 @@ describe('asset upload — handler', () => {
 
     const call = fakeClient.asset.create.mock.calls[0][1]
     expect(call.fields.description).toBeUndefined()
+  })
+
+  it('fetches space default locale when --locale is not provided', async () => {
+    fakeClient.locale.getMany.mockResolvedValue({
+      items: [{code: 'de-DE', default: true}, {code: 'en-US', default: false}]
+    })
+    fakeClient.asset.processForAllLocales.mockResolvedValue({
+      sys: {id: 'asset-xyz', version: 2},
+      fields: {
+        title: {'de-DE': 'My Image'},
+        file: {'de-DE': {fileName: 'photo.png', contentType: 'image/png'}}
+      }
+    })
+    fakeClient.asset.get.mockResolvedValue({
+      sys: {id: 'asset-xyz', version: 2},
+      fields: {
+        title: {'de-DE': 'My Image'},
+        file: {'de-DE': {fileName: 'photo.png', url: '//images.ctfassets.net/photo.png'}}
+      }
+    })
+
+    const {locale: _removed, ...argvWithoutLocale} = baseArgv
+    await handler(argvWithoutLocale)
+
+    expect(fakeClient.locale.getMany).toHaveBeenCalledWith({})
+    const call = fakeClient.asset.create.mock.calls[0][1]
+    expect(call.fields.title).toEqual({'de-DE': 'My Image'})
+    expect(call.fields.file['de-DE']).toBeDefined()
+  })
+
+  it('does not fetch locales when --locale is explicitly provided', async () => {
+    await handler(baseArgv)
+    expect(fakeClient.locale.getMany).not.toHaveBeenCalled()
   })
 
   describe('MIME type auto-detection', () => {

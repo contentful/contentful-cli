@@ -40,8 +40,7 @@ const {command, desc, builder, handler} = createCommand({
     },
     locale: {
       type: 'string',
-      describe: "Locale for fields (default: space's default locale)",
-      default: 'en-US'
+      describe: "Locale for fields (default: space's default locale)"
     },
     id: {
       type: 'string',
@@ -54,7 +53,12 @@ const {command, desc, builder, handler} = createCommand({
       throw new Error(`File not found: ${filePath}`)
     }
 
-    const locale = argv.locale || 'en-US'
+    let locale = argv.locale
+    if (!locale) {
+      const {items} = await client.locale.getMany({})
+      const defaultLocale = items.find((l: any) => l.default)
+      locale = defaultLocale?.code || 'en-US'
+    }
     const fileName = path.basename(filePath)
     const contentType = argv.contentType || detectMimeType(fileName)
 
