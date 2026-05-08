@@ -11,7 +11,8 @@ jest.mock('../../../../lib/utils/actions', () => ({
   confirmation: jest.fn()
 }))
 jest.mock('../../../../lib/utils/output', () => ({
-  output: jest.fn()
+  output: jest.fn(),
+  firstLocaleValue: jest.requireActual('../../../../lib/utils/output').firstLocaleValue
 }))
 jest.mock('../../../../lib/utils/log', () => ({
   log: jest.fn(),
@@ -240,31 +241,13 @@ describe('asset upload — handler', () => {
 
   it('throws error when file not found', async () => {
     mockExistsSync.mockReturnValue(false)
-    let exitSpy: jest.SpyInstance
-    exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-      throw new Error(`process.exit(${_code})`)
-    })
-    try {
-      await expect(handler({...baseArgv, file: '/tmp/nonexistent.png'})).rejects.toThrow(
-        'process.exit(1)'
-      )
-    } finally {
-      exitSpy.mockRestore()
-    }
+    await handler({...baseArgv, file: '/tmp/nonexistent.png'})
+    expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
   it('validates asset ID when --id is provided and rejects invalid IDs', async () => {
-    let exitSpy: jest.SpyInstance
-    exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-      throw new Error(`process.exit(${_code})`)
-    })
-    try {
-      await expect(
-        handler({...baseArgv, id: 'invalid id!'})
-      ).rejects.toThrow('process.exit(1)')
-    } finally {
-      exitSpy.mockRestore()
-    }
+    await handler({...baseArgv, id: 'invalid id!'})
+    expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
   it('passes --json flag to output', async () => {
@@ -337,16 +320,8 @@ describe('asset upload — handler', () => {
         }
       })
 
-      let exitSpy: jest.SpyInstance
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
-
-      try {
-        await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
-      } finally {
-        exitSpy.mockRestore()
-      }
+      await handler(baseArgv)
+      expect(exitSpy).toHaveBeenCalledWith(1)
     }, 60000)
   })
 
@@ -369,17 +344,8 @@ describe('asset upload — handler', () => {
 
     it('dry-run throws error when file not found', async () => {
       mockExistsSync.mockReturnValue(false)
-      let exitSpy: jest.SpyInstance
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
-      try {
-        await expect(
-          handler({...baseArgv, dryRun: true, file: '/tmp/missing.png'})
-        ).rejects.toThrow('process.exit(1)')
-      } finally {
-        exitSpy.mockRestore()
-      }
+      await handler({...baseArgv, dryRun: true, file: '/tmp/missing.png'})
+      expect(exitSpy).toHaveBeenCalledWith(1)
     })
 
     it('dry-run shows provided asset ID when --id given', async () => {

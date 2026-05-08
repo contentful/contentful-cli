@@ -81,11 +81,16 @@ describe('content-type update', () => {
     expect(mockUpdate).toHaveBeenCalled()
   })
 
-  it('sets sys.version for optimistic locking', async () => {
-    const ct = {...existingContentType, sys: {...existingContentType.sys}, update: mockUpdate}
-    mockGetContentType.mockResolvedValueOnce(ct)
+  it('rejects when provided version does not match content type version', async () => {
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any)
     await handler({...baseArgv, version: 5})
-    expect(ct.sys.version).toBe(5)
+    expect(exitSpy).toHaveBeenCalledWith(1)
+    exitSpy.mockRestore()
+  })
+
+  it('proceeds when version matches content type version', async () => {
+    await handler({...baseArgv, version: 3})
+    expect(mockUpdate).toHaveBeenCalled()
   })
 
   it('updates name when --name is provided', async () => {

@@ -11,7 +11,8 @@ jest.mock('../../../../lib/utils/actions', () => ({
   confirmation: jest.fn()
 }))
 jest.mock('../../../../lib/utils/output', () => ({
-  output: jest.fn()
+  output: jest.fn(),
+  firstLocaleValue: jest.requireActual('../../../../lib/utils/output').firstLocaleValue
 }))
 jest.mock('../../../../lib/utils/log', () => ({
   log: jest.fn(),
