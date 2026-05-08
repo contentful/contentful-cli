@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -23,11 +23,11 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/unpublish'
@@ -38,15 +38,18 @@ const fakeEntry = {
     contentType: {sys: {id: 'blogPost'}},
     version: 5,
     publishedVersion: 4
-  },
-  unpublish: jest.fn()
+  }
 }
 
-const fakeEnvironment = {
-  getEntry: jest.fn().mockResolvedValue(fakeEntry)
+const unpublishedEntry = {
+  sys: {id: 'entry-abc', version: 6}
 }
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+
+const fakeClient = {
+  entry: {
+    get: jest.fn().mockResolvedValue(fakeEntry),
+    unpublish: jest.fn().mockResolvedValue(unpublishedEntry)
+  }
 }
 
 const baseArgv = {
@@ -60,27 +63,23 @@ const baseArgv = {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.getEntry.mockResolvedValue(fakeEntry)
-  fakeEntry.unpublish.mockResolvedValue({
-    sys: {id: 'entry-abc', version: 6}
-  })
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.entry.get.mockResolvedValue(fakeEntry)
+  fakeClient.entry.unpublish.mockResolvedValue(unpublishedEntry)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry unpublish — handler', () => {
   it('fetches entry and calls entry.unpublish()', async () => {
     await handler(baseArgv)
-    expect(fakeEnvironment.getEntry).toHaveBeenCalledWith('entry-abc')
-    expect(fakeEntry.unpublish).toHaveBeenCalled()
+    expect(fakeClient.entry.get).toHaveBeenCalledWith({entryId: 'entry-abc'})
+    expect(fakeClient.entry.unpublish).toHaveBeenCalledWith({entryId: 'entry-abc'})
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-unpublish'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-unpublish'}),
+      expect.any(Object)
     )
   })
 
@@ -148,7 +147,7 @@ describe('entry unpublish — handler', () => {
 describe('entry unpublish — dry run', () => {
   it('does not call entry.unpublish() when --dry-run is set', async () => {
     await handler({...baseArgv, dryRun: true})
-    expect(fakeEntry.unpublish).not.toHaveBeenCalled()
+    expect(fakeClient.entry.unpublish).not.toHaveBeenCalled()
   })
 
   it('returns dry run info including action and id', async () => {
@@ -211,9 +210,9 @@ describe('entry unpublish — error handling', () => {
     exitSpy.mockRestore()
   })
 
-  it('calls logError and exits when getEntry throws', async () => {
+  it('calls logError and exits when entry.get throws', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
     expect(exitSpy).toHaveBeenCalledWith(1)
@@ -221,7 +220,7 @@ describe('entry unpublish — error handling', () => {
 
   it('exits with code 2 on 5xx error', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })

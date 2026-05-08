@@ -12,8 +12,8 @@ const {command, desc, builder, handler} = createCommand({
       demandOption: true
     }
   },
-  handler: async (environment, argv) => {
-    return environment.getContentType(argv.id)
+  handler: async (client, argv) => {
+    return client.contentType.get({contentTypeId: argv.id})
   },
   tableFormat: (ct) => ({
     rows: [

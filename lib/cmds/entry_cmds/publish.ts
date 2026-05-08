@@ -7,14 +7,14 @@ const {command, desc, builder, handler} = createCommand({
   feature: 'entry-publish',
   usage: 'Usage: contentful entry publish <id> [options]',
   supportsDryRun: true,
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await environment.getEntry(id)
-    return entry.publish()
+    const entry = await client.entry.get({entryId: id})
+    return client.entry.publish({entryId: id}, entry)
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await environment.getEntry(id)
+    const entry = await client.entry.get({entryId: id})
     return {
       dryRun: true,
       action: 'publish',

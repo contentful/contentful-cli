@@ -53,18 +53,18 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'ID of the field used as display field'
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const fields = parseFieldsArray(argv.fields)
     const data: any = {name: argv.name, fields}
     if (argv.description) data.description = argv.description
     if (argv.displayField) data.displayField = argv.displayField
 
     if (argv.id) {
-      return environment.createContentTypeWithId(argv.id, data)
+      return client.contentType.createWithId({contentTypeId: argv.id}, data)
     }
-    return environment.createContentType(data)
+    return client.contentType.create({}, data)
   },
-  dryRunHandler: async (_environment, argv) => {
+  dryRunHandler: async (_client, argv) => {
     const fields = parseFieldsArray(argv.fields)
     return {
       dryRun: true,

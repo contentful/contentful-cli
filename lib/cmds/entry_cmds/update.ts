@@ -21,12 +21,12 @@ const {command, desc, builder, handler} = createCommand({
       demandOption: true
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const entry = await environment.getEntry(id)
+    const entry = await client.entry.get({entryId: id})
 
     if (entry.sys.version !== version) {
       throw new Error(
@@ -36,14 +36,14 @@ const {command, desc, builder, handler} = createCommand({
     }
 
     Object.assign(entry.fields, fields)
-    return entry.update()
+    return client.entry.update({entryId: id}, entry)
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const entry = await environment.getEntry(id)
+    const entry = await client.entry.get({entryId: id})
 
     if (entry.sys.version !== version) {
       throw new Error(

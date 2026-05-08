@@ -2,7 +2,7 @@ import {copyright} from './copyright'
 import {handleAsyncErrorWithExitCode} from './exit-codes'
 import {output, OutputFlags, TableConfig, KeyValueConfig} from './output'
 import {warning} from './log'
-const {createManagementClient} = require('./contentful-clients')
+const {createPlainClient} = require('./contentful-clients')
 const {getHeadersFromOption} = require('./headers')
 const {confirmation} = require('./actions')
 
@@ -24,15 +24,15 @@ export interface CommandConfig {
   /** Usage string shown in help */
   usage?: string
   /**
-   * Core action handler — receives the resolved environment object and argv.
+   * Core action handler — receives the plain client and argv.
    * Should return the data to be displayed.
    */
-  handler: (environment: any, argv: any) => Promise<any>
+  handler: (client: any, argv: any) => Promise<any>
   /**
    * Optional dry-run handler — called instead of handler when --dry-run is passed.
    * Should return the data to be displayed.
    */
-  dryRunHandler?: (environment: any, argv: any) => Promise<any>
+  dryRunHandler?: (client: any, argv: any) => Promise<any>
   /**
    * Optional function that returns a TableConfig or KeyValueConfig for structured output.
    * Receives the handler result data.
@@ -141,16 +141,15 @@ export function createCommand(config: CommandConfig): {
     const spaceId = argv.spaceId || runtimeContext?.activeSpaceId
     const environmentId = argv.environmentId || runtimeContext?.activeEnvironmentId || 'master'
 
-    // Create management client
-    const client = await createManagementClient({
+    // Create plain client with space/environment defaults
+    const client = await createPlainClient({
       accessToken: managementToken,
       feature: config.feature,
       headers: getHeadersFromOption(header)
+    }, {
+      spaceId,
+      environmentId
     })
-
-    // Resolve space and environment
-    const space = await client.getSpace(spaceId)
-    const environment = await space.getEnvironment(environmentId)
 
     // Confirmation prompt if needed
     if (config.needsConfirmation && !yes) {
@@ -170,12 +169,12 @@ export function createCommand(config: CommandConfig): {
     if (config.supportsDryRun && dryRun) {
       warning('[DRY RUN] No changes will be made.')
       if (config.dryRunHandler) {
-        data = await config.dryRunHandler(environment, argv)
+        data = await config.dryRunHandler(client, argv)
       } else {
-        data = await config.handler(environment, argv)
+        data = await config.handler(client, argv)
       }
     } else {
-      data = await config.handler(environment, argv)
+      data = await config.handler(client, argv)
     }
 
     const outputOpts: {

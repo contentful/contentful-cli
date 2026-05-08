@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -22,11 +22,11 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {handler} from '../../../../lib/cmds/asset_cmds/delete'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const {confirmation} = require('../../../../lib/utils/actions')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
 
 const mockAsset = {
@@ -37,28 +37,21 @@ const mockAsset = {
   },
   fields: {
     title: {'en-US': 'Hero Image'}
-  },
-  delete: jest.fn().mockResolvedValue(undefined)
+  }
 }
 
-const getAssetSub = jest.fn().mockResolvedValue(mockAsset)
-
-const fakeEnvironment = {
-  getAsset: getAssetSub
-}
-
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  asset: {
+    get: jest.fn().mockResolvedValue(mockAsset),
+    delete: jest.fn().mockResolvedValue(undefined)
+  }
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
-  mockAsset.delete.mockResolvedValue(undefined)
-  getAssetSub.mockResolvedValue(mockAsset)
+  fakeClient.asset.get.mockResolvedValue(mockAsset)
+  fakeClient.asset.delete.mockResolvedValue(undefined)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
   // Default: user confirms deletion
   mockConfirmation.mockResolvedValue(true)
 })
@@ -72,24 +65,25 @@ const baseArgv = {
 }
 
 describe('asset delete — handler', () => {
-  it('creates management client with asset-delete feature', async () => {
+  it('creates plain client with asset-delete feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-delete'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
-  it('calls getAsset with the provided ID', async () => {
+  it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(getAssetSub).toHaveBeenCalledWith('asset-abc')
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
   })
 
-  it('calls asset.delete()', async () => {
+  it('calls asset.delete() with the provided ID', async () => {
     await handler(baseArgv)
-    expect(mockAsset.delete).toHaveBeenCalled()
+    expect(fakeClient.asset.delete).toHaveBeenCalledWith({assetId: 'asset-abc'})
   })
 
   it('routes result through output()', async () => {
@@ -142,7 +136,7 @@ describe('asset delete — handler', () => {
     it('skips confirmation when --yes is provided', async () => {
       await handler({...baseArgv, yes: true})
       expect(mockConfirmation).not.toHaveBeenCalled()
-      expect(mockAsset.delete).toHaveBeenCalled()
+      expect(fakeClient.asset.delete).toHaveBeenCalled()
     })
 
     it('prompts for confirmation when --yes is not provided', async () => {
@@ -156,7 +150,7 @@ describe('asset delete — handler', () => {
     it('aborts when user declines confirmation', async () => {
       mockConfirmation.mockResolvedValue(false)
       await handler({...baseArgv, yes: undefined})
-      expect(mockAsset.delete).not.toHaveBeenCalled()
+      expect(fakeClient.asset.delete).not.toHaveBeenCalled()
       expect(mockOutput).not.toHaveBeenCalled()
     })
   })
@@ -164,7 +158,7 @@ describe('asset delete — handler', () => {
   describe('dry-run', () => {
     it('does not call asset.delete() when --dry-run is set', async () => {
       await handler({...baseArgv, dryRun: true})
-      expect(mockAsset.delete).not.toHaveBeenCalled()
+      expect(fakeClient.asset.delete).not.toHaveBeenCalled()
     })
 
     it('still returns asset data when --dry-run is set', async () => {

@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -23,14 +23,14 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError, warning} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const {confirmation} = require('../../../../lib/utils/actions')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/delete'
@@ -41,8 +41,7 @@ const draftEntry = {
     id: 'entry-draft',
     contentType: {sys: {id: 'blogPost'}},
     version: 2
-  },
-  delete: jest.fn()
+  }
 }
 
 // Published entry — cannot be deleted directly
@@ -52,15 +51,14 @@ const publishedEntry = {
     contentType: {sys: {id: 'blogPost'}},
     version: 5,
     publishedVersion: 4
-  },
-  delete: jest.fn()
+  }
 }
 
-const fakeEnvironment = {
-  getEntry: jest.fn().mockResolvedValue(draftEntry)
-}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  entry: {
+    get: jest.fn().mockResolvedValue(draftEntry),
+    delete: jest.fn().mockResolvedValue(undefined)
+  }
 }
 
 const baseArgv = {
@@ -74,27 +72,24 @@ const baseArgv = {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.getEntry.mockResolvedValue(draftEntry)
-  draftEntry.delete.mockResolvedValue(undefined)
-  publishedEntry.delete.mockResolvedValue(undefined)
+  fakeClient.entry.get.mockResolvedValue(draftEntry)
+  fakeClient.entry.delete.mockResolvedValue(undefined)
   mockConfirmation.mockResolvedValue(true)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry delete — handler', () => {
   it('fetches entry and calls entry.delete() for draft entry', async () => {
     await handler(baseArgv)
-    expect(fakeEnvironment.getEntry).toHaveBeenCalledWith('entry-draft')
-    expect(draftEntry.delete).toHaveBeenCalled()
+    expect(fakeClient.entry.get).toHaveBeenCalledWith({entryId: 'entry-draft'})
+    expect(fakeClient.entry.delete).toHaveBeenCalledWith({entryId: 'entry-draft'})
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-delete'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-delete'}),
+      expect.any(Object)
     )
   })
 
@@ -165,7 +160,7 @@ describe('entry delete — rejects published entries', () => {
     exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
       throw new Error(`process.exit(${_code})`)
     })
-    fakeEnvironment.getEntry.mockResolvedValue(publishedEntry)
+    fakeClient.entry.get.mockResolvedValue(publishedEntry)
   })
 
   afterEach(() => {
@@ -187,7 +182,7 @@ describe('entry delete — rejects published entries', () => {
     await expect(handler({...baseArgv, id: 'entry-pub'})).rejects.toThrow(
       'process.exit'
     )
-    expect(publishedEntry.delete).not.toHaveBeenCalled()
+    expect(fakeClient.entry.delete).not.toHaveBeenCalled()
   })
 })
 
@@ -208,7 +203,7 @@ describe('entry delete — confirmation', () => {
   it('aborts operation when user declines confirmation', async () => {
     mockConfirmation.mockResolvedValue(false)
     await handler({...baseArgv, yes: undefined})
-    expect(draftEntry.delete).not.toHaveBeenCalled()
+    expect(fakeClient.entry.delete).not.toHaveBeenCalled()
     expect(mockWarning).toHaveBeenCalledWith('Operation aborted.')
   })
 })
@@ -216,7 +211,7 @@ describe('entry delete — confirmation', () => {
 describe('entry delete — dry run', () => {
   it('does not call entry.delete() when --dry-run is set', async () => {
     await handler({...baseArgv, dryRun: true})
-    expect(draftEntry.delete).not.toHaveBeenCalled()
+    expect(fakeClient.entry.delete).not.toHaveBeenCalled()
   })
 
   it('returns dry run info including action, id, and published status', async () => {
@@ -280,9 +275,9 @@ describe('entry delete — error handling', () => {
     exitSpy.mockRestore()
   })
 
-  it('calls logError and exits when getEntry throws', async () => {
+  it('calls logError and exits when entry.get throws', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
     expect(exitSpy).toHaveBeenCalledWith(1)
@@ -290,7 +285,7 @@ describe('entry delete — error handling', () => {
 
   it('exits with code 2 on 5xx error', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })

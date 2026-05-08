@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,10 +23,10 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {handler} from '../../../../lib/cmds/asset_cmds/get'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const mockAsset = {
   sys: {
@@ -47,22 +47,16 @@ const mockAsset = {
   }
 }
 
-const getAssetSub = jest.fn().mockResolvedValue(mockAsset)
-
-const fakeEnvironment = {
-  getAsset: getAssetSub
-}
-
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  asset: {
+    get: jest.fn().mockResolvedValue(mockAsset)
+  }
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.asset.get.mockResolvedValue(mockAsset)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -73,19 +67,20 @@ const baseArgv = {
 }
 
 describe('asset get — handler', () => {
-  it('creates management client with asset-get feature', async () => {
+  it('creates plain client with asset-get feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-get'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
-  it('calls getAsset with the provided ID', async () => {
+  it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(getAssetSub).toHaveBeenCalledWith('asset-abc')
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
   })
 
   it('routes result through output()', async () => {
@@ -145,7 +140,7 @@ describe('asset get — handler', () => {
       sys: {id: 'draft-1', version: 1, updatedAt: '-'},
       fields: {}
     }
-    getAssetSub.mockResolvedValueOnce(draftAsset)
+    fakeClient.asset.get.mockResolvedValueOnce(draftAsset)
     await handler({...baseArgv, id: 'draft-1'})
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
@@ -158,7 +153,7 @@ describe('asset get — handler', () => {
       sys: {id: 'arch-1', version: 3, archivedVersion: 2, updatedAt: '-'},
       fields: {}
     }
-    getAssetSub.mockResolvedValueOnce(archivedAsset)
+    fakeClient.asset.get.mockResolvedValueOnce(archivedAsset)
     await handler({...baseArgv, id: 'arch-1'})
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
@@ -171,7 +166,7 @@ describe('asset get — handler', () => {
       sys: {id: 'chg-1', version: 5, publishedVersion: 2, updatedAt: '-'},
       fields: {}
     }
-    getAssetSub.mockResolvedValueOnce(changedAsset)
+    fakeClient.asset.get.mockResolvedValueOnce(changedAsset)
     await handler({...baseArgv, id: 'chg-1'})
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
@@ -184,7 +179,7 @@ describe('asset get — handler', () => {
       sys: {id: 'bare-1', version: 1, updatedAt: '-'},
       fields: {}
     }
-    getAssetSub.mockResolvedValueOnce(bareAsset)
+    fakeClient.asset.get.mockResolvedValueOnce(bareAsset)
     await handler({...baseArgv, id: 'bare-1'})
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any

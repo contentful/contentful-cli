@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -35,11 +35,11 @@ jest.mock('path', () => {
 import {handler} from '../../../../lib/cmds/asset_cmds/upload'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const fs = require('fs')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockExistsSync = fs.existsSync as jest.MockedFunction<any>
 const mockCreateReadStream = fs.createReadStream as jest.MockedFunction<any>
 
@@ -63,40 +63,38 @@ const mockProcessedAsset = {
   }
 }
 
-function makeProcessForAllLocalesMock(assetId = 'asset-xyz') {
-  return jest.fn().mockResolvedValue({
-    sys: {id: assetId, version: 2},
-    fields: {
-      title: {'en-US': 'My Image'},
-      file: {
-        'en-US': {
-          fileName: 'photo.png',
-          contentType: 'image/png'
-          // no url yet — getAsset will return the url
-        }
-      }
-    }
-  })
-}
-
-function makeFakeEnvironment(overrides: Record<string, any> = {}) {
+function makeFakeClient(overrides: Record<string, any> = {}) {
   return {
-    createUpload: jest.fn().mockResolvedValue(mockUpload),
-    createAsset: jest.fn().mockResolvedValue({
-      sys: {id: 'asset-xyz'},
-      processForAllLocales: makeProcessForAllLocalesMock()
-    }),
-    createAssetWithId: jest.fn().mockResolvedValue({
-      sys: {id: 'custom-id'},
-      processForAllLocales: makeProcessForAllLocalesMock('custom-id')
-    }),
-    getAsset: jest.fn().mockResolvedValue(mockProcessedAsset),
+    upload: {
+      create: jest.fn().mockResolvedValue(mockUpload)
+    },
+    asset: {
+      create: jest.fn().mockResolvedValue({
+        sys: {id: 'asset-xyz'}
+      }),
+      createWithId: jest.fn().mockResolvedValue({
+        sys: {id: 'custom-id'}
+      }),
+      processForAllLocales: jest.fn().mockResolvedValue({
+        sys: {id: 'asset-xyz', version: 2},
+        fields: {
+          title: {'en-US': 'My Image'},
+          file: {
+            'en-US': {
+              fileName: 'photo.png',
+              contentType: 'image/png'
+              // no url yet — get will return the url
+            }
+          }
+        }
+      }),
+      get: jest.fn().mockResolvedValue(mockProcessedAsset)
+    },
     ...overrides
   }
 }
 
-let fakeEnvironment: ReturnType<typeof makeFakeEnvironment>
-let fakeSpace: {getEnvironment: jest.Mock}
+let fakeClient: ReturnType<typeof makeFakeClient>
 
 let exitSpy: jest.SpyInstance
 
@@ -105,11 +103,8 @@ beforeEach(() => {
   exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any)
   mockExistsSync.mockReturnValue(true)
   mockCreateReadStream.mockReturnValue(mockStream)
-  fakeEnvironment = makeFakeEnvironment()
-  fakeSpace = {getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)}
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient = makeFakeClient()
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 afterEach(() => {
@@ -126,23 +121,25 @@ const baseArgv = {
 }
 
 describe('asset upload — handler', () => {
-  it('creates management client with asset-upload feature', async () => {
+  it('creates plain client with asset-upload feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-upload'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
   it('creates upload, creates asset, processes, and polls successfully', async () => {
     await handler(baseArgv)
 
-    expect(fakeEnvironment.createUpload).toHaveBeenCalledWith({
+    expect(fakeClient.upload.create).toHaveBeenCalledWith({}, {
       file: mockStream
     })
-    expect(fakeEnvironment.createAsset).toHaveBeenCalledWith(
+    expect(fakeClient.asset.create).toHaveBeenCalledWith(
+      {},
       expect.objectContaining({
         fields: expect.objectContaining({
           title: {'en-US': 'My Image'},
@@ -158,7 +155,7 @@ describe('asset upload — handler', () => {
         })
       })
     )
-    expect(fakeEnvironment.getAsset).toHaveBeenCalledWith('asset-xyz')
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-xyz'})
     expect(mockOutput).toHaveBeenCalledWith(
       mockProcessedAsset,
       expect.any(Object),
@@ -166,20 +163,33 @@ describe('asset upload — handler', () => {
     )
   })
 
-  it('uses createAssetWithId when --id is provided', async () => {
+  it('uses asset.createWithId when --id is provided', async () => {
+    fakeClient.asset.processForAllLocales.mockResolvedValue({
+      sys: {id: 'custom-id', version: 2},
+      fields: {
+        title: {'en-US': 'My Image'},
+        file: {'en-US': {fileName: 'photo.png', contentType: 'image/png'}}
+      }
+    })
+    fakeClient.asset.get.mockResolvedValue({
+      ...mockProcessedAsset,
+      sys: {id: 'custom-id', version: 2}
+    })
+
     await handler({...baseArgv, id: 'custom-id'})
 
-    expect(fakeEnvironment.createAssetWithId).toHaveBeenCalledWith(
-      'custom-id',
+    expect(fakeClient.asset.createWithId).toHaveBeenCalledWith(
+      {assetId: 'custom-id'},
       expect.any(Object)
     )
-    expect(fakeEnvironment.createAsset).not.toHaveBeenCalled()
+    expect(fakeClient.asset.create).not.toHaveBeenCalled()
   })
 
   it('includes description field when --description is provided', async () => {
     await handler({...baseArgv, description: 'A great photo'})
 
-    expect(fakeEnvironment.createAsset).toHaveBeenCalledWith(
+    expect(fakeClient.asset.create).toHaveBeenCalledWith(
+      {},
       expect.objectContaining({
         fields: expect.objectContaining({
           description: {'en-US': 'A great photo'}
@@ -191,19 +201,19 @@ describe('asset upload — handler', () => {
   it('omits description field when --description is not provided', async () => {
     await handler(baseArgv)
 
-    const call = fakeEnvironment.createAsset.mock.calls[0][0]
+    const call = fakeClient.asset.create.mock.calls[0][1]
     expect(call.fields.description).toBeUndefined()
   })
 
   describe('MIME type auto-detection', () => {
     it('detects image/png for .png files', async () => {
       await handler({...baseArgv, file: '/tmp/photo.png'})
-      const call = fakeEnvironment.createAsset.mock.calls[0][0]
+      const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('image/png')
     })
 
     it('detects application/pdf for .pdf files', async () => {
-      fakeEnvironment.getAsset.mockResolvedValue({
+      fakeClient.asset.get.mockResolvedValue({
         ...mockProcessedAsset,
         fields: {
           ...mockProcessedAsset.fields,
@@ -211,12 +221,12 @@ describe('asset upload — handler', () => {
         }
       })
       await handler({...baseArgv, file: '/tmp/doc.pdf', title: 'Doc'})
-      const call = fakeEnvironment.createAsset.mock.calls[0][0]
+      const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('application/pdf')
     })
 
     it('detects application/octet-stream for unknown extensions', async () => {
-      fakeEnvironment.getAsset.mockResolvedValue({
+      fakeClient.asset.get.mockResolvedValue({
         ...mockProcessedAsset,
         fields: {
           ...mockProcessedAsset.fields,
@@ -224,7 +234,7 @@ describe('asset upload — handler', () => {
         }
       })
       await handler({...baseArgv, file: '/tmp/data.xyz', title: 'Data'})
-      const call = fakeEnvironment.createAsset.mock.calls[0][0]
+      const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('application/octet-stream')
     })
 
@@ -234,7 +244,7 @@ describe('asset upload — handler', () => {
         file: '/tmp/photo.png',
         contentType: 'image/webp'
       })
-      const call = fakeEnvironment.createAsset.mock.calls[0][0]
+      const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('image/webp')
     })
   })
@@ -292,7 +302,7 @@ describe('asset upload — handler', () => {
   describe('polling for processing completion', () => {
     it('polls until asset has a URL and returns it', async () => {
       // First call returns no URL, second call returns URL
-      fakeEnvironment.getAsset
+      fakeClient.asset.get
         .mockResolvedValueOnce({
           sys: {id: 'asset-xyz'},
           fields: {
@@ -303,7 +313,7 @@ describe('asset upload — handler', () => {
 
       await handler(baseArgv)
 
-      expect(fakeEnvironment.getAsset).toHaveBeenCalledTimes(2)
+      expect(fakeClient.asset.get).toHaveBeenCalledTimes(2)
       expect(mockOutput).toHaveBeenCalledWith(
         mockProcessedAsset,
         expect.any(Object),
@@ -313,7 +323,7 @@ describe('asset upload — handler', () => {
 
     it('throws timeout error when asset processing never completes', async () => {
       // Always return asset without URL
-      fakeEnvironment.getAsset.mockResolvedValue({
+      fakeClient.asset.get.mockResolvedValue({
         sys: {id: 'asset-xyz'},
         fields: {
           file: {'en-US': {fileName: 'photo.png'}}
@@ -329,8 +339,8 @@ describe('asset upload — handler', () => {
     it('validates file exists and shows payload without uploading', async () => {
       await handler({...baseArgv, dryRun: true})
 
-      expect(fakeEnvironment.createUpload).not.toHaveBeenCalled()
-      expect(fakeEnvironment.createAsset).not.toHaveBeenCalled()
+      expect(fakeClient.upload.create).not.toHaveBeenCalled()
+      expect(fakeClient.asset.create).not.toHaveBeenCalled()
 
       const call = mockOutput.mock.calls[0]
       const data = call[0]

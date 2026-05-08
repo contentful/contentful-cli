@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -23,16 +23,21 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/update'
 
-// Fake entry with update method
+const updatedEntry = {
+  sys: {id: 'entry-abc', contentType: {sys: {id: 'blogPost'}}, version: 6},
+  fields: {title: {'en-US': 'Updated Title'}}
+}
+
+// makeEntry returns a fresh entry object each time to avoid cross-test mutation
 const makeEntry = (overrides?: Partial<any>) => {
   const base = {
     sys: {
@@ -42,24 +47,19 @@ const makeEntry = (overrides?: Partial<any>) => {
     },
     fields: {
       title: {'en-US': 'Original Title'}
-    },
-    update: jest.fn()
+    }
   }
   if (overrides) Object.assign(base, overrides)
   return base
 }
 
 let fakeEntry = makeEntry()
-const updatedEntry = {
-  sys: {id: 'entry-abc', contentType: {sys: {id: 'blogPost'}}, version: 6},
-  fields: {title: {'en-US': 'Updated Title'}}
-}
 
-const fakeEnvironment = {
-  getEntry: jest.fn()
-}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  entry: {
+    get: jest.fn(),
+    update: jest.fn().mockResolvedValue(updatedEntry)
+  }
 }
 
 const baseArgv = {
@@ -75,18 +75,15 @@ const baseArgv = {
 beforeEach(() => {
   jest.clearAllMocks()
   fakeEntry = makeEntry()
-  fakeEntry.update.mockResolvedValue(updatedEntry)
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.getEntry.mockResolvedValue(fakeEntry)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.entry.get.mockResolvedValue(fakeEntry)
+  fakeClient.entry.update.mockResolvedValue(updatedEntry)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry update — handler', () => {
   it('fetches the entry and merges fields', async () => {
     await handler(baseArgv)
-    expect(fakeEnvironment.getEntry).toHaveBeenCalledWith('entry-abc')
+    expect(fakeClient.entry.get).toHaveBeenCalledWith({entryId: 'entry-abc'})
     expect(fakeEntry.fields).toMatchObject({
       title: {'en-US': 'Updated Title'}
     })
@@ -94,7 +91,7 @@ describe('entry update — handler', () => {
 
   it('calls entry.update() after merging fields', async () => {
     await handler(baseArgv)
-    expect(fakeEntry.update).toHaveBeenCalled()
+    expect(fakeClient.entry.update).toHaveBeenCalledWith({entryId: 'entry-abc'}, fakeEntry)
   })
 
   it('calls output with updated entry data', async () => {
@@ -106,10 +103,11 @@ describe('entry update — handler', () => {
     )
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-update'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-update'}),
+      expect.any(Object)
     )
   })
 
@@ -193,8 +191,8 @@ describe('entry update — version conflict', () => {
 describe('entry update — dry run', () => {
   it('fetches entry but does not call entry.update()', async () => {
     await handler({...baseArgv, dryRun: true})
-    expect(fakeEnvironment.getEntry).toHaveBeenCalledWith('entry-abc')
-    expect(fakeEntry.update).not.toHaveBeenCalled()
+    expect(fakeClient.entry.get).toHaveBeenCalledWith({entryId: 'entry-abc'})
+    expect(fakeClient.entry.update).not.toHaveBeenCalled()
   })
 
   it('returns dry run result with action and fields', async () => {
@@ -287,9 +285,9 @@ describe('entry update — error handling', () => {
     exitSpy.mockRestore()
   })
 
-  it('calls logError and exits when getEntry throws', async () => {
+  it('calls logError and exits when entry.get throws', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
     expect(exitSpy).toHaveBeenCalledWith(1)
@@ -297,7 +295,7 @@ describe('entry update — error handling', () => {
 
   it('exits with code 2 on 5xx error', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })

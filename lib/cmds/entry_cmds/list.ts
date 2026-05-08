@@ -1,7 +1,5 @@
 import {createCommand} from '../../utils/command-factory'
 
-const paginate = require('../../utils/pagination')
-
 const {command, desc, builder, handler} = createCommand({
   command: 'list',
   desc: 'List entries',
@@ -27,21 +25,13 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'Offset for pagination'
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const query: Record<string, any> = {}
     if (argv.contentType) query.content_type = argv.contentType
     if (argv.limit) query.limit = argv.limit
     if (argv.skip) query.skip = argv.skip
 
-    if (argv.limit || argv.skip) {
-      return environment.getEntries(query)
-    }
-
-    return paginate({
-      client: environment,
-      method: 'getEntries',
-      query
-    })
+    return client.entry.getMany({query})
   },
   tableFormat: (data) => ({
     head: ['ID', 'Content Type', 'Status', 'Updated At'],

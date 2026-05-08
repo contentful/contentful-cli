@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -19,19 +19,14 @@ jest.mock('../../../../lib/utils/log', () => ({
   warning: jest.fn(),
   logError: jest.fn()
 }))
-jest.mock('../../../../lib/utils/pagination', () =>
-  jest.fn().mockResolvedValue({items: []})
-)
 
 import {handler} from '../../../../lib/cmds/asset_cmds/list'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
-const paginate = require('../../../../lib/utils/pagination')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
-const mockPaginate = paginate as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const mockAssets = [
   {
@@ -59,23 +54,16 @@ const mockAssets = [
   }
 ]
 
-const getAssetsSub = jest.fn().mockResolvedValue({items: mockAssets})
-
-const fakeEnvironment = {
-  getAssets: getAssetsSub
-}
-
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  asset: {
+    getMany: jest.fn().mockResolvedValue({items: mockAssets})
+  }
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
-  mockPaginate.mockResolvedValue({items: mockAssets})
+  fakeClient.asset.getMany.mockResolvedValue({items: mockAssets})
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -85,42 +73,43 @@ const baseArgv = {
 }
 
 describe('asset list — handler', () => {
-  it('creates management client with asset-list feature', async () => {
+  it('creates plain client with asset-list feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-list'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
-  it('uses paginate when neither --limit nor --skip are provided', async () => {
+  it('calls asset.getMany with empty query when no filters provided', async () => {
     await handler(baseArgv)
-    expect(mockPaginate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        client: fakeEnvironment,
-        method: 'getAssets'
-      })
+    expect(fakeClient.asset.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: {}})
     )
-    expect(getAssetsSub).not.toHaveBeenCalled()
   })
 
-  it('calls getAssets directly when --limit is provided', async () => {
+  it('calls asset.getMany with limit in query when --limit is provided', async () => {
     await handler({...baseArgv, limit: 10})
-    expect(getAssetsSub).toHaveBeenCalledWith({limit: 10})
-    expect(mockPaginate).not.toHaveBeenCalled()
+    expect(fakeClient.asset.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: expect.objectContaining({limit: 10})})
+    )
   })
 
-  it('calls getAssets directly when --skip is provided', async () => {
+  it('calls asset.getMany with skip in query when --skip is provided', async () => {
     await handler({...baseArgv, skip: 50})
-    expect(getAssetsSub).toHaveBeenCalledWith({skip: 50})
-    expect(mockPaginate).not.toHaveBeenCalled()
+    expect(fakeClient.asset.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: expect.objectContaining({skip: 50})})
+    )
   })
 
-  it('calls getAssets with both limit and skip when both are provided', async () => {
+  it('calls asset.getMany with both limit and skip when both are provided', async () => {
     await handler({...baseArgv, limit: 10, skip: 20})
-    expect(getAssetsSub).toHaveBeenCalledWith({limit: 10, skip: 20})
+    expect(fakeClient.asset.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: expect.objectContaining({limit: 10, skip: 20})})
+    )
   })
 
   it('routes result through output()', async () => {
@@ -194,7 +183,7 @@ describe('asset list — handler', () => {
       sys: {id: 'a3', version: 5, publishedVersion: 2, updatedAt: '-'},
       fields: {}
     }
-    mockPaginate.mockResolvedValueOnce({items: [changedAsset]})
+    fakeClient.asset.getMany.mockResolvedValueOnce({items: [changedAsset]})
     await handler(baseArgv)
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
@@ -206,7 +195,7 @@ describe('asset list — handler', () => {
       sys: {id: 'a4', version: 3, archivedVersion: 2, updatedAt: '-'},
       fields: {}
     }
-    mockPaginate.mockResolvedValueOnce({items: [archivedAsset]})
+    fakeClient.asset.getMany.mockResolvedValueOnce({items: [archivedAsset]})
     await handler(baseArgv)
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
@@ -218,7 +207,7 @@ describe('asset list — handler', () => {
       sys: {id: 'a5', version: 1, updatedAt: '-'},
       fields: {}
     }
-    mockPaginate.mockResolvedValueOnce({items: [bareAsset]})
+    fakeClient.asset.getMany.mockResolvedValueOnce({items: [bareAsset]})
     await handler(baseArgv)
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any

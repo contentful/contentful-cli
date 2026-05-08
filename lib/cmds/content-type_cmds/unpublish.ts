@@ -12,9 +12,8 @@ const {command, desc, builder, handler} = createCommand({
       demandOption: true
     }
   },
-  handler: async (environment, argv) => {
-    const contentType = await environment.getContentType(argv.id)
-    return contentType.unpublish()
+  handler: async (client, argv) => {
+    return client.contentType.unpublish({contentTypeId: argv.id})
   },
   tableFormat: (ct) => ({
     rows: [

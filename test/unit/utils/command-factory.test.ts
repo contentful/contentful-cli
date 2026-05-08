@@ -1,6 +1,6 @@
 // Mock all external dependencies before imports
 jest.mock('../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -24,27 +24,21 @@ import {createCommand, CommandConfig} from '../../../lib/utils/command-factory'
 import {output} from '../../../lib/utils/output'
 import {warning, logError} from '../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../lib/utils/contentful-clients')
 const {confirmation} = require('../../../lib/utils/actions')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
 
-// Shared fake environment and space objects
-const fakeEnvironment = {id: 'master', sys: {id: 'master'}}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
-}
+// Shared fake plain client
+const fakeClient = {entry: {}, asset: {}, contentType: {}}
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 // Helper: build a minimal valid CommandConfig
@@ -241,36 +235,26 @@ describe('createCommand — handler', () => {
     header: undefined
   }
 
-  it('creates management client with correct params', async () => {
+  it('creates plain client with correct params', async () => {
     const {handler} = createCommand(makeConfig())
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'item-list'
+      }),
+      expect.objectContaining({
+        spaceId: 'my-space',
+        environmentId: 'master'
       })
     )
   })
 
-  it('gets space using spaceId from argv', async () => {
-    const mockGetSpace = jest.fn().mockResolvedValue(fakeSpace)
-    mockCreateManagementClient.mockResolvedValueOnce({getSpace: mockGetSpace})
-    const {handler} = createCommand(makeConfig())
-    await handler(baseArgv)
-    expect(mockGetSpace).toHaveBeenCalledWith('my-space')
-  })
-
-  it('gets environment using environmentId from argv', async () => {
-    const {handler} = createCommand(makeConfig())
-    await handler(baseArgv)
-    expect(fakeSpace.getEnvironment).toHaveBeenCalledWith('master')
-  })
-
-  it('calls action handler with environment and argv', async () => {
+  it('calls action handler with plain client and argv', async () => {
     const actionHandler = jest.fn().mockResolvedValue({items: []})
     const {handler} = createCommand(makeConfig({handler: actionHandler}))
     await handler(baseArgv)
-    expect(actionHandler).toHaveBeenCalledWith(fakeEnvironment, baseArgv)
+    expect(actionHandler).toHaveBeenCalledWith(fakeClient, baseArgv)
   })
 
   it('routes result through output()', async () => {
@@ -354,7 +338,7 @@ describe('createCommand — dry-run', () => {
       })
     )
     await handler(baseArgv)
-    expect(dryRunHandler).toHaveBeenCalledWith(fakeEnvironment, baseArgv)
+    expect(dryRunHandler).toHaveBeenCalledWith(fakeClient, baseArgv)
     expect(actionHandler).not.toHaveBeenCalled()
   })
 
@@ -465,7 +449,7 @@ describe('createCommand — confirmation', () => {
       makeConfig({needsConfirmation: true, handler: actionHandler})
     )
     await handler(baseArgv)
-    expect(actionHandler).toHaveBeenCalledWith(fakeEnvironment, baseArgv)
+    expect(actionHandler).toHaveBeenCalledWith(fakeClient, baseArgv)
   })
 })
 
@@ -496,7 +480,7 @@ describe('createCommand — error handling', () => {
     const serverError = Object.assign(new Error('Server Error'), {
       response: {status: 500}
     })
-    mockCreateManagementClient.mockRejectedValueOnce(serverError)
+    mockCreatePlainClient.mockRejectedValueOnce(serverError)
     const {handler} = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
@@ -506,14 +490,14 @@ describe('createCommand — error handling', () => {
     const clientError = Object.assign(new Error('Not Found'), {
       response: {status: 404}
     })
-    mockCreateManagementClient.mockRejectedValueOnce(clientError)
+    mockCreatePlainClient.mockRejectedValueOnce(clientError)
     const {handler} = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
   it('exits with code 1 for a generic error', async () => {
-    mockCreateManagementClient.mockRejectedValueOnce(
+    mockCreatePlainClient.mockRejectedValueOnce(
       new Error('Something went wrong')
     )
     const {handler} = createCommand(makeConfig())
@@ -523,7 +507,7 @@ describe('createCommand — error handling', () => {
 
   it('calls logError when an error is thrown', async () => {
     const err = new Error('Boom')
-    mockCreateManagementClient.mockRejectedValueOnce(err)
+    mockCreatePlainClient.mockRejectedValueOnce(err)
     const {handler} = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow()
     expect(mockLogError).toHaveBeenCalledWith(err)

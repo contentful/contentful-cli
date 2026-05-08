@@ -6,9 +6,9 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Get a single entry',
   feature: 'entry-get',
   usage: 'Usage: contentful entry get <id> [options]',
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    return environment.getEntry(id)
+    return client.entry.get({entryId: id})
   },
   tableFormat: (entry) => ({
     rows: [

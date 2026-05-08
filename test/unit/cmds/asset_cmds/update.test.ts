@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,10 +23,10 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {handler} from '../../../../lib/cmds/asset_cmds/update'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const mockUpdatedAsset = {
   sys: {
@@ -61,28 +61,32 @@ const mockAsset = {
         contentType: 'image/png'
       }
     }
-  },
-  update: jest.fn().mockResolvedValue(mockUpdatedAsset)
+  }
 }
 
-const getAssetSub = jest.fn().mockResolvedValue(mockAsset)
-
-const fakeEnvironment = {
-  getAsset: getAssetSub
-}
-
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  asset: {
+    get: jest.fn().mockResolvedValue(mockAsset),
+    update: jest.fn().mockResolvedValue(mockUpdatedAsset)
+  }
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
-  mockAsset.update.mockResolvedValue(mockUpdatedAsset)
-  getAssetSub.mockResolvedValue(mockAsset)
+  // Reset mockAsset fields to original state before each test
+  mockAsset.fields = {
+    title: {'en-US': 'Original Title'},
+    file: {
+      'en-US': {
+        fileName: 'original.png',
+        url: '//cdn.example.com/original.png',
+        contentType: 'image/png'
+      }
+    }
+  }
+  fakeClient.asset.get.mockResolvedValue(mockAsset)
+  fakeClient.asset.update.mockResolvedValue(mockUpdatedAsset)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -95,24 +99,25 @@ const baseArgv = {
 }
 
 describe('asset update — handler', () => {
-  it('creates management client with asset-update feature', async () => {
+  it('creates plain client with asset-update feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-update'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
-  it('calls getAsset with the provided ID', async () => {
+  it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(getAssetSub).toHaveBeenCalledWith('asset-abc')
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
   })
 
   it('calls asset.update() after merging fields', async () => {
     await handler(baseArgv)
-    expect(mockAsset.update).toHaveBeenCalled()
+    expect(fakeClient.asset.update).toHaveBeenCalledWith({assetId: 'asset-abc'}, mockAsset)
   })
 
   it('merges provided fields into existing asset fields', async () => {
@@ -192,7 +197,7 @@ describe('asset update — handler', () => {
   describe('dry-run', () => {
     it('does not call asset.update() when --dry-run is set', async () => {
       await handler({...baseArgv, dryRun: true})
-      expect(mockAsset.update).not.toHaveBeenCalled()
+      expect(fakeClient.asset.update).not.toHaveBeenCalled()
     })
 
     it('still returns merged asset data when --dry-run is set', async () => {

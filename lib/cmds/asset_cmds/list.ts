@@ -1,8 +1,6 @@
 import {createCommand} from '../../utils/command-factory'
 import {firstLocaleValue} from '../../utils/output'
 
-const paginate = require('../../utils/pagination')
-
 function getAssetStatus(asset: any): string {
   if (asset.sys.archivedVersion) return 'archived'
   if (asset.sys.publishedVersion) {
@@ -32,20 +30,12 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'Offset for pagination'
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const query: Record<string, any> = {}
     if (argv.limit) query.limit = argv.limit
     if (argv.skip) query.skip = argv.skip
 
-    if (argv.limit || argv.skip) {
-      return environment.getAssets(query)
-    }
-
-    return paginate({
-      client: environment,
-      method: 'getAssets',
-      query
-    })
+    return client.asset.getMany({query})
   },
   tableFormat: (data) => ({
     head: ['ID', 'Title', 'File Name', 'Status', 'Updated At'],

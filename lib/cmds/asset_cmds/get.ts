@@ -16,9 +16,9 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Get a single asset',
   feature: 'asset-get',
   usage: 'Usage: contentful asset get <id> [options]',
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    return environment.getAsset(id)
+    return client.asset.get({assetId: id})
   },
   tableFormat: (asset) => ({
     rows: [

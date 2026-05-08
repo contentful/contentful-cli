@@ -9,15 +9,15 @@ const {command, desc, builder, handler} = createCommand({
   needsConfirmation: true,
   confirmationMessage: 'Are you sure you want to delete this asset? This action cannot be undone.',
   supportsDryRun: true,
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    const asset = await environment.getAsset(id)
-    await asset.delete()
+    const asset = await client.asset.get({assetId: id})
+    await client.asset.delete({assetId: id})
     return {sys: asset.sys}
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    return environment.getAsset(id)
+    return client.asset.get({assetId: id})
   },
   tableFormat: (data) => ({
     rows: [

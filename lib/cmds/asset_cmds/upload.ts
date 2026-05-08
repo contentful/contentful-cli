@@ -42,7 +42,7 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'Custom asset ID'
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const filePath = argv.file
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`)
@@ -53,7 +53,7 @@ const {command, desc, builder, handler} = createCommand({
     const contentType = argv.contentType || detectMimeType(fileName)
 
     // Step 1: Create upload
-    const upload = await environment.createUpload({
+    const upload = await client.upload.create({}, {
       file: fs.createReadStream(filePath)
     })
 
@@ -77,20 +77,20 @@ const {command, desc, builder, handler} = createCommand({
     let asset
     if (argv.id) {
       validateId(argv.id, 'Asset ID')
-      asset = await environment.createAssetWithId(argv.id, assetData)
+      asset = await client.asset.createWithId({assetId: argv.id}, assetData)
     } else {
-      asset = await environment.createAsset(assetData)
+      asset = await client.asset.create({}, assetData)
     }
 
     // Step 3: Process for all locales
-    asset = await asset.processForAllLocales()
+    asset = await client.asset.processForAllLocales({}, asset)
 
     // Step 4: Poll for processing completion
-    asset = await pollAssetProcessing(environment, asset.sys.id, locale)
+    asset = await pollAssetProcessing(client, asset.sys.id, locale)
 
     return asset
   },
-  dryRunHandler: async (_environment, argv) => {
+  dryRunHandler: async (_client, argv) => {
     const filePath = argv.file
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`)
@@ -119,14 +119,14 @@ const {command, desc, builder, handler} = createCommand({
 })
 
 async function pollAssetProcessing(
-  environment: any,
+  client: any,
   assetId: string,
   locale: string,
   maxAttempts = 30,
   interval = 1000
 ): Promise<any> {
   for (let i = 0; i < maxAttempts; i++) {
-    const asset = await environment.getAsset(assetId)
+    const asset = await client.asset.get({assetId})
     const file = asset.fields?.file?.[locale]
     if (file && file.url) {
       return asset

@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -23,11 +23,11 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/create'
@@ -48,13 +48,14 @@ const fakeContentType = {
   sys: {id: 'blogPost'}
 }
 
-const fakeEnvironment = {
-  createEntry: jest.fn().mockResolvedValue(fakeCreatedEntry),
-  createEntryWithId: jest.fn().mockResolvedValue(fakeCreatedEntry),
-  getContentType: jest.fn().mockResolvedValue(fakeContentType)
-}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  entry: {
+    create: jest.fn().mockResolvedValue(fakeCreatedEntry),
+    createWithId: jest.fn().mockResolvedValue(fakeCreatedEntry)
+  },
+  contentType: {
+    get: jest.fn().mockResolvedValue(fakeContentType)
+  }
 }
 
 const baseArgv = {
@@ -68,37 +69,35 @@ const baseArgv = {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.createEntry.mockResolvedValue(fakeCreatedEntry)
-  fakeEnvironment.createEntryWithId.mockResolvedValue(fakeCreatedEntry)
-  fakeEnvironment.getContentType.mockResolvedValue(fakeContentType)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.entry.create.mockResolvedValue(fakeCreatedEntry)
+  fakeClient.entry.createWithId.mockResolvedValue(fakeCreatedEntry)
+  fakeClient.contentType.get.mockResolvedValue(fakeContentType)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry create — handler', () => {
   it('creates entry with content type and fields', async () => {
     await handler(baseArgv)
-    expect(fakeEnvironment.createEntry).toHaveBeenCalledWith('blogPost', {
-      fields: {title: {'en-US': 'Hello World'}}
-    })
-  })
-
-  it('uses createEntryWithId when --id is provided', async () => {
-    await handler({...baseArgv, id: 'my-custom-id'})
-    expect(fakeEnvironment.createEntryWithId).toHaveBeenCalledWith(
-      'blogPost',
-      'my-custom-id',
+    expect(fakeClient.entry.create).toHaveBeenCalledWith(
+      {contentTypeId: 'blogPost'},
       {fields: {title: {'en-US': 'Hello World'}}}
     )
-    expect(fakeEnvironment.createEntry).not.toHaveBeenCalled()
   })
 
-  it('creates management client with correct feature', async () => {
+  it('uses entry.createWithId when --id is provided', async () => {
+    await handler({...baseArgv, id: 'my-custom-id'})
+    expect(fakeClient.entry.createWithId).toHaveBeenCalledWith(
+      {contentTypeId: 'blogPost', entryId: 'my-custom-id'},
+      {fields: {title: {'en-US': 'Hello World'}}}
+    )
+    expect(fakeClient.entry.create).not.toHaveBeenCalled()
+  })
+
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-create'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-create'}),
+      expect.any(Object)
     )
   })
 
@@ -171,9 +170,9 @@ describe('entry create — handler', () => {
 describe('entry create — dry run', () => {
   it('validates content type exists without creating entry', async () => {
     await handler({...baseArgv, dryRun: true})
-    expect(fakeEnvironment.getContentType).toHaveBeenCalledWith('blogPost')
-    expect(fakeEnvironment.createEntry).not.toHaveBeenCalled()
-    expect(fakeEnvironment.createEntryWithId).not.toHaveBeenCalled()
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blogPost'})
+    expect(fakeClient.entry.create).not.toHaveBeenCalled()
+    expect(fakeClient.entry.createWithId).not.toHaveBeenCalled()
   })
 
   it('returns dry run result with action and fields', async () => {
@@ -259,18 +258,18 @@ describe('entry create — error handling', () => {
     exitSpy.mockRestore()
   })
 
-  it('calls logError and exits when createEntry throws', async () => {
+  it('calls logError and exits when entry.create throws', async () => {
     const err = Object.assign(new Error('Unprocessable Entity'), {
       response: {status: 422}
     })
-    fakeEnvironment.createEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.create.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
   })
 
   it('exits with code 2 on 5xx error', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    fakeEnvironment.createEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.create.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })

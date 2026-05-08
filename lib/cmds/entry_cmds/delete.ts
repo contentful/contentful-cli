@@ -9,9 +9,9 @@ const {command, desc, builder, handler} = createCommand({
   needsConfirmation: true,
   confirmationMessage: 'Are you sure you want to delete this entry? This cannot be undone.',
   supportsDryRun: true,
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await environment.getEntry(id)
+    const entry = await client.entry.get({entryId: id})
 
     if (entry.sys.publishedVersion) {
       throw new Error(
@@ -19,12 +19,12 @@ const {command, desc, builder, handler} = createCommand({
       )
     }
 
-    await entry.delete()
+    await client.entry.delete({entryId: id})
     return {deleted: true, id: entry.sys.id}
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await environment.getEntry(id)
+    const entry = await client.entry.get({entryId: id})
     return {
       dryRun: true,
       action: 'delete',

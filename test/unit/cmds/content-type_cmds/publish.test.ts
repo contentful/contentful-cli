@@ -1,6 +1,6 @@
 // Mock all external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,12 +23,12 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const {handler} = require('../../../../lib/cmds/content-type_cmds/publish')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const publishedContentType = {
   sys: {id: 'blog-post', version: 4, publishedVersion: 3},
@@ -36,30 +36,24 @@ const publishedContentType = {
   fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
 }
 
-const mockPublish = jest.fn().mockResolvedValue(publishedContentType)
-const mockGetContentType = jest.fn().mockResolvedValue({
+const existingContentType = {
   sys: {id: 'blog-post', version: 3},
   name: 'Blog Post',
-  fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}],
-  publish: mockPublish
-})
+  fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
+}
 
-const fakeEnvironment = {getContentType: mockGetContentType}
-const fakeSpace = {getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)}
+const fakeClient = {
+  contentType: {
+    get: jest.fn().mockResolvedValue(existingContentType),
+    publish: jest.fn().mockResolvedValue(publishedContentType)
+  }
+}
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockPublish.mockResolvedValue(publishedContentType)
-  mockGetContentType.mockResolvedValue({
-    sys: {id: 'blog-post', version: 3},
-    name: 'Blog Post',
-    fields: [],
-    publish: mockPublish
-  })
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.contentType.get.mockResolvedValue(existingContentType)
+  fakeClient.contentType.publish.mockResolvedValue(publishedContentType)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -72,18 +66,22 @@ const baseArgv = {
 describe('content-type publish', () => {
   it('fetches the content type by id', async () => {
     await handler(baseArgv)
-    expect(mockGetContentType).toHaveBeenCalledWith('blog-post')
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
   })
 
-  it('calls publish() on the fetched content type', async () => {
+  it('calls contentType.publish() with the fetched content type', async () => {
     await handler(baseArgv)
-    expect(mockPublish).toHaveBeenCalled()
+    expect(fakeClient.contentType.publish).toHaveBeenCalledWith(
+      {contentTypeId: 'blog-post'},
+      existingContentType
+    )
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'content_type-publish'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'content_type-publish'}),
+      expect.any(Object)
     )
   })
 
@@ -112,9 +110,9 @@ describe('content-type publish', () => {
     expect(opts.quietExtractor(publishedContentType)).toEqual(['blog-post'])
   })
 
-  it('exits with code 1 when getContentType fails with 404', async () => {
+  it('exits with code 1 when contentType.get fails with 404', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    mockGetContentType.mockRejectedValueOnce(err)
+    fakeClient.contentType.get.mockRejectedValueOnce(err)
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
       throw new Error(`process.exit(${_code})`)
     })
@@ -128,7 +126,7 @@ describe('content-type publish', () => {
 
   it('exits with code 2 when publish fails with 500', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    mockPublish.mockRejectedValueOnce(err)
+    fakeClient.contentType.publish.mockRejectedValueOnce(err)
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
       throw new Error(`process.exit(${_code})`)
     })

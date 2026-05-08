@@ -26,20 +26,20 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'Custom entry ID (auto-generated if omitted)'
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const contentTypeId = validateId(argv.contentType, 'Content type ID')
     const fields = validateJsonFields(argv.fields)
 
     if (argv.id) {
       validateId(argv.id, 'Entry ID')
-      return environment.createEntryWithId(contentTypeId, argv.id, {fields})
+      return client.entry.createWithId({contentTypeId, entryId: argv.id}, {fields})
     }
-    return environment.createEntry(contentTypeId, {fields})
+    return client.entry.create({contentTypeId}, {fields})
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const contentTypeId = validateId(argv.contentType, 'Content type ID')
     const fields = validateJsonFields(argv.fields)
-    await environment.getContentType(contentTypeId) // validate CT exists
+    await client.contentType.get({contentTypeId})
     return {
       dryRun: true,
       action: 'create',

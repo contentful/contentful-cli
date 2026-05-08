@@ -1,6 +1,6 @@
 // Mock all external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,39 +23,36 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {warning, logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const {confirmation} = require('../../../../lib/utils/actions')
 const {handler} = require('../../../../lib/cmds/content-type_cmds/delete')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
 
-const mockDelete = jest.fn().mockResolvedValue(undefined)
-const mockGetContentType = jest.fn().mockResolvedValue({
+const mockContentType = {
   sys: {id: 'blog-post', version: 3},
-  name: 'Blog Post',
-  delete: mockDelete
-})
+  name: 'Blog Post'
+}
 
-const fakeEnvironment = {getContentType: mockGetContentType}
-const fakeSpace = {getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)}
+const fakeClient = {
+  contentType: {
+    get: jest.fn().mockResolvedValue(mockContentType),
+    unpublish: jest.fn().mockResolvedValue(undefined),
+    delete: jest.fn().mockResolvedValue(undefined)
+  }
+}
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockDelete.mockResolvedValue(undefined)
-  mockGetContentType.mockResolvedValue({
-    sys: {id: 'blog-post', version: 3},
-    name: 'Blog Post',
-    delete: mockDelete
-  })
+  fakeClient.contentType.get.mockResolvedValue(mockContentType)
+  fakeClient.contentType.unpublish.mockResolvedValue(undefined)
+  fakeClient.contentType.delete.mockResolvedValue(undefined)
   mockConfirmation.mockResolvedValue(true)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -73,31 +70,47 @@ describe('content-type delete', () => {
 
   it('fetches the content type by id', async () => {
     await handler(baseArgv)
-    expect(mockGetContentType).toHaveBeenCalledWith('blog-post')
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
   })
 
-  it('calls delete() on the content type after confirmation', async () => {
+  it('calls contentType.delete() after confirmation', async () => {
     await handler(baseArgv)
-    expect(mockDelete).toHaveBeenCalled()
+    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+  })
+
+  it('does not unpublish when content type is not published', async () => {
+    await handler(baseArgv)
+    expect(fakeClient.contentType.unpublish).not.toHaveBeenCalled()
+  })
+
+  it('unpublishes before deleting when content type is published', async () => {
+    fakeClient.contentType.get.mockResolvedValueOnce({
+      sys: {id: 'blog-post', version: 3, publishedVersion: 2},
+      name: 'Blog Post'
+    })
+    await handler(baseArgv)
+    expect(fakeClient.contentType.unpublish).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
   })
 
   it('skips confirmation when --yes is passed', async () => {
     await handler({...baseArgv, yes: true})
     expect(mockConfirmation).not.toHaveBeenCalled()
-    expect(mockDelete).toHaveBeenCalled()
+    expect(fakeClient.contentType.delete).toHaveBeenCalled()
   })
 
   it('aborts delete when confirmation is denied', async () => {
     mockConfirmation.mockResolvedValueOnce(false)
     await handler(baseArgv)
-    expect(mockDelete).not.toHaveBeenCalled()
+    expect(fakeClient.contentType.delete).not.toHaveBeenCalled()
     expect(mockWarning).toHaveBeenCalled()
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'content_type-delete'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'content_type-delete'}),
+      expect.any(Object)
     )
   })
 
@@ -117,9 +130,9 @@ describe('content-type delete', () => {
     expect(opts.quietExtractor({deleted: true, id: 'blog-post'})).toEqual(['blog-post'])
   })
 
-  it('exits with code 1 when delete fails with 404', async () => {
+  it('exits with code 1 when get fails with 404', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    mockGetContentType.mockRejectedValueOnce(err)
+    fakeClient.contentType.get.mockRejectedValueOnce(err)
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
       throw new Error(`process.exit(${_code})`)
     })

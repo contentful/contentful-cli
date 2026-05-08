@@ -8,14 +8,14 @@ const {command, desc, builder, handler} = createCommand({
   feature: 'asset-unpublish',
   usage: 'Usage: contentful asset unpublish <id> [options]',
   supportsDryRun: true,
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    const asset = await environment.getAsset(id)
-    return asset.unpublish()
+    const asset = await client.asset.get({assetId: id})
+    return client.asset.unpublish({assetId: id})
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    return environment.getAsset(id)
+    return client.asset.get({assetId: id})
   },
   tableFormat: (asset) => ({
     rows: [

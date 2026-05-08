@@ -1,6 +1,6 @@
 // Mock all external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,13 +23,13 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {warning, logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 const {handler} = require('../../../../lib/cmds/content-type_cmds/create')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const createdContentType = {
   sys: {id: 'blog-post', version: 1},
@@ -37,23 +37,24 @@ const createdContentType = {
   fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
 }
 
-const mockCreateContentType = jest.fn().mockResolvedValue(createdContentType)
-const mockCreateContentTypeWithId = jest.fn().mockResolvedValue({
-  ...createdContentType,
-  sys: {id: 'custom-id', version: 1}
-})
-const fakeEnvironment = {
-  createContentType: mockCreateContentType,
-  createContentTypeWithId: mockCreateContentTypeWithId
+const fakeClient = {
+  contentType: {
+    create: jest.fn().mockResolvedValue(createdContentType),
+    createWithId: jest.fn().mockResolvedValue({
+      ...createdContentType,
+      sys: {id: 'custom-id', version: 1}
+    })
+  }
 }
-const fakeSpace = {getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)}
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
+  fakeClient.contentType.create.mockResolvedValue(createdContentType)
+  fakeClient.contentType.createWithId.mockResolvedValue({
+    ...createdContentType,
+    sys: {id: 'custom-id', version: 1}
   })
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -65,43 +66,49 @@ const baseArgv = {
 }
 
 describe('content-type create', () => {
-  it('calls createContentType with name and parsed fields', async () => {
+  it('calls contentType.create with name and parsed fields', async () => {
     await handler(baseArgv)
-    expect(mockCreateContentType).toHaveBeenCalledWith({
+    expect(fakeClient.contentType.create).toHaveBeenCalledWith({}, {
       name: 'Blog Post',
       fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
     })
   })
 
-  it('calls createContentTypeWithId when --id is provided', async () => {
+  it('calls contentType.createWithId when --id is provided', async () => {
     await handler({...baseArgv, id: 'custom-id'})
-    expect(mockCreateContentTypeWithId).toHaveBeenCalledWith('custom-id', {
-      name: 'Blog Post',
-      fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
-    })
-    expect(mockCreateContentType).not.toHaveBeenCalled()
+    expect(fakeClient.contentType.createWithId).toHaveBeenCalledWith(
+      {contentTypeId: 'custom-id'},
+      {
+        name: 'Blog Post',
+        fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
+      }
+    )
+    expect(fakeClient.contentType.create).not.toHaveBeenCalled()
   })
 
   it('includes description when provided', async () => {
     await handler({...baseArgv, description: 'A blog post'})
-    expect(mockCreateContentType).toHaveBeenCalledWith(
+    expect(fakeClient.contentType.create).toHaveBeenCalledWith(
+      {},
       expect.objectContaining({description: 'A blog post'})
     )
   })
 
   it('includes displayField when provided', async () => {
     await handler({...baseArgv, displayField: 'title'})
-    expect(mockCreateContentType).toHaveBeenCalledWith(
+    expect(fakeClient.contentType.create).toHaveBeenCalledWith(
+      {},
       expect.objectContaining({displayField: 'title'})
     )
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         feature: 'content_type-create'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
@@ -116,7 +123,7 @@ describe('content-type create', () => {
 
   it('performs dry run when --dry-run is set', async () => {
     await handler({...baseArgv, dryRun: true})
-    expect(mockCreateContentType).not.toHaveBeenCalled()
+    expect(fakeClient.contentType.create).not.toHaveBeenCalled()
     expect(mockWarning).toHaveBeenCalledWith(expect.stringContaining('[DRY RUN]'))
     expect(mockOutput).toHaveBeenCalledWith(
       expect.objectContaining({dryRun: true, action: 'create', name: 'Blog Post'}),
@@ -172,7 +179,7 @@ describe('content-type create', () => {
 
   it('exits with code 1 when creation fails with 4xx', async () => {
     const err = Object.assign(new Error('Unprocessable'), {response: {status: 422}})
-    mockCreateContentType.mockRejectedValueOnce(err)
+    fakeClient.contentType.create.mockRejectedValueOnce(err)
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
       throw new Error(`process.exit(${_code})`)
     })

@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -19,18 +19,15 @@ jest.mock('../../../../lib/utils/log', () => ({
   warning: jest.fn(),
   logError: jest.fn()
 }))
-jest.mock('../../../../lib/utils/pagination', () => jest.fn())
 
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
-const paginate = require('../../../../lib/utils/pagination')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
-const mockPaginate = paginate as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/list'
@@ -58,11 +55,10 @@ const fakeEntriesResult = {
   total: 2
 }
 
-const fakeEnvironment = {
-  getEntries: jest.fn().mockResolvedValue(fakeEntriesResult)
-}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  entry: {
+    getMany: jest.fn().mockResolvedValue(fakeEntriesResult)
+  }
 }
 
 const baseArgv = {
@@ -74,45 +70,35 @@ const baseArgv = {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.getEntries.mockResolvedValue(fakeEntriesResult)
-  mockPaginate.mockResolvedValue(fakeEntriesResult)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.entry.getMany.mockResolvedValue(fakeEntriesResult)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry list — handler', () => {
-  it('calls paginate when no limit or skip is provided', async () => {
+  it('calls entry.getMany with empty query when no filters provided', async () => {
     await handler(baseArgv)
-    expect(mockPaginate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        client: fakeEnvironment,
-        method: 'getEntries'
-      })
+    expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: {}})
     )
-    expect(fakeEnvironment.getEntries).not.toHaveBeenCalled()
   })
 
-  it('calls getEntries directly when --limit is provided', async () => {
+  it('calls entry.getMany with limit in query when --limit is provided', async () => {
     await handler({...baseArgv, limit: 50})
-    expect(fakeEnvironment.getEntries).toHaveBeenCalledWith(
-      expect.objectContaining({limit: 50})
+    expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: expect.objectContaining({limit: 50})})
     )
-    expect(mockPaginate).not.toHaveBeenCalled()
   })
 
-  it('calls getEntries directly when --skip is provided', async () => {
+  it('calls entry.getMany with skip in query when --skip is provided', async () => {
     await handler({...baseArgv, skip: 10})
-    expect(fakeEnvironment.getEntries).toHaveBeenCalledWith(
-      expect.objectContaining({skip: 10})
+    expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({query: expect.objectContaining({skip: 10})})
     )
-    expect(mockPaginate).not.toHaveBeenCalled()
   })
 
   it('passes content_type to query when --content-type is given', async () => {
     await handler({...baseArgv, contentType: 'blogPost'})
-    expect(mockPaginate).toHaveBeenCalledWith(
+    expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
       expect.objectContaining({
         query: expect.objectContaining({content_type: 'blogPost'})
       })
@@ -121,8 +107,10 @@ describe('entry list — handler', () => {
 
   it('passes content_type and limit when both are given', async () => {
     await handler({...baseArgv, contentType: 'article', limit: 20})
-    expect(fakeEnvironment.getEntries).toHaveBeenCalledWith(
-      expect.objectContaining({content_type: 'article', limit: 20})
+    expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: expect.objectContaining({content_type: 'article', limit: 20})
+      })
     )
   })
 
@@ -181,10 +169,11 @@ describe('entry list — handler', () => {
     expect(rows[1][1]).toBe('article')
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-list'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-list'}),
+      expect.any(Object)
     )
   })
 })
@@ -194,7 +183,7 @@ describe('entry list — entry status', () => {
     const draftEntry = {
       sys: {id: 'draft-entry', version: 1, updatedAt: '2026-01-01T00:00:00Z'}
     }
-    mockPaginate.mockResolvedValueOnce({items: [draftEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({items: [draftEntry], total: 1})
     await handler(baseArgv)
     const opts = (mockOutput.mock.calls[0][2] as any)
     const rows = opts.table.rows
@@ -210,7 +199,7 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    mockPaginate.mockResolvedValueOnce({items: [publishedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({items: [publishedEntry], total: 1})
     await handler(baseArgv)
     const opts = (mockOutput.mock.calls[0][2] as any)
     expect(opts.table.rows[0][2]).toBe('published')
@@ -225,7 +214,7 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    mockPaginate.mockResolvedValueOnce({items: [changedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({items: [changedEntry], total: 1})
     await handler(baseArgv)
     const opts = (mockOutput.mock.calls[0][2] as any)
     expect(opts.table.rows[0][2]).toBe('changed')
@@ -240,7 +229,7 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    mockPaginate.mockResolvedValueOnce({items: [archivedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({items: [archivedEntry], total: 1})
     await handler(baseArgv)
     const opts = (mockOutput.mock.calls[0][2] as any)
     expect(opts.table.rows[0][2]).toBe('archived')
@@ -262,7 +251,7 @@ describe('entry list — error handling', () => {
 
   it('calls logError and exits when SDK throws', async () => {
     const err = new Error('API error')
-    mockCreateManagementClient.mockRejectedValueOnce(err)
+    mockCreatePlainClient.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
   })

@@ -55,8 +55,8 @@ const {command, desc, builder, handler} = createCommand({
       describe: 'ID of the field used as display field'
     }
   },
-  handler: async (environment, argv) => {
-    const contentType = await environment.getContentType(argv.id)
+  handler: async (client, argv) => {
+    const contentType = await client.contentType.get({contentTypeId: argv.id})
 
     // Verify version for optimistic locking
     if (contentType.sys.version !== argv.version) {
@@ -73,7 +73,7 @@ const {command, desc, builder, handler} = createCommand({
       contentType.fields = parseFieldsArray(argv.fields)
     }
 
-    return contentType.update()
+    return client.contentType.update({contentTypeId: argv.id}, contentType)
   },
   tableFormat: (ct) => ({
     rows: [

@@ -20,12 +20,12 @@ const {command, desc, builder, handler} = createCommand({
       demandOption: true
     }
   },
-  handler: async (environment, argv) => {
+  handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const asset = await environment.getAsset(id)
+    const asset = await client.asset.get({assetId: id})
 
     if (asset.sys.version !== version) {
       throw new Error(
@@ -34,14 +34,14 @@ const {command, desc, builder, handler} = createCommand({
     }
 
     asset.fields = {...asset.fields, ...fields}
-    return asset.update()
+    return client.asset.update({assetId: id}, asset)
   },
-  dryRunHandler: async (environment, argv) => {
+  dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const asset = await environment.getAsset(id)
+    const asset = await client.asset.get({assetId: id})
 
     if (asset.sys.version !== version) {
       throw new Error(

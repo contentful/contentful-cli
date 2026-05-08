@@ -14,12 +14,12 @@ const {command, desc, builder, handler} = createCommand({
       demandOption: true
     }
   },
-  handler: async (environment, argv) => {
-    const contentType = await environment.getContentType(argv.id)
+  handler: async (client, argv) => {
+    const contentType = await client.contentType.get({contentTypeId: argv.id})
     if (contentType.sys.publishedVersion) {
-      await contentType.unpublish()
+      await client.contentType.unpublish({contentTypeId: argv.id})
     }
-    await contentType.delete()
+    await client.contentType.delete({contentTypeId: argv.id})
     return {deleted: true, id: argv.id}
   },
   quietExtractor: (data) => [data.id]

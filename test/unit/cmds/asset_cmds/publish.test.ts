@@ -1,5 +1,5 @@
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn(v => v || {})
@@ -23,10 +23,10 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {handler} from '../../../../lib/cmds/asset_cmds/publish'
 import {output} from '../../../../lib/utils/output'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const mockPublishedAsset = {
   sys: {
@@ -48,28 +48,21 @@ const mockAsset = {
   },
   fields: {
     title: {'en-US': 'Hero Image'}
-  },
-  publish: jest.fn().mockResolvedValue(mockPublishedAsset)
+  }
 }
 
-const getAssetSub = jest.fn().mockResolvedValue(mockAsset)
-
-const fakeEnvironment = {
-  getAsset: getAssetSub
-}
-
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  asset: {
+    get: jest.fn().mockResolvedValue(mockAsset),
+    publish: jest.fn().mockResolvedValue(mockPublishedAsset)
+  }
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
-  mockAsset.publish.mockResolvedValue(mockPublishedAsset)
-  getAssetSub.mockResolvedValue(mockAsset)
+  fakeClient.asset.get.mockResolvedValue(mockAsset)
+  fakeClient.asset.publish.mockResolvedValue(mockPublishedAsset)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 const baseArgv = {
@@ -80,24 +73,25 @@ const baseArgv = {
 }
 
 describe('asset publish — handler', () => {
-  it('creates management client with asset-publish feature', async () => {
+  it('creates plain client with asset-publish feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
         accessToken: 'token-abc',
         feature: 'asset-publish'
-      })
+      }),
+      expect.any(Object)
     )
   })
 
-  it('calls getAsset with the provided ID', async () => {
+  it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(getAssetSub).toHaveBeenCalledWith('asset-abc')
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
   })
 
-  it('calls asset.publish()', async () => {
+  it('calls asset.publish() with id and asset', async () => {
     await handler(baseArgv)
-    expect(mockAsset.publish).toHaveBeenCalled()
+    expect(fakeClient.asset.publish).toHaveBeenCalledWith({assetId: 'asset-abc'}, mockAsset)
   })
 
   it('routes result through output()', async () => {
@@ -151,7 +145,7 @@ describe('asset publish — handler', () => {
   describe('dry-run', () => {
     it('does not call asset.publish() when --dry-run is set', async () => {
       await handler({...baseArgv, dryRun: true})
-      expect(mockAsset.publish).not.toHaveBeenCalled()
+      expect(fakeClient.asset.publish).not.toHaveBeenCalled()
     })
 
     it('still returns asset data when --dry-run is set', async () => {

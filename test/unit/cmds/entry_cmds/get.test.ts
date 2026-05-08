@@ -1,6 +1,6 @@
 // Mock external dependencies before imports
 jest.mock('../../../../lib/utils/contentful-clients', () => ({
-  createManagementClient: jest.fn()
+  createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
   getHeadersFromOption: jest.fn((v) => v || {})
@@ -23,11 +23,11 @@ jest.mock('../../../../lib/utils/log', () => ({
 import {output} from '../../../../lib/utils/output'
 import {logError} from '../../../../lib/utils/log'
 
-const {createManagementClient} = require('../../../../lib/utils/contentful-clients')
+const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
-const mockCreateManagementClient = createManagementClient as jest.MockedFunction<any>
+const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
 import {handler} from '../../../../lib/cmds/entry_cmds/get'
@@ -46,11 +46,10 @@ const fakeEntry = {
   }
 }
 
-const fakeEnvironment = {
-  getEntry: jest.fn().mockResolvedValue(fakeEntry)
-}
-const fakeSpace = {
-  getEnvironment: jest.fn().mockResolvedValue(fakeEnvironment)
+const fakeClient = {
+  entry: {
+    get: jest.fn().mockResolvedValue(fakeEntry)
+  }
 }
 
 const baseArgv = {
@@ -63,23 +62,21 @@ const baseArgv = {
 
 beforeEach(() => {
   jest.clearAllMocks()
-  fakeSpace.getEnvironment.mockResolvedValue(fakeEnvironment)
-  fakeEnvironment.getEntry.mockResolvedValue(fakeEntry)
-  mockCreateManagementClient.mockResolvedValue({
-    getSpace: jest.fn().mockResolvedValue(fakeSpace)
-  })
+  fakeClient.entry.get.mockResolvedValue(fakeEntry)
+  mockCreatePlainClient.mockResolvedValue(fakeClient)
 })
 
 describe('entry get — handler', () => {
-  it('calls getEntry with the provided ID', async () => {
+  it('calls entry.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(fakeEnvironment.getEntry).toHaveBeenCalledWith('entry-abc')
+    expect(fakeClient.entry.get).toHaveBeenCalledWith({entryId: 'entry-abc'})
   })
 
-  it('creates management client with correct feature', async () => {
+  it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
-    expect(mockCreateManagementClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-get'})
+    expect(mockCreatePlainClient).toHaveBeenCalledWith(
+      expect.objectContaining({feature: 'entry-get'}),
+      expect.any(Object)
     )
   })
 
@@ -152,7 +149,7 @@ describe('entry get — handler', () => {
     const entryWithoutCt = {
       sys: {id: 'entry-no-ct', version: 1, updatedAt: '2026-01-01T00:00:00Z'}
     }
-    fakeEnvironment.getEntry.mockResolvedValueOnce(entryWithoutCt)
+    fakeClient.entry.get.mockResolvedValueOnce(entryWithoutCt)
     await handler(baseArgv)
     const opts = (mockOutput.mock.calls[0][2] as any)
     const rows = opts.keyValue.rows
@@ -187,7 +184,7 @@ describe('entry get — ID validation', () => {
 
 describe('entry get — entry status', () => {
   it('shows "draft" for entry with no publishedVersion', async () => {
-    fakeEnvironment.getEntry.mockResolvedValueOnce({
+    fakeClient.entry.get.mockResolvedValueOnce({
       sys: {id: 'draft', version: 1, updatedAt: '2026-01-01T00:00:00Z'}
     })
     await handler(baseArgv)
@@ -197,7 +194,7 @@ describe('entry get — entry status', () => {
   })
 
   it('shows "changed" when version > publishedVersion + 1', async () => {
-    fakeEnvironment.getEntry.mockResolvedValueOnce({
+    fakeClient.entry.get.mockResolvedValueOnce({
       sys: {id: 'changed', version: 5, publishedVersion: 2, updatedAt: '2026-01-01T00:00:00Z'}
     })
     await handler(baseArgv)
@@ -207,7 +204,7 @@ describe('entry get — entry status', () => {
   })
 
   it('shows "archived" when archivedVersion is set', async () => {
-    fakeEnvironment.getEntry.mockResolvedValueOnce({
+    fakeClient.entry.get.mockResolvedValueOnce({
       sys: {id: 'archived', version: 2, archivedVersion: 1, updatedAt: '2026-01-01T00:00:00Z'}
     })
     await handler(baseArgv)
@@ -230,9 +227,9 @@ describe('entry get — error handling', () => {
     exitSpy.mockRestore()
   })
 
-  it('calls logError and exits when getEntry throws', async () => {
+  it('calls logError and exits when entry.get throws', async () => {
     const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
     expect(mockLogError).toHaveBeenCalledWith(err)
     expect(exitSpy).toHaveBeenCalledWith(1)
@@ -240,7 +237,7 @@ describe('entry get — error handling', () => {
 
   it('exits with code 2 on 5xx error', async () => {
     const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
-    fakeEnvironment.getEntry.mockRejectedValueOnce(err)
+    fakeClient.entry.get.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })
