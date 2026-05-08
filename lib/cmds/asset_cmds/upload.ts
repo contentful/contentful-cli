@@ -9,6 +9,12 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Upload and create an asset',
   feature: 'asset-upload',
   usage: 'Usage: contentful asset upload [options]',
+  examples: [
+    ['contentful asset upload --file ./hero.png --title "Hero Image"', 'Upload with auto-detected MIME type'],
+    ['contentful asset upload --file ./doc.pdf --title "Whitepaper" --content-type application/pdf', 'Upload with explicit MIME type'],
+    ['contentful asset upload --file ./logo.svg --title "Logo" --id brand-logo', 'Upload with a custom asset ID'],
+    ['contentful asset upload --file ./photo.jpg --title "Photo" --dry-run', 'Preview upload without making changes']
+  ],
   supportsDryRun: true,
   options: {
     file: {

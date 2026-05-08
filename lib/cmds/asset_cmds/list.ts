@@ -15,6 +15,11 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'List assets',
   feature: 'asset-list',
   usage: 'Usage: contentful asset list [options]',
+  examples: [
+    ['contentful asset list', 'List all assets as a table'],
+    ['contentful asset list --json --limit 5', 'Get first 5 assets as JSON'],
+    ['contentful asset list --quiet', 'Output only asset IDs (one per line)']
+  ],
   options: {
     query: {
       type: 'string',

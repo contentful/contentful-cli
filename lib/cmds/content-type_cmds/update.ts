@@ -24,6 +24,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Update a content type',
   feature: 'content_type-update',
   usage: 'Usage: contentful content-type update --id <id> --version <version> [options]',
+  examples: [
+    ['contentful content-type update --id blogPost --version 3 --name "Article"', 'Rename a content type'],
+    ['contentful content-type update --id blogPost --version 3 --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true}]\'', 'Replace field definitions']
+  ],
   options: {
     id: {
       type: 'string',

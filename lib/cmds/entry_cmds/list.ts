@@ -5,6 +5,12 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'List entries',
   feature: 'entry-list',
   usage: 'Usage: contentful entry list [options]',
+  examples: [
+    ['contentful entry list --content-type blogPost', 'List all blog post entries'],
+    ['contentful entry list --content-type blogPost --quiet', 'Output only entry IDs (one per line, for piping)'],
+    ['contentful entry list --json --limit 10', 'Get first 10 entries as JSON array'],
+    ['contentful entry list --ct blogPost -q | xargs -I{} contentful entry unpublish {}', 'Unpublish all entries of a type']
+  ],
   options: {
     'content-type': {
       alias: 'ct',

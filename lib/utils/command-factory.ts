@@ -23,6 +23,8 @@ export interface CommandConfig {
   supportsDryRun?: boolean
   /** Usage string shown in help */
   usage?: string
+  /** Examples shown in help — array of [command, description] pairs */
+  examples?: [string, string][]
   /**
    * Core action handler — receives the plain client and argv.
    * Should return the data to be displayed.
@@ -117,6 +119,12 @@ export function createCommand(config: CommandConfig): {
     if (config.options) {
       for (const [name, optionConfig] of Object.entries(config.options)) {
         yargs = yargs.option(name, optionConfig)
+      }
+    }
+
+    if (config.examples) {
+      for (const [cmd, description] of config.examples) {
+        yargs = yargs.example(cmd, description)
       }
     }
 

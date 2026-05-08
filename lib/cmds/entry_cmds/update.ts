@@ -6,6 +6,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Update an entry',
   feature: 'entry-update',
   usage: 'Usage: contentful entry update <id> [options]',
+  examples: [
+    ['contentful entry update 5KsDBWseXY6QegucYAoacS --version 3 --fields \'{"title": {"en-US": "New Title"}}\'', 'Update title field'],
+    ['contentful entry update 5KsDBWseXY6QegucYAoacS --version 3 --fields \'{"title": {"en-US": "New"}}\' --dry-run', 'Preview update without applying']
+  ],
   supportsDryRun: true,
   options: {
     fields: {

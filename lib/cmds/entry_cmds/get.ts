@@ -6,6 +6,11 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Get a single entry',
   feature: 'entry-get',
   usage: 'Usage: contentful entry get <id> [options]',
+  examples: [
+    ['contentful entry get 5KsDBWseXY6QegucYAoacS', 'Get entry as a table'],
+    ['contentful entry get 5KsDBWseXY6QegucYAoacS --json', 'Get full entry JSON (includes sys, fields, metadata)'],
+    ['contentful entry get 5KsDBWseXY6QegucYAoacS --json --environment-id staging', 'Get entry from a specific environment']
+  ],
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
     return client.entry.get({entryId: id})

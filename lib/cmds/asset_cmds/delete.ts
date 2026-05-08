@@ -6,6 +6,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Delete an asset',
   feature: 'asset-delete',
   usage: 'Usage: contentful asset delete <id> [options]',
+  examples: [
+    ['contentful asset delete 3wtvPBbBjiMKqKGFI0MeCu', 'Delete (prompts for confirmation)'],
+    ['contentful asset delete 3wtvPBbBjiMKqKGFI0MeCu --yes', 'Delete without confirmation']
+  ],
   needsConfirmation: true,
   confirmationMessage: 'Are you sure you want to delete this asset? This action cannot be undone.',
   supportsDryRun: true,

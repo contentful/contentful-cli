@@ -7,6 +7,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Update an asset',
   feature: 'asset-update',
   usage: 'Usage: contentful asset update <id> --fields <json> --version <n> [options]',
+  examples: [
+    ['contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"title": {"en-US": "New Title"}}\'', 'Update asset title'],
+    ['contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"description": {"en-US": "A photo"}}\' --dry-run', 'Preview update']
+  ],
   supportsDryRun: true,
   options: {
     fields: {

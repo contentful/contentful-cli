@@ -16,6 +16,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Get a single asset',
   feature: 'asset-get',
   usage: 'Usage: contentful asset get <id> [options]',
+  examples: [
+    ['contentful asset get 3wtvPBbBjiMKqKGFI0MeCu', 'Get asset details as a table'],
+    ['contentful asset get 3wtvPBbBjiMKqKGFI0MeCu --json', 'Get full asset JSON (includes file URL, metadata)']
+  ],
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
     return client.asset.get({assetId: id})

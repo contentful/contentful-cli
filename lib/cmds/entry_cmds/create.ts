@@ -6,6 +6,11 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Create an entry',
   feature: 'entry-create',
   usage: 'Usage: contentful entry create [options]',
+  examples: [
+    ['contentful entry create --content-type blogPost --fields \'{"title": {"en-US": "Hello World"}, "body": {"en-US": "Content here"}}\'', 'Create a blog post entry'],
+    ['contentful entry create --ct page --fields \'{"title": {"en-US": "About"}}\' --id my-about-page', 'Create with a custom ID'],
+    ['contentful entry create --ct blogPost --fields \'{"title": {"en-US": "Draft"}}\' --dry-run', 'Preview without creating']
+  ],
   supportsDryRun: true,
   options: {
     'content-type': {

@@ -6,6 +6,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Publish an entry',
   feature: 'entry-publish',
   usage: 'Usage: contentful entry publish <id> [options]',
+  examples: [
+    ['contentful entry publish 5KsDBWseXY6QegucYAoacS', 'Publish an entry'],
+    ['contentful entry publish 5KsDBWseXY6QegucYAoacS --json', 'Publish and output the updated entry as JSON']
+  ],
   supportsDryRun: true,
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')

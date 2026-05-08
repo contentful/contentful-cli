@@ -25,6 +25,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Create a content type',
   feature: 'content_type-create',
   usage: 'Usage: contentful content-type create [options]',
+  examples: [
+    ['contentful content-type create --name "Blog Post" --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true},{"id":"body","name":"Body","type":"Text"}]\'', 'Create with two fields'],
+    ['contentful content-type create --name "Page" --fields \'[{"id":"title","name":"Title","type":"Symbol"}]\' --id page --display-field title', 'Create with custom ID and display field']
+  ],
   supportsDryRun: true,
   options: {
     name: {

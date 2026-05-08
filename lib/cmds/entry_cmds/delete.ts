@@ -6,6 +6,10 @@ const {command, desc, builder, handler} = createCommand({
   desc: 'Delete an entry',
   feature: 'entry-delete',
   usage: 'Usage: contentful entry delete <id> [options]',
+  examples: [
+    ['contentful entry delete 5KsDBWseXY6QegucYAoacS', 'Delete (prompts for confirmation)'],
+    ['contentful entry delete 5KsDBWseXY6QegucYAoacS --yes', 'Delete without confirmation prompt']
+  ],
   needsConfirmation: true,
   confirmationMessage: 'Are you sure you want to delete this entry? This cannot be undone.',
   supportsDryRun: true,
