@@ -93,7 +93,11 @@ describe('content-type update', () => {
   it('rejects when provided version does not match content type version', async () => {
     const exitSpy = jest
       .spyOn(process, 'exit')
-      .mockImplementation((() => {}) as any)
+      .mockImplementation(
+        (() => undefined) as unknown as (
+          code?: string | number | null | undefined
+        ) => never
+      )
     await handler({ ...baseArgv, version: 5 })
     expect(exitSpy).toHaveBeenCalledWith(1)
     exitSpy.mockRestore()

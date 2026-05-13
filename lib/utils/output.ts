@@ -1,6 +1,7 @@
 import { log } from './log'
 import { toTOON } from './toon'
-const Table = require('cli-table3')
+import Table from 'cli-table3'
+import type { Argv } from 'yargs'
 
 export interface OutputFlags {
   json?: boolean
@@ -20,18 +21,20 @@ export interface KeyValueConfig {
   rows: KeyValueRow[]
 }
 
+export interface OutputOptions<TData = unknown> {
+  quietExtractor?: (data: TData) => string[]
+  table?: TableConfig
+  keyValue?: KeyValueConfig
+}
+
 /**
  * Core output dispatch function.
  * Routes data to the appropriate format based on flags.
  */
-export function output(
-  data: unknown,
+export function output<TData>(
+  data: TData,
   flags: OutputFlags,
-  options: {
-    quietExtractor?: (data: any) => string[]
-    table?: TableConfig
-    keyValue?: KeyValueConfig
-  }
+  options: OutputOptions<TData>
 ): void {
   if (flags.json) {
     log(JSON.stringify(data, null, 2))
@@ -76,7 +79,9 @@ export function output(
  * Contentful fields are shaped as { "en-US": value } or { "nl": value }.
  * Returns undefined if the field is missing or empty.
  */
-export function firstLocaleValue(field: any): any {
+export function firstLocaleValue<T>(
+  field?: Record<string, T> | null
+): T | undefined {
   if (!field || typeof field !== 'object') return undefined
   const keys = Object.keys(field)
   return keys.length > 0 ? field[keys[0]] : undefined
@@ -85,7 +90,7 @@ export function firstLocaleValue(field: any): any {
 /**
  * Add standard output flag options to a yargs builder.
  */
-export function outputOptions(yargs: any): any {
+export function outputOptions(yargs: Argv): Argv {
   return yargs
     .option('json', {
       type: 'boolean',

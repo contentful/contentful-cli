@@ -4,8 +4,14 @@ import { importSpace } from '../space_cmds/import'
 import { spaceUse } from '../space_cmds/use'
 import initialContent from './content.json'
 
-// TODO: use proper context types
-export const getSpace = async (context: any) => {
+interface InitContext {
+  managementToken?: string
+  activeSpaceId?: string
+  activeEnvironmentId?: string
+  [key: string]: unknown
+}
+
+export const getSpace = async (context: InitContext) => {
   const { newSpace } = await inquirer.prompt([
     {
       type: 'list',

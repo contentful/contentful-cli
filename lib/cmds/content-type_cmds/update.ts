@@ -1,10 +1,11 @@
 import { createCommand } from '../../utils/command-factory'
+import type { CreateContentTypeProps } from 'contentful-management'
 
 /**
  * Parse and validate the --fields option as a JSON array of field definitions.
  */
-function parseFieldsArray(value: string): any[] {
-  let parsed: any
+function parseFieldsArray(value: string): CreateContentTypeProps['fields'] {
+  let parsed: unknown
   try {
     parsed = JSON.parse(value)
   } catch (err) {
@@ -16,7 +17,7 @@ function parseFieldsArray(value: string): any[] {
   if (!Array.isArray(parsed)) {
     throw new Error('--fields must be a JSON array of field definitions')
   }
-  return parsed
+  return parsed as CreateContentTypeProps['fields']
 }
 
 const { command, desc, builder, handler } = createCommand({

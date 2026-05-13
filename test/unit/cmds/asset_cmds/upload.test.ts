@@ -111,7 +111,13 @@ let exitSpy: jest.SpyInstance
 
 beforeEach(() => {
   jest.clearAllMocks()
-  exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => {}) as any)
+  exitSpy = jest
+    .spyOn(process, 'exit')
+    .mockImplementation(
+      (() => undefined) as unknown as (
+        code?: string | number | null | undefined
+      ) => never
+    )
   mockExistsSync.mockReturnValue(true)
   mockCreateReadStream.mockReturnValue(mockStream)
   fakeClient = makeFakeClient()

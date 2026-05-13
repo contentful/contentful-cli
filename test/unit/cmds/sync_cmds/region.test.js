@@ -36,7 +36,7 @@ describe('migrateRegion', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     fs.existsSync.mockReturnValue(false)
-    fs.mkdirSync.mockImplementation(() => {})
+    fs.mkdirSync.mockImplementation(() => undefined)
     path.join.mockImplementation((...parts) => parts.join('/'))
     runContentfulExport.mockResolvedValue({})
     runContentfulImport.mockResolvedValue({})

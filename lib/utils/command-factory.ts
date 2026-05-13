@@ -1,12 +1,62 @@
 import { copyright } from './copyright'
 import { handleAsyncErrorWithExitCode } from './exit-codes'
-import { output, OutputFlags, TableConfig, KeyValueConfig } from './output'
+import {
+  output,
+  OutputFlags,
+  TableConfig,
+  KeyValueConfig,
+  OutputOptions
+} from './output'
 import { warning } from './log'
-const { createPlainClient } = require('./contentful-clients')
-const { getHeadersFromOption } = require('./headers')
-const { confirmation } = require('./actions')
+import type { Argv, Options } from 'yargs'
+import type { PlainClientAPI } from 'contentful-management'
 
-export interface CommandConfig {
+interface RuntimeContext {
+  managementToken?: string
+  activeSpaceId?: string
+  activeEnvironmentId?: string
+}
+
+export type CommandArgv = {
+  context?: RuntimeContext
+  header?: string
+  json?: boolean
+  agentMode?: boolean
+  quiet?: boolean
+  yes?: boolean
+  dryRun?: boolean
+  managementToken?: string
+  spaceId?: string
+  environmentId?: string
+} & Record<string, never>
+
+type CommandOutputData<TResult, TDryRun> = (TResult | TDryRun) &
+  Record<string, never>
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { createPlainClient } = require('./contentful-clients') as {
+  createPlainClient: (
+    params: {
+      accessToken?: string
+      feature: string
+      headers: Record<string, string>
+    },
+    defaults: {
+      spaceId?: string
+      environmentId?: string
+    }
+  ) => Promise<PlainClientAPI>
+}
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { getHeadersFromOption } = require('./headers') as {
+  getHeadersFromOption: (header?: string) => Record<string, string>
+}
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { confirmation } = require('./actions') as {
+  confirmation: (message: string) => Promise<boolean>
+}
+
+export interface CommandConfig<TResult = unknown, TDryRun = TResult> {
   /** yargs command string, e.g. 'get <id>' or 'list' */
   command: string
   /** Command description shown in help */
@@ -14,7 +64,7 @@ export interface CommandConfig {
   /** SDK tracking feature string, e.g. 'entry-list' */
   feature: string
   /** Additional yargs options beyond the standard set */
-  options?: Record<string, any>
+  options?: Record<string, Options>
   /** When true, adds --yes flag and prompts for confirmation before executing */
   needsConfirmation?: boolean
   /** Message shown to user when prompting for confirmation */
@@ -29,19 +79,24 @@ export interface CommandConfig {
    * Core action handler — receives the plain client and argv.
    * Should return the data to be displayed.
    */
-  handler: (client: any, argv: any) => Promise<any>
+  handler: (client: PlainClientAPI, argv: CommandArgv) => Promise<TResult>
   /**
    * Optional dry-run handler — called instead of handler when --dry-run is passed.
    * Should return the data to be displayed.
    */
-  dryRunHandler?: (client: any, argv: any) => Promise<any>
+  dryRunHandler?: (
+    client: PlainClientAPI,
+    argv: CommandArgv
+  ) => Promise<TDryRun>
   /**
    * Optional function that returns a TableConfig or KeyValueConfig for structured output.
    * Receives the handler result data.
    */
-  tableFormat?: (data: any) => TableConfig | KeyValueConfig
+  tableFormat?: (
+    data: CommandOutputData<TResult, TDryRun>
+  ) => TableConfig | KeyValueConfig
   /** Optional function that extracts string IDs from result data for --quiet output */
-  quietExtractor?: (data: any) => string[]
+  quietExtractor?: (data: CommandOutputData<TResult, TDryRun>) => string[]
 }
 
 /**
@@ -54,13 +109,15 @@ export interface CommandConfig {
  *   --yes (when needsConfirmation is true)
  *   --dry-run (when supportsDryRun is true)
  */
-export function createCommand(config: CommandConfig): {
+export function createCommand<TResult, TDryRun = TResult>(
+  config: CommandConfig<TResult, TDryRun>
+): {
   command: string
   desc: string
-  builder: (yargs: any) => any
-  handler: (argv: any) => Promise<any>
+  builder: (yargs: Argv) => Argv
+  handler: (argv: CommandArgv) => Promise<unknown>
 } {
-  const builder = (yargs: any): any => {
+  const builder = (yargs: Argv): Argv => {
     if (config.usage) {
       yargs = yargs.usage(config.usage)
     }
@@ -132,7 +189,7 @@ export function createCommand(config: CommandConfig): {
     return yargs
   }
 
-  const asyncHandler = async (argv: any): Promise<void> => {
+  const asyncHandler = async (argv: CommandArgv): Promise<void> => {
     const {
       header,
       json,
@@ -176,7 +233,7 @@ export function createCommand(config: CommandConfig): {
 
     const flags: OutputFlags = { json, agentMode, quiet }
 
-    let data: any
+    let data: TResult | TDryRun
 
     if (config.supportsDryRun && dryRun) {
       warning('[DRY RUN] No changes will be made.')
@@ -189,18 +246,16 @@ export function createCommand(config: CommandConfig): {
       data = await config.handler(client, argv)
     }
 
-    const outputOpts: {
-      quietExtractor?: (data: any) => string[]
-      table?: TableConfig
-      keyValue?: KeyValueConfig
-    } = {}
+    const outputOpts: OutputOptions<CommandOutputData<TResult, TDryRun>> = {}
 
     if (config.quietExtractor) {
       outputOpts.quietExtractor = config.quietExtractor
     }
 
     if (config.tableFormat && data !== undefined) {
-      const formatted = config.tableFormat(data)
+      const formatted = config.tableFormat(
+        data as CommandOutputData<TResult, TDryRun>
+      )
       if ('head' in formatted) {
         outputOpts.table = formatted as TableConfig
       } else {
@@ -208,7 +263,7 @@ export function createCommand(config: CommandConfig): {
       }
     }
 
-    output(data, flags, outputOpts)
+    output(data as CommandOutputData<TResult, TDryRun>, flags, outputOpts)
   }
 
   return {

@@ -4,7 +4,8 @@ export interface BaseOperation {
   path: string
 }
 
-export interface AddOperation<T = any> extends BaseOperation {
+export interface AddOperation<T = { id: string } & Record<string, unknown>>
+  extends BaseOperation {
   op: 'add'
   value: T
 }
@@ -13,7 +14,8 @@ export interface RemoveOperation extends BaseOperation {
   op: 'remove'
 }
 
-export interface ReplaceOperation<T = any> extends BaseOperation {
+export interface ReplaceOperation<T = string | number | boolean>
+  extends BaseOperation {
   op: 'replace'
   value: T
 }
@@ -40,7 +42,7 @@ type EntityLink = {
 export type AddChangesetItem = {
   changeType: 'add'
   entity: EntityLink
-  data: any
+  data: Record<string, unknown>
 }
 
 export type DeleteChangesetItem = {

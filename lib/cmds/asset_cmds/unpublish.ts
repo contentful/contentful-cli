@@ -10,7 +10,7 @@ const { command, desc, builder, handler } = createCommand({
   supportsDryRun: true,
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
-    const asset = await client.asset.get({ assetId: id })
+    await client.asset.get({ assetId: id })
     return client.asset.unpublish({ assetId: id })
   },
   dryRunHandler: async (client, argv) => {

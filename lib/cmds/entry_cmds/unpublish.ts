@@ -9,7 +9,7 @@ const { command, desc, builder, handler } = createCommand({
   supportsDryRun: true,
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await client.entry.get({ entryId: id })
+    await client.entry.get({ entryId: id })
     return client.entry.unpublish({ entryId: id })
   },
   dryRunHandler: async (client, argv) => {

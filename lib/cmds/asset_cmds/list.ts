@@ -1,7 +1,12 @@
 import { createCommand } from '../../utils/command-factory'
 import { firstLocaleValue } from '../../utils/output'
+import type {
+  AssetFileField,
+  AssetLike,
+  QueryParams
+} from '../../utils/contentful-types'
 
-function getAssetStatus(asset: any): string {
+function getAssetStatus(asset: AssetLike): string {
   if (asset.sys.archivedVersion) return 'archived'
   if (asset.sys.publishedVersion) {
     if (asset.sys.version > asset.sys.publishedVersion + 1) return 'changed'
@@ -36,7 +41,7 @@ const { command, desc, builder, handler } = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const query: Record<string, any> = {}
+    const query: QueryParams = {}
     if (argv.limit) query.limit = argv.limit
     if (argv.skip) query.skip = argv.skip
 
@@ -44,9 +49,9 @@ const { command, desc, builder, handler } = createCommand({
   },
   tableFormat: data => ({
     head: ['ID', 'Title', 'File Name', 'Status', 'Updated At'],
-    rows: data.items.map((asset: any) => {
+    rows: data.items.map((asset: AssetLike) => {
       const title = firstLocaleValue(asset.fields?.title) || '-'
-      const file = firstLocaleValue(asset.fields?.file)
+      const file = firstLocaleValue<AssetFileField>(asset.fields?.file)
       const fileName = file?.fileName || '-'
       return [
         asset.sys.id,
@@ -57,7 +62,7 @@ const { command, desc, builder, handler } = createCommand({
       ]
     })
   }),
-  quietExtractor: data => data.items.map((a: any) => a.sys.id)
+  quietExtractor: data => data.items.map((a: AssetLike) => a.sys.id)
 })
 
 export { command, desc, builder, handler }

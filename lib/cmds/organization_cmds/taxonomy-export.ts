@@ -1,5 +1,5 @@
 import Listr from 'listr'
-import { max, noop } from 'lodash'
+import { noop } from 'lodash'
 import path from 'path'
 import type { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../../utils/async'

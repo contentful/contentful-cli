@@ -1,5 +1,6 @@
 import { createCommand } from '../../utils/command-factory'
 import { validateId } from '../../utils/validators'
+import type { EntryLike } from '../../utils/contentful-types'
 
 const { command, desc, builder, handler } = createCommand({
   command: 'get <id>',
@@ -33,7 +34,7 @@ const { command, desc, builder, handler } = createCommand({
   quietExtractor: entry => [entry.sys.id]
 })
 
-function getEntryStatus(entry: any): string {
+function getEntryStatus(entry: EntryLike): string {
   if (entry.sys.archivedVersion) return 'archived'
   if (entry.sys.publishedVersion) {
     if (entry.sys.version > entry.sys.publishedVersion + 1) return 'changed'

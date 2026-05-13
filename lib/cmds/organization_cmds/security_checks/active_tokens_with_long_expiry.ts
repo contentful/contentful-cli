@@ -25,6 +25,23 @@ interface AccessTokenResponseAxiosLike {
   skip?: number
   items?: AccessTokenItem[]
 }
+type AccessTokenQuery = {
+  include: string
+  limit: number
+  order: string
+  skip: number
+  'sys.expiresAt[gt]': string
+  revokedAt: string
+}
+type AccessTokenSdkAccessor = (params: {
+  organizationId: string
+  query: AccessTokenQuery
+}) => Promise<AccessTokenResponseAxiosLike>
+type AccessTokenClient = SecurityContext['client'] & {
+  accessToken?: {
+    getManyForOrganization?: AccessTokenSdkAccessor
+  }
+}
 
 function extractItems(resp: AccessTokenResponseAxiosLike): AccessTokenItem[] {
   return resp?.data?.items || resp?.items || []
@@ -55,37 +72,36 @@ export const activeTokensWithLongExpiryCheck: SecurityCheck = {
     const now = new Date()
     const oneYearAhead = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)
 
-    const sdkAccessor: any = (client as any)?.accessToken
+    const sdkAccessor = (client as AccessTokenClient).accessToken
       ?.getManyForOrganization
 
     async function fetchPage(
       currentSkip: number
     ): Promise<AccessTokenResponseAxiosLike> {
+      const query: AccessTokenQuery = {
+        include: 'sys.user',
+        limit,
+        order: '-sys.createdAt',
+        skip: currentSkip,
+        'sys.expiresAt[gt]': now.toISOString(),
+        revokedAt: ''
+      }
+
       if (typeof sdkAccessor === 'function') {
         try {
           const collection = await sdkAccessor({
             organizationId,
-            query: {
-              include: 'sys.user',
-              limit,
-              order: '-sys.createdAt',
-              skip: currentSkip,
-              'sys.expiresAt[gt]': now.toISOString(),
-              revokedAt: ''
-            }
+            query
           })
           return collection as AccessTokenResponseAxiosLike
-        } catch (_) {}
+        } catch (_) {
+          return client.raw.get(basePath, {
+            params: query
+          }) as Promise<AccessTokenResponseAxiosLike>
+        }
       }
       return (await client.raw.get(basePath, {
-        params: {
-          include: 'sys.user',
-          limit,
-          order: '-sys.createdAt',
-          skip: currentSkip,
-          'sys.expiresAt[gt]': now.toISOString(),
-          revokedAt: ''
-        }
+        params: query
       })) as AccessTokenResponseAxiosLike
     }
 

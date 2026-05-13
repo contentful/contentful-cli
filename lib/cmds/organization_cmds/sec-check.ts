@@ -36,6 +36,40 @@ interface CheckResult {
   data?: Record<string, unknown>
 }
 
+interface ListrTaskLike {
+  title: string
+  skip(message: string): void
+}
+
+interface UserResponseShape {
+  data?: {
+    sys?: {
+      id?: string
+    }
+    id?: string
+  }
+  sys?: {
+    id?: string
+  }
+  id?: string
+}
+
+interface MembershipShape {
+  role?: string
+  user?: {
+    sys?: {
+      id?: string
+    }
+  }
+}
+
+interface MembershipResponseShape {
+  data?: {
+    items?: MembershipShape[]
+  }
+  items?: MembershipShape[]
+}
+
 module.exports.builder = function (yargs: Argv) {
   return yargs
     .usage(
@@ -74,7 +108,7 @@ function buildDefaultOutputPath(orgId: string): string {
 
 async function writeResultsFile(
   filePath: string,
-  results: Record<string, any>
+  results: Record<string, CheckResult>
 ) {
   const dir = path.dirname(filePath)
   await fs.promises.mkdir(dir, { recursive: true })
@@ -83,6 +117,45 @@ async function writeResultsFile(
     JSON.stringify(results, null, 2),
     'utf8'
   )
+}
+
+function userIdFromResponse(response: unknown): string | null {
+  const user = response as UserResponseShape
+  return (
+    user?.data?.sys?.id || user?.data?.id || user?.sys?.id || user?.id || null
+  )
+}
+
+function membershipsFromResponse(response: unknown): MembershipShape[] {
+  const memberships = response as MembershipResponseShape
+  return memberships?.data?.items || memberships?.items || []
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function checkResultFromRun(
+  description: string,
+  result: boolean | { pass: boolean; data?: Record<string, unknown> }
+): CheckResult {
+  const pass = typeof result === 'boolean' ? result : result.pass
+  const checkResult: CheckResult = {
+    description,
+    pass
+  }
+  if (typeof result !== 'boolean' && result.data) {
+    checkResult.data = result.data
+  }
+  return checkResult
+}
+
+function numericDataValue(
+  data: Record<string, unknown> | undefined,
+  key: string
+): number {
+  const value = data?.[key]
+  return typeof value === 'number' ? value : 0
 }
 
 async function runInteractiveMode(argv: Params) {
@@ -134,8 +207,8 @@ async function runInteractiveMode(argv: Params) {
         task: async () => {
           if (!client) throw new Error('Client not initialized')
           try {
-            const user = (await client.raw.get('/users/me')) as any
-            userId = user?.data?.sys?.id || user?.sys?.id || user?.id || null
+            const user = await client.raw.get('/users/me')
+            userId = userIdFromResponse(user)
             if (!userId) throw new Error('Unable to determine user ID')
           } catch (e) {
             throw new Error('Unable to determine user ID')
@@ -150,13 +223,10 @@ async function runInteractiveMode(argv: Params) {
             const membershipResp = (await client.raw.get(
               `/organizations/${organizationId}/organization_memberships`,
               { params: { query: userId } }
-            )) as any
-            const items =
-              membershipResp?.data?.items || membershipResp?.items || []
+            )) as unknown
+            const items = membershipsFromResponse(membershipResp)
             const membership =
-              items.find((m: any) => m?.user?.sys?.id === userId) ||
-              items[0] ||
-              null
+              items.find(m => m?.user?.sys?.id === userId) || items[0] || null
             role = membership?.role
           } catch (_) {
             // ignore; role can be undefined
@@ -165,7 +235,7 @@ async function runInteractiveMode(argv: Params) {
       },
       {
         title: 'Checking user permissions',
-        task: async (_ctx: any, task: any) => {
+        task: async (_ctx: unknown, task: ListrTaskLike) => {
           const permissionCheck = checks.find(c => c.id === 'permission_check')
           if (!permissionCheck) return
           if (!client || !userId) throw new Error('Missing user context')
@@ -176,13 +246,12 @@ async function runInteractiveMode(argv: Params) {
             role
           }
           const res = await permissionCheck.run(secCtx)
-          const ok = typeof res === 'boolean' ? res : res.pass
-          ;(results as any)[permissionCheck.id] = {
-            description: permissionCheck.description,
-            pass: ok
-          }
-          if (typeof res !== 'boolean' && res.data)
-            (results as any)[permissionCheck.id].data = res.data
+          const checkResult = checkResultFromRun(
+            permissionCheck.description,
+            res
+          )
+          const ok = checkResult.pass
+          results[permissionCheck.id] = checkResult
           passed[permissionCheck.id] = ok
           task.title = `Checking user permissions`
           if (!ok) throw new Error('Insufficient permissions')
@@ -203,12 +272,12 @@ async function runInteractiveMode(argv: Params) {
               .filter(c => c.id !== 'permission_check')
               .map(check => ({
                 title: check.description,
-                task: async (_c: any, task: any) => {
+                task: async (_c: unknown, task: ListrTaskLike) => {
                   if (
                     check.dependsOn &&
                     check.dependsOn.some(d => !passed[d])
                   ) {
-                    (results as any)[check.id] = {
+                    results[check.id] = {
                       description: check.description,
                       pass: false,
                       skipped: true,
@@ -219,19 +288,18 @@ async function runInteractiveMode(argv: Params) {
                   }
                   try {
                     const res = await check.run(secCtx)
-                    const ok = typeof res === 'boolean' ? res : res.pass
-                    ;(results as any)[check.id] = {
-                      description: check.description,
-                      pass: ok
-                    }
-                    if (typeof res !== 'boolean' && res.data)
-                      (results as any)[check.id].data = res.data
+                    const checkResult = checkResultFromRun(
+                      check.description,
+                      res
+                    )
+                    const ok = checkResult.pass
+                    results[check.id] = checkResult
                     passed[check.id] = ok
                     task.title = `${check.description} - ${
                       ok ? 'PASS' : 'FAIL'
                     }`
                   } catch (_) {
-                    (results as any)[check.id] = {
+                    results[check.id] = {
                       description: check.description,
                       pass: false,
                       reason: 'error'
@@ -250,8 +318,8 @@ async function runInteractiveMode(argv: Params) {
   let taskError: Error | null = null
   try {
     await tasks.run()
-  } catch (e: any) {
-    taskError = e
+  } catch (e: unknown) {
+    taskError = e instanceof Error ? e : new Error(String(e))
   }
 
   // Build ordered results object (suppressed JSON stdout per request)
@@ -266,8 +334,8 @@ async function runInteractiveMode(argv: Params) {
       await writeResultsFile(outputFile, ordered)
       const mark = chalk ? chalk.green('✔') : '✔'
       log(`${mark} Output written: ${outputFile}`)
-    } catch (err: any) {
-      log(`Failed to write results file: ${err.message}`)
+    } catch (err: unknown) {
+      log(`Failed to write results file: ${errorMessage(err)}`)
     }
   }
 
@@ -290,11 +358,11 @@ async function runInteractiveMode(argv: Params) {
     if (r.skipped && r.reason === 'dependency_failed')
       return '{"skipped":"dependency_failed"}'
     if (cId === 'sso_exempt_users') {
-      const count = (r.data as any)?.exemptCount ?? 0
+      const count = numericDataValue(r.data, 'exemptCount')
       return `{"exemptCount":${count}}`
     }
     if (cId === 'sso_exempt_users_with_mfa_disabled') {
-      const count = (r.data as any)?.mfaDisabledCount ?? 0
+      const count = numericDataValue(r.data, 'mfaDisabledCount')
       return `{"mfaDisabledCount":${count}}`
     }
     if (r.reason === 'error') return '{"error":true}'

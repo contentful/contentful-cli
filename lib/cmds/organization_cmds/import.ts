@@ -137,8 +137,8 @@ async function importCommand(params: OrgImportParams) {
             },
             {
               title: 'Import taxonomy',
-              task: async ctx => {
-                return taxonomyImport(params, ctx)
+              task: async () => {
+                return taxonomyImport(params)
               }
             }
           ])

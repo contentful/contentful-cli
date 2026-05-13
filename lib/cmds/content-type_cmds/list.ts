@@ -1,4 +1,6 @@
 import { createCommand } from '../../utils/command-factory'
+import type { ContentTypeProps } from 'contentful-management'
+import type { QueryParams } from '../../utils/contentful-types'
 
 const { command, desc, builder, handler } = createCommand({
   command: 'list',
@@ -21,14 +23,14 @@ const { command, desc, builder, handler } = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const query: Record<string, any> = { order: argv.order }
+    const query: QueryParams = { order: argv.order }
     return client.contentType.getMany({ query })
   },
   tableFormat: data => ({
     head: ['Content Type Name', 'Content Type ID'],
-    rows: data.items.map((ct: any) => [ct.name, ct.sys.id])
+    rows: data.items.map((ct: ContentTypeProps) => [ct.name, ct.sys.id])
   }),
-  quietExtractor: data => data.items.map((ct: any) => ct.sys.id)
+  quietExtractor: data => data.items.map((ct: ContentTypeProps) => ct.sys.id)
 })
 
 export { command, desc, builder, handler }

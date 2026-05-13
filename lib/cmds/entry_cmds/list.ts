@@ -1,4 +1,5 @@
 import { createCommand } from '../../utils/command-factory'
+import type { EntryLike, QueryParams } from '../../utils/contentful-types'
 
 const { command, desc, builder, handler } = createCommand({
   command: 'list',
@@ -44,7 +45,7 @@ const { command, desc, builder, handler } = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const query: Record<string, any> = {}
+    const query: QueryParams = {}
     if (argv.contentType) query.content_type = argv.contentType
     if (argv.limit) query.limit = argv.limit
     if (argv.skip) query.skip = argv.skip
@@ -53,17 +54,17 @@ const { command, desc, builder, handler } = createCommand({
   },
   tableFormat: data => ({
     head: ['ID', 'Content Type', 'Status', 'Updated At'],
-    rows: data.items.map((entry: any) => [
+    rows: data.items.map((entry: EntryLike) => [
       entry.sys.id,
       entry.sys.contentType?.sys?.id || '-',
       getEntryStatus(entry),
       entry.sys.updatedAt || '-'
     ])
   }),
-  quietExtractor: data => data.items.map((e: any) => e.sys.id)
+  quietExtractor: data => data.items.map((e: EntryLike) => e.sys.id)
 })
 
-function getEntryStatus(entry: any): string {
+function getEntryStatus(entry: EntryLike): string {
   if (entry.sys.archivedVersion) return 'archived'
   if (entry.sys.publishedVersion) {
     if (entry.sys.version > entry.sys.publishedVersion + 1) return 'changed'

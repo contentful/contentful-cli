@@ -1,8 +1,9 @@
 import { createCommand } from '../../utils/command-factory'
 import { firstLocaleValue } from '../../utils/output'
 import { validateId } from '../../utils/validators'
+import type { AssetFileField, AssetLike } from '../../utils/contentful-types'
 
-function getAssetStatus(asset: any): string {
+function getAssetStatus(asset: AssetLike): string {
   if (asset.sys.archivedVersion) return 'archived'
   if (asset.sys.publishedVersion) {
     if (asset.sys.version > asset.sys.publishedVersion + 1) return 'changed'
@@ -34,11 +35,14 @@ const { command, desc, builder, handler } = createCommand({
     rows: [
       ['ID', asset.sys.id],
       ['Title', firstLocaleValue(asset.fields?.title) || '-'],
-      ['File Name', firstLocaleValue(asset.fields?.file)?.fileName || '-'],
-      ['URL', firstLocaleValue(asset.fields?.file)?.url || '-'],
+      [
+        'File Name',
+        firstLocaleValue<AssetFileField>(asset.fields?.file)?.fileName || '-'
+      ],
+      ['URL', firstLocaleValue<AssetFileField>(asset.fields?.file)?.url || '-'],
       [
         'Content Type',
-        firstLocaleValue(asset.fields?.file)?.contentType || '-'
+        firstLocaleValue<AssetFileField>(asset.fields?.file)?.contentType || '-'
       ],
       ['Version', String(asset.sys.version)],
       ['Status', getAssetStatus(asset)],

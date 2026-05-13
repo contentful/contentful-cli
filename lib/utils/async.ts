@@ -1,9 +1,12 @@
-import { Argv } from 'yargs'
+import type { Arguments } from 'yargs'
 import { logError } from './log'
 
 export const handleAsyncError =
-  (asyncFn: (params: any) => Promise<unknown>, errorHandler = logError) =>
-  (argv: Argv) =>
+  <TParams = Arguments>(
+    asyncFn: (params: TParams) => Promise<unknown>,
+    errorHandler = logError
+  ) =>
+  (argv: TParams) =>
     asyncFn(argv).catch((error: Error) => {
       errorHandler(error)
       // Since the error got catched to allow async commands in yargs

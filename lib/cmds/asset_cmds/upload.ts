@@ -1,8 +1,10 @@
 import { createCommand } from '../../utils/command-factory'
 import { firstLocaleValue } from '../../utils/output'
 import { validateId } from '../../utils/validators'
-const fs = require('fs')
-const path = require('path')
+import type { PlainClientAPI, LocaleProps } from 'contentful-management'
+import type { AssetFileField, AssetLike } from '../../utils/contentful-types'
+import * as fs from 'fs'
+import * as path from 'path'
 
 const { command, desc, builder, handler } = createCommand({
   command: 'upload',
@@ -65,10 +67,10 @@ const { command, desc, builder, handler } = createCommand({
       throw new Error(`File not found: ${filePath}`)
     }
 
-    let locale = argv.locale
+    let locale: string = argv.locale || ''
     if (!locale) {
       const { items } = await client.locale.getMany({})
-      const defaultLocale = items.find((l: any) => l.default)
+      const defaultLocale = items.find((l: LocaleProps) => l.default)
       locale = defaultLocale?.code || 'en-US'
     }
     const fileName = path.basename(filePath)
@@ -140,21 +142,23 @@ const { command, desc, builder, handler } = createCommand({
       ['Title', firstLocaleValue(data.fields?.title) || data.title || '-'],
       [
         'File',
-        firstLocaleValue(data.fields?.file)?.fileName || data.fileName || '-'
+        firstLocaleValue<AssetFileField>(data.fields?.file)?.fileName ||
+          data.fileName ||
+          '-'
       ],
-      ['URL', firstLocaleValue(data.fields?.file)?.url || '-']
+      ['URL', firstLocaleValue<AssetFileField>(data.fields?.file)?.url || '-']
     ]
   }),
   quietExtractor: data => [data.sys?.id || '']
 })
 
 async function pollAssetProcessing(
-  client: any,
+  client: PlainClientAPI,
   assetId: string,
   locale: string,
   maxAttempts = 30,
   interval = 1000
-): Promise<any> {
+): Promise<AssetLike> {
   for (let i = 0; i < maxAttempts; i++) {
     const asset = await client.asset.get({ assetId })
     const file = asset.fields?.file?.[locale]
