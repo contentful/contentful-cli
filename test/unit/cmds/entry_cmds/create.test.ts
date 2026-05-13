@@ -3,7 +3,7 @@ jest.mock('../../../../lib/utils/contentful-clients', () => ({
   createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
-  getHeadersFromOption: jest.fn((v) => v || {})
+  getHeadersFromOption: jest.fn(v => v || {})
 }))
 jest.mock('../../../../lib/utils/copyright', () => ({
   copyright: 'Copyright 2026 Contentful'
@@ -20,32 +20,34 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {output} from '../../../../lib/utils/output'
-import {logError} from '../../../../lib/utils/log'
+import { output } from '../../../../lib/utils/output'
+import { logError } from '../../../../lib/utils/log'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
 const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
-import {handler} from '../../../../lib/cmds/entry_cmds/create'
+import { handler } from '../../../../lib/cmds/entry_cmds/create'
 
 // Fake created entry
 const fakeCreatedEntry = {
   sys: {
     id: 'new-entry-123',
-    contentType: {sys: {id: 'blogPost'}},
+    contentType: { sys: { id: 'blogPost' } },
     version: 1
   },
   fields: {
-    title: {'en-US': 'Hello World'}
+    title: { 'en-US': 'Hello World' }
   }
 }
 
 const fakeContentType = {
-  sys: {id: 'blogPost'}
+  sys: { id: 'blogPost' }
 }
 
 const fakeClient = {
@@ -79,16 +81,16 @@ describe('entry create — handler', () => {
   it('creates entry with content type and fields', async () => {
     await handler(baseArgv)
     expect(fakeClient.entry.create).toHaveBeenCalledWith(
-      {contentTypeId: 'blogPost'},
-      {fields: {title: {'en-US': 'Hello World'}}}
+      { contentTypeId: 'blogPost' },
+      { fields: { title: { 'en-US': 'Hello World' } } }
     )
   })
 
   it('uses entry.createWithId when --id is provided', async () => {
-    await handler({...baseArgv, id: 'my-custom-id'})
+    await handler({ ...baseArgv, id: 'my-custom-id' })
     expect(fakeClient.entry.createWithId).toHaveBeenCalledWith(
-      {contentTypeId: 'blogPost', entryId: 'my-custom-id'},
-      {fields: {title: {'en-US': 'Hello World'}}}
+      { contentTypeId: 'blogPost', entryId: 'my-custom-id' },
+      { fields: { title: { 'en-US': 'Hello World' } } }
     )
     expect(fakeClient.entry.create).not.toHaveBeenCalled()
   })
@@ -96,7 +98,7 @@ describe('entry create — handler', () => {
   it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
     expect(mockCreatePlainClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-create'}),
+      expect.objectContaining({ feature: 'entry-create' }),
       expect.any(Object)
     )
   })
@@ -111,25 +113,25 @@ describe('entry create — handler', () => {
   })
 
   it('passes json flag to output when --json is set', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes quiet flag to output when --quiet is set', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
 
   it('passes quietExtractor that returns the entry ID', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     const outputCall = mockOutput.mock.calls[0]
     const opts = outputCall[2] as any
     expect(opts.quietExtractor).toBeDefined()
@@ -169,40 +171,42 @@ describe('entry create — handler', () => {
 
 describe('entry create — dry run', () => {
   it('validates content type exists without creating entry', async () => {
-    await handler({...baseArgv, dryRun: true})
-    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blogPost'})
+    await handler({ ...baseArgv, dryRun: true })
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({
+      contentTypeId: 'blogPost'
+    })
     expect(fakeClient.entry.create).not.toHaveBeenCalled()
     expect(fakeClient.entry.createWithId).not.toHaveBeenCalled()
   })
 
   it('returns dry run result with action and fields', async () => {
-    await handler({...baseArgv, dryRun: true})
+    await handler({ ...baseArgv, dryRun: true })
     const outputCall = mockOutput.mock.calls[0]
     const data = outputCall[0] as any
     expect(data.dryRun).toBe(true)
     expect(data.action).toBe('create')
     expect(data.contentType).toBe('blogPost')
-    expect(data.fields).toEqual({title: {'en-US': 'Hello World'}})
+    expect(data.fields).toEqual({ title: { 'en-US': 'Hello World' } })
   })
 
   it('returns auto-generated entryId placeholder when no id given', async () => {
-    await handler({...baseArgv, dryRun: true})
+    await handler({ ...baseArgv, dryRun: true })
     const outputCall = mockOutput.mock.calls[0]
     const data = outputCall[0] as any
     expect(data.entryId).toBe('(auto-generated)')
   })
 
   it('returns custom entryId when --id is provided', async () => {
-    await handler({...baseArgv, dryRun: true, id: 'my-custom-id'})
+    await handler({ ...baseArgv, dryRun: true, id: 'my-custom-id' })
     const outputCall = mockOutput.mock.calls[0]
     const data = outputCall[0] as any
     expect(data.entryId).toBe('my-custom-id')
   })
 
   it('quietExtractor returns entryId from dry run result', async () => {
-    await handler({...baseArgv, dryRun: true})
+    await handler({ ...baseArgv, dryRun: true })
     const opts = mockOutput.mock.calls[0][2] as any
-    const ids = opts.quietExtractor({entryId: '(auto-generated)'})
+    const ids = opts.quietExtractor({ entryId: '(auto-generated)' })
     expect(ids).toEqual(['(auto-generated)'])
   })
 })
@@ -222,26 +226,26 @@ describe('entry create — validation', () => {
 
   it('throws when content type ID contains invalid characters', async () => {
     await expect(
-      handler({...baseArgv, contentType: 'invalid type!'})
+      handler({ ...baseArgv, contentType: 'invalid type!' })
     ).rejects.toThrow('process.exit')
   })
 
   it('throws when fields JSON is invalid', async () => {
     await expect(
-      handler({...baseArgv, fields: 'not-valid-json'})
+      handler({ ...baseArgv, fields: 'not-valid-json' })
     ).rejects.toThrow('process.exit')
   })
 
   it('throws when fields is an array instead of object', async () => {
-    await expect(
-      handler({...baseArgv, fields: '[1, 2, 3]'})
-    ).rejects.toThrow('process.exit')
+    await expect(handler({ ...baseArgv, fields: '[1, 2, 3]' })).rejects.toThrow(
+      'process.exit'
+    )
   })
 
   it('throws when custom entry ID contains invalid characters', async () => {
-    await expect(
-      handler({...baseArgv, id: 'invalid id!'})
-    ).rejects.toThrow('process.exit')
+    await expect(handler({ ...baseArgv, id: 'invalid id!' })).rejects.toThrow(
+      'process.exit'
+    )
   })
 })
 
@@ -260,7 +264,7 @@ describe('entry create — error handling', () => {
 
   it('calls logError and exits when entry.create throws', async () => {
     const err = Object.assign(new Error('Unprocessable Entity'), {
-      response: {status: 422}
+      response: { status: 422 }
     })
     fakeClient.entry.create.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit')
@@ -268,7 +272,9 @@ describe('entry create — error handling', () => {
   })
 
   it('exits with code 2 on 5xx error', async () => {
-    const err = Object.assign(new Error('Server Error'), {response: {status: 500}})
+    const err = Object.assign(new Error('Server Error'), {
+      response: { status: 500 }
+    })
     fakeClient.entry.create.mockRejectedValueOnce(err)
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)

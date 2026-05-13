@@ -1,4 +1,4 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
 /**
  * Parse and validate the --fields option as a JSON array of field definitions.
@@ -19,14 +19,21 @@ function parseFieldsArray(value: string): any[] {
   return parsed
 }
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'update',
   desc: 'Update a content type',
   feature: 'content_type-update',
-  usage: 'Usage: contentful content-type update --id <id> --version <version> [options]',
+  usage:
+    'Usage: contentful content-type update --id <id> --version <version> [options]',
   examples: [
-    ['contentful content-type update --id blogPost --version 3 --name "Article"', 'Rename a content type'],
-    ['contentful content-type update --id blogPost --version 3 --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true}]\'', 'Replace field definitions']
+    [
+      'contentful content-type update --id blogPost --version 3 --name "Article"',
+      'Rename a content type'
+    ],
+    [
+      'contentful content-type update --id blogPost --version 3 --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true}]\'',
+      'Replace field definitions'
+    ]
   ],
   options: {
     id: {
@@ -60,7 +67,7 @@ const {command, desc, builder, handler} = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const contentType = await client.contentType.get({contentTypeId: argv.id})
+    const contentType = await client.contentType.get({ contentTypeId: argv.id })
 
     // Verify version for optimistic locking
     if (contentType.sys.version !== argv.version) {
@@ -71,15 +78,17 @@ const {command, desc, builder, handler} = createCommand({
     }
 
     if (argv.name !== undefined) contentType.name = argv.name
-    if (argv.description !== undefined) contentType.description = argv.description
-    if (argv.displayField !== undefined) contentType.displayField = argv.displayField
+    if (argv.description !== undefined)
+      contentType.description = argv.description
+    if (argv.displayField !== undefined)
+      contentType.displayField = argv.displayField
     if (argv.fields !== undefined) {
       contentType.fields = parseFieldsArray(argv.fields)
     }
 
-    return client.contentType.update({contentTypeId: argv.id}, contentType)
+    return client.contentType.update({ contentTypeId: argv.id }, contentType)
   },
-  tableFormat: (ct) => ({
+  tableFormat: ct => ({
     rows: [
       ['ID', ct.sys.id],
       ['Name', ct.name],
@@ -90,7 +99,7 @@ const {command, desc, builder, handler} = createCommand({
       ['Published', ct.sys.publishedVersion ? 'Yes' : 'No']
     ]
   }),
-  quietExtractor: (ct) => [ct.sys.id]
+  quietExtractor: ct => [ct.sys.id]
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

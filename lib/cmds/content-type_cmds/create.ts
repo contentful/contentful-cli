@@ -1,4 +1,4 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
 /**
  * Parse and validate the --fields option as a JSON array of field definitions.
@@ -20,14 +20,20 @@ function parseFieldsArray(value: string): any[] {
   return parsed
 }
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'create',
   desc: 'Create a content type',
   feature: 'content_type-create',
   usage: 'Usage: contentful content-type create [options]',
   examples: [
-    ['contentful content-type create --name "Blog Post" --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true},{"id":"body","name":"Body","type":"Text"}]\'', 'Create with two fields'],
-    ['contentful content-type create --name "Page" --fields \'[{"id":"title","name":"Title","type":"Symbol"}]\' --id page --display-field title', 'Create with custom ID and display field']
+    [
+      'contentful content-type create --name "Blog Post" --fields \'[{"id":"title","name":"Title","type":"Symbol","required":true},{"id":"body","name":"Body","type":"Text"}]\'',
+      'Create with two fields'
+    ],
+    [
+      'contentful content-type create --name "Page" --fields \'[{"id":"title","name":"Title","type":"Symbol"}]\' --id page --display-field title',
+      'Create with custom ID and display field'
+    ]
   ],
   supportsDryRun: true,
   options: {
@@ -59,12 +65,12 @@ const {command, desc, builder, handler} = createCommand({
   },
   handler: async (client, argv) => {
     const fields = parseFieldsArray(argv.fields)
-    const data: any = {name: argv.name, fields}
+    const data: any = { name: argv.name, fields }
     if (argv.description) data.description = argv.description
     if (argv.displayField) data.displayField = argv.displayField
 
     if (argv.id) {
-      return client.contentType.createWithId({contentTypeId: argv.id}, data)
+      return client.contentType.createWithId({ contentTypeId: argv.id }, data)
     }
     return client.contentType.create({}, data)
   },
@@ -80,14 +86,14 @@ const {command, desc, builder, handler} = createCommand({
       displayField: argv.displayField
     }
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     rows: [
       ['ID', data.sys?.id || data.id || '-'],
       ['Name', data.name || '-'],
       ['Fields', String(data.fields?.length || '-')]
     ]
   }),
-  quietExtractor: (data) => [data.sys?.id || data.id || '']
+  quietExtractor: data => [data.sys?.id || data.id || '']
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

@@ -3,7 +3,7 @@ jest.mock('../../../../lib/utils/contentful-clients', () => ({
   createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
-  getHeadersFromOption: jest.fn((v) => v || {})
+  getHeadersFromOption: jest.fn(v => v || {})
 }))
 jest.mock('../../../../lib/utils/copyright', () => ({
   copyright: 'Copyright 2026 Contentful'
@@ -20,23 +20,25 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {output} from '../../../../lib/utils/output'
-import {logError} from '../../../../lib/utils/log'
+import { output } from '../../../../lib/utils/output'
+import { logError } from '../../../../lib/utils/log'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
 const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 // Import after mocks are set up
-import {handler} from '../../../../lib/cmds/entry_cmds/list'
+import { handler } from '../../../../lib/cmds/entry_cmds/list'
 
 // Fake entries
 const fakeEntry1 = {
   sys: {
     id: 'entry-1',
-    contentType: {sys: {id: 'blogPost'}},
+    contentType: { sys: { id: 'blogPost' } },
     version: 5,
     publishedVersion: 4,
     updatedAt: '2026-01-01T00:00:00Z'
@@ -45,7 +47,7 @@ const fakeEntry1 = {
 const fakeEntry2 = {
   sys: {
     id: 'entry-2',
-    contentType: {sys: {id: 'article'}},
+    contentType: { sys: { id: 'article' } },
     version: 1,
     updatedAt: '2026-01-02T00:00:00Z'
   }
@@ -78,38 +80,38 @@ describe('entry list — handler', () => {
   it('calls entry.getMany with empty query when no filters provided', async () => {
     await handler(baseArgv)
     expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
-      expect.objectContaining({query: {}})
+      expect.objectContaining({ query: {} })
     )
   })
 
   it('calls entry.getMany with limit in query when --limit is provided', async () => {
-    await handler({...baseArgv, limit: 50})
+    await handler({ ...baseArgv, limit: 50 })
     expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
-      expect.objectContaining({query: expect.objectContaining({limit: 50})})
+      expect.objectContaining({ query: expect.objectContaining({ limit: 50 }) })
     )
   })
 
   it('calls entry.getMany with skip in query when --skip is provided', async () => {
-    await handler({...baseArgv, skip: 10})
+    await handler({ ...baseArgv, skip: 10 })
     expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
-      expect.objectContaining({query: expect.objectContaining({skip: 10})})
+      expect.objectContaining({ query: expect.objectContaining({ skip: 10 }) })
     )
   })
 
   it('passes content_type to query when --content-type is given', async () => {
-    await handler({...baseArgv, contentType: 'blogPost'})
+    await handler({ ...baseArgv, contentType: 'blogPost' })
     expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        query: expect.objectContaining({content_type: 'blogPost'})
+        query: expect.objectContaining({ content_type: 'blogPost' })
       })
     )
   })
 
   it('passes content_type and limit when both are given', async () => {
-    await handler({...baseArgv, contentType: 'article', limit: 20})
+    await handler({ ...baseArgv, contentType: 'article', limit: 20 })
     expect(fakeClient.entry.getMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        query: expect.objectContaining({content_type: 'article', limit: 20})
+        query: expect.objectContaining({ content_type: 'article', limit: 20 })
       })
     )
   })
@@ -124,25 +126,25 @@ describe('entry list — handler', () => {
   })
 
   it('passes json flag to output when --json is set', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes quiet flag to output when --quiet is set', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
 
   it('passes quietExtractor that returns entry IDs', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     const outputCall = mockOutput.mock.calls[0]
     const opts = outputCall[2] as any
     expect(opts.quietExtractor).toBeDefined()
@@ -155,7 +157,12 @@ describe('entry list — handler', () => {
     const outputCall = mockOutput.mock.calls[0]
     const opts = outputCall[2] as any
     expect(opts.table).toBeDefined()
-    expect(opts.table.head).toEqual(['ID', 'Content Type', 'Status', 'Updated At'])
+    expect(opts.table.head).toEqual([
+      'ID',
+      'Content Type',
+      'Status',
+      'Updated At'
+    ])
   })
 
   it('tableFormat rows include entry id and content type', async () => {
@@ -172,7 +179,7 @@ describe('entry list — handler', () => {
   it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
     expect(mockCreatePlainClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'entry-list'}),
+      expect.objectContaining({ feature: 'entry-list' }),
       expect.any(Object)
     )
   })
@@ -181,11 +188,14 @@ describe('entry list — handler', () => {
 describe('entry list — entry status', () => {
   it('shows "draft" for entries with no publishedVersion', async () => {
     const draftEntry = {
-      sys: {id: 'draft-entry', version: 1, updatedAt: '2026-01-01T00:00:00Z'}
+      sys: { id: 'draft-entry', version: 1, updatedAt: '2026-01-01T00:00:00Z' }
     }
-    fakeClient.entry.getMany.mockResolvedValueOnce({items: [draftEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({
+      items: [draftEntry],
+      total: 1
+    })
     await handler(baseArgv)
-    const opts = (mockOutput.mock.calls[0][2] as any)
+    const opts = mockOutput.mock.calls[0][2] as any
     const rows = opts.table.rows
     expect(rows[0][2]).toBe('draft')
   })
@@ -199,9 +209,12 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    fakeClient.entry.getMany.mockResolvedValueOnce({items: [publishedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({
+      items: [publishedEntry],
+      total: 1
+    })
     await handler(baseArgv)
-    const opts = (mockOutput.mock.calls[0][2] as any)
+    const opts = mockOutput.mock.calls[0][2] as any
     expect(opts.table.rows[0][2]).toBe('published')
   })
 
@@ -214,9 +227,12 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    fakeClient.entry.getMany.mockResolvedValueOnce({items: [changedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({
+      items: [changedEntry],
+      total: 1
+    })
     await handler(baseArgv)
-    const opts = (mockOutput.mock.calls[0][2] as any)
+    const opts = mockOutput.mock.calls[0][2] as any
     expect(opts.table.rows[0][2]).toBe('changed')
   })
 
@@ -229,9 +245,12 @@ describe('entry list — entry status', () => {
         updatedAt: '2026-01-01T00:00:00Z'
       }
     }
-    fakeClient.entry.getMany.mockResolvedValueOnce({items: [archivedEntry], total: 1})
+    fakeClient.entry.getMany.mockResolvedValueOnce({
+      items: [archivedEntry],
+      total: 1
+    })
     await handler(baseArgv)
-    const opts = (mockOutput.mock.calls[0][2] as any)
+    const opts = mockOutput.mock.calls[0][2] as any
     expect(opts.table.rows[0][2]).toBe('archived')
   })
 })

@@ -28,7 +28,6 @@ interface Params {
   'output-file'?: string
 }
 
-
 interface CheckResult {
   description: string
   pass: boolean
@@ -36,7 +35,6 @@ interface CheckResult {
   reason?: string
   data?: Record<string, unknown>
 }
-
 
 module.exports.builder = function (yargs: Argv) {
   return yargs
@@ -74,17 +72,24 @@ function buildDefaultOutputPath(orgId: string): string {
   return path.join('data', `${ts}-${safeOrg}-sec-check.json`)
 }
 
-async function writeResultsFile(filePath: string, results: Record<string, any>) {
+async function writeResultsFile(
+  filePath: string,
+  results: Record<string, any>
+) {
   const dir = path.dirname(filePath)
   await fs.promises.mkdir(dir, { recursive: true })
-  await fs.promises.writeFile(filePath, JSON.stringify(results, null, 2), 'utf8')
+  await fs.promises.writeFile(
+    filePath,
+    JSON.stringify(results, null, 2),
+    'utf8'
+  )
 }
 
 async function runInteractiveMode(argv: Params) {
   const { context, header } = argv
   const organizationId = argv['organization-id']
   const passedToken = argv['management-token']
-  const rawOutputOpt = (argv['output-file'] as unknown)
+  const rawOutputOpt = argv['output-file'] as unknown
   let outputFile: string | undefined
   const managementToken = passedToken || (context && context.managementToken)
 
@@ -146,9 +151,12 @@ async function runInteractiveMode(argv: Params) {
               `/organizations/${organizationId}/organization_memberships`,
               { params: { query: userId } }
             )) as any
-            const items = membershipResp?.data?.items || membershipResp?.items || []
+            const items =
+              membershipResp?.data?.items || membershipResp?.items || []
             const membership =
-              items.find((m: any) => m?.user?.sys?.id === userId) || items[0] || null
+              items.find((m: any) => m?.user?.sys?.id === userId) ||
+              items[0] ||
+              null
             role = membership?.role
           } catch (_) {
             // ignore; role can be undefined
@@ -161,11 +169,20 @@ async function runInteractiveMode(argv: Params) {
           const permissionCheck = checks.find(c => c.id === 'permission_check')
           if (!permissionCheck) return
           if (!client || !userId) throw new Error('Missing user context')
-          const secCtx: SecurityContext = { client, organizationId, userId, role }
+          const secCtx: SecurityContext = {
+            client,
+            organizationId,
+            userId,
+            role
+          }
           const res = await permissionCheck.run(secCtx)
           const ok = typeof res === 'boolean' ? res : res.pass
-            ; (results as any)[permissionCheck.id] = { description: permissionCheck.description, pass: ok }
-          if (typeof res !== 'boolean' && res.data) (results as any)[permissionCheck.id].data = res.data
+          ;(results as any)[permissionCheck.id] = {
+            description: permissionCheck.description,
+            pass: ok
+          }
+          if (typeof res !== 'boolean' && res.data)
+            (results as any)[permissionCheck.id].data = res.data
           passed[permissionCheck.id] = ok
           task.title = `Checking user permissions`
           if (!ok) throw new Error('Insufficient permissions')
@@ -175,14 +192,22 @@ async function runInteractiveMode(argv: Params) {
         title: 'Running security checks',
         task: () => {
           if (!client || !userId) throw new Error('Missing context for checks')
-          const secCtx: SecurityContext = { client, organizationId, userId, role }
+          const secCtx: SecurityContext = {
+            client,
+            organizationId,
+            userId,
+            role
+          }
           return new Listr(
             checks
               .filter(c => c.id !== 'permission_check')
               .map(check => ({
                 title: check.description,
                 task: async (_c: any, task: any) => {
-                  if (check.dependsOn && check.dependsOn.some(d => !passed[d])) {
+                  if (
+                    check.dependsOn &&
+                    check.dependsOn.some(d => !passed[d])
+                  ) {
                     (results as any)[check.id] = {
                       description: check.description,
                       pass: false,
@@ -195,12 +220,22 @@ async function runInteractiveMode(argv: Params) {
                   try {
                     const res = await check.run(secCtx)
                     const ok = typeof res === 'boolean' ? res : res.pass
-                    ; (results as any)[check.id] = { description: check.description, pass: ok }
-                    if (typeof res !== 'boolean' && res.data) (results as any)[check.id].data = res.data
+                    ;(results as any)[check.id] = {
+                      description: check.description,
+                      pass: ok
+                    }
+                    if (typeof res !== 'boolean' && res.data)
+                      (results as any)[check.id].data = res.data
                     passed[check.id] = ok
-                    task.title = `${check.description} - ${ok ? 'PASS' : 'FAIL'}`
+                    task.title = `${check.description} - ${
+                      ok ? 'PASS' : 'FAIL'
+                    }`
                   } catch (_) {
-                    (results as any)[check.id] = { description: check.description, pass: false, reason: 'error' }
+                    (results as any)[check.id] = {
+                      description: check.description,
+                      pass: false,
+                      reason: 'error'
+                    }
                     task.title = `${check.description} - ERROR`
                   }
                 }
@@ -248,10 +283,12 @@ async function runInteractiveMode(argv: Params) {
     colWidths: [colWidthId, colWidthDesc, colWidthStatus, colWidthDetails],
     style: { head: [], border: [] }
   })
-  const truncate = (str: string, max: number) => (str.length > max ? str.slice(0, max - 1) + '…' : str)
+  const truncate = (str: string, max: number) =>
+    str.length > max ? str.slice(0, max - 1) + '…' : str
   const formatDetails = (cId: string, r: CheckResult): string => {
     // Always show skipped reason first
-    if (r.skipped && r.reason === 'dependency_failed') return '{"skipped":"dependency_failed"}'
+    if (r.skipped && r.reason === 'dependency_failed')
+      return '{"skipped":"dependency_failed"}'
     if (cId === 'sso_exempt_users') {
       const count = (r.data as any)?.exemptCount ?? 0
       return `{"exemptCount":${count}}`
@@ -261,15 +298,21 @@ async function runInteractiveMode(argv: Params) {
       return `{"mfaDisabledCount":${count}}`
     }
     if (r.reason === 'error') return '{"error":true}'
-    if (r.data && Object.keys(r.data).length > 0) return truncate(JSON.stringify(r.data), colWidthDetails - 2)
-    if (cId === 'permission_check' && role) return truncate(JSON.stringify({ role }), colWidthDetails - 2)
+    if (r.data && Object.keys(r.data).length > 0)
+      return truncate(JSON.stringify(r.data), colWidthDetails - 2)
+    if (cId === 'permission_check' && role)
+      return truncate(JSON.stringify({ role }), colWidthDetails - 2)
     return ''
   }
   for (const c of checks) {
     const r = ordered[c.id]
     if (!r) continue
     const statusRaw = r.skipped ? 'SKIPPED' : r.pass ? 'PASS' : 'FAIL'
-    const statusColored = r.skipped ? chalk.yellow(statusRaw) : r.pass ? chalk.green(statusRaw) : chalk.red(statusRaw)
+    const statusColored = r.skipped
+      ? chalk.yellow(statusRaw)
+      : r.pass
+      ? chalk.green(statusRaw)
+      : chalk.red(statusRaw)
     const detail = formatDetails(c.id, r)
     const descCell = truncate(r.description, colWidthDesc - 2)
     const idCell = truncate(c.id, colWidthId - 2)

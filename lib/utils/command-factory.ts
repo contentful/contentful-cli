@@ -1,10 +1,10 @@
-import {copyright} from './copyright'
-import {handleAsyncErrorWithExitCode} from './exit-codes'
-import {output, OutputFlags, TableConfig, KeyValueConfig} from './output'
-import {warning} from './log'
-const {createPlainClient} = require('./contentful-clients')
-const {getHeadersFromOption} = require('./headers')
-const {confirmation} = require('./actions')
+import { copyright } from './copyright'
+import { handleAsyncErrorWithExitCode } from './exit-codes'
+import { output, OutputFlags, TableConfig, KeyValueConfig } from './output'
+import { warning } from './log'
+const { createPlainClient } = require('./contentful-clients')
+const { getHeadersFromOption } = require('./headers')
+const { confirmation } = require('./actions')
 
 export interface CommandConfig {
   /** yargs command string, e.g. 'get <id>' or 'list' */
@@ -144,19 +144,24 @@ export function createCommand(config: CommandConfig): {
     } = argv
 
     // Prefer explicit CLI flags, fall back to runtime context from middleware
-    const managementToken = argv.managementToken || runtimeContext?.managementToken
+    const managementToken =
+      argv.managementToken || runtimeContext?.managementToken
     const spaceId = argv.spaceId || runtimeContext?.activeSpaceId
-    const environmentId = argv.environmentId || runtimeContext?.activeEnvironmentId || 'master'
+    const environmentId =
+      argv.environmentId || runtimeContext?.activeEnvironmentId || 'master'
 
     // Create plain client with space/environment defaults
-    const client = await createPlainClient({
-      accessToken: managementToken,
-      feature: config.feature,
-      headers: getHeadersFromOption(header)
-    }, {
-      spaceId,
-      environmentId
-    })
+    const client = await createPlainClient(
+      {
+        accessToken: managementToken,
+        feature: config.feature,
+        headers: getHeadersFromOption(header)
+      },
+      {
+        spaceId,
+        environmentId
+      }
+    )
 
     // Confirmation prompt if needed
     if (config.needsConfirmation && !yes) {
@@ -169,7 +174,7 @@ export function createCommand(config: CommandConfig): {
       }
     }
 
-    const flags: OutputFlags = {json, agentMode, quiet}
+    const flags: OutputFlags = { json, agentMode, quiet }
 
     let data: any
 

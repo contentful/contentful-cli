@@ -1,13 +1,16 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'list',
   desc: 'List your content types',
   feature: 'content_type-list',
   usage: 'Usage: contentful content-type list [options]',
   examples: [
     ['contentful content-type list', 'List all content types as a table'],
-    ['contentful content-type list --json', 'Get all content types as JSON (includes field definitions)'],
+    [
+      'contentful content-type list --json',
+      'Get all content types as JSON (includes field definitions)'
+    ],
     ['contentful content-type list --quiet', 'Output only content type IDs']
   ],
   options: {
@@ -18,14 +21,14 @@ const {command, desc, builder, handler} = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const query: Record<string, any> = {order: argv.order}
-    return client.contentType.getMany({query})
+    const query: Record<string, any> = { order: argv.order }
+    return client.contentType.getMany({ query })
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     head: ['Content Type Name', 'Content Type ID'],
     rows: data.items.map((ct: any) => [ct.name, ct.sys.id])
   }),
-  quietExtractor: (data) => data.items.map((ct: any) => ct.sys.id)
+  quietExtractor: data => data.items.map((ct: any) => ct.sys.id)
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

@@ -1,15 +1,26 @@
-import {createCommand} from '../../utils/command-factory'
-import {firstLocaleValue} from '../../utils/output'
-import {validateId, validateJsonFields, validatePositiveInt} from '../../utils/validators'
+import { createCommand } from '../../utils/command-factory'
+import { firstLocaleValue } from '../../utils/output'
+import {
+  validateId,
+  validateJsonFields,
+  validatePositiveInt
+} from '../../utils/validators'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'update <id>',
   desc: 'Update an asset',
   feature: 'asset-update',
-  usage: 'Usage: contentful asset update <id> --fields <json> --version <n> [options]',
+  usage:
+    'Usage: contentful asset update <id> --fields <json> --version <n> [options]',
   examples: [
-    ['contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"title": {"en-US": "New Title"}}\'', 'Update asset title'],
-    ['contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"description": {"en-US": "A photo"}}\' --dry-run', 'Preview update']
+    [
+      'contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"title": {"en-US": "New Title"}}\'',
+      'Update asset title'
+    ],
+    [
+      'contentful asset update 3wtvPBbBjiMKqKGFI0MeCu --version 2 --fields \'{"description": {"en-US": "A photo"}}\' --dry-run',
+      'Preview update'
+    ]
   ],
   supportsDryRun: true,
   options: {
@@ -20,7 +31,8 @@ const {command, desc, builder, handler} = createCommand({
     },
     version: {
       type: 'number',
-      describe: 'Current version of the asset (required for optimistic locking)',
+      describe:
+        'Current version of the asset (required for optimistic locking)',
       demandOption: true
     }
   },
@@ -29,7 +41,7 @@ const {command, desc, builder, handler} = createCommand({
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const asset = await client.asset.get({assetId: id})
+    const asset = await client.asset.get({ assetId: id })
 
     if (asset.sys.version !== version) {
       throw new Error(
@@ -37,15 +49,15 @@ const {command, desc, builder, handler} = createCommand({
       )
     }
 
-    asset.fields = {...asset.fields, ...fields}
-    return client.asset.update({assetId: id}, asset)
+    asset.fields = { ...asset.fields, ...fields }
+    return client.asset.update({ assetId: id }, asset)
   },
   dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Asset ID')
     const fields = validateJsonFields(argv.fields)
     const version = validatePositiveInt(argv.version, '--version')
 
-    const asset = await client.asset.get({assetId: id})
+    const asset = await client.asset.get({ assetId: id })
 
     if (asset.sys.version !== version) {
       throw new Error(
@@ -53,9 +65,9 @@ const {command, desc, builder, handler} = createCommand({
       )
     }
 
-    return {...asset, fields: {...asset.fields, ...fields}}
+    return { ...asset, fields: { ...asset.fields, ...fields } }
   },
-  tableFormat: (asset) => ({
+  tableFormat: asset => ({
     rows: [
       ['ID', asset.sys.id],
       ['Title', firstLocaleValue(asset.fields?.title) || '-'],
@@ -64,7 +76,7 @@ const {command, desc, builder, handler} = createCommand({
       ['Updated At', asset.sys.updatedAt || '-']
     ]
   }),
-  quietExtractor: (asset) => [asset.sys.id]
+  quietExtractor: asset => [asset.sys.id]
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

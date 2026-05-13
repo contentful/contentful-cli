@@ -1,6 +1,6 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'unpublish',
   desc: 'Unpublish a content type',
   feature: 'content_type-unpublish',
@@ -13,9 +13,9 @@ const {command, desc, builder, handler} = createCommand({
     }
   },
   handler: async (client, argv) => {
-    return client.contentType.unpublish({contentTypeId: argv.id})
+    return client.contentType.unpublish({ contentTypeId: argv.id })
   },
-  tableFormat: (ct) => ({
+  tableFormat: ct => ({
     rows: [
       ['ID', ct.sys.id],
       ['Name', ct.name],
@@ -23,7 +23,7 @@ const {command, desc, builder, handler} = createCommand({
       ['Published', ct.sys.publishedVersion ? 'Yes' : 'No']
     ]
   }),
-  quietExtractor: (ct) => [ct.sys.id]
+  quietExtractor: ct => [ct.sys.id]
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

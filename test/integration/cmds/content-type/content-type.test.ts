@@ -1,10 +1,10 @@
 const nixt = require('nixt')
-const {join} = require('path')
+const { join } = require('path')
 
 const bin = join(__dirname, '../../../../', 'bin')
 
 const app = () =>
-  nixt({newlines: true}).cwd(bin).base('./contentful.js ').clone()
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 test('content-type --help shows subcommands', done => {
   app()
@@ -20,12 +20,7 @@ test('content-type --help shows subcommands', done => {
 })
 
 test('content-type -h shows subcommands', done => {
-  app()
-    .run('content-type -h')
-    .code(0)
-    .stdout(/list/)
-    .stdout(/get/)
-    .end(done)
+  app().run('content-type -h').code(0).stdout(/list/).stdout(/get/).end(done)
 })
 
 test('content-type --help shows Show a content type description', done => {

@@ -1,10 +1,10 @@
 const nixt = require('nixt')
-const {join} = require('path')
+const { join } = require('path')
 
 const bin = join(__dirname, '../../../../', 'bin')
 
 const app = () =>
-  nixt({newlines: true}).cwd(bin).base('./contentful.js ').clone()
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
 test('asset --help shows subcommands', done => {
   app()
@@ -21,12 +21,7 @@ test('asset --help shows subcommands', done => {
 })
 
 test('asset -h shows subcommands', done => {
-  app()
-    .run('asset -h')
-    .code(0)
-    .stdout(/list/)
-    .stdout(/get/)
-    .end(done)
+  app().run('asset -h').code(0).stdout(/list/).stdout(/get/).end(done)
 })
 
 test('asset --help shows List assets description', done => {

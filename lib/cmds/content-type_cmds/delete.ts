@@ -1,6 +1,6 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'delete',
   desc: 'Delete a content type',
   feature: 'content_type-delete',
@@ -15,14 +15,14 @@ const {command, desc, builder, handler} = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const contentType = await client.contentType.get({contentTypeId: argv.id})
+    const contentType = await client.contentType.get({ contentTypeId: argv.id })
     if (contentType.sys.publishedVersion) {
-      await client.contentType.unpublish({contentTypeId: argv.id})
+      await client.contentType.unpublish({ contentTypeId: argv.id })
     }
-    await client.contentType.delete({contentTypeId: argv.id})
-    return {deleted: true, id: argv.id}
+    await client.contentType.delete({ contentTypeId: argv.id })
+    return { deleted: true, id: argv.id }
   },
-  quietExtractor: (data) => [data.id]
+  quietExtractor: data => [data.id]
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

@@ -12,7 +12,8 @@ jest.mock('../../../../lib/utils/actions', () => ({
 }))
 jest.mock('../../../../lib/utils/output', () => ({
   output: jest.fn(),
-  firstLocaleValue: jest.requireActual('../../../../lib/utils/output').firstLocaleValue
+  firstLocaleValue: jest.requireActual('../../../../lib/utils/output')
+    .firstLocaleValue
 }))
 jest.mock('../../../../lib/utils/log', () => ({
   log: jest.fn(),
@@ -20,10 +21,12 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {handler} from '../../../../lib/cmds/asset_cmds/update'
-import {output} from '../../../../lib/utils/output'
+import { handler } from '../../../../lib/cmds/asset_cmds/update'
+import { output } from '../../../../lib/utils/output'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
@@ -35,7 +38,7 @@ const mockUpdatedAsset = {
     updatedAt: '2024-07-01T00:00:00Z'
   },
   fields: {
-    title: {'en-US': 'Updated Title'},
+    title: { 'en-US': 'Updated Title' },
     file: {
       'en-US': {
         fileName: 'updated.png',
@@ -53,7 +56,7 @@ const mockAsset = {
     updatedAt: '2024-06-01T00:00:00Z'
   },
   fields: {
-    title: {'en-US': 'Original Title'},
+    title: { 'en-US': 'Original Title' },
     file: {
       'en-US': {
         fileName: 'original.png',
@@ -75,7 +78,7 @@ beforeEach(() => {
   jest.clearAllMocks()
   // Reset mockAsset fields to original state before each test
   mockAsset.fields = {
-    title: {'en-US': 'Original Title'},
+    title: { 'en-US': 'Original Title' },
     file: {
       'en-US': {
         fileName: 'original.png',
@@ -112,18 +115,21 @@ describe('asset update — handler', () => {
 
   it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({ assetId: 'asset-abc' })
   })
 
   it('calls asset.update() after merging fields', async () => {
     await handler(baseArgv)
-    expect(fakeClient.asset.update).toHaveBeenCalledWith({assetId: 'asset-abc'}, mockAsset)
+    expect(fakeClient.asset.update).toHaveBeenCalledWith(
+      { assetId: 'asset-abc' },
+      mockAsset
+    )
   })
 
   it('merges provided fields into existing asset fields', async () => {
     await handler(baseArgv)
     expect(mockAsset.fields).toMatchObject({
-      title: {'en-US': 'Updated Title'}
+      title: { 'en-US': 'Updated Title' }
     })
   })
 
@@ -137,25 +143,25 @@ describe('asset update — handler', () => {
   })
 
   it('passes json flag to output when --json is set', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes quiet flag to output when --quiet is set', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
 
   it('passes quietExtractor that returns [asset.sys.id]', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
     expect(typeof opts.quietExtractor).toBe('function')
@@ -180,9 +186,11 @@ describe('asset update — handler', () => {
     let exitSpy: jest.SpyInstance
 
     beforeEach(() => {
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
+      exitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation((_code?: any) => {
+          throw new Error(`process.exit(${_code})`)
+        })
     })
 
     afterEach(() => {
@@ -190,18 +198,20 @@ describe('asset update — handler', () => {
     })
 
     it('rejects when provided version does not match asset version', async () => {
-      await expect(handler({...baseArgv, version: 99})).rejects.toThrow('process.exit(1)')
+      await expect(handler({ ...baseArgv, version: 99 })).rejects.toThrow(
+        'process.exit(1)'
+      )
     })
   })
 
   describe('dry-run', () => {
     it('does not call asset.update() when --dry-run is set', async () => {
-      await handler({...baseArgv, dryRun: true})
+      await handler({ ...baseArgv, dryRun: true })
       expect(fakeClient.asset.update).not.toHaveBeenCalled()
     })
 
     it('still returns merged asset data when --dry-run is set', async () => {
-      await handler({...baseArgv, dryRun: true})
+      await handler({ ...baseArgv, dryRun: true })
       expect(mockOutput).toHaveBeenCalled()
     })
   })
@@ -210,9 +220,11 @@ describe('asset update — handler', () => {
     let exitSpy: jest.SpyInstance
 
     beforeEach(() => {
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
+      exitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation((_code?: any) => {
+          throw new Error(`process.exit(${_code})`)
+        })
     })
 
     afterEach(() => {
@@ -220,11 +232,15 @@ describe('asset update — handler', () => {
     })
 
     it('exits when Asset ID contains invalid characters', async () => {
-      await expect(handler({...baseArgv, id: 'invalid id!'})).rejects.toThrow('process.exit(1)')
+      await expect(handler({ ...baseArgv, id: 'invalid id!' })).rejects.toThrow(
+        'process.exit(1)'
+      )
     })
 
     it('exits when Asset ID is missing', async () => {
-      await expect(handler({...baseArgv, id: ''})).rejects.toThrow('process.exit(1)')
+      await expect(handler({ ...baseArgv, id: '' })).rejects.toThrow(
+        'process.exit(1)'
+      )
     })
   })
 
@@ -232,9 +248,11 @@ describe('asset update — handler', () => {
     let exitSpy: jest.SpyInstance
 
     beforeEach(() => {
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
+      exitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation((_code?: any) => {
+          throw new Error(`process.exit(${_code})`)
+        })
     })
 
     afterEach(() => {
@@ -242,11 +260,15 @@ describe('asset update — handler', () => {
     })
 
     it('exits when --fields is not valid JSON', async () => {
-      await expect(handler({...baseArgv, fields: 'not-json'})).rejects.toThrow('process.exit(1)')
+      await expect(
+        handler({ ...baseArgv, fields: 'not-json' })
+      ).rejects.toThrow('process.exit(1)')
     })
 
     it('exits when --fields is a JSON array instead of object', async () => {
-      await expect(handler({...baseArgv, fields: '[1, 2, 3]'})).rejects.toThrow('process.exit(1)')
+      await expect(
+        handler({ ...baseArgv, fields: '[1, 2, 3]' })
+      ).rejects.toThrow('process.exit(1)')
     })
   })
 })

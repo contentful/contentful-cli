@@ -1,21 +1,28 @@
-import {createCommand} from '../../utils/command-factory'
-import {validateId} from '../../utils/validators'
+import { createCommand } from '../../utils/command-factory'
+import { validateId } from '../../utils/validators'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'delete <id>',
   desc: 'Delete an entry',
   feature: 'entry-delete',
   usage: 'Usage: contentful entry delete <id> [options]',
   examples: [
-    ['contentful entry delete 5KsDBWseXY6QegucYAoacS', 'Delete (prompts for confirmation)'],
-    ['contentful entry delete 5KsDBWseXY6QegucYAoacS --yes', 'Delete without confirmation prompt']
+    [
+      'contentful entry delete 5KsDBWseXY6QegucYAoacS',
+      'Delete (prompts for confirmation)'
+    ],
+    [
+      'contentful entry delete 5KsDBWseXY6QegucYAoacS --yes',
+      'Delete without confirmation prompt'
+    ]
   ],
   needsConfirmation: true,
-  confirmationMessage: 'Are you sure you want to delete this entry? This cannot be undone.',
+  confirmationMessage:
+    'Are you sure you want to delete this entry? This cannot be undone.',
   supportsDryRun: true,
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await client.entry.get({entryId: id})
+    const entry = await client.entry.get({ entryId: id })
 
     if (entry.sys.publishedVersion) {
       throw new Error(
@@ -23,12 +30,12 @@ const {command, desc, builder, handler} = createCommand({
       )
     }
 
-    await client.entry.delete({entryId: id})
-    return {deleted: true, id: entry.sys.id}
+    await client.entry.delete({ entryId: id })
+    return { deleted: true, id: entry.sys.id }
   },
   dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await client.entry.get({entryId: id})
+    const entry = await client.entry.get({ entryId: id })
     return {
       dryRun: true,
       action: 'delete',
@@ -38,13 +45,13 @@ const {command, desc, builder, handler} = createCommand({
       published: !!entry.sys.publishedVersion
     }
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     rows: [
       ['Action', data.dryRun ? 'Would delete' : 'Deleted'],
       ['ID', data.id || '-']
     ]
   }),
-  quietExtractor: (data) => [data.id || '']
+  quietExtractor: data => [data.id || '']
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

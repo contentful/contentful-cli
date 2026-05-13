@@ -41,9 +41,7 @@ function isBooleanOrNullLiteral(value: string): boolean {
 
 /** Returns true if value looks like a number and would be mis-parsed. */
 function isNumericLike(value: string): boolean {
-  return (
-    /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(value) || /^0\d+$/.test(value)
-  )
+  return /^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(value) || /^0\d+$/.test(value)
 }
 
 /**
@@ -128,11 +126,11 @@ function isEmptyObject(value: JsonObject): boolean {
 }
 
 function isArrayOfPrimitives(arr: JsonArray): arr is JsonPrimitive[] {
-  return arr.length === 0 || arr.every((item) => isJsonPrimitive(item))
+  return arr.length === 0 || arr.every(item => isJsonPrimitive(item))
 }
 
 function isArrayOfObjects(arr: JsonArray): arr is JsonObject[] {
-  return arr.length === 0 || arr.every((item) => isJsonObject(item))
+  return arr.length === 0 || arr.every(item => isJsonObject(item))
 }
 
 // ---------------------------------------------------------------------------
@@ -164,21 +162,25 @@ function extractTabularHeader(rows: JsonObject[]): string[] | undefined {
 
 function formatHeader(
   length: number,
-  opts?: {key?: string; fields?: string[]; delimiter?: string}
+  opts?: { key?: string; fields?: string[]; delimiter?: string }
 ): string {
   const delimiter = opts?.delimiter ?? COMMA
   let header = ''
   if (opts?.key) header += encodeKey(opts.key)
   header += `[${length}${delimiter !== COMMA ? delimiter : ''}]`
   if (opts?.fields) {
-    const quotedFields = opts.fields.map((f) => encodeKey(f))
+    const quotedFields = opts.fields.map(f => encodeKey(f))
     header += `{${quotedFields.join(delimiter)}}`
   }
   header += COLON
   return header
 }
 
-function indentedLine(depth: number, content: string, indentSize: number): string {
+function indentedLine(
+  depth: number,
+  content: string,
+  indentSize: number
+): string {
   return ' '.repeat(indentSize * depth) + content
 }
 
@@ -209,7 +211,7 @@ interface ResolvedEncodeOptions {
 function resolveOptions(options?: EncodeOptions): ResolvedEncodeOptions {
   return {
     indent: options?.indent ?? 2,
-    delimiter: options?.delimiter ?? COMMA,
+    delimiter: options?.delimiter ?? COMMA
   }
 }
 
@@ -254,7 +256,10 @@ function* encodeKeyValuePairLines(
   if (isJsonPrimitive(value)) {
     yield indentedLine(
       depth,
-      `${encodedKey}${COLON}${SPACE}${encodePrimitive(value, options.delimiter)}`,
+      `${encodedKey}${COLON}${SPACE}${encodePrimitive(
+        value,
+        options.delimiter
+      )}`,
       options.indent
     )
   } else if (isJsonArray(value)) {
@@ -271,7 +276,7 @@ function encodeAndJoinPrimitives(
   values: JsonPrimitive[],
   delimiter: string
 ): string {
-  return values.map((v) => encodePrimitive(v, delimiter)).join(delimiter)
+  return values.map(v => encodePrimitive(v, delimiter)).join(delimiter)
 }
 
 function encodeInlineArrayLine(
@@ -279,7 +284,7 @@ function encodeInlineArrayLine(
   delimiter: string,
   prefix?: string
 ): string {
-  const header = formatHeader(values.length, {key: prefix, delimiter})
+  const header = formatHeader(values.length, { key: prefix, delimiter })
   if (values.length === 0) return header
   return `${header}${SPACE}${encodeAndJoinPrimitives(values, delimiter)}`
 }
@@ -290,10 +295,10 @@ function* encodeArrayLines(
   depth: number,
   options: ResolvedEncodeOptions
 ): Generator<string> {
-  const {delimiter, indent} = options
+  const { delimiter, indent } = options
 
   if (value.length === 0) {
-    yield indentedLine(depth, formatHeader(0, {key, delimiter}), indent)
+    yield indentedLine(depth, formatHeader(0, { key, delimiter }), indent)
     return
   }
 
@@ -333,17 +338,17 @@ function* encodeArrayOfObjectsAsTabularLines(
   depth: number,
   options: ResolvedEncodeOptions
 ): Generator<string> {
-  const {delimiter, indent} = options
+  const { delimiter, indent } = options
   yield indentedLine(
     depth,
-    formatHeader(rows.length, {key, fields: header, delimiter}),
+    formatHeader(rows.length, { key, fields: header, delimiter }),
     indent
   )
   for (const row of rows) {
     yield indentedLine(
       depth + 1,
       encodeAndJoinPrimitives(
-        header.map((k) => row[k] as JsonPrimitive),
+        header.map(k => row[k] as JsonPrimitive),
         delimiter
       ),
       indent
@@ -359,7 +364,7 @@ function* encodeMixedArrayAsListItemsLines(
 ): Generator<string> {
   yield indentedLine(
     depth,
-    formatHeader(items.length, {key, delimiter: options.delimiter}),
+    formatHeader(items.length, { key, delimiter: options.delimiter }),
     options.indent
   )
   for (const item of items) {
@@ -372,7 +377,7 @@ function* encodeListItemValueLines(
   depth: number,
   options: ResolvedEncodeOptions
 ): Generator<string> {
-  const {delimiter, indent} = options
+  const { delimiter, indent } = options
   if (isJsonPrimitive(value)) {
     yield indentedListItem(depth, encodePrimitive(value, delimiter), indent)
   } else if (isJsonArray(value)) {
@@ -385,7 +390,7 @@ function* encodeListItemValueLines(
     } else {
       yield indentedListItem(
         depth,
-        formatHeader(value.length, {delimiter}),
+        formatHeader(value.length, { delimiter }),
         indent
       )
       for (const item of value) {
@@ -402,7 +407,7 @@ function* encodeObjectAsListItemLines(
   depth: number,
   options: ResolvedEncodeOptions
 ): Generator<string> {
-  const {delimiter, indent} = options
+  const { delimiter, indent } = options
   if (isEmptyObject(obj)) {
     yield indentedLine(depth, LIST_ITEM_MARKER, indent)
     return
@@ -415,26 +420,32 @@ function* encodeObjectAsListItemLines(
   if (isJsonPrimitive(firstValue)) {
     yield indentedListItem(
       depth,
-      `${encodedFirstKey}${COLON}${SPACE}${encodePrimitive(firstValue, delimiter)}`,
+      `${encodedFirstKey}${COLON}${SPACE}${encodePrimitive(
+        firstValue,
+        delimiter
+      )}`,
       indent
     )
   } else if (isJsonArray(firstValue)) {
     if (firstValue.length === 0) {
       yield indentedListItem(
         depth,
-        `${encodedFirstKey}${formatHeader(0, {delimiter})}`,
+        `${encodedFirstKey}${formatHeader(0, { delimiter })}`,
         indent
       )
     } else if (isArrayOfPrimitives(firstValue)) {
       yield indentedListItem(
         depth,
-        `${encodedFirstKey}${encodeInlineArrayLine(firstValue as JsonPrimitive[], delimiter)}`,
+        `${encodedFirstKey}${encodeInlineArrayLine(
+          firstValue as JsonPrimitive[],
+          delimiter
+        )}`,
         indent
       )
     } else {
       yield indentedListItem(
         depth,
-        `${encodedFirstKey}${formatHeader(firstValue.length, {delimiter})}`,
+        `${encodedFirstKey}${formatHeader(firstValue.length, { delimiter })}`,
         indent
       )
       for (const item of firstValue) {
@@ -449,7 +460,11 @@ function* encodeObjectAsListItemLines(
   }
 
   if (restEntries.length > 0) {
-    yield* encodeObjectLines(Object.fromEntries(restEntries), depth + 1, options)
+    yield* encodeObjectLines(
+      Object.fromEntries(restEntries),
+      depth + 1,
+      options
+    )
   }
 }
 
@@ -468,9 +483,9 @@ function normalizeValue(value: unknown): JsonValue {
     typeof value === 'object' &&
     value !== null &&
     'toJSON' in value &&
-    typeof (value as {toJSON: unknown}).toJSON === 'function'
+    typeof (value as { toJSON: unknown }).toJSON === 'function'
   ) {
-    const next = (value as {toJSON(): unknown}).toJSON()
+    const next = (value as { toJSON(): unknown }).toJSON()
     if (next !== value) return normalizeValue(next)
   }
   if (typeof value === 'string' || typeof value === 'boolean') return value
@@ -480,7 +495,10 @@ function normalizeValue(value: unknown): JsonValue {
     return value
   }
   if (typeof value === 'bigint') {
-    if (value >= BigInt(Number.MIN_SAFE_INTEGER) && value <= BigInt(Number.MAX_SAFE_INTEGER)) {
+    if (
+      value >= BigInt(Number.MIN_SAFE_INTEGER) &&
+      value <= BigInt(Number.MAX_SAFE_INTEGER)
+    ) {
       return Number(value)
     }
     return value.toString()
@@ -498,7 +516,9 @@ function normalizeValue(value: unknown): JsonValue {
     const normalized: JsonObject = {}
     for (const key in value as object) {
       if (Object.prototype.hasOwnProperty.call(value, key)) {
-        normalized[key] = normalizeValue((value as Record<string, unknown>)[key])
+        normalized[key] = normalizeValue(
+          (value as Record<string, unknown>)[key]
+        )
       }
     }
     return normalized

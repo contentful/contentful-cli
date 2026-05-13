@@ -1,4 +1,4 @@
-import {encode} from './toon-encoder'
+import { encode } from './toon-encoder'
 
 /**
  * Serialize data to TOON format for --agent-mode output.

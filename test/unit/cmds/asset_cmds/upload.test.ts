@@ -2,7 +2,7 @@ jest.mock('../../../../lib/utils/contentful-clients', () => ({
   createPlainClient: jest.fn()
 }))
 jest.mock('../../../../lib/utils/headers', () => ({
-  getHeadersFromOption: jest.fn((v) => v || {})
+  getHeadersFromOption: jest.fn(v => v || {})
 }))
 jest.mock('../../../../lib/utils/copyright', () => ({
   copyright: 'Copyright 2026 Contentful'
@@ -12,7 +12,8 @@ jest.mock('../../../../lib/utils/actions', () => ({
 }))
 jest.mock('../../../../lib/utils/output', () => ({
   output: jest.fn(),
-  firstLocaleValue: jest.requireActual('../../../../lib/utils/output').firstLocaleValue
+  firstLocaleValue: jest.requireActual('../../../../lib/utils/output')
+    .firstLocaleValue
 }))
 jest.mock('../../../../lib/utils/log', () => ({
   log: jest.fn(),
@@ -32,10 +33,12 @@ jest.mock('path', () => {
   }
 })
 
-import {handler} from '../../../../lib/cmds/asset_cmds/upload'
-import {output} from '../../../../lib/utils/output'
+import { handler } from '../../../../lib/cmds/asset_cmds/upload'
+import { output } from '../../../../lib/utils/output'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
 const fs = require('fs')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
@@ -43,16 +46,16 @@ const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockExistsSync = fs.existsSync as jest.MockedFunction<any>
 const mockCreateReadStream = fs.createReadStream as jest.MockedFunction<any>
 
-const mockStream = {pipe: jest.fn()}
+const mockStream = { pipe: jest.fn() }
 
 const mockUpload = {
-  sys: {id: 'upload-123'}
+  sys: { id: 'upload-123' }
 }
 
 const mockProcessedAsset = {
-  sys: {id: 'asset-xyz', version: 2},
+  sys: { id: 'asset-xyz', version: 2 },
   fields: {
-    title: {'en-US': 'My Image'},
+    title: { 'en-US': 'My Image' },
     file: {
       'en-US': {
         fileName: 'photo.png',
@@ -67,7 +70,10 @@ function makeFakeClient(overrides: Record<string, any> = {}) {
   return {
     locale: {
       getMany: jest.fn().mockResolvedValue({
-        items: [{code: 'en-US', default: true}, {code: 'de-DE', default: false}]
+        items: [
+          { code: 'en-US', default: true },
+          { code: 'de-DE', default: false }
+        ]
       })
     },
     upload: {
@@ -75,15 +81,15 @@ function makeFakeClient(overrides: Record<string, any> = {}) {
     },
     asset: {
       create: jest.fn().mockResolvedValue({
-        sys: {id: 'asset-xyz'}
+        sys: { id: 'asset-xyz' }
       }),
       createWithId: jest.fn().mockResolvedValue({
-        sys: {id: 'custom-id'}
+        sys: { id: 'custom-id' }
       }),
       processForAllLocales: jest.fn().mockResolvedValue({
-        sys: {id: 'asset-xyz', version: 2},
+        sys: { id: 'asset-xyz', version: 2 },
         fields: {
-          title: {'en-US': 'My Image'},
+          title: { 'en-US': 'My Image' },
           file: {
             'en-US': {
               fileName: 'photo.png',
@@ -140,27 +146,30 @@ describe('asset upload — handler', () => {
   it('creates upload, creates asset, processes, and polls successfully', async () => {
     await handler(baseArgv)
 
-    expect(fakeClient.upload.create).toHaveBeenCalledWith({}, {
-      file: mockStream
-    })
+    expect(fakeClient.upload.create).toHaveBeenCalledWith(
+      {},
+      {
+        file: mockStream
+      }
+    )
     expect(fakeClient.asset.create).toHaveBeenCalledWith(
       {},
       expect.objectContaining({
         fields: expect.objectContaining({
-          title: {'en-US': 'My Image'},
+          title: { 'en-US': 'My Image' },
           file: {
             'en-US': expect.objectContaining({
               contentType: 'image/png',
               fileName: 'photo.png',
               uploadFrom: {
-                sys: {type: 'Link', linkType: 'Upload', id: 'upload-123'}
+                sys: { type: 'Link', linkType: 'Upload', id: 'upload-123' }
               }
             })
           }
         })
       })
     )
-    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-xyz'})
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({ assetId: 'asset-xyz' })
     expect(mockOutput).toHaveBeenCalledWith(
       mockProcessedAsset,
       expect.any(Object),
@@ -170,34 +179,34 @@ describe('asset upload — handler', () => {
 
   it('uses asset.createWithId when --id is provided', async () => {
     fakeClient.asset.processForAllLocales.mockResolvedValue({
-      sys: {id: 'custom-id', version: 2},
+      sys: { id: 'custom-id', version: 2 },
       fields: {
-        title: {'en-US': 'My Image'},
-        file: {'en-US': {fileName: 'photo.png', contentType: 'image/png'}}
+        title: { 'en-US': 'My Image' },
+        file: { 'en-US': { fileName: 'photo.png', contentType: 'image/png' } }
       }
     })
     fakeClient.asset.get.mockResolvedValue({
       ...mockProcessedAsset,
-      sys: {id: 'custom-id', version: 2}
+      sys: { id: 'custom-id', version: 2 }
     })
 
-    await handler({...baseArgv, id: 'custom-id'})
+    await handler({ ...baseArgv, id: 'custom-id' })
 
     expect(fakeClient.asset.createWithId).toHaveBeenCalledWith(
-      {assetId: 'custom-id'},
+      { assetId: 'custom-id' },
       expect.any(Object)
     )
     expect(fakeClient.asset.create).not.toHaveBeenCalled()
   })
 
   it('includes description field when --description is provided', async () => {
-    await handler({...baseArgv, description: 'A great photo'})
+    await handler({ ...baseArgv, description: 'A great photo' })
 
     expect(fakeClient.asset.create).toHaveBeenCalledWith(
       {},
       expect.objectContaining({
         fields: expect.objectContaining({
-          description: {'en-US': 'A great photo'}
+          description: { 'en-US': 'A great photo' }
         })
       })
     )
@@ -212,29 +221,37 @@ describe('asset upload — handler', () => {
 
   it('fetches space default locale when --locale is not provided', async () => {
     fakeClient.locale.getMany.mockResolvedValue({
-      items: [{code: 'de-DE', default: true}, {code: 'en-US', default: false}]
+      items: [
+        { code: 'de-DE', default: true },
+        { code: 'en-US', default: false }
+      ]
     })
     fakeClient.asset.processForAllLocales.mockResolvedValue({
-      sys: {id: 'asset-xyz', version: 2},
+      sys: { id: 'asset-xyz', version: 2 },
       fields: {
-        title: {'de-DE': 'My Image'},
-        file: {'de-DE': {fileName: 'photo.png', contentType: 'image/png'}}
+        title: { 'de-DE': 'My Image' },
+        file: { 'de-DE': { fileName: 'photo.png', contentType: 'image/png' } }
       }
     })
     fakeClient.asset.get.mockResolvedValue({
-      sys: {id: 'asset-xyz', version: 2},
+      sys: { id: 'asset-xyz', version: 2 },
       fields: {
-        title: {'de-DE': 'My Image'},
-        file: {'de-DE': {fileName: 'photo.png', url: '//images.ctfassets.net/photo.png'}}
+        title: { 'de-DE': 'My Image' },
+        file: {
+          'de-DE': {
+            fileName: 'photo.png',
+            url: '//images.ctfassets.net/photo.png'
+          }
+        }
       }
     })
 
-    const {locale: _removed, ...argvWithoutLocale} = baseArgv
+    const { locale: _removed, ...argvWithoutLocale } = baseArgv
     await handler(argvWithoutLocale)
 
     expect(fakeClient.locale.getMany).toHaveBeenCalledWith({})
     const call = fakeClient.asset.create.mock.calls[0][1]
-    expect(call.fields.title).toEqual({'de-DE': 'My Image'})
+    expect(call.fields.title).toEqual({ 'de-DE': 'My Image' })
     expect(call.fields.file['de-DE']).toBeDefined()
   })
 
@@ -245,7 +262,7 @@ describe('asset upload — handler', () => {
 
   describe('MIME type auto-detection', () => {
     it('detects image/png for .png files', async () => {
-      await handler({...baseArgv, file: '/tmp/photo.png'})
+      await handler({ ...baseArgv, file: '/tmp/photo.png' })
       const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('image/png')
     })
@@ -255,10 +272,12 @@ describe('asset upload — handler', () => {
         ...mockProcessedAsset,
         fields: {
           ...mockProcessedAsset.fields,
-          file: {'en-US': {fileName: 'doc.pdf', url: '//cdn.example.com/doc.pdf'}}
+          file: {
+            'en-US': { fileName: 'doc.pdf', url: '//cdn.example.com/doc.pdf' }
+          }
         }
       })
-      await handler({...baseArgv, file: '/tmp/doc.pdf', title: 'Doc'})
+      await handler({ ...baseArgv, file: '/tmp/doc.pdf', title: 'Doc' })
       const call = fakeClient.asset.create.mock.calls[0][1]
       expect(call.fields.file['en-US'].contentType).toBe('application/pdf')
     })
@@ -268,12 +287,16 @@ describe('asset upload — handler', () => {
         ...mockProcessedAsset,
         fields: {
           ...mockProcessedAsset.fields,
-          file: {'en-US': {fileName: 'data.xyz', url: '//cdn.example.com/data.xyz'}}
+          file: {
+            'en-US': { fileName: 'data.xyz', url: '//cdn.example.com/data.xyz' }
+          }
         }
       })
-      await handler({...baseArgv, file: '/tmp/data.xyz', title: 'Data'})
+      await handler({ ...baseArgv, file: '/tmp/data.xyz', title: 'Data' })
       const call = fakeClient.asset.create.mock.calls[0][1]
-      expect(call.fields.file['en-US'].contentType).toBe('application/octet-stream')
+      expect(call.fields.file['en-US'].contentType).toBe(
+        'application/octet-stream'
+      )
     })
 
     it('uses --content-type override when provided', async () => {
@@ -289,29 +312,29 @@ describe('asset upload — handler', () => {
 
   it('throws error when file not found', async () => {
     mockExistsSync.mockReturnValue(false)
-    await handler({...baseArgv, file: '/tmp/nonexistent.png'})
+    await handler({ ...baseArgv, file: '/tmp/nonexistent.png' })
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
   it('validates asset ID when --id is provided and rejects invalid IDs', async () => {
-    await handler({...baseArgv, id: 'invalid id!'})
+    await handler({ ...baseArgv, id: 'invalid id!' })
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
 
   it('passes --json flag to output', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes --quiet flag to output', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
@@ -342,9 +365,9 @@ describe('asset upload — handler', () => {
       // First call returns no URL, second call returns URL
       fakeClient.asset.get
         .mockResolvedValueOnce({
-          sys: {id: 'asset-xyz'},
+          sys: { id: 'asset-xyz' },
           fields: {
-            file: {'en-US': {fileName: 'photo.png'}}
+            file: { 'en-US': { fileName: 'photo.png' } }
           }
         })
         .mockResolvedValueOnce(mockProcessedAsset)
@@ -362,9 +385,9 @@ describe('asset upload — handler', () => {
     it('throws timeout error when asset processing never completes', async () => {
       // Always return asset without URL
       fakeClient.asset.get.mockResolvedValue({
-        sys: {id: 'asset-xyz'},
+        sys: { id: 'asset-xyz' },
         fields: {
-          file: {'en-US': {fileName: 'photo.png'}}
+          file: { 'en-US': { fileName: 'photo.png' } }
         }
       })
 
@@ -375,7 +398,7 @@ describe('asset upload — handler', () => {
 
   describe('--dry-run', () => {
     it('validates file exists and shows payload without uploading', async () => {
-      await handler({...baseArgv, dryRun: true})
+      await handler({ ...baseArgv, dryRun: true })
 
       expect(fakeClient.upload.create).not.toHaveBeenCalled()
       expect(fakeClient.asset.create).not.toHaveBeenCalled()
@@ -392,26 +415,26 @@ describe('asset upload — handler', () => {
 
     it('dry-run throws error when file not found', async () => {
       mockExistsSync.mockReturnValue(false)
-      await handler({...baseArgv, dryRun: true, file: '/tmp/missing.png'})
+      await handler({ ...baseArgv, dryRun: true, file: '/tmp/missing.png' })
       expect(exitSpy).toHaveBeenCalledWith(1)
     })
 
     it('dry-run shows provided asset ID when --id given', async () => {
-      await handler({...baseArgv, dryRun: true, id: 'my-asset-id'})
+      await handler({ ...baseArgv, dryRun: true, id: 'my-asset-id' })
       const call = mockOutput.mock.calls[0]
       const data = call[0]
       expect(data.assetId).toBe('my-asset-id')
     })
 
     it('dry-run includes description when provided', async () => {
-      await handler({...baseArgv, dryRun: true, description: 'A photo'})
+      await handler({ ...baseArgv, dryRun: true, description: 'A photo' })
       const call = mockOutput.mock.calls[0]
       const data = call[0]
       expect(data.description).toBe('A photo')
     })
 
     it('dry-run auto-detects content type', async () => {
-      await handler({...baseArgv, dryRun: true, file: '/tmp/doc.pdf'})
+      await handler({ ...baseArgv, dryRun: true, file: '/tmp/doc.pdf' })
       const call = mockOutput.mock.calls[0]
       const data = call[0]
       expect(data.contentType).toBe('application/pdf')

@@ -20,12 +20,14 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {output} from '../../../../lib/utils/output'
-import {warning, logError} from '../../../../lib/utils/log'
+import { output } from '../../../../lib/utils/output'
+import { warning, logError } from '../../../../lib/utils/log'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
-const {confirmation} = require('../../../../lib/utils/actions')
-const {handler} = require('../../../../lib/cmds/content-type_cmds/delete')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
+const { confirmation } = require('../../../../lib/utils/actions')
+const { handler } = require('../../../../lib/cmds/content-type_cmds/delete')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
@@ -34,7 +36,7 @@ const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
 
 const mockContentType = {
-  sys: {id: 'blog-post', version: 3},
+  sys: { id: 'blog-post', version: 3 },
   name: 'Blog Post'
 }
 
@@ -70,12 +72,16 @@ describe('content-type delete', () => {
 
   it('fetches the content type by id', async () => {
     await handler(baseArgv)
-    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({
+      contentTypeId: 'blog-post'
+    })
   })
 
   it('calls contentType.delete() after confirmation', async () => {
     await handler(baseArgv)
-    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({
+      contentTypeId: 'blog-post'
+    })
   })
 
   it('does not unpublish when content type is not published', async () => {
@@ -85,16 +91,20 @@ describe('content-type delete', () => {
 
   it('unpublishes before deleting when content type is published', async () => {
     fakeClient.contentType.get.mockResolvedValueOnce({
-      sys: {id: 'blog-post', version: 3, publishedVersion: 2},
+      sys: { id: 'blog-post', version: 3, publishedVersion: 2 },
       name: 'Blog Post'
     })
     await handler(baseArgv)
-    expect(fakeClient.contentType.unpublish).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
-    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+    expect(fakeClient.contentType.unpublish).toHaveBeenCalledWith({
+      contentTypeId: 'blog-post'
+    })
+    expect(fakeClient.contentType.delete).toHaveBeenCalledWith({
+      contentTypeId: 'blog-post'
+    })
   })
 
   it('skips confirmation when --yes is passed', async () => {
-    await handler({...baseArgv, yes: true})
+    await handler({ ...baseArgv, yes: true })
     expect(mockConfirmation).not.toHaveBeenCalled()
     expect(fakeClient.contentType.delete).toHaveBeenCalled()
   })
@@ -109,7 +119,7 @@ describe('content-type delete', () => {
   it('creates plain client with correct feature', async () => {
     await handler(baseArgv)
     expect(mockCreatePlainClient).toHaveBeenCalledWith(
-      expect.objectContaining({feature: 'content_type-delete'}),
+      expect.objectContaining({ feature: 'content_type-delete' }),
       expect.any(Object)
     )
   })
@@ -117,7 +127,7 @@ describe('content-type delete', () => {
   it('passes result to output with deleted flag and id', async () => {
     await handler(baseArgv)
     expect(mockOutput).toHaveBeenCalledWith(
-      {deleted: true, id: 'blog-post'},
+      { deleted: true, id: 'blog-post' },
       expect.any(Object),
       expect.any(Object)
     )
@@ -125,17 +135,23 @@ describe('content-type delete', () => {
 
   it('passes quietExtractor that returns the deleted id', async () => {
     await handler(baseArgv)
-    const opts = (mockOutput.mock.calls[0][2] as any)
+    const opts = mockOutput.mock.calls[0][2] as any
     expect(opts.quietExtractor).toBeDefined()
-    expect(opts.quietExtractor({deleted: true, id: 'blog-post'})).toEqual(['blog-post'])
+    expect(opts.quietExtractor({ deleted: true, id: 'blog-post' })).toEqual([
+      'blog-post'
+    ])
   })
 
   it('exits with code 1 when get fails with 404', async () => {
-    const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeClient.contentType.get.mockRejectedValueOnce(err)
-    const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-      throw new Error(`process.exit(${_code})`)
+    const err = Object.assign(new Error('Not Found'), {
+      response: { status: 404 }
     })
+    fakeClient.contentType.get.mockRejectedValueOnce(err)
+    const exitSpy = jest
+      .spyOn(process, 'exit')
+      .mockImplementation((_code?: any) => {
+        throw new Error(`process.exit(${_code})`)
+      })
     try {
       await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
       expect(mockLogError).toHaveBeenCalledWith(err)
@@ -145,10 +161,10 @@ describe('content-type delete', () => {
   })
 
   it('passes --json flag to output', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })

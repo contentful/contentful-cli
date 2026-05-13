@@ -7,4 +7,3 @@ export const permissionCheck: SecurityCheck = {
     return !!ctx.role && ['owner', 'admin'].includes(ctx.role)
   }
 }
-

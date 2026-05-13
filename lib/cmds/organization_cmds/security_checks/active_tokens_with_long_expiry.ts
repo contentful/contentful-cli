@@ -38,7 +38,8 @@ function extractLimit(resp: AccessTokenResponseAxiosLike): number | undefined {
 
 export const activeTokensWithLongExpiryCheck: SecurityCheck = {
   id: 'active_tokens_with_long_expiry',
-  description: 'Active (not revoked) access tokens with an expiration date > 1 year',
+  description:
+    'Active (not revoked) access tokens with an expiration date > 1 year',
   dependsOn: ['permission_check'],
   async run(ctx: SecurityContext): Promise<SecurityCheckRunResult> {
     const { client, organizationId } = ctx
@@ -54,9 +55,12 @@ export const activeTokensWithLongExpiryCheck: SecurityCheck = {
     const now = new Date()
     const oneYearAhead = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)
 
-    const sdkAccessor: any = (client as any)?.accessToken?.getManyForOrganization
+    const sdkAccessor: any = (client as any)?.accessToken
+      ?.getManyForOrganization
 
-    async function fetchPage(currentSkip: number): Promise<AccessTokenResponseAxiosLike> {
+    async function fetchPage(
+      currentSkip: number
+    ): Promise<AccessTokenResponseAxiosLike> {
       if (typeof sdkAccessor === 'function') {
         try {
           const collection = await sdkAccessor({
@@ -94,7 +98,7 @@ export const activeTokensWithLongExpiryCheck: SecurityCheck = {
 
         for (const item of items) {
           const revoked = item?.revokedAt
-            ; (revoked) // no-op to satisfy linter if unused
+          revoked // no-op to satisfy linter if unused
           const expiresAt = item?.sys?.expiresAt
           if (item?.revokedAt == null && expiresAt) {
             const expDate = new Date(expiresAt)

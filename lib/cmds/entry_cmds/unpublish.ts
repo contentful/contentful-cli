@@ -1,7 +1,7 @@
-import {createCommand} from '../../utils/command-factory'
-import {validateId} from '../../utils/validators'
+import { createCommand } from '../../utils/command-factory'
+import { validateId } from '../../utils/validators'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'unpublish <id>',
   desc: 'Unpublish an entry',
   feature: 'entry-unpublish',
@@ -9,12 +9,12 @@ const {command, desc, builder, handler} = createCommand({
   supportsDryRun: true,
   handler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await client.entry.get({entryId: id})
-    return client.entry.unpublish({entryId: id})
+    const entry = await client.entry.get({ entryId: id })
+    return client.entry.unpublish({ entryId: id })
   },
   dryRunHandler: async (client, argv) => {
     const id = validateId(argv.id, 'Entry ID')
-    const entry = await client.entry.get({entryId: id})
+    const entry = await client.entry.get({ entryId: id })
     return {
       dryRun: true,
       action: 'unpublish',
@@ -23,14 +23,14 @@ const {command, desc, builder, handler} = createCommand({
       currentlyPublished: !!entry.sys.publishedVersion
     }
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     rows: [
       ['ID', data.sys?.id || data.id || '-'],
       ['Version', String(data.sys?.version || data.version || '-')],
       ['Action', data.dryRun ? 'Would unpublish' : 'Unpublished']
     ]
   }),
-  quietExtractor: (data) => [data.sys?.id || data.id || '']
+  quietExtractor: data => [data.sys?.id || data.id || '']
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

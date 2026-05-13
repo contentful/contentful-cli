@@ -2,13 +2,24 @@ import { ssoExemptUsersCheck } from '../../../../../lib/cmds/organization_cmds/s
 import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 describe('ssoExemptUsersCheck', () => {
-  function makeCtx(pages: Array<{ items: any[]; total?: number; limit?: number }>, shouldThrow = false): SecurityContext {
+  function makeCtx(
+    pages: Array<{ items: any[]; total?: number; limit?: number }>,
+    shouldThrow = false
+  ): SecurityContext {
     let call = 0
     const rawGet = jest.fn().mockImplementation(async (path: string) => {
-      if (!path.includes('/organization_memberships')) throw new Error('unexpected path')
+      if (!path.includes('/organization_memberships'))
+        throw new Error('unexpected path')
       if (shouldThrow) throw new Error('network')
       const page = pages[call++] || { items: [] }
-      return { data: { items: page.items, total: page.total ?? pages.reduce((acc,p)=>acc+p.items.length,0), limit: page.limit ?? 100 } }
+      return {
+        data: {
+          items: page.items,
+          total:
+            page.total ?? pages.reduce((acc, p) => acc + p.items.length, 0),
+          limit: page.limit ?? 100
+        }
+      }
     })
     return {
       client: { raw: { get: rawGet } } as any,
@@ -28,7 +39,16 @@ describe('ssoExemptUsersCheck', () => {
   })
 
   test('fails when exempt user present', async () => {
-    const ctx = makeCtx([{ items: [{ isExemptFromRestrictedMode: true, sys: { user: { sys: { id: 'u2' } } } }] }])
+    const ctx = makeCtx([
+      {
+        items: [
+          {
+            isExemptFromRestrictedMode: true,
+            sys: { user: { sys: { id: 'u2' } } }
+          }
+        ]
+      }
+    ])
     const res = await ssoExemptUsersCheck.run(ctx)
     // @ts-ignore
     expect(res.pass).toBe(false)
@@ -45,4 +65,3 @@ describe('ssoExemptUsersCheck', () => {
     expect(res.data.error).toBe('fetch_failed')
   })
 })
-

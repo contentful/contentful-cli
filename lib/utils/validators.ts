@@ -15,7 +15,11 @@ export function validateId(value: string, label: string): string {
 export function validateJsonFields(value: string): Record<string, unknown> {
   try {
     const parsed = JSON.parse(value)
-    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    if (
+      typeof parsed !== 'object' ||
+      parsed === null ||
+      Array.isArray(parsed)
+    ) {
       throw new Error('Fields must be a JSON object')
     }
     return parsed as Record<string, unknown>

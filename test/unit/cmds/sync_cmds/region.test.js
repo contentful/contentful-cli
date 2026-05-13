@@ -108,7 +108,7 @@ describe('migrateRegion', () => {
       expect.objectContaining({
         organizationId: 'srcOrg',
         context: { managementToken: 'sourceToken' },
-        host: 'api.eu.contentful.com' 
+        host: 'api.eu.contentful.com'
       })
     )
 

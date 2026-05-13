@@ -3,7 +3,7 @@ import {
   handleAsyncErrorWithExitCode,
   EXIT_SUCCESS,
   EXIT_CLIENT_ERROR,
-  EXIT_SERVER_ERROR,
+  EXIT_SERVER_ERROR
 } from '../../../lib/utils/exit-codes'
 
 const exitStub = jest.fn()
@@ -39,54 +39,54 @@ describe('exit code constants', () => {
 describe('classifyError', () => {
   describe('server errors (status >= 500)', () => {
     test('returns EXIT_SERVER_ERROR for error with response.status 500', () => {
-      const error = {response: {status: 500}}
+      const error = { response: { status: 500 } }
       expect(classifyError(error)).toBe(EXIT_SERVER_ERROR)
     })
 
     test('returns EXIT_SERVER_ERROR for error with response.status 502', () => {
-      const error = {response: {status: 502}}
+      const error = { response: { status: 502 } }
       expect(classifyError(error)).toBe(EXIT_SERVER_ERROR)
     })
 
     test('returns EXIT_SERVER_ERROR for error with response.status 503', () => {
-      const error = {response: {status: 503}}
+      const error = { response: { status: 503 } }
       expect(classifyError(error)).toBe(EXIT_SERVER_ERROR)
     })
 
     test('returns EXIT_SERVER_ERROR for error with statusCode 500', () => {
-      const error = {statusCode: 500}
+      const error = { statusCode: 500 }
       expect(classifyError(error)).toBe(EXIT_SERVER_ERROR)
     })
 
     test('returns EXIT_SERVER_ERROR for error with status 500', () => {
-      const error = {status: 500}
+      const error = { status: 500 }
       expect(classifyError(error)).toBe(EXIT_SERVER_ERROR)
     })
   })
 
   describe('client errors (status < 500)', () => {
     test('returns EXIT_CLIENT_ERROR for error with response.status 400', () => {
-      const error = {response: {status: 400}}
+      const error = { response: { status: 400 } }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
 
     test('returns EXIT_CLIENT_ERROR for error with response.status 404', () => {
-      const error = {response: {status: 404}}
+      const error = { response: { status: 404 } }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
 
     test('returns EXIT_CLIENT_ERROR for error with response.status 409', () => {
-      const error = {response: {status: 409}}
+      const error = { response: { status: 409 } }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
 
     test('returns EXIT_CLIENT_ERROR for error with statusCode 400', () => {
-      const error = {statusCode: 400}
+      const error = { statusCode: 400 }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
 
     test('returns EXIT_CLIENT_ERROR for error with status 404', () => {
-      const error = {status: 404}
+      const error = { status: 404 }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
   })
@@ -98,7 +98,7 @@ describe('classifyError', () => {
     })
 
     test('returns EXIT_CLIENT_ERROR for object with no status fields', () => {
-      const error = {message: 'no status here'}
+      const error = { message: 'no status here' }
       expect(classifyError(error)).toBe(EXIT_CLIENT_ERROR)
     })
 
@@ -134,7 +134,7 @@ describe('handleAsyncErrorWithExitCode', () => {
     const handlerFn = handleAsyncErrorWithExitCode(asyncFn, errorHandler)
     expect(typeof handlerFn).toBe('function')
 
-    const argv = {value: 'foo'}
+    const argv = { value: 'foo' }
     const result = await handlerFn(argv)
 
     expect(asyncFn).toHaveBeenCalledWith(argv)
@@ -149,7 +149,7 @@ describe('handleAsyncErrorWithExitCode', () => {
     const errorHandler = jest.fn()
 
     const handlerFn = handleAsyncErrorWithExitCode(asyncFn, errorHandler)
-    await handlerFn({value: 'foo'})
+    await handlerFn({ value: 'foo' })
 
     expect(errorHandler).toHaveBeenCalledWith(error)
     expect(exitStub).toHaveBeenCalledWith(EXIT_CLIENT_ERROR)
@@ -157,7 +157,7 @@ describe('handleAsyncErrorWithExitCode', () => {
 
   test('calls process.exit with EXIT_SERVER_ERROR for 500 status errors', async () => {
     const error = Object.assign(new Error('server error'), {
-      response: {status: 500},
+      response: { status: 500 }
     })
     const asyncFn = jest.fn().mockRejectedValue(error)
     const errorHandler = jest.fn()
@@ -171,7 +171,7 @@ describe('handleAsyncErrorWithExitCode', () => {
 
   test('calls process.exit with EXIT_CLIENT_ERROR for 404 status errors', async () => {
     const error = Object.assign(new Error('not found'), {
-      response: {status: 404},
+      response: { status: 404 }
     })
     const asyncFn = jest.fn().mockRejectedValue(error)
     const errorHandler = jest.fn()

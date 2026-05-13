@@ -1,13 +1,16 @@
 const nixt = require('nixt')
-const {join} = require('path')
+const { join } = require('path')
 
 const bin = join(__dirname, '../../../../', 'bin')
 
-const app = () => nixt({newlines: true}).cwd(bin).base('./contentful.js ').clone()
+const app = () =>
+  nixt({ newlines: true }).cwd(bin).base('./contentful.js ').clone()
 
-const expectMatch = (pattern: RegExp) => (result: {stdout: string}) => {
+const expectMatch = (pattern: RegExp) => (result: { stdout: string }) => {
   if (!pattern.test(result.stdout)) {
-    return new Error(`Expected stdout to match ${pattern}. Got:\n${result.stdout}`)
+    return new Error(
+      `Expected stdout to match ${pattern}. Got:\n${result.stdout}`
+    )
   }
 }
 

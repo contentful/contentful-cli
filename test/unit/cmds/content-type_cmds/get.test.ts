@@ -20,22 +20,24 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {output} from '../../../../lib/utils/output'
-import {logError} from '../../../../lib/utils/log'
+import { output } from '../../../../lib/utils/output'
+import { logError } from '../../../../lib/utils/log'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
-const {handler} = require('../../../../lib/cmds/content-type_cmds/get')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
+const { handler } = require('../../../../lib/cmds/content-type_cmds/get')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockLogError = logError as jest.MockedFunction<typeof logError>
 const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 
 const mockContentType = {
-  sys: {id: 'blog-post', version: 3, publishedVersion: 2},
+  sys: { id: 'blog-post', version: 3, publishedVersion: 2 },
   name: 'Blog Post',
   description: 'A blog post content type',
   displayField: 'title',
-  fields: [{id: 'title', name: 'Title', type: 'Symbol', required: true}]
+  fields: [{ id: 'title', name: 'Title', type: 'Symbol', required: true }]
 }
 
 const fakeClient = {
@@ -60,7 +62,9 @@ const baseArgv = {
 describe('content-type get', () => {
   it('calls contentType.get with the provided id', async () => {
     await handler(baseArgv)
-    expect(fakeClient.contentType.get).toHaveBeenCalledWith({contentTypeId: 'blog-post'})
+    expect(fakeClient.contentType.get).toHaveBeenCalledWith({
+      contentTypeId: 'blog-post'
+    })
   })
 
   it('creates plain client with correct feature', async () => {
@@ -84,19 +88,19 @@ describe('content-type get', () => {
   })
 
   it('passes --json flag to output', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes --quiet flag to output', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
@@ -110,11 +114,15 @@ describe('content-type get', () => {
   })
 
   it('logs error and exits on failure', async () => {
-    const err = Object.assign(new Error('Not Found'), {response: {status: 404}})
-    fakeClient.contentType.get.mockRejectedValueOnce(err)
-    const exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-      throw new Error(`process.exit(${_code})`)
+    const err = Object.assign(new Error('Not Found'), {
+      response: { status: 404 }
     })
+    fakeClient.contentType.get.mockRejectedValueOnce(err)
+    const exitSpy = jest
+      .spyOn(process, 'exit')
+      .mockImplementation((_code?: any) => {
+        throw new Error(`process.exit(${_code})`)
+      })
     try {
       await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
       expect(mockLogError).toHaveBeenCalledWith(err)

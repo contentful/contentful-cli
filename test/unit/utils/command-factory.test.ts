@@ -20,12 +20,15 @@ jest.mock('../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {createCommand, CommandConfig} from '../../../lib/utils/command-factory'
-import {output} from '../../../lib/utils/output'
-import {warning, logError} from '../../../lib/utils/log'
+import {
+  createCommand,
+  CommandConfig
+} from '../../../lib/utils/command-factory'
+import { output } from '../../../lib/utils/output'
+import { warning, logError } from '../../../lib/utils/log'
 
-const {createPlainClient} = require('../../../lib/utils/contentful-clients')
-const {confirmation} = require('../../../lib/utils/actions')
+const { createPlainClient } = require('../../../lib/utils/contentful-clients')
+const { confirmation } = require('../../../lib/utils/actions')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockWarning = warning as jest.MockedFunction<typeof warning>
@@ -34,7 +37,7 @@ const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
 const mockConfirmation = confirmation as jest.MockedFunction<any>
 
 // Shared fake plain client
-const fakeClient = {entry: {}, asset: {}, contentType: {}}
+const fakeClient = { entry: {}, asset: {}, contentType: {} }
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -47,7 +50,7 @@ function makeConfig(overrides: Partial<CommandConfig> = {}): CommandConfig {
     command: 'list',
     desc: 'List items',
     feature: 'item-list',
-    handler: jest.fn().mockResolvedValue({items: []}),
+    handler: jest.fn().mockResolvedValue({ items: [] }),
     ...overrides
   }
 }
@@ -85,7 +88,7 @@ describe('createCommand — returned shape', () => {
   })
 
   it('preserves command string including positional args', () => {
-    const result = createCommand(makeConfig({command: 'get <id>'}))
+    const result = createCommand(makeConfig({ command: 'get <id>' }))
     expect(result.command).toBe('get <id>')
   })
 })
@@ -96,7 +99,7 @@ describe('createCommand — returned shape', () => {
 
 describe('createCommand — builder', () => {
   it('wires --space-id option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -104,7 +107,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --environment-id option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -112,7 +115,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --management-token option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -120,7 +123,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --header option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -128,7 +131,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --json option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -136,7 +139,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --agent-mode option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -144,7 +147,7 @@ describe('createCommand — builder', () => {
   })
 
   it('wires --quiet option', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -152,7 +155,7 @@ describe('createCommand — builder', () => {
   })
 
   it('adds --yes when needsConfirmation is true', () => {
-    const {builder} = createCommand(makeConfig({needsConfirmation: true}))
+    const { builder } = createCommand(makeConfig({ needsConfirmation: true }))
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -160,7 +163,7 @@ describe('createCommand — builder', () => {
   })
 
   it('does NOT add --yes when needsConfirmation is false', () => {
-    const {builder} = createCommand(makeConfig({needsConfirmation: false}))
+    const { builder } = createCommand(makeConfig({ needsConfirmation: false }))
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -168,7 +171,7 @@ describe('createCommand — builder', () => {
   })
 
   it('adds --dry-run when supportsDryRun is true', () => {
-    const {builder} = createCommand(makeConfig({supportsDryRun: true}))
+    const { builder } = createCommand(makeConfig({ supportsDryRun: true }))
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -176,7 +179,7 @@ describe('createCommand — builder', () => {
   })
 
   it('does NOT add --dry-run when supportsDryRun is false', () => {
-    const {builder} = createCommand(makeConfig({supportsDryRun: false}))
+    const { builder } = createCommand(makeConfig({ supportsDryRun: false }))
     const yargs = mockYargs()
     builder(yargs)
     const optionCalls: string[] = yargs._calls.option.map((c: any[]) => c[0])
@@ -184,10 +187,10 @@ describe('createCommand — builder', () => {
   })
 
   it('adds extra options from config.options', () => {
-    const {builder} = createCommand(
+    const { builder } = createCommand(
       makeConfig({
         options: {
-          'content-type': {type: 'string', describe: 'Content type ID'}
+          'content-type': { type: 'string', describe: 'Content type ID' }
         }
       })
     )
@@ -198,7 +201,7 @@ describe('createCommand — builder', () => {
   })
 
   it('sets epilog with copyright', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     expect(yargs._calls.epilog).toBeDefined()
@@ -206,8 +209,8 @@ describe('createCommand — builder', () => {
   })
 
   it('sets usage when config.usage is provided', () => {
-    const {builder} = createCommand(
-      makeConfig({usage: 'Usage: contentful items list'})
+    const { builder } = createCommand(
+      makeConfig({ usage: 'Usage: contentful items list' })
     )
     const yargs = mockYargs()
     builder(yargs)
@@ -216,7 +219,7 @@ describe('createCommand — builder', () => {
   })
 
   it('does not call usage when config.usage is not provided', () => {
-    const {builder} = createCommand(makeConfig())
+    const { builder } = createCommand(makeConfig())
     const yargs = mockYargs()
     builder(yargs)
     expect(yargs._calls.usage).toBeUndefined()
@@ -236,7 +239,7 @@ describe('createCommand — handler', () => {
   }
 
   it('creates plain client with correct params', async () => {
-    const {handler} = createCommand(makeConfig())
+    const { handler } = createCommand(makeConfig())
     await handler(baseArgv)
     expect(mockCreatePlainClient).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -251,16 +254,16 @@ describe('createCommand — handler', () => {
   })
 
   it('calls action handler with plain client and argv', async () => {
-    const actionHandler = jest.fn().mockResolvedValue({items: []})
-    const {handler} = createCommand(makeConfig({handler: actionHandler}))
+    const actionHandler = jest.fn().mockResolvedValue({ items: [] })
+    const { handler } = createCommand(makeConfig({ handler: actionHandler }))
     await handler(baseArgv)
     expect(actionHandler).toHaveBeenCalledWith(fakeClient, baseArgv)
   })
 
   it('routes result through output()', async () => {
-    const resultData = {items: [{id: 'abc'}]}
+    const resultData = { items: [{ id: 'abc' }] }
     const actionHandler = jest.fn().mockResolvedValue(resultData)
-    const {handler} = createCommand(makeConfig({handler: actionHandler}))
+    const { handler } = createCommand(makeConfig({ handler: actionHandler }))
     await handler(baseArgv)
     expect(mockOutput).toHaveBeenCalledWith(
       resultData,
@@ -270,47 +273,47 @@ describe('createCommand — handler', () => {
   })
 
   it('passes json flag to output when --json is set', async () => {
-    const {handler} = createCommand(makeConfig())
-    await handler({...baseArgv, json: true})
+    const { handler } = createCommand(makeConfig())
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes agentMode flag to output when --agent-mode is set', async () => {
-    const {handler} = createCommand(makeConfig())
-    await handler({...baseArgv, agentMode: true})
+    const { handler } = createCommand(makeConfig())
+    await handler({ ...baseArgv, agentMode: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({agentMode: true}),
+      expect.objectContaining({ agentMode: true }),
       expect.any(Object)
     )
   })
 
   it('passes quiet flag to output when --quiet is set', async () => {
-    const {handler} = createCommand(makeConfig())
-    await handler({...baseArgv, quiet: true})
+    const { handler } = createCommand(makeConfig())
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
 
   it('passes quietExtractor to output when config provides one', async () => {
     const extractor = (d: any) => d.items.map((i: any) => i.id)
-    const resultData = {items: [{id: 'x1'}]}
+    const resultData = { items: [{ id: 'x1' }] }
     const actionHandler = jest.fn().mockResolvedValue(resultData)
-    const {handler} = createCommand(
-      makeConfig({handler: actionHandler, quietExtractor: extractor})
+    const { handler } = createCommand(
+      makeConfig({ handler: actionHandler, quietExtractor: extractor })
     )
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       resultData,
-      expect.objectContaining({quiet: true}),
-      expect.objectContaining({quietExtractor: extractor})
+      expect.objectContaining({ quiet: true }),
+      expect.objectContaining({ quietExtractor: extractor })
     )
   })
 })
@@ -329,8 +332,8 @@ describe('createCommand — dry-run', () => {
 
   it('calls dryRunHandler instead of handler when --dry-run is set', async () => {
     const actionHandler = jest.fn().mockResolvedValue({})
-    const dryRunHandler = jest.fn().mockResolvedValue({preview: true})
-    const {handler} = createCommand(
+    const dryRunHandler = jest.fn().mockResolvedValue({ preview: true })
+    const { handler } = createCommand(
       makeConfig({
         supportsDryRun: true,
         handler: actionHandler,
@@ -343,7 +346,7 @@ describe('createCommand — dry-run', () => {
   })
 
   it('logs dry-run warning message', async () => {
-    const {handler} = createCommand(
+    const { handler } = createCommand(
       makeConfig({
         supportsDryRun: true,
         dryRunHandler: jest.fn().mockResolvedValue({})
@@ -358,21 +361,21 @@ describe('createCommand — dry-run', () => {
   it('calls handler normally when --dry-run is not set', async () => {
     const actionHandler = jest.fn().mockResolvedValue({})
     const dryRunHandler = jest.fn().mockResolvedValue({})
-    const {handler} = createCommand(
+    const { handler } = createCommand(
       makeConfig({
         supportsDryRun: true,
         handler: actionHandler,
         dryRunHandler
       })
     )
-    await handler({...baseArgv, dryRun: false})
+    await handler({ ...baseArgv, dryRun: false })
     expect(actionHandler).toHaveBeenCalled()
     expect(dryRunHandler).not.toHaveBeenCalled()
   })
 
   it('falls back to handler when dryRun is true but no dryRunHandler provided', async () => {
-    const actionHandler = jest.fn().mockResolvedValue({fallback: true})
-    const {handler} = createCommand(
+    const actionHandler = jest.fn().mockResolvedValue({ fallback: true })
+    const { handler } = createCommand(
       makeConfig({
         supportsDryRun: true,
         handler: actionHandler
@@ -381,7 +384,7 @@ describe('createCommand — dry-run', () => {
     await handler(baseArgv)
     expect(actionHandler).toHaveBeenCalled()
     expect(mockOutput).toHaveBeenCalledWith(
-      {fallback: true},
+      { fallback: true },
       expect.any(Object),
       expect.any(Object)
     )
@@ -401,22 +404,22 @@ describe('createCommand — confirmation', () => {
 
   it('prompts for confirmation when needsConfirmation is true and --yes is not set', async () => {
     mockConfirmation.mockResolvedValueOnce(true)
-    const {handler} = createCommand(makeConfig({needsConfirmation: true}))
+    const { handler } = createCommand(makeConfig({ needsConfirmation: true }))
     await handler(baseArgv)
     expect(mockConfirmation).toHaveBeenCalledTimes(1)
   })
 
   it('skips confirmation prompt when --yes is true', async () => {
-    const {handler} = createCommand(makeConfig({needsConfirmation: true}))
-    await handler({...baseArgv, yes: true})
+    const { handler } = createCommand(makeConfig({ needsConfirmation: true }))
+    await handler({ ...baseArgv, yes: true })
     expect(mockConfirmation).not.toHaveBeenCalled()
   })
 
   it('aborts execution when confirmation is denied', async () => {
     mockConfirmation.mockResolvedValueOnce(false)
     const actionHandler = jest.fn().mockResolvedValue({})
-    const {handler} = createCommand(
-      makeConfig({needsConfirmation: true, handler: actionHandler})
+    const { handler } = createCommand(
+      makeConfig({ needsConfirmation: true, handler: actionHandler })
     )
     await handler(baseArgv)
     expect(actionHandler).not.toHaveBeenCalled()
@@ -425,14 +428,14 @@ describe('createCommand — confirmation', () => {
 
   it('logs abort warning when confirmation is denied', async () => {
     mockConfirmation.mockResolvedValueOnce(false)
-    const {handler} = createCommand(makeConfig({needsConfirmation: true}))
+    const { handler } = createCommand(makeConfig({ needsConfirmation: true }))
     await handler(baseArgv)
     expect(mockWarning).toHaveBeenCalled()
   })
 
   it('uses custom confirmationMessage when provided', async () => {
     mockConfirmation.mockResolvedValueOnce(true)
-    const {handler} = createCommand(
+    const { handler } = createCommand(
       makeConfig({
         needsConfirmation: true,
         confirmationMessage: 'Delete 42 entries?'
@@ -444,9 +447,9 @@ describe('createCommand — confirmation', () => {
 
   it('proceeds with action when confirmation is given', async () => {
     mockConfirmation.mockResolvedValueOnce(true)
-    const actionHandler = jest.fn().mockResolvedValue({items: []})
-    const {handler} = createCommand(
-      makeConfig({needsConfirmation: true, handler: actionHandler})
+    const actionHandler = jest.fn().mockResolvedValue({ items: [] })
+    const { handler } = createCommand(
+      makeConfig({ needsConfirmation: true, handler: actionHandler })
     )
     await handler(baseArgv)
     expect(actionHandler).toHaveBeenCalledWith(fakeClient, baseArgv)
@@ -478,20 +481,20 @@ describe('createCommand — error handling', () => {
 
   it('exits with code 2 when a 5xx error is thrown', async () => {
     const serverError = Object.assign(new Error('Server Error'), {
-      response: {status: 500}
+      response: { status: 500 }
     })
     mockCreatePlainClient.mockRejectedValueOnce(serverError)
-    const {handler} = createCommand(makeConfig())
+    const { handler } = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(2)')
     expect(exitSpy).toHaveBeenCalledWith(2)
   })
 
   it('exits with code 1 when a 4xx error is thrown', async () => {
     const clientError = Object.assign(new Error('Not Found'), {
-      response: {status: 404}
+      response: { status: 404 }
     })
     mockCreatePlainClient.mockRejectedValueOnce(clientError)
-    const {handler} = createCommand(makeConfig())
+    const { handler } = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
@@ -500,7 +503,7 @@ describe('createCommand — error handling', () => {
     mockCreatePlainClient.mockRejectedValueOnce(
       new Error('Something went wrong')
     )
-    const {handler} = createCommand(makeConfig())
+    const { handler } = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow('process.exit(1)')
     expect(exitSpy).toHaveBeenCalledWith(1)
   })
@@ -508,7 +511,7 @@ describe('createCommand — error handling', () => {
   it('calls logError when an error is thrown', async () => {
     const err = new Error('Boom')
     mockCreatePlainClient.mockRejectedValueOnce(err)
-    const {handler} = createCommand(makeConfig())
+    const { handler } = createCommand(makeConfig())
     await expect(handler(baseArgv)).rejects.toThrow()
     expect(mockLogError).toHaveBeenCalledWith(err)
   })

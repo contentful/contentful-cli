@@ -19,11 +19,13 @@ jest.mock('../../../../lib/utils/log', () => ({
   logError: jest.fn()
 }))
 
-import {handler} from '../../../../lib/cmds/asset_cmds/delete'
-import {output} from '../../../../lib/utils/output'
+import { handler } from '../../../../lib/cmds/asset_cmds/delete'
+import { output } from '../../../../lib/utils/output'
 
-const {createPlainClient} = require('../../../../lib/utils/contentful-clients')
-const {confirmation} = require('../../../../lib/utils/actions')
+const {
+  createPlainClient
+} = require('../../../../lib/utils/contentful-clients')
+const { confirmation } = require('../../../../lib/utils/actions')
 
 const mockOutput = output as jest.MockedFunction<typeof output>
 const mockCreatePlainClient = createPlainClient as jest.MockedFunction<any>
@@ -36,7 +38,7 @@ const mockAsset = {
     updatedAt: '2024-06-01T00:00:00Z'
   },
   fields: {
-    title: {'en-US': 'Hero Image'}
+    title: { 'en-US': 'Hero Image' }
   }
 }
 
@@ -78,47 +80,49 @@ describe('asset delete — handler', () => {
 
   it('calls asset.get with the provided ID', async () => {
     await handler(baseArgv)
-    expect(fakeClient.asset.get).toHaveBeenCalledWith({assetId: 'asset-abc'})
+    expect(fakeClient.asset.get).toHaveBeenCalledWith({ assetId: 'asset-abc' })
   })
 
   it('calls asset.delete() with the provided ID', async () => {
     await handler(baseArgv)
-    expect(fakeClient.asset.delete).toHaveBeenCalledWith({assetId: 'asset-abc'})
+    expect(fakeClient.asset.delete).toHaveBeenCalledWith({
+      assetId: 'asset-abc'
+    })
   })
 
   it('routes result through output()', async () => {
     await handler(baseArgv)
     expect(mockOutput).toHaveBeenCalledWith(
-      expect.objectContaining({sys: mockAsset.sys}),
+      expect.objectContaining({ sys: mockAsset.sys }),
       expect.any(Object),
       expect.any(Object)
     )
   })
 
   it('passes json flag to output when --json is set', async () => {
-    await handler({...baseArgv, json: true})
+    await handler({ ...baseArgv, json: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({json: true}),
+      expect.objectContaining({ json: true }),
       expect.any(Object)
     )
   })
 
   it('passes quiet flag to output when --quiet is set', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     expect(mockOutput).toHaveBeenCalledWith(
       expect.anything(),
-      expect.objectContaining({quiet: true}),
+      expect.objectContaining({ quiet: true }),
       expect.any(Object)
     )
   })
 
   it('passes quietExtractor that returns [asset.sys.id]', async () => {
-    await handler({...baseArgv, quiet: true})
+    await handler({ ...baseArgv, quiet: true })
     const call = mockOutput.mock.calls[0]
     const opts = call[2] as any
     expect(typeof opts.quietExtractor).toBe('function')
-    const ids = opts.quietExtractor({sys: mockAsset.sys})
+    const ids = opts.quietExtractor({ sys: mockAsset.sys })
     expect(ids).toEqual(['asset-abc'])
   })
 
@@ -134,14 +138,14 @@ describe('asset delete — handler', () => {
 
   describe('confirmation prompt', () => {
     it('skips confirmation when --yes is provided', async () => {
-      await handler({...baseArgv, yes: true})
+      await handler({ ...baseArgv, yes: true })
       expect(mockConfirmation).not.toHaveBeenCalled()
       expect(fakeClient.asset.delete).toHaveBeenCalled()
     })
 
     it('prompts for confirmation when --yes is not provided', async () => {
       mockConfirmation.mockResolvedValue(true)
-      await handler({...baseArgv, yes: undefined})
+      await handler({ ...baseArgv, yes: undefined })
       expect(mockConfirmation).toHaveBeenCalledWith(
         expect.stringContaining('delete')
       )
@@ -149,7 +153,7 @@ describe('asset delete — handler', () => {
 
     it('aborts when user declines confirmation', async () => {
       mockConfirmation.mockResolvedValue(false)
-      await handler({...baseArgv, yes: undefined})
+      await handler({ ...baseArgv, yes: undefined })
       expect(fakeClient.asset.delete).not.toHaveBeenCalled()
       expect(mockOutput).not.toHaveBeenCalled()
     })
@@ -157,12 +161,12 @@ describe('asset delete — handler', () => {
 
   describe('dry-run', () => {
     it('does not call asset.delete() when --dry-run is set', async () => {
-      await handler({...baseArgv, dryRun: true})
+      await handler({ ...baseArgv, dryRun: true })
       expect(fakeClient.asset.delete).not.toHaveBeenCalled()
     })
 
     it('still returns asset data when --dry-run is set', async () => {
-      await handler({...baseArgv, dryRun: true})
+      await handler({ ...baseArgv, dryRun: true })
       expect(mockOutput).toHaveBeenCalled()
     })
   })
@@ -171,9 +175,11 @@ describe('asset delete — handler', () => {
     let exitSpy: jest.SpyInstance
 
     beforeEach(() => {
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((_code?: any) => {
-        throw new Error(`process.exit(${_code})`)
-      })
+      exitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation((_code?: any) => {
+          throw new Error(`process.exit(${_code})`)
+        })
     })
 
     afterEach(() => {
@@ -181,11 +187,15 @@ describe('asset delete — handler', () => {
     })
 
     it('exits when Asset ID contains invalid characters', async () => {
-      await expect(handler({...baseArgv, id: 'invalid id!'})).rejects.toThrow('process.exit(1)')
+      await expect(handler({ ...baseArgv, id: 'invalid id!' })).rejects.toThrow(
+        'process.exit(1)'
+      )
     })
 
     it('exits when Asset ID is missing', async () => {
-      await expect(handler({...baseArgv, id: ''})).rejects.toThrow('process.exit(1)')
+      await expect(handler({ ...baseArgv, id: '' })).rejects.toThrow(
+        'process.exit(1)'
+      )
     })
   })
 })

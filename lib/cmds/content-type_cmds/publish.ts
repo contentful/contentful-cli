@@ -1,11 +1,11 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
 /**
  * Publish (activate) a content type.
  * In Contentful CMA terminology this is "activation", but we expose it as
  * "publish" for consistency with the entry/asset command surface.
  */
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'publish',
   desc: 'Publish a content type',
   feature: 'content_type-publish',
@@ -18,10 +18,10 @@ const {command, desc, builder, handler} = createCommand({
     }
   },
   handler: async (client, argv) => {
-    const contentType = await client.contentType.get({contentTypeId: argv.id})
-    return client.contentType.publish({contentTypeId: argv.id}, contentType)
+    const contentType = await client.contentType.get({ contentTypeId: argv.id })
+    return client.contentType.publish({ contentTypeId: argv.id }, contentType)
   },
-  tableFormat: (ct) => ({
+  tableFormat: ct => ({
     rows: [
       ['ID', ct.sys.id],
       ['Name', ct.name],
@@ -29,7 +29,7 @@ const {command, desc, builder, handler} = createCommand({
       ['Published', ct.sys.publishedVersion ? 'Yes' : 'No']
     ]
   }),
-  quietExtractor: (ct) => [ct.sys.id]
+  quietExtractor: ct => [ct.sys.id]
 })
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

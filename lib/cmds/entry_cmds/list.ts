@@ -1,15 +1,27 @@
-import {createCommand} from '../../utils/command-factory'
+import { createCommand } from '../../utils/command-factory'
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'list',
   desc: 'List entries',
   feature: 'entry-list',
   usage: 'Usage: contentful entry list [options]',
   examples: [
-    ['contentful entry list --content-type blogPost', 'List all blog post entries'],
-    ['contentful entry list --content-type blogPost --quiet', 'Output only entry IDs (one per line, for piping)'],
-    ['contentful entry list --json --limit 10', 'Get first 10 entries as JSON array'],
-    ['contentful entry list --ct blogPost -q | xargs -I{} contentful entry unpublish {}', 'Unpublish all entries of a type']
+    [
+      'contentful entry list --content-type blogPost',
+      'List all blog post entries'
+    ],
+    [
+      'contentful entry list --content-type blogPost --quiet',
+      'Output only entry IDs (one per line, for piping)'
+    ],
+    [
+      'contentful entry list --json --limit 10',
+      'Get first 10 entries as JSON array'
+    ],
+    [
+      'contentful entry list --ct blogPost -q | xargs -I{} contentful entry unpublish {}',
+      'Unpublish all entries of a type'
+    ]
   ],
   options: {
     'content-type': {
@@ -37,9 +49,9 @@ const {command, desc, builder, handler} = createCommand({
     if (argv.limit) query.limit = argv.limit
     if (argv.skip) query.skip = argv.skip
 
-    return client.entry.getMany({query})
+    return client.entry.getMany({ query })
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     head: ['ID', 'Content Type', 'Status', 'Updated At'],
     rows: data.items.map((entry: any) => [
       entry.sys.id,
@@ -48,7 +60,7 @@ const {command, desc, builder, handler} = createCommand({
       entry.sys.updatedAt || '-'
     ])
   }),
-  quietExtractor: (data) => data.items.map((e: any) => e.sys.id)
+  quietExtractor: data => data.items.map((e: any) => e.sys.id)
 })
 
 function getEntryStatus(entry: any): string {
@@ -60,4 +72,4 @@ function getEntryStatus(entry: any): string {
   return 'draft'
 }
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }

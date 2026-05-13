@@ -3,7 +3,7 @@ import {
   validateJsonFields,
   validateLimit,
   validateNonNegativeInt,
-  validatePositiveInt,
+  validatePositiveInt
 } from '../../../lib/utils/validators'
 
 describe('validateId', () => {
@@ -91,7 +91,7 @@ describe('validateJsonFields', () => {
   describe('valid inputs', () => {
     it('parses a valid JSON object', () => {
       const result = validateJsonFields('{"title": {"en-US": "Hello"}}')
-      expect(result).toEqual({'title': {'en-US': 'Hello'}})
+      expect(result).toEqual({ title: { 'en-US': 'Hello' } })
     })
 
     it('returns a plain object', () => {
@@ -240,7 +240,9 @@ describe('validateLimit', () => {
 
   describe('invalid inputs', () => {
     it('throws for 0', () => {
-      expect(() => validateLimit(0)).toThrow('--limit must be a positive integer')
+      expect(() => validateLimit(0)).toThrow(
+        '--limit must be a positive integer'
+      )
     })
 
     it('throws for value greater than 1000', () => {

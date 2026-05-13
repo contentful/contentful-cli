@@ -1,5 +1,5 @@
-import {log} from './log'
-import {toTOON} from './toon'
+import { log } from './log'
+import { toTOON } from './toon'
 const Table = require('cli-table3')
 
 export interface OutputFlags {
@@ -50,7 +50,7 @@ export function output(
   }
 
   if (options.table) {
-    const table = new Table({head: options.table.head})
+    const table = new Table({ head: options.table.head })
     options.table.rows.forEach(row => table.push(row))
     log(table.toString())
     return

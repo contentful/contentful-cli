@@ -1,19 +1,31 @@
-import {createCommand} from '../../utils/command-factory'
-import {firstLocaleValue} from '../../utils/output'
-import {validateId} from '../../utils/validators'
+import { createCommand } from '../../utils/command-factory'
+import { firstLocaleValue } from '../../utils/output'
+import { validateId } from '../../utils/validators'
 const fs = require('fs')
 const path = require('path')
 
-const {command, desc, builder, handler} = createCommand({
+const { command, desc, builder, handler } = createCommand({
   command: 'upload',
   desc: 'Upload and create an asset',
   feature: 'asset-upload',
   usage: 'Usage: contentful asset upload [options]',
   examples: [
-    ['contentful asset upload --file ./hero.png --title "Hero Image"', 'Upload with auto-detected MIME type'],
-    ['contentful asset upload --file ./doc.pdf --title "Whitepaper" --content-type application/pdf', 'Upload with explicit MIME type'],
-    ['contentful asset upload --file ./logo.svg --title "Logo" --id brand-logo', 'Upload with a custom asset ID'],
-    ['contentful asset upload --file ./photo.jpg --title "Photo" --dry-run', 'Preview upload without making changes']
+    [
+      'contentful asset upload --file ./hero.png --title "Hero Image"',
+      'Upload with auto-detected MIME type'
+    ],
+    [
+      'contentful asset upload --file ./doc.pdf --title "Whitepaper" --content-type application/pdf',
+      'Upload with explicit MIME type'
+    ],
+    [
+      'contentful asset upload --file ./logo.svg --title "Logo" --id brand-logo',
+      'Upload with a custom asset ID'
+    ],
+    [
+      'contentful asset upload --file ./photo.jpg --title "Photo" --dry-run',
+      'Preview upload without making changes'
+    ]
   ],
   supportsDryRun: true,
   options: {
@@ -55,7 +67,7 @@ const {command, desc, builder, handler} = createCommand({
 
     let locale = argv.locale
     if (!locale) {
-      const {items} = await client.locale.getMany({})
+      const { items } = await client.locale.getMany({})
       const defaultLocale = items.find((l: any) => l.default)
       locale = defaultLocale?.code || 'en-US'
     }
@@ -63,21 +75,26 @@ const {command, desc, builder, handler} = createCommand({
     const contentType = argv.contentType || detectMimeType(fileName)
 
     // Step 1: Create upload
-    const upload = await client.upload.create({}, {
-      file: fs.createReadStream(filePath)
-    })
+    const upload = await client.upload.create(
+      {},
+      {
+        file: fs.createReadStream(filePath)
+      }
+    )
 
     // Step 2: Create asset
     const assetData = {
       fields: {
-        title: {[locale]: argv.title},
-        ...(argv.description ? {description: {[locale]: argv.description}} : {}),
+        title: { [locale]: argv.title },
+        ...(argv.description
+          ? { description: { [locale]: argv.description } }
+          : {}),
         file: {
           [locale]: {
             contentType,
             fileName,
             uploadFrom: {
-              sys: {type: 'Link', linkType: 'Upload', id: upload.sys.id}
+              sys: { type: 'Link', linkType: 'Upload', id: upload.sys.id }
             }
           }
         }
@@ -87,7 +104,7 @@ const {command, desc, builder, handler} = createCommand({
     let asset
     if (argv.id) {
       validateId(argv.id, 'Asset ID')
-      asset = await client.asset.createWithId({assetId: argv.id}, assetData)
+      asset = await client.asset.createWithId({ assetId: argv.id }, assetData)
     } else {
       asset = await client.asset.create({}, assetData)
     }
@@ -117,15 +134,18 @@ const {command, desc, builder, handler} = createCommand({
       assetId: argv.id || '(auto-generated)'
     }
   },
-  tableFormat: (data) => ({
+  tableFormat: data => ({
     rows: [
       ['ID', data.sys?.id || data.assetId || '-'],
       ['Title', firstLocaleValue(data.fields?.title) || data.title || '-'],
-      ['File', firstLocaleValue(data.fields?.file)?.fileName || data.fileName || '-'],
+      [
+        'File',
+        firstLocaleValue(data.fields?.file)?.fileName || data.fileName || '-'
+      ],
       ['URL', firstLocaleValue(data.fields?.file)?.url || '-']
     ]
   }),
-  quietExtractor: (data) => [data.sys?.id || '']
+  quietExtractor: data => [data.sys?.id || '']
 })
 
 async function pollAssetProcessing(
@@ -136,12 +156,12 @@ async function pollAssetProcessing(
   interval = 1000
 ): Promise<any> {
   for (let i = 0; i < maxAttempts; i++) {
-    const asset = await client.asset.get({assetId})
+    const asset = await client.asset.get({ assetId })
     const file = asset.fields?.file?.[locale]
     if (file && file.url) {
       return asset
     }
-    await new Promise((resolve) => setTimeout(resolve, interval))
+    await new Promise(resolve => setTimeout(resolve, interval))
   }
   throw new Error(
     `Asset ${assetId} processing timed out after ${maxAttempts} attempts`
@@ -169,4 +189,4 @@ function detectMimeType(fileName: string): string {
   return mimeMap[ext] || 'application/octet-stream'
 }
 
-export {command, desc, builder, handler}
+export { command, desc, builder, handler }
