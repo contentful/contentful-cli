@@ -1,4 +1,3 @@
-import inquirer from 'inquirer'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
@@ -39,11 +38,11 @@ export const init = async () => {
     (await space.getEnvironments()).items[0].sys.id || 'master'
   const apiKey = await getPreviewApiKey(space, environmentId)
 
+  const { default: inquirer } = await import('inquirer')
   const { connectionType } = await inquirer.prompt({
-    type: 'list',
+    type: 'select',
     name: 'connectionType',
-    prefix: '👓',
-    message: 'How would you like to consume content in your code?',
+    message: '👓 How would you like to consume content in your code?',
     choices: [
       {
         name: `${chalk.blue('React')}`,

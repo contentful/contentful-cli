@@ -1,5 +1,3 @@
-import inquirer from 'inquirer'
-import inquirerPrompt from 'inquirer-autocomplete-prompt'
 import { Argv } from 'yargs'
 import { createManagementClient } from '../../utils/contentful-clients'
 
@@ -64,7 +62,7 @@ export async function spaceUse({
   header,
   successMsg = true
 }: SpaceUseProps) {
-  inquirer.registerPrompt('autocomplete', inquirerPrompt)
+  const { default: inquirer } = await import('inquirer')
   const { managementToken, activeEnvironmentId } = context
 
   const client = await createManagementClient({
@@ -99,11 +97,10 @@ export async function spaceUse({
 
   const answersSpaceSelection = await inquirer.prompt([
     {
-      type: 'autocomplete',
+      type: 'search',
       name: 'spaceId',
-      prefix: '👀',
-      message: 'Please select a space:',
-      source: (_: any, input = '') =>
+      message: '👀 Please select a space:',
+      source: (input = '') =>
         spaceChoices.filter(space => space.name.includes(input))
     }
   ])
