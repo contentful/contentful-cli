@@ -1,5 +1,4 @@
 import open from 'open'
-import inquirer from 'inquirer'
 import chalk from 'chalk'
 
 import { setContext, storeRuntimeConfig } from '../context'
@@ -109,13 +108,14 @@ export const login = async ({
       )
     }
 
+    const { default: inquirer } = await import('inquirer')
     const tokenAnswer = await inquirer.prompt([
       {
         type: 'password',
         mask: true,
         name: 'managementToken',
         message: 'Paste your token here:',
-        validate: val => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()) // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
+        validate: (val: string) => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim())
       }
     ])
 
