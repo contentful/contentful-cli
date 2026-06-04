@@ -1,12 +1,14 @@
-name: CI
+name: main
 permissions:
   contents: read
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - main
+      - beta
   pull_request:
-    branches: ["**"]
+    branches: ['**']
 
 jobs:
   build:

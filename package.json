@@ -149,6 +149,9 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "overrides": {
+    "tmp": ">=0.2.4"
+  },
   "pkg": {
     "targets": [
       "node22-macos-x64",
