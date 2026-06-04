@@ -1,4 +1,3 @@
-import inquirer from 'inquirer'
 import { spaceCreate } from '../space_cmds/create'
 import { importSpace } from '../space_cmds/import'
 import { spaceUse } from '../space_cmds/use'
@@ -6,6 +5,7 @@ import initialContent from './content.json'
 
 // TODO: use proper context types
 export const getSpace = async (context: any) => {
+  const { default: inquirer } = await import('inquirer')
   const { newSpace } = await inquirer.prompt([
     {
       type: 'list',

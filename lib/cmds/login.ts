@@ -1,5 +1,4 @@
 import open from 'open'
-import inquirer from 'inquirer'
 import chalk from 'chalk'
 
 import { setContext, storeRuntimeConfig } from '../context'
@@ -109,6 +108,7 @@ export const login = async ({
       )
     }
 
+    const { default: inquirer } = await import('inquirer')
     const tokenAnswer = await inquirer.prompt([
       {
         type: 'password',
