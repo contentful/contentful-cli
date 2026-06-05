@@ -56,7 +56,6 @@ You can save the proxy configuration in your `.contentfulrc.json` via:
 ```sh
 contentful config add --proxy user:auth@host:port
 ```
-
 We also respect the `http(s)_proxy` environment variables:
 
 ```sh
