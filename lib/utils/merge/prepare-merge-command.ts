@@ -1,4 +1,4 @@
-import { getAppDefinitionId, Host } from '../app-actions-config'
+import { getAppDefinitionId } from '../app-actions-config'
 import { checkAndInstallAppInEnvironments } from '../app-installation'
 import { createPlainClient } from '../contentful-clients'
 import { MergeContext } from './types'

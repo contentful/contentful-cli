@@ -2,6 +2,10 @@ import { PlainClientAPI } from 'contentful-management'
 import { confirmation } from './actions'
 import { warning } from './log'
 
+interface ErrorWithName {
+  name?: unknown
+}
+
 /**
  * Checks if a specified app is installed in an environment
  */
@@ -25,9 +29,9 @@ export async function isAppInstalled(
     })
 
     return true
-  } catch (error: any) {
+  } catch (error: unknown) {
     // The CMA client will throw if no app definition was found
-    if (error?.name === 'NotFound') {
+    if ((error as ErrorWithName)?.name === 'NotFound') {
       return false
     } else {
       throw error

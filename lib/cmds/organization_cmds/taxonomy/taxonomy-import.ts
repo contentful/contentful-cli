@@ -5,26 +5,23 @@ import { ConceptProps, ConceptSchemeProps } from 'contentful-management'
 import { CreateConceptWithIdProps } from './concept'
 import { CreateConceptSchemeWithIdProps } from './concept-scheme'
 
-const entityHasVersion = <T extends { sys: any }>(
+const entityHasVersion = <T extends { sys: { id: string; version?: unknown } }>(
   obj: T
 ): obj is T & { sys: { version: number } } => {
-  return 'sys' in obj && 'version' in obj.sys
+  return typeof obj.sys.version === 'number'
 }
 
-const taxonomyImport = async (
-  params: OrgImportParams,
-  context: OrgImportContext
-) => {
+type TaxonomyRelationPatch = {
+  op: 'add'
+  path: '/broader' | '/related'
+  value: unknown
+}
+
+const taxonomyImport = async (params: OrgImportParams) => {
   const { organizationId, silent } = params
 
   return new Listr(
     [
-      {
-        title: 'copy context',
-        task: async ctx => {
-          ctx = context
-        }
-      },
       {
         title: 'Create concepts',
         task: async (ctx: OrgImportContext) => {
@@ -71,7 +68,7 @@ const taxonomyImport = async (
           for (const concept of concepts) {
             const { broader, related } = concept
 
-            const operations = []
+            const operations: TaxonomyRelationPatch[] = []
 
             if (broader && broader.length > 0) {
               operations.push({
@@ -103,7 +100,7 @@ const taxonomyImport = async (
                 conceptId: concept.sys.id,
                 version
               },
-              operations as any[]
+              operations
             )
           }
         }

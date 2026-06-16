@@ -4,16 +4,26 @@ import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/
 const ORG = 'org123'
 
 describe('auditLoggingConfiguredCheck', () => {
-  function makeCtx(items: unknown[] | null, shouldThrow = false): SecurityContext {
-    const rawGet = jest.fn().mockImplementation(async (path: string, opts?: any) => {
-      if (!path.includes('/audit_logging/configurations')) throw new Error('unexpected')
-      if (shouldThrow) throw new Error('network')
-      // assert header presence
-      if (!opts || !opts.headers || opts.headers['x-contentful-enable-alpha-feature'] !== 'audit-logging') {
-        throw new Error('missing alpha header')
-      }
-      return { data: { items: items ?? [] } }
-    })
+  function makeCtx(
+    items: unknown[] | null,
+    shouldThrow = false
+  ): SecurityContext {
+    const rawGet = jest
+      .fn()
+      .mockImplementation(async (path: string, opts?: any) => {
+        if (!path.includes('/audit_logging/configurations'))
+          throw new Error('unexpected')
+        if (shouldThrow) throw new Error('network')
+        // assert header presence
+        if (
+          !opts ||
+          !opts.headers ||
+          opts.headers['x-contentful-enable-alpha-feature'] !== 'audit-logging'
+        ) {
+          throw new Error('missing alpha header')
+        }
+        return { data: { items: items ?? [] } }
+      })
     return {
       client: { raw: { get: rawGet } } as any,
       organizationId: ORG,

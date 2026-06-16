@@ -25,6 +25,23 @@ interface AccessTokenResponseAxiosLike {
   skip?: number
   items?: AccessTokenItem[]
 }
+type AccessTokenQuery = {
+  include: string
+  limit: number
+  order: string
+  skip: number
+  'sys.expiresAt[gt]': string
+  revokedAt: string
+}
+type AccessTokenSdkAccessor = (params: {
+  organizationId: string
+  query: AccessTokenQuery
+}) => Promise<AccessTokenResponseAxiosLike>
+type AccessTokenClient = SecurityContext['client'] & {
+  accessToken?: {
+    getManyForOrganization?: AccessTokenSdkAccessor
+  }
+}
 
 function extractItems(resp: AccessTokenResponseAxiosLike): AccessTokenItem[] {
   return resp?.data?.items || resp?.items || []
@@ -38,7 +55,8 @@ function extractLimit(resp: AccessTokenResponseAxiosLike): number | undefined {
 
 export const activeTokensWithLongExpiryCheck: SecurityCheck = {
   id: 'active_tokens_with_long_expiry',
-  description: 'Active (not revoked) access tokens with an expiration date > 1 year',
+  description:
+    'Active (not revoked) access tokens with an expiration date > 1 year',
   dependsOn: ['permission_check'],
   async run(ctx: SecurityContext): Promise<SecurityCheckRunResult> {
     const { client, organizationId } = ctx
@@ -54,34 +72,36 @@ export const activeTokensWithLongExpiryCheck: SecurityCheck = {
     const now = new Date()
     const oneYearAhead = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000)
 
-    const sdkAccessor: any = (client as any)?.accessToken?.getManyForOrganization
+    const sdkAccessor = (client as AccessTokenClient).accessToken
+      ?.getManyForOrganization
 
-    async function fetchPage(currentSkip: number): Promise<AccessTokenResponseAxiosLike> {
+    async function fetchPage(
+      currentSkip: number
+    ): Promise<AccessTokenResponseAxiosLike> {
+      const query: AccessTokenQuery = {
+        include: 'sys.user',
+        limit,
+        order: '-sys.createdAt',
+        skip: currentSkip,
+        'sys.expiresAt[gt]': now.toISOString(),
+        revokedAt: ''
+      }
+
       if (typeof sdkAccessor === 'function') {
         try {
           const collection = await sdkAccessor({
             organizationId,
-            query: {
-              include: 'sys.user',
-              limit,
-              order: '-sys.createdAt',
-              skip: currentSkip,
-              'sys.expiresAt[gt]': now.toISOString(),
-              revokedAt: ''
-            }
+            query
           })
           return collection as AccessTokenResponseAxiosLike
-        } catch (_) {}
+        } catch (_) {
+          return client.raw.get(basePath, {
+            params: query
+          }) as Promise<AccessTokenResponseAxiosLike>
+        }
       }
       return (await client.raw.get(basePath, {
-        params: {
-          include: 'sys.user',
-          limit,
-          order: '-sys.createdAt',
-          skip: currentSkip,
-          'sys.expiresAt[gt]': now.toISOString(),
-          revokedAt: ''
-        }
+        params: query
       })) as AccessTokenResponseAxiosLike
     }
 
@@ -94,7 +114,7 @@ export const activeTokensWithLongExpiryCheck: SecurityCheck = {
 
         for (const item of items) {
           const revoked = item?.revokedAt
-            ; (revoked) // no-op to satisfy linter if unused
+          revoked // no-op to satisfy linter if unused
           const expiresAt = item?.sys?.expiresAt
           if (item?.revokedAt == null && expiresAt) {
             const expDate = new Date(expiresAt)
