@@ -1,5 +1,4 @@
 # Contentful CLI
-
 > [Contentful's](https://www.contentful.com) command line interface tool. Use Contentful features straight from your CLI.
 
 [![npm](https://img.shields.io/npm/v/contentful-cli.svg)](https://www.npmjs.com/package/contentful-cli)
