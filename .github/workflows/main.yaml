@@ -4,9 +4,11 @@ permissions:
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - main
+      - beta
   pull_request:
-    branches: ["**"]
+    branches: ['**']
 
 jobs:
   build:
