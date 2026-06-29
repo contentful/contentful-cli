@@ -225,7 +225,9 @@ test('it creates the editor interface', async () => {
 })
 
 test('it handles undefined values in content type', async () => {
-  const programStub = b.blockStatement([createContentType(contentTypeWithUndefined)])
+  const programStub = b.blockStatement([
+    createContentType(contentTypeWithUndefined)
+  ])
 
   const expected = `module.exports = function(migration) {
     const bar = migration.createContentType("bar").name("Bar");
@@ -239,7 +241,10 @@ test('it handles undefined values in content type', async () => {
 test('it handles undefined values in field properties', async () => {
   const programStub = b.blockStatement([
     b.expressionStatement(
-      createField(contentTypeWithUndefined.sys.id, contentTypeWithUndefined.fields[0])
+      createField(
+        contentTypeWithUndefined.sys.id,
+        contentTypeWithUndefined.fields[0]
+      )
     )
   ])
 

@@ -2,7 +2,7 @@ import yargs from 'yargs'
 import { log } from './utils/log'
 import { copyright } from './utils/copyright'
 import { buildContext, getCommand, assertContext } from './utils/middlewares'
-const { version } = require('../package.json')
+import { version } from '../package.json'
 
 yargs
   .usage('\nUsage: contentful <cmd> [args]')

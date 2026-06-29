@@ -11,6 +11,9 @@
 
 - Get started with Contentful with the `init` command.
 - Manage spaces - list, create, delete,...
+- Manage content types - get, list, create, update, delete, publish, unpublish.
+- Manage entries - get, list, create, update, delete, publish, unpublish, archive, unarchive.
+- Manage assets - get, list, upload, update, delete, publish, unpublish.
 - Export your space to a JSON file.
 - Import your space from a JSON file.
 - Execute migration scripts written in the [Contentful Migration DSL](https://github.com/contentful/contentful-migration/blob/main/README.md#reference-documentation)
@@ -43,6 +46,75 @@ Use the `--help` parameter to display the help section for CLI tool or combined 
 contentful --help
 # Or
 contentful space --help
+```
+
+## :package: Content Management Commands
+
+The CLI provides commands for managing content types, entries, and assets directly from the command line. All commands support the following standard options:
+
+| Option | Alias | Description |
+|--------|-------|-------------|
+| `--space-id` | `-s` | ID of the space to use |
+| `--environment-id` | `-e` | ID of the environment (default: `master`) |
+| `--management-token` | `--mt` | Contentful management API token |
+| `--json` | | Output as JSON |
+| `--quiet` | `-q` | Output IDs only (for piping) |
+| `--agent-mode` | | Output in TOON format for agent consumption |
+
+### Content Type commands
+
+```sh
+contentful content-type get --id <content-type-id>
+contentful content-type list
+contentful content-type create --name "Blog Post" --fields '[{"id":"title","name":"Title","type":"Symbol"}]'
+contentful content-type update --id <id> --name "Updated Name"
+contentful content-type delete <id>
+contentful content-type publish <id>
+contentful content-type unpublish <id>
+```
+
+### Entry commands
+
+```sh
+contentful entry get <entry-id>
+contentful entry list [--content-type <content-type-id>]
+contentful entry create --content-type <ct-id> --fields '{"title":{"en-US":"Hello"}}'
+contentful entry update <id> --fields '{"title":{"en-US":"Updated"}}'
+contentful entry delete <id>
+contentful entry publish <id>
+contentful entry unpublish <id>
+contentful entry archive <id>
+contentful entry unarchive <id>
+```
+
+### Asset commands
+
+```sh
+contentful asset get <asset-id>
+contentful asset list
+contentful asset upload --file ./image.png --title "My Image"
+contentful asset update <id> --title "New Title"
+contentful asset delete <id>
+contentful asset publish <id>
+contentful asset unpublish <id>
+```
+
+### Dry-run mode
+
+Commands that create, update, or delete resources support `--dry-run` to preview the operation without making changes:
+
+```sh
+contentful entry create --content-type blogPost --fields '{"title":{"en-US":"Test"}}' --dry-run
+contentful asset upload --file ./photo.jpg --title "Photo" --dry-run
+```
+
+### Piping and scripting
+
+Use `--quiet` to output only IDs, making it easy to pipe into other commands:
+
+```sh
+# Unpublish all entries of a content type
+contentful entry list --content-type blogPost --quiet | xargs -I{} contentful entry unpublish {}
 ```
 
 ## :books: Documentation

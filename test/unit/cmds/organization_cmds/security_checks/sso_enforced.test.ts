@@ -11,17 +11,27 @@ describe('ssoEnforcedCheck', () => {
     }
   }
   test('passes when restricted true (data)', async () => {
-    expect(await ssoEnforcedCheck.run(ctx({ data: { restricted: true } }))).toBe(true)
+    expect(
+      await ssoEnforcedCheck.run(ctx({ data: { restricted: true } }))
+    ).toBe(true)
   })
   test('passes when restricted true (root)', async () => {
     expect(await ssoEnforcedCheck.run(ctx({ restricted: true }))).toBe(true)
   })
   test('fails when restricted false', async () => {
-    expect(await ssoEnforcedCheck.run(ctx({ data: { restricted: false } }))).toBe(false)
+    expect(
+      await ssoEnforcedCheck.run(ctx({ data: { restricted: false } }))
+    ).toBe(false)
   })
   test('fails on error', async () => {
     const errorCtx: SecurityContext = {
-      client: { raw: { get: async () => { throw new Error('network') } } } as any,
+      client: {
+        raw: {
+          get: async () => {
+            throw new Error('network')
+          }
+        }
+      } as any,
       organizationId: 'org1',
       userId: 'user1',
       role: 'owner'
@@ -29,4 +39,3 @@ describe('ssoEnforcedCheck', () => {
     expect(await ssoEnforcedCheck.run(errorCtx)).toBe(false)
   })
 })
-

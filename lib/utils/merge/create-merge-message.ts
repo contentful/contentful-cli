@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { ContentTypeProps } from 'contentful-management'
-import { orderBy, truncate } from 'lodash'
+import { orderBy } from 'lodash'
 import { ChangesetItem, UpdateChangesetItem } from './types'
 import {
   fieldChange,

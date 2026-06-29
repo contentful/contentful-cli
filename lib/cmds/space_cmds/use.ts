@@ -103,7 +103,7 @@ export async function spaceUse({
       name: 'spaceId',
       prefix: '👀',
       message: 'Please select a space:',
-      source: (_: any, input = '') =>
+      source: (_answers: Record<string, unknown>, input = '') =>
         spaceChoices.filter(space => space.name.includes(input))
     }
   ])

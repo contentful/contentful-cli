@@ -2,7 +2,11 @@ import { securityContactSetCheck } from '../../../../../lib/cmds/organization_cm
 import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 // Minimal mock PlainClient
-function makeClient(total: number | undefined, items: unknown[] | undefined, shouldThrow = false) {
+function makeClient(
+  total: number | undefined,
+  items: unknown[] | undefined,
+  shouldThrow = false
+) {
   return {
     raw: {
       get: async (path: string) => {
