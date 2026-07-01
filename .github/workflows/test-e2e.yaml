@@ -4,6 +4,10 @@ permissions:
     contents: read
 on:
     workflow_call:
+        inputs:
+            environment:
+                type: string
+                required: false
         secrets:
             CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
                 required: true
@@ -12,6 +16,7 @@ on:
 
 jobs:
     e2e-tests:
+        environment: ${{ inputs.environment }}
         strategy:
             max-parallel: 1
             matrix:
