@@ -4,6 +4,10 @@ permissions:
   contents: read
 on:
   workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: false
     secrets:
       CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
         required: true
@@ -13,6 +17,7 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout code
