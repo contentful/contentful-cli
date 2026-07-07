@@ -53,12 +53,12 @@
       "allowedVersions": "<9.0.0"
     },
     {
-      "description": "Pinned to v28 — upgrade evaluation pending",
+      "description": "Pinned to v28 — reason unknown, review before upgrading",
       "matchPackageNames": ["jest"],
       "allowedVersions": "<29.0.0"
     },
     {
-      "description": "Pinned to v13 — breaking API changes in v14+",
+      "description": "Pinned to v13 — reason unknown, review before upgrading",
       "matchPackageNames": ["yargs"],
       "allowedVersions": "<14.0.0"
     },
