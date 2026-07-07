@@ -61,14 +61,9 @@
       "enabled": false
     },
     {
+      "description": "Pinned to v4 — migration to v5+ not yet done",
       "matchPackageNames": ["husky"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
-      "matchPackageNames": ["semantic-release"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
+      "allowedVersions": "<5.0.0"
     }
   ]
 }
