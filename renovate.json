@@ -53,12 +53,14 @@
       "allowedVersions": "<9.0.0"
     },
     {
+      "description": "Pinned to v28 — upgrade evaluation pending",
       "matchPackageNames": ["jest"],
-      "enabled": false
+      "allowedVersions": "<29.0.0"
     },
     {
+      "description": "Pinned to v13 — breaking API changes in v14+",
       "matchPackageNames": ["yargs"],
-      "enabled": false
+      "allowedVersions": "<14.0.0"
     },
     {
       "description": "Pinned to v4 — migration to v5+ not yet done",
