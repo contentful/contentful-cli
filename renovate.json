@@ -1,0 +1,71 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>contentful/renovate-config"],
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "production dependencies"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dev dependencies"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["find-up"],
+      "allowedVersions": "<6.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["execa"],
+      "allowedVersions": "<6.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["chalk"],
+      "allowedVersions": "<5.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["strip-ansi"],
+      "allowedVersions": "<7.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["wrap-ansi"],
+      "allowedVersions": "<8.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["inquirer"],
+      "allowedVersions": "<9.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["p-queue"],
+      "allowedVersions": "<7.0.0"
+    },
+    {
+      "description": "ESM-only — do not upgrade until ESM is supported",
+      "matchPackageNames": ["open"],
+      "allowedVersions": "<9.0.0"
+    },
+    {
+      "description": "Pinned to v28",
+      "matchPackageNames": ["jest"],
+      "allowedVersions": "<29.0.0"
+    },
+    {
+      "description": "Pinned to v13",
+      "matchPackageNames": ["yargs"],
+      "allowedVersions": "<14.0.0"
+    },
+    {
+      "description": "Pinned to v4 — migration to v5+ not yet done",
+      "matchPackageNames": ["husky"],
+      "allowedVersions": "<5.0.0"
+    }
+  ]
+}
