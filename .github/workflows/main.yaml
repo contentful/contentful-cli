@@ -21,6 +21,7 @@ jobs:
     secrets: inherit
 
   e2e-tests:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork == false
     needs: [build, check]
     uses: ./.github/workflows/test-e2e.yaml
     secrets: inherit
