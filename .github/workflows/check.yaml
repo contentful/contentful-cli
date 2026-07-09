@@ -6,9 +6,9 @@ on:
   workflow_call:
     secrets:
       CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN:
-        required: true
+        required: false
       CLI_E2E_ORG_ID:
-        required: true
+        required: false
 
 jobs:
   check:
@@ -55,6 +55,7 @@ jobs:
           CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
 
       - name: Run integration tests
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.fork == false
         run: npm run test:integration:ci
         env:
           CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
