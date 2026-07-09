@@ -38,15 +38,11 @@ jobs:
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
           fail-on-cache-miss: true
 
-      # Prior ci publishing did not lint or format, commented out to preserve workflow
       # - name: Run linter
       #   run: npm run lint
 
-      #- name: Check formatting
-      #  run: npm run prettier:check
-      #  env:
-      #    CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN: ${{ secrets.CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN }}
-      #    CLI_E2E_ORG_ID: ${{ secrets.CLI_E2E_ORG_ID }}
+      # - name: Check formatting
+      #   run: npm run prettier:check
 
       - name: Run unit tests
         run: npm test
