@@ -32,7 +32,7 @@ jobs:
         run: ls -la dist/
 
       - name: Save Build folders
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             dist

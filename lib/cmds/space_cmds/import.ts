@@ -108,6 +108,11 @@ export const builder = (yargs: Argv) => {
         'Path to a directory with an asset export made using the --downloadAssets option of the export. Requires `uploadAssets`',
       type: 'string'
     })
+    .option('include-experience-orchestration', {
+      describe: 'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
+      type: 'boolean',
+      default: true
+    })
     .config(
       'config',
       'An optional configuration JSON file containing all the options for a single run'
