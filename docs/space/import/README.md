@@ -34,6 +34,12 @@ Options:
   --retry-limit              How many times to retry before an operation fails
                                                           [number] [default: 10]
   --header, -H               Pass an additional HTTP Header             [string]
+  --include-experience-orchestration  Import Experience Orchestration (ExO)
+                             entities (Design Tokens, Components, Experience
+                             Templates, Data Assemblies, Experience Fragments,
+                             Experiences) from the content file. Requires the
+                             destination space to have ExO enabled.
+                                                        [boolean] [default: true]
   --upload-assets            Upload local asset files downloaded via the
                              --downloadAssets option of the export. Requires
                              `assetsDirectory`        [boolean] [default: false]
@@ -50,6 +56,20 @@ Options:
 contentful space import \
   --content-file exported-file.json \
 ```
+
+## Experience Orchestration (ExO)
+
+Experience Orchestration is Contentful's system for composing and rendering structured page experiences, expressed through six entity types: Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences. By default (`--include-experience-orchestration` defaults to `true`), any of these entities present in the content file are imported into the destination space.
+
+The destination space's organization must have the `exo_m1` entitlement for the import to succeed; otherwise the ExO API calls are rejected. To skip ExO entities entirely, pass `--include-experience-orchestration=false`.
+
+ExO entities reference each other by ID, so the importer:
+
+- Preserves source IDs via upsert (rather than generating new ones), so cross-entity references keep resolving.
+- Imports entities in dependency order — Data Assemblies and Design Tokens first, then Components, then Templates and Fragments (topologically sorted among themselves), then Experiences.
+- Recreates ExO folder structures (built on Contentful's Taxonomy system) in the destination space when importing across spaces; same-space imports skip this step.
+
+See the [contentful-import ExO doc](https://github.com/contentful/contentful-import/blob/main/docs/exo-import.md) for full details on the dependency model and folder handling.
 
 ## Limitations
 

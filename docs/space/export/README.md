@@ -36,6 +36,13 @@ Options:
   --strip-tags              Untag assets and entries    [boolean] [default: false]
   --content-only            only export entries and assets
                                                         [boolean] [default: false]
+  --include-experience-orchestration  Include Experience Orchestration (ExO)
+                            entities (Design Tokens, Components, Experience
+                            Templates, Data Assemblies, Experience Fragments,
+                            Experiences). Requires the exo_m1 entitlement on
+                            the source space; non-entitled spaces yield empty
+                            arrays rather than an error.
+                                                         [boolean] [default: true]
   --download-assets         With this flags assets will also be downloaded
                                                                          [boolean]
   --max-allowed-limit       How many items per page per request
@@ -75,9 +82,25 @@ contentful space export
   "assets": [],
   "locales": [],
   "webhooks": [],
-  "editorInterfaces": []
+  "editorInterfaces": [],
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
 }
 ```
+
+The last six fields are the Experience Orchestration (ExO) entities — see below.
+
+## Experience Orchestration (ExO)
+
+Experience Orchestration is Contentful's system for composing and rendering structured page experiences. By default (`--include-experience-orchestration` defaults to `true`), the export also fetches six ExO entity types: Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences.
+
+ExO requires the `exo_m1` entitlement on the source space's organization. If the space isn't entitled, each ExO entity type simply exports as an empty array — the export still completes normally, no error is thrown. To skip ExO entities entirely, pass `--include-experience-orchestration=false`.
+
+The exported ExO data is designed to be fed directly into `contentful space import` with `--include-experience-orchestration` (the default), which handles ID preservation, dependency ordering, and folder recreation. See the [contentful-import docs](https://github.com/contentful/contentful-import/blob/main/docs/exo-import.md) for import-side details.
 
 ## Limitations
 
