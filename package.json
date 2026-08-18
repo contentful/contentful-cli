@@ -76,7 +76,7 @@
     "semantic-release": "^25.0.2",
     "stream-buffers": "^3.0.2",
     "strip-ansi": "^6.0.0",
-    "talkback": "^3.0.1",
+    "talkback": "^4.0.0",
     "typescript": "^5.0.2"
   },
   "dependencies": {
