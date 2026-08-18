@@ -151,7 +151,7 @@
   },
   "overrides": {
     "tmp": ">=0.2.4",
-    "undici": "^6.27.0"
+    "undici": "^8.0.0"
   },
   "pkg": {
     "targets": [
