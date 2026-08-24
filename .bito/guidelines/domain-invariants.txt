@@ -1,0 +1,43 @@
+Critical technical invariants for the Contentful CLI:
+
+Build and runtime:
+- TypeScript compiles to dist/ via tsc. The bin/contentful.js entrypoint requires
+  dist/lib/cli.js — never lib/cli.ts directly. Any change to lib/ requires a
+  rebuild before testing the binary.
+- Module system is CommonJS. Do not introduce ESM-only imports or top-level await.
+- Yargs is pinned at ~13.3.2. Do not upgrade without a dedicated migration.
+
+Satellite package alignment:
+- contentful-management.js, contentful-migration, contentful-import,
+  contentful-export, and contentful-batch-libs must be version-aligned. A major
+  bump to one typically requires coordinated bumps across all of them.
+- Some call sites use createPlainClient() in "legacy" mode. These are transitional
+  from the CMA v12 migration — do not remove without verifying the new API surface.
+
+Testing:
+- Unit tests require CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN and CLI_E2E_ORG_ID
+  environment variables to be set, even though they shouldn't need them. This is a
+  known coupling — do not add more dependencies on these vars in unit tests.
+- Integration tests use talkback proxy recordings. When API responses change,
+  recordings need updating. Run tests without the proxy first, then re-record.
+- E2E tests run against standalone binaries — changes to pkg config or binary
+  bundling should be validated with npm run test:e2e.
+
+Security and supply chain:
+- .npmrc sets ignore-scripts=true. After npm ci, npx allow-scripts must run.
+  New packages that need install scripts must be added to the lavamoat.allowScripts
+  allowlist in package.json.
+- Secrets in CI come from HashiCorp Vault, not GitHub Secrets.
+
+Release:
+- Commit messages drive releases via semantic-release. Breaking changes MUST use
+  the BREAKING CHANGE: footer keyword — without it, the major bump won't trigger.
+- The beta branch publishes to the npm beta channel. Do not merge experimental
+  work directly to main.
+
+Command interface stability:
+- Command names, flag names, and output formats are a public API. Changes to these
+  affect downstream scripts and CI pipelines. Treat them as breaking changes unless
+  the change is purely additive.
+- The .contentfulrc.json config file format is also part of the public contract.
+  Changes to config keys or resolution order affect all users.

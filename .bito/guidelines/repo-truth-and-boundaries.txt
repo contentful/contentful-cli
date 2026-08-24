@@ -1,0 +1,18 @@
+Use the repository's written documentation as review context and check whether
+the change matches the documented intent.
+
+- Start from README.md, ARCHITECTURE.md, AGENTS.md, CONTRIBUTING.md, and docs/ADRs/
+  for architectural context.
+- Check whether code, tests, and documentation all tell the same story. Flag
+  mismatches between implementation and the documented architecture or ADRs.
+- Treat AGENTS.md as the authoritative guide for sharp edges and invariants. If a
+  change violates an invariant documented there, flag it.
+- If CI or another required check already enforces a merge rule, do not ask for
+  duplicate PR template sections or manual checklists.
+- Ask for an ADR update when a change is architecture-significant (new command,
+  new dependency, new integration, changed module system, framework upgrade).
+- Distinguish the CLI's public command interface from internal implementation.
+  Public-facing changes (command names, flags, output format, exit codes) require
+  extra scrutiny — they are consumed by scripts and CI pipelines.
+- The docs/ directory contains per-command usage documentation. If a command's
+  behavior changes, the corresponding docs/ file should be updated.
