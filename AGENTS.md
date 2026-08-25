@@ -43,7 +43,7 @@ version CI uses.
 | Lint | `npm run lint` (eslint over `bin lib test`) |
 | Format | `npm run prettier:write` |
 | Unit tests | `npm run test:unit` |
-| Unit tests, single path | `npx jest test/unit/cmds/space --verbose` |
+| Unit tests, single path | `npx jest test/unit/cmds/space_cmds --verbose` |
 | Unit tests with coverage (the default `npm test`) | `npm run test:coverage` |
 | Standalone binaries | `npm run build:standalone` |
 | Binaries + zipped release artifacts | `npm run build:package` |
