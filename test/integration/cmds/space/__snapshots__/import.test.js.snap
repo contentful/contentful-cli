@@ -4,41 +4,58 @@ exports[`should exit 1 when no args: wrong response in case of no args provided 
 "Usage: contentful space import --content-file <file>
 
 Options:
-  -h, --help                 Show help                                 [boolean]
-  --space-id                 ID of the destination space                [string]
-  --environment-id           ID the environment in the destination space[string]
-  --management-token, --mt   Contentful management API token            [string]
-  --content-file             JSON file that contains data to import into a space
-                                                             [string] [required]
-  --content-model-only       Import only content types[boolean] [default: false]
-  --skip-content-model       Skip importing content types and locales
+  -h, --help                          Show help                        [boolean]
+  --space-id                          ID of the destination space       [string]
+  --environment-id                    ID the environment in the destination
+                                      space                             [string]
+  --management-token, --mt            Contentful management API token   [string]
+  --content-file                      JSON file that contains data to import
+                                      into a space           [string] [required]
+  --content-model-only                Import only content types
                                                       [boolean] [default: false]
-  --skip-locales             Skip importing locales   [boolean] [default: false]
-  --skip-content-publishing  Skips content publishing. Creates content but does
-                             not publish it           [boolean] [default: false]
-  --skip-content-updates     Skips updating existing content, only creates new
-                             entries.                 [boolean] [default: false]
-  --skip-asset-updates       Skips updating existing assets, only creates new
-                             assets.                  [boolean] [default: false]
-  --error-log-file           Full path to the error log file            [string]
-  --host                     Management API host                        [string]
-  --proxy                    Proxy configuration in HTTP auth format:
-                             [http|https]://host:port or
-                             [http|https]://user:password@host:port     [string]
-  --timeout                  Timeout in milliseconds for API calls
+  --skip-content-model                Skip importing content types and locales
+                                                      [boolean] [default: false]
+  --skip-locales                      Skip importing locales
+                                                      [boolean] [default: false]
+  --skip-content-publishing           Skips content publishing. Creates content
+                                      but does not publish it
+                                                      [boolean] [default: false]
+  --skip-content-updates              Skips updating existing content, only
+                                      creates new entries.
+                                                      [boolean] [default: false]
+  --skip-asset-updates                Skips updating existing assets, only
+                                      creates new assets.
+                                                      [boolean] [default: false]
+  --include-experience-orchestration  Import Experience Orchestration entities
+                                      (designTokens, components,
+                                      experienceTemplates, experienceFragments,
+                                      dataAssemblies, experiences). Requires a
+                                      space with ExO enabled.
+                                                       [boolean] [default: true]
+  --error-log-file                    Full path to the error log file   [string]
+  --host                              Management API host               [string]
+  --proxy                             Proxy configuration in HTTP auth format:
+                                      [http|https]://host:port or
+                                      [http|https]://user:password@host:port
+                                                                        [string]
+  --timeout                           Timeout in milliseconds for API calls
                                                        [number] [default: 20000]
-  --retry-limit              How many times to retry before an operation fails
-                                                          [number] [default: 10]
-  --header, -H               Pass an additional HTTP Header             [string]
-  --upload-assets            Upload local asset files downloaded via the
-                             --download-assets option of `contentful space
-                             export`. Requires `--assets-directory` [boolean]
-                             [default: false]
-  --assets-directory         Path to a directory with an asset export made using
-                             the --download-assets option of `contentful space
-                             export`. Requires `--upload-assets`           [string]
-  --config                   An optional configuration JSON file containing all
-                             the options for a single run
+  --retry-limit                       How many times to retry before an
+                                      operation fails     [number] [default: 10]
+  --header, -H                        Pass an additional HTTP Header    [string]
+  --upload-assets                     Upload local asset files downloaded via
+                                      the --download-assets option of
+                                      `contentful space export`. Requires
+                                      `--assets-directory`
+                                                      [boolean] [default: false]
+  --assets-directory                  Path to a directory with an asset export
+                                      made using the --download-assets option of
+                                      `contentful space export`. Requires
+                                      `--upload-assets`
+                                                                        [string]
+  --config                            An optional configuration JSON file
+                                      containing all the options for a single
+                                      run
 
 Copyright 2013 Contentful
 Missing required argument: content-file"
@@ -48,41 +65,58 @@ exports[`should print help message: help data is incorrect 1`] = `
 "Usage: contentful space import --content-file <file>
 
 Options:
-  -h, --help                 Show help                                 [boolean]
-  --space-id                 ID of the destination space                [string]
-  --environment-id           ID the environment in the destination space[string]
-  --management-token, --mt   Contentful management API token            [string]
-  --content-file             JSON file that contains data to import into a space
-                                                             [string] [required]
-  --content-model-only       Import only content types[boolean] [default: false]
-  --skip-content-model       Skip importing content types and locales
+  -h, --help                          Show help                        [boolean]
+  --space-id                          ID of the destination space       [string]
+  --environment-id                    ID the environment in the destination
+                                      space                             [string]
+  --management-token, --mt            Contentful management API token   [string]
+  --content-file                      JSON file that contains data to import
+                                      into a space           [string] [required]
+  --content-model-only                Import only content types
                                                       [boolean] [default: false]
-  --skip-locales             Skip importing locales   [boolean] [default: false]
-  --skip-content-publishing  Skips content publishing. Creates content but does
-                             not publish it           [boolean] [default: false]
-  --skip-content-updates     Skips updating existing content, only creates new
-                             entries.                 [boolean] [default: false]
-  --skip-asset-updates       Skips updating existing assets, only creates new
-                             assets.                  [boolean] [default: false]
-  --error-log-file           Full path to the error log file            [string]
-  --host                     Management API host                        [string]
-  --proxy                    Proxy configuration in HTTP auth format:
-                             [http|https]://host:port or
-                             [http|https]://user:password@host:port     [string]
-  --timeout                  Timeout in milliseconds for API calls
+  --skip-content-model                Skip importing content types and locales
+                                                      [boolean] [default: false]
+  --skip-locales                      Skip importing locales
+                                                      [boolean] [default: false]
+  --skip-content-publishing           Skips content publishing. Creates content
+                                      but does not publish it
+                                                      [boolean] [default: false]
+  --skip-content-updates              Skips updating existing content, only
+                                      creates new entries.
+                                                      [boolean] [default: false]
+  --skip-asset-updates                Skips updating existing assets, only
+                                      creates new assets.
+                                                      [boolean] [default: false]
+  --include-experience-orchestration  Import Experience Orchestration entities
+                                      (designTokens, components,
+                                      experienceTemplates, experienceFragments,
+                                      dataAssemblies, experiences). Requires a
+                                      space with ExO enabled.
+                                                       [boolean] [default: true]
+  --error-log-file                    Full path to the error log file   [string]
+  --host                              Management API host               [string]
+  --proxy                             Proxy configuration in HTTP auth format:
+                                      [http|https]://host:port or
+                                      [http|https]://user:password@host:port
+                                                                        [string]
+  --timeout                           Timeout in milliseconds for API calls
                                                        [number] [default: 20000]
-  --retry-limit              How many times to retry before an operation fails
-                                                          [number] [default: 10]
-  --header, -H               Pass an additional HTTP Header             [string]
-  --upload-assets            Upload local asset files downloaded via the
-                             --download-assets option of `contentful space
-                             export`. Requires `--assets-directory` [boolean]
-                             [default: false]
-  --assets-directory         Path to a directory with an asset export made using
-                             the --download-assets option of `contentful space
-                             export`. Requires `--upload-assets`           [string]
-  --config                   An optional configuration JSON file containing all
-                             the options for a single run
+  --retry-limit                       How many times to retry before an
+                                      operation fails     [number] [default: 10]
+  --header, -H                        Pass an additional HTTP Header    [string]
+  --upload-assets                     Upload local asset files downloaded via
+                                      the --download-assets option of
+                                      `contentful space export`. Requires
+                                      `--assets-directory`
+                                                      [boolean] [default: false]
+  --assets-directory                  Path to a directory with an asset export
+                                      made using the --download-assets option of
+                                      `contentful space export`. Requires
+                                      `--upload-assets`
+                                                                        [string]
+  --config                            An optional configuration JSON file
+                                      containing all the options for a single
+                                      run
 
 Copyright 2013 Contentful"
 `;

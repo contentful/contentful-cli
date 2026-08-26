@@ -64,6 +64,11 @@ export const builder = (yargs: Argv) => {
       type: 'boolean',
       default: false
     })
+    .option('include-experience-orchestration', {
+      describe: 'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
+      type: 'boolean',
+      default: true
+    })
     .option('update', {
       describe: 'Update entries if they already exist',
       type: 'boolean',
@@ -140,6 +145,7 @@ interface ImportSpaceProps {
   content?: object
   uploadAssets?: string
   assetsDirectory?: string
+  includeExperienceOrchestration?: boolean
 }
 
 interface Options {
@@ -154,6 +160,7 @@ interface Options {
   rawProxy?: string
   uploadAssets?: string
   assetsDirectory?: string
+  includeExperienceOrchestration?: boolean
 }
 
 export const importSpace = async (argv: ImportSpaceProps) => {
@@ -165,7 +172,8 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     context,
     feature = 'space-import',
     uploadAssets,
-    assetsDirectory
+    assetsDirectory,
+    includeExperienceOrchestration
   } = argv
   const {
     managementToken,
@@ -192,7 +200,8 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     host,
     headers: getHeadersFromOption(argv.header),
     uploadAssets,
-    assetsDirectory
+    assetsDirectory,
+    includeExperienceOrchestration
   }
 
   if (proxy) {

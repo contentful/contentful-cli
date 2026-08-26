@@ -84,6 +84,8 @@ You might need to update snapshots and it's challenging with the recordings.
 Tip: run tests without recordings to update the snapshots.
 
 ```
+CONTENTFUL_INTEGRATION_TEST_CMA_TOKEN=<CMA_TOKEN> \
+CLI_E2E_ORG_ID=<ORG_ID> \
 npx jest test/integration/cmds/<path to the affected test file> --updateSnapshot
 ```
 
