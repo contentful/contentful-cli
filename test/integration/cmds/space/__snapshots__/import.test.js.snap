@@ -51,8 +51,7 @@ Options:
   --assets-directory                  Path to a directory with an asset export
                                       made using the --download-assets option of
                                       `contentful space export`. Requires
-                                      `--upload-assets`
-                                                                        [string]
+                                      `--upload-assets`                 [string]
   --config                            An optional configuration JSON file
                                       containing all the options for a single
                                       run
@@ -112,8 +111,7 @@ Options:
   --assets-directory                  Path to a directory with an asset export
                                       made using the --download-assets option of
                                       `contentful space export`. Requires
-                                      `--upload-assets`
-                                                                        [string]
+                                      `--upload-assets`                 [string]
   --config                            An optional configuration JSON file
                                       containing all the options for a single
                                       run
