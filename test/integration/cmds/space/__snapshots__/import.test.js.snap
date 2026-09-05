@@ -20,6 +20,13 @@ Options:
   --skip-content-publishing           Skips content publishing. Creates content
                                       but does not publish it
                                                       [boolean] [default: false]
+  --use-bulk-entries                  Import entries via Bulk Entry Operations
+                                      (create/update, up to 10k per job) and
+                                      Bulk Actions for publish. Requires Bulk
+                                      Content Operations (Premium). Content
+                                      model, locales, tags and assets still use
+                                      the classic importer.
+                                                      [boolean] [default: false]
   --skip-content-updates              Skips updating existing content, only
                                       creates new entries.
                                                       [boolean] [default: false]
@@ -78,6 +85,13 @@ Options:
                                                       [boolean] [default: false]
   --skip-content-publishing           Skips content publishing. Creates content
                                       but does not publish it
+                                                      [boolean] [default: false]
+  --use-bulk-entries                  Import entries via Bulk Entry Operations
+                                      (create/update, up to 10k per job) and
+                                      Bulk Actions for publish. Requires Bulk
+                                      Content Operations (Premium). Content
+                                      model, locales, tags and assets still use
+                                      the classic importer.
                                                       [boolean] [default: false]
   --skip-content-updates              Skips updating existing content, only
                                       creates new entries.
