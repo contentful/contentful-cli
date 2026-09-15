@@ -12,7 +12,7 @@ also shipped as standalone binaries for macOS, Linux and Windows. It is a
 [yargs](https://yargs.js.org) CLI written in a mix of TypeScript and JavaScript
 that talks to the Contentful Management API through `contentful-management`.
 
-Owner: `@contentful/team-developer-experience` (see `.github/CODEOWNERS` and
+Owner: `@contentful/group-applied-ai-solutions` (see `.github/CODEOWNERS` and
 `catalog-info.yaml`).
 
 ## Setup
