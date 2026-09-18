@@ -1,10 +1,17 @@
 import runContentfulImport from 'contentful-import'
 import { handleAsyncError as handle } from '../../utils/async'
+import {
+  createCmaBulkTransport,
+  importEntriesWithBulkOperations,
+  SourceEntry
+} from '../../utils/bulk-entry-import'
+import { createPlainClient } from '../../utils/contentful-clients'
+import { copyright } from '../../utils/copyright'
+import { getPath, readFileP } from '../../utils/fs'
+import { getHeadersFromOption } from '../../utils/headers'
+import { warning } from '../../utils/log'
 import { proxyObjectToString } from '../../utils/proxy'
 import { version } from '../../../package.json'
-import { warning } from '../../utils/log'
-import { getHeadersFromOption } from '../../utils/headers'
-import { copyright } from '../../utils/copyright'
 import { Argv } from 'yargs'
 
 export const command = 'import'
@@ -54,6 +61,12 @@ export const builder = (yargs: Argv) => {
       type: 'boolean',
       default: false
     })
+    .option('use-bulk-entries', {
+      describe:
+        'Import entries via Bulk Entry Operations (create/update, up to 10k per job) and Bulk Actions for publish. Requires Bulk Content Operations (Premium). Content model, locales, tags and assets still use the classic importer.',
+      type: 'boolean',
+      default: false
+    })
     .option('skip-content-updates', {
       describe: 'Skips updating existing content, only creates new entries.',
       type: 'boolean',
@@ -65,7 +78,8 @@ export const builder = (yargs: Argv) => {
       default: false
     })
     .option('include-experience-orchestration', {
-      describe: 'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
+      describe:
+        'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
       type: 'boolean',
       default: true
     })
@@ -136,13 +150,23 @@ interface Context {
   rawProxy?: string
 }
 
+interface ImportContent {
+  entries?: SourceEntry[]
+  [key: string]: unknown
+}
+
 interface ImportSpaceProps {
   context: Context
   feature?: string
   update?: never
   header?: string
   proxy?: string
-  content?: object
+  content?: ImportContent
+  contentFile?: string
+  contentModelOnly?: boolean
+  skipContentPublishing?: boolean
+  skipContentUpdates?: boolean
+  useBulkEntries?: boolean
   uploadAssets?: string
   assetsDirectory?: string
   includeExperienceOrchestration?: boolean
@@ -155,12 +179,29 @@ interface Options {
   managementFeature: string
   managementToken?: string
   host?: string
-  headers: string
+  headers: Record<string, string>
   proxy?: string
   rawProxy?: string
   uploadAssets?: string
   assetsDirectory?: string
   includeExperienceOrchestration?: boolean
+  content?: ImportContent
+  contentFile?: string
+}
+
+async function loadImportContent(
+  argv: ImportSpaceProps
+): Promise<ImportContent> {
+  if (argv.content) {
+    return argv.content
+  }
+
+  if (!argv.contentFile) {
+    throw new Error('The --content-file option is required.')
+  }
+
+  const raw = await readFileP(getPath(argv.contentFile), 'utf8')
+  return JSON.parse(raw as string)
 }
 
 export const importSpace = async (argv: ImportSpaceProps) => {
@@ -173,7 +214,11 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     feature = 'space-import',
     uploadAssets,
     assetsDirectory,
-    includeExperienceOrchestration
+    includeExperienceOrchestration,
+    useBulkEntries,
+    contentModelOnly,
+    skipContentPublishing,
+    skipContentUpdates
   } = argv
   const {
     managementToken,
@@ -203,6 +248,7 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     assetsDirectory,
     includeExperienceOrchestration
   }
+  delete (options as Options & { useBulkEntries?: boolean }).useBulkEntries
 
   if (proxy) {
     // contentful-import and contentful-export
@@ -217,7 +263,56 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     options.rawProxy = rawProxy
   }
 
-  return runContentfulImport(options)
+  const shouldUseBulkEntries = Boolean(useBulkEntries) && !contentModelOnly
+
+  if (!shouldUseBulkEntries) {
+    return runContentfulImport(options)
+  }
+
+  if (!activeSpaceId) {
+    throw new Error('A destination space ID is required for bulk entry import.')
+  }
+
+  const source = await loadImportContent(argv)
+  const entries = Array.isArray(source.entries) ? source.entries : []
+  const contentWithoutEntries = { ...source, entries: [] }
+
+  const importResult = await runContentfulImport({
+    ...options,
+    content: contentWithoutEntries,
+    contentFile: undefined
+  })
+
+  if (entries.length === 0) {
+    return importResult
+  }
+
+  const environmentId = activeEnvironmentId || 'master'
+  const client = await createPlainClient(
+    {
+      accessToken: managementToken,
+      feature,
+      headers: getHeadersFromOption(argv.header),
+      host
+    },
+    {
+      spaceId: activeSpaceId,
+      environmentId
+    }
+  )
+
+  await importEntriesWithBulkOperations({
+    entries,
+    skipContentPublishing,
+    skipContentUpdates,
+    transport: createCmaBulkTransport({
+      client,
+      spaceId: activeSpaceId,
+      environmentId
+    })
+  })
+
+  return importResult
 }
 
 export const handler = handle(importSpace)

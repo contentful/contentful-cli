@@ -20,6 +20,12 @@ Options:
   --skip-locales             Skip importing locales   [boolean] [default: false]
   --skip-content-publishing  Skips content publishing. Creates content but does
                              not publish it           [boolean] [default: false]
+  --use-bulk-entries         Import entries via Bulk Entry Operations
+                             (create/update, up to 10k per job) and Bulk Actions
+                             for publish. Requires Bulk Content Operations
+                             (Premium). Content model, locales, tags and assets
+                             still use the classic importer.
+                                                      [boolean] [default: false]
   --skip-content-updates     Skips updating existing content, only creates new
                              entries.                 [boolean] [default: false]
   --skip-asset-updates       Skips updating existing assets, only creates new
@@ -50,6 +56,24 @@ Options:
 contentful space import \
   --content-file exported-file.json \
 ```
+
+### Large restores with Bulk Entry Operations
+
+Classic import creates, updates and publishes entries one CMA request at a time. For large backups (tens or hundreds of thousands of entries) you can opt into [Bulk Entry Operations](https://www.contentful.com/developers/docs/references/content-management-api/bulk-entry-content-operations/) and [Bulk Actions](https://www.contentful.com/developers/docs/references/content-management-api/#/reference/bulk-actions) for the entry payload:
+
+```sh
+contentful space import \
+  --content-file exported-file.json \
+  --use-bulk-entries
+```
+
+This keeps the existing importer for content types, locales, editor interfaces, tags and assets, then:
+
+1. Splits entries into create vs update against the destination environment
+2. Uploads JSON batches of up to 10,000 entries and runs `bulk_operations/entries/create` / `update`
+3. Publishes only entries that were published in the export (`sys.publishedVersion`), in Bulk Action batches of 200
+
+`--skip-content-publishing`, `--skip-content-updates`, `--content-model-only` and the other import flags keep their existing meaning. Bulk Entry Operations is a Premium feature; if the destination space is not entitled the command fails with a clear error rather than silently falling back.
 
 ## Limitations
 
