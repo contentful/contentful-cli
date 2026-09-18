@@ -51,10 +51,24 @@ contentful space import \
   --content-file exported-file.json \
 ```
 
+### Embargoed assets
+
+When importing content from a space with [embargoed assets](https://www.contentful.com/help/media/embargoed-assets/), the export must have been created with `--download-assets`. Pass both `--upload-assets` and `--assets-directory` so the importer uploads the local files into the destination environment.
+
+```sh
+contentful space import \
+  --space-id "$SPACE_ID" \
+  --environment-id "$TARGET_ENVIRONMENT_ID" \
+  --content-file ./contentful-export/content.json \
+  --upload-assets \
+  --assets-directory ./contentful-export
+```
+
+Without the downloaded files, the destination cannot process the source embargoed URLs and the import will fail before it starts with guidance for creating a portable export.
+
 ## Limitations
 
 - This tool currently does **not** support the import of roles or space memberships.
 - This tool is expecting the target space to have the same default locale as your previously exported space.
 - Imported webhooks with credentials will be imported as normal webhooks. Credentials should be added manually afterwards.
 - If you have custom UI extensions, you need to reinstall them manually in the new space. Check this [link](https://www.contentful.com/blog/2016/07/06/ui-extensions-sdk/) on how to install them
-- If a space is configured to use the [embargoed assets feature](https://www.contentful.com/help/media/embargoed-assets/), certain options will need to be set to use the space export/import tooling. When exporting content, the `downloadAssets` option must be set to `true`. This will download the asset files to your local machine. Then, when importing content, the `uploadAssets` option must be set to `true` and the `assetsDirectory` must be set to the directory that contains all of the exported asset folders.
