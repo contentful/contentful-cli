@@ -89,7 +89,7 @@
     "cli-highlight": "^2.1.11",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
-    "contentful-batch-libs": "^11.0.0",
+    "contentful-batch-libs": "^13.0.0",
     "contentful-collection": "^0.0.4",
     "contentful-export": "^8.2.0",
     "contentful-import": "^10.1.2",
