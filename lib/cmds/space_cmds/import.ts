@@ -104,13 +104,13 @@ export const builder = (yargs: Argv) => {
     })
     .option('upload-assets', {
       describe:
-        'Upload local asset files downloaded via the --downloadAssets option of the export. Requires `assetsDirectory`',
+        'Upload local asset files downloaded via the --download-assets option of `contentful space export`. Requires `--assets-directory`',
       type: 'boolean',
       default: false
     })
     .option('assets-directory', {
       describe:
-        'Path to a directory with an asset export made using the --downloadAssets option of the export. Requires `uploadAssets`',
+        'Path to a directory with an asset export made using the --download-assets option of `contentful space export`. Requires `--upload-assets`',
       type: 'string'
     })
     .config(
