@@ -1,0 +1,3 @@
+npm install -g contentful-cli
+# Or
+yarn global add contentful-cli
