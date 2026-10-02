@@ -2,20 +2,32 @@ import { activeTokensWithoutExpiryCheck } from '../../../../../lib/cmds/organiza
 import type { SecurityContext } from '../../../../../lib/cmds/organization_cmds/security_checks/types'
 
 describe('activeTokensWithoutExpiryCheck', () => {
-  function makeCtx(pages: Array<{ items: any[]; total?: number; limit?: number }>, throwOnPage = false): SecurityContext & { __rawGet: jest.Mock } {
+  function makeCtx(
+    pages: Array<{ items: any[]; total?: number; limit?: number }>,
+    throwOnPage = false
+  ): SecurityContext & { __rawGet: jest.Mock } {
     let call = 0
     const rawGet = jest.fn().mockImplementation(async (path: string) => {
       if (!path.includes('/access_tokens')) throw new Error('unexpected path')
       if (throwOnPage) throw new Error('network')
       const page = pages[call++] || { items: [] }
-      return { data: { items: page.items, total: page.total ?? pages.reduce((a,p)=>a+p.items.length,0), limit: page.limit ?? 100 } }
+      return {
+        data: {
+          items: page.items,
+          total: page.total ?? pages.reduce((a, p) => a + p.items.length, 0),
+          limit: page.limit ?? 100
+        }
+      }
     })
-    return Object.assign({
-      client: { raw: { get: rawGet } } as any,
-      organizationId: 'org1',
-      userId: 'user1',
-      role: 'owner'
-    }, { __rawGet: rawGet })
+    return Object.assign(
+      {
+        client: { raw: { get: rawGet } } as any,
+        organizationId: 'org1',
+        userId: 'user1',
+        role: 'owner'
+      },
+      { __rawGet: rawGet }
+    )
   }
 
   const ONE_DAY_MS = 24 * 60 * 60 * 1000
@@ -24,7 +36,15 @@ describe('activeTokensWithoutExpiryCheck', () => {
   const overYear = new Date(now + 400 * ONE_DAY_MS).toISOString() // > 1 year
 
   test('passes when no offending tokens', async () => {
-    const ctx = makeCtx([{ items: [ { revokedAt: '2024-01-01', sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: withinYear } }, { revokedAt: null, sys: { expiresAt: null } } ] }])
+    const ctx = makeCtx([
+      {
+        items: [
+          { revokedAt: '2024-01-01', sys: { expiresAt: overYear } },
+          { revokedAt: null, sys: { expiresAt: withinYear } },
+          { revokedAt: null, sys: { expiresAt: null } }
+        ]
+      }
+    ])
     // Note: first token is revoked so ignored; second within 1 year; third has no expiry (also ignored)
     const res = await activeTokensWithoutExpiryCheck.run(ctx)
     expect(ctx.__rawGet).toHaveBeenCalledTimes(1)
@@ -35,7 +55,14 @@ describe('activeTokensWithoutExpiryCheck', () => {
   })
 
   test('fails when offending tokens present', async () => {
-    const ctx = makeCtx([{ items: [ { revokedAt: null, sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: overYear } } ] }])
+    const ctx = makeCtx([
+      {
+        items: [
+          { revokedAt: null, sys: { expiresAt: overYear } },
+          { revokedAt: null, sys: { expiresAt: overYear } }
+        ]
+      }
+    ])
     const res = await activeTokensWithoutExpiryCheck.run(ctx)
     expect(ctx.__rawGet).toHaveBeenCalledTimes(1)
     // @ts-ignore
@@ -45,8 +72,14 @@ describe('activeTokensWithoutExpiryCheck', () => {
   })
 
   test('handles multi-page pagination and aggregates offending count', async () => {
-    const safeItems = Array.from({ length: 100 }, (_, i) => ({ revokedAt: i % 2 === 0 ? '2024-01-01' : null, sys: { expiresAt: i % 2 === 0 ? null : withinYear } }))
-    const offending = [ { revokedAt: null, sys: { expiresAt: overYear } }, { revokedAt: null, sys: { expiresAt: overYear } } ]
+    const safeItems = Array.from({ length: 100 }, (_, i) => ({
+      revokedAt: i % 2 === 0 ? '2024-01-01' : null,
+      sys: { expiresAt: i % 2 === 0 ? null : withinYear }
+    }))
+    const offending = [
+      { revokedAt: null, sys: { expiresAt: overYear } },
+      { revokedAt: null, sys: { expiresAt: overYear } }
+    ]
     const total = safeItems.length + offending.length
     const ctx = makeCtx([
       { items: safeItems, total, limit: 100 },
@@ -81,7 +114,10 @@ describe('activeTokensWithoutExpiryCheck', () => {
       limit: 100
     })
     const ctx: SecurityContext = {
-      client: { accessToken: { getManyForOrganization: sdkFn }, raw: { get: jest.fn() } } as any,
+      client: {
+        accessToken: { getManyForOrganization: sdkFn },
+        raw: { get: jest.fn() }
+      } as any,
       organizationId: 'org1',
       userId: 'user1',
       role: 'owner'
@@ -98,9 +134,18 @@ describe('activeTokensWithoutExpiryCheck', () => {
 
   test('falls back to raw when SDK accessor throws', async () => {
     const sdkFn = jest.fn().mockRejectedValue(new Error('boom'))
-    const rawGet = jest.fn().mockResolvedValue({ data: { items: [ { revokedAt: null, sys: { expiresAt: overYear } } ], total: 1, limit: 100 } })
+    const rawGet = jest.fn().mockResolvedValue({
+      data: {
+        items: [{ revokedAt: null, sys: { expiresAt: overYear } }],
+        total: 1,
+        limit: 100
+      }
+    })
     const ctx: SecurityContext = {
-      client: { accessToken: { getManyForOrganization: sdkFn }, raw: { get: rawGet } } as any,
+      client: {
+        accessToken: { getManyForOrganization: sdkFn },
+        raw: { get: rawGet }
+      } as any,
       organizationId: 'org1',
       userId: 'user1',
       role: 'owner'

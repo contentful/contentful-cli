@@ -12,7 +12,9 @@ describe('ssoEnabledCheck', () => {
   }
 
   test('passes when data.enabled true', async () => {
-    expect(await ssoEnabledCheck.run(makeCtx({ data: { enabled: true } }))).toBe(true)
+    expect(
+      await ssoEnabledCheck.run(makeCtx({ data: { enabled: true } }))
+    ).toBe(true)
   })
 
   test('passes when enabled root true', async () => {
@@ -20,12 +22,20 @@ describe('ssoEnabledCheck', () => {
   })
 
   test('fails when disabled', async () => {
-    expect(await ssoEnabledCheck.run(makeCtx({ data: { enabled: false } }))).toBe(false)
+    expect(
+      await ssoEnabledCheck.run(makeCtx({ data: { enabled: false } }))
+    ).toBe(false)
   })
 
   test('fails on error', async () => {
     const ctx: SecurityContext = {
-      client: { raw: { get: async () => { throw new Error('network') } } } as any,
+      client: {
+        raw: {
+          get: async () => {
+            throw new Error('network')
+          }
+        }
+      } as any,
       organizationId: 'org1',
       userId: 'user1',
       role: 'owner'
@@ -33,4 +43,3 @@ describe('ssoEnabledCheck', () => {
     expect(await ssoEnabledCheck.run(ctx)).toBe(false)
   })
 })
-
