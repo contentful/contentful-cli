@@ -1,4 +1,3 @@
-import boxen from 'boxen'
 import chalk from 'chalk'
 import { getConfigPath, getContext } from '../context'
 
@@ -8,6 +7,7 @@ export const tokenInfo = async () => {
 
   if (!configFilePath || !managementToken) return
 
+  const { default: boxen } = await import('boxen')
   console.log(
     boxen(
       `Your management token: ${chalk.dim(

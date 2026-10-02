@@ -20,13 +20,9 @@ jest.mock('../../../../lib/utils/log')
 jest.mock('../../../../lib/utils/contentful-clients')
 jest.mock('../../../../lib/utils/fs')
 jest.mock('../../../../lib/cmds/extension_cmds/utils/read-srcdoc-file')
-jest.mock(
-  '../../../../lib/cmds/extension_cmds/create',
-  () => ({
-    createExtension: jest.fn()
-  }),
-  { virtual: true }
-)
+jest.mock('../../../../lib/cmds/extension_cmds/create', () => ({
+  createExtension: jest.fn()
+}))
 
 readSrcDocFile.mockImplementation(async extension => {
   extension.srcdoc = '<h1>Sample Extension Content</h1>'

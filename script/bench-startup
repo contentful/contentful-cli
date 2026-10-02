@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+//
+// Measures CLI startup time. Run `npm run tsc` first.
+//
+//   script/bench-startup [cli-root ...] [--runs N]
+//
+// Each cli-root defaults to this checkout. Runs use a temp HOME and
+// CONTENTFUL_CONFIG_FILE, no auth, and stdin from /dev/null.
+//
+
+const { spawnSync } = require('child_process')
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
+
+const args = process.argv.slice(2)
+const runsFlag = args.indexOf('--runs')
+const runs = runsFlag === -1 ? 15 : Number(args.splice(runsFlag, 2)[1])
+const roots = args.length ? args : [path.resolve(__dirname, '..')]
+
+const commands = [
+  ['--version'],
+  ['--help'],
+  ['space', '--help'],
+  ['space', 'list']
+]
+
+const home = fs.mkdtempSync(path.join(os.tmpdir(), 'cf-bench-'))
+const env = {
+  ...process.env,
+  HOME: home,
+  CONTENTFUL_CONFIG_FILE: path.join(home, '.contentfulrc.json')
+}
+delete env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN
+
+const percentile = (sorted, p) =>
+  sorted[Math.min(sorted.length - 1, Math.ceil((p / 100) * sorted.length) - 1)]
+
+const time = (bin, cmd) => {
+  const start = process.hrtime.bigint()
+  const { status } = spawnSync(process.execPath, [bin, ...cmd], {
+    cwd: home,
+    env,
+    stdio: ['ignore', 'ignore', 'ignore']
+  })
+  return { ms: Number(process.hrtime.bigint() - start) / 1e6, status }
+}
+
+console.log(`node ${process.version}, ${os.platform()} ${os.arch()}, N=${runs}`)
+console.log('| root | command | exit | median ms | p95 ms | min ms | max ms |')
+console.log('| --- | --- | --- | --- | --- | --- | --- |')
+
+for (const root of roots) {
+  const bin = path.join(path.resolve(root), 'bin', 'contentful.js')
+  for (const cmd of commands) {
+    time(bin, cmd)
+    const samples = Array.from({ length: runs }, () => time(bin, cmd))
+    const sorted = samples.map(s => s.ms).sort((a, b) => a - b)
+    const exits = [...new Set(samples.map(s => s.status))].join(',')
+    const row = [
+      root,
+      cmd.join(' '),
+      exits,
+      percentile(sorted, 50),
+      percentile(sorted, 95),
+      sorted[0],
+      sorted[sorted.length - 1]
+    ].map(v => (typeof v === 'number' ? v.toFixed(1) : v))
+    console.log(`| ${row.join(' | ')} |`)
+    if (process.env.BENCH_RAW) {
+      console.log(`  raw: ${sorted.map(ms => ms.toFixed(1)).join(' ')}`)
+    }
+  }
+}
+
+fs.rmSync(home, { recursive: true, force: true })
