@@ -83,13 +83,13 @@
     "@contentful/app-action-utils": "^1.2.3",
     "ast-types": "^0.16.0",
     "bluebird": "^3.5.0",
-    "boxen": "^9.0.0",
+    "boxen": "^5.1.2",
     "camelcase": "^6.0.0",
     "chalk": "^4.1.2",
     "cli-highlight": "^2.1.11",
     "cli-table3": "^0.6.0",
     "command-exists": "^1.2.7",
-    "contentful-batch-libs": "^13.0.0",
+    "contentful-batch-libs": "^12.0.2",
     "contentful-collection": "^0.0.4",
     "contentful-export": "^8.2.0",
     "contentful-import": "^10.1.2",
@@ -99,7 +99,7 @@
     "execa": "^5.0.0",
     "figlet": "^1.2.0",
     "find-up": "^5.0.0",
-    "https-proxy-agent": "^9.0.0",
+    "https-proxy-agent": "^7.0.0",
     "inquirer": "^8.2.7",
     "inquirer-autocomplete-prompt": "^2.0.0",
     "inquirer-select-directory": "^1.2.0",
@@ -151,7 +151,10 @@
   },
   "overrides": {
     "tmp": ">=0.2.4",
-    "undici": "^8.0.0"
+    "undici": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": {
+      "typescript": "npm:@typescript/typescript6@^6.0.2"
+    }
   },
   "pkg": {
     "targets": [

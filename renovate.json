@@ -53,6 +53,21 @@
       "allowedVersions": "<9.0.0"
     },
     {
+      "description": "ESM-only from v6, do not upgrade until ESM is supported",
+      "matchPackageNames": ["boxen"],
+      "allowedVersions": "<6.0.0"
+    },
+    {
+      "description": "ESM-only from v8, do not upgrade until ESM is supported",
+      "matchPackageNames": ["https-proxy-agent"],
+      "allowedVersions": "<8.0.0"
+    },
+    {
+      "description": "v13 prints a deprecation warning on every CommonJS load",
+      "matchPackageNames": ["contentful-batch-libs"],
+      "allowedVersions": "<13.0.0"
+    },
+    {
       "description": "Pinned to v28",
       "matchPackageNames": ["jest"],
       "allowedVersions": "<29.0.0"
