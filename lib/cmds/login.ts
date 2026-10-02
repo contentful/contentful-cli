@@ -1,15 +1,18 @@
 import open from 'open'
-import inquirer from 'inquirer'
 import chalk from 'chalk'
 
 import { setContext, storeRuntimeConfig } from '../context'
-import { confirmation } from '../utils/actions'
+import { confirmation, prompt } from '../utils/actions'
 import { handleAsyncError as handle } from '../utils/async'
 import { highlightStyle, pathStyle } from '../utils/styles'
 import { Argv } from 'yargs'
 import { tokenInfo } from '../utils/token-info'
 import { copyright } from '../utils/copyright'
 import { logFeedbackNudge } from './feedback'
+
+const nonInteractiveHint = {
+  hint: 'Run `contentful login --management-token <token>` to log in non-interactively.'
+}
 
 const APP_ID =
   '9f86a1d54f3d6f85c159468f5919d6e5d27716b3ed68fd01bd534e3dea2df864'
@@ -83,7 +86,10 @@ export const login = async ({
       )} here:\n`
     )
 
-    const confirmed = await confirmation('Continue login on the browser?')
+    const confirmed = await confirmation(
+      'Continue login on the browser?',
+      nonInteractiveHint
+    )
 
     if (!confirmed) {
       console.log(
@@ -109,15 +115,18 @@ export const login = async ({
       )
     }
 
-    const tokenAnswer = await inquirer.prompt([
-      {
-        type: 'password',
-        mask: true,
-        name: 'managementToken',
-        message: 'Paste your token here:',
-        validate: val => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()) // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
-      }
-    ])
+    const tokenAnswer = await prompt(
+      [
+        {
+          type: 'password',
+          mask: true,
+          name: 'managementToken',
+          message: 'Paste your token here:',
+          validate: (val: string) => /^[a-zA-Z0-9_-]{43,64}$/i.test(val.trim()) // token is 43 to 64 characters and accepts lower/uppercase characters plus `-` and `_`
+        }
+      ],
+      nonInteractiveHint
+    )
 
     token = tokenAnswer.managementToken
   }

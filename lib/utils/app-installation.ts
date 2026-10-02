@@ -2,6 +2,10 @@ import { PlainClientAPI } from 'contentful-management'
 import { confirmation } from './actions'
 import { warning } from './log'
 
+const yesHint = {
+  hint: 'Pass --yes to install the Merge app without a prompt.'
+}
+
 /**
  * Checks if a specified app is installed in an environment
  */
@@ -72,7 +76,8 @@ const promptAppInstallationInEnvironment = async (
   )
 
   const userConfirmation = await confirmation(
-    `Do you want to install the Merge app in the environment with id: ${environmentId}`
+    `Do you want to install the Merge app in the environment with id: ${environmentId}`,
+    yesHint
   )
 
   if (!userConfirmation) {
@@ -135,7 +140,8 @@ export const checkAndInstallAppInEnvironments = async (
         `The Merge app is not installed in any of the environments. Environment ids: ${environmentIds[0]}, ${environmentIds[1]}`
       )
       const userConfirmation = await confirmation(
-        `Do you want to install the Merge app in both environments?`
+        `Do you want to install the Merge app in both environments?`,
+        yesHint
       )
 
       if (!userConfirmation) {

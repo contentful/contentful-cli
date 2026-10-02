@@ -1,10 +1,8 @@
-import { prompt, PromptModule } from 'inquirer'
 import open from 'open'
 import { handler as loginHandler } from '../../../lib/cmds/login'
 import { getContext, setContext } from '../../../lib/context'
-import { confirmation } from '../../../lib/utils/actions'
+import { confirmation, prompt } from '../../../lib/utils/actions'
 
-jest.mock('inquirer')
 jest.mock('open')
 jest.mock('../../../lib/utils/actions')
 jest.mock('../../../lib/context')
@@ -14,20 +12,20 @@ const mockedRcConfig = {
 }
 
 const mocks = {
-  inquirerPrompt: prompt as jest.MockedFunction<PromptModule>,
+  prompt: prompt as jest.MockedFunction<any>,
   open: open as jest.MockedFunction<typeof open>,
   setContext: setContext as jest.MockedFunction<any>,
   getContext: getContext as jest.MockedFunction<any>,
   confirmation: confirmation as jest.MockedFunction<any>
 }
 
-mocks.inquirerPrompt.mockResolvedValue(mockedRcConfig)
+mocks.prompt.mockResolvedValue(mockedRcConfig)
 mocks.setContext.mockResolvedValue(true)
 mocks.getContext.mockResolvedValue({ managementToken: false })
 mocks.confirmation.mockResolvedValue(true)
 
 afterEach(() => {
-  mocks.inquirerPrompt.mockClear()
+  mocks.prompt.mockClear()
   mocks.open.mockClear()
   mocks.confirmation.mockClear()
   mocks.setContext.mockClear()

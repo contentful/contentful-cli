@@ -1,4 +1,3 @@
-import inquirer from 'inquirer'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 import greetings from './init/greetings'
@@ -8,6 +7,7 @@ import { login } from './login'
 import chalk from 'chalk'
 import { getPreviewApiKey } from './init/apikey'
 import { getSpace } from './init/space'
+import { prompt } from '../utils/actions'
 
 export const command = 'init'
 
@@ -39,7 +39,7 @@ export const init = async () => {
     (await space.getEnvironments()).items[0].sys.id || 'master'
   const apiKey = await getPreviewApiKey(space, environmentId)
 
-  const { connectionType } = await inquirer.prompt({
+  const { connectionType } = await prompt({
     type: 'list',
     name: 'connectionType',
     prefix: '👓',

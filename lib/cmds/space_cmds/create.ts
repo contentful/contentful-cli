@@ -77,6 +77,7 @@ interface SpaceCreateProps {
   feature?: string
   organizationId?: string
   header?: string
+  promptHint?: string
 }
 
 export const spaceCreate = async function (argv: SpaceCreateProps) {
@@ -87,7 +88,8 @@ export const spaceCreate = async function (argv: SpaceCreateProps) {
     yes,
     use,
     header,
-    feature = 'space-create'
+    feature = 'space-create',
+    promptHint
   } = argv
 
   const { managementToken } = context
@@ -108,7 +110,9 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
 
   let confirm = false
   if (!yes) {
-    confirm = await confirmation(`Do you want to confirm the space creation?`)
+    confirm = await confirmation(`Do you want to confirm the space creation?`, {
+      hint: promptHint || 'Pass --yes to skip this confirmation.'
+    })
   } else {
     confirm = true
   }
@@ -149,7 +153,8 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
         )
 
       organizationId = await dispatcher.intent('SELECT_ORG', {
-        organizations: organizationChoices
+        organizations: organizationChoices,
+        hint: promptHint
       })
     }
   }
