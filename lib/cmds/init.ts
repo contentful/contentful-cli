@@ -1,12 +1,8 @@
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
-import greetings from './init/greetings'
-import success from './init/success'
 import { getContext } from '../context'
 import { login } from './login'
 import chalk from 'chalk'
-import { getPreviewApiKey } from './init/apikey'
-import { getSpace } from './init/space'
 import { prompt } from '../utils/actions'
 
 export const command = 'init'
@@ -20,6 +16,11 @@ export const builder = (yargs: Argv) => {
 }
 
 export const init = async () => {
+  const { default: greetings } = await import('./init/greetings')
+  const { default: success } = await import('./init/success')
+  const { getPreviewApiKey } = await import('./init/apikey')
+  const { getSpace } = await import('./init/space')
+
   greetings()
 
   const context = await getContext()

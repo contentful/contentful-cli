@@ -1,4 +1,3 @@
-import open from 'open'
 import chalk from 'chalk'
 
 import { setContext, storeRuntimeConfig } from '../context'
@@ -100,6 +99,7 @@ export const login = async ({
       return
     }
 
+    const { default: open } = await import('open')
     const oAuthURL = getOauthURL(host)
 
     // We open the browser window only on Windows and OSX since this might fail or open the wrong browser on Linux.

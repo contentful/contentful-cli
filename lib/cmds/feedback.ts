@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import open from 'open'
 import { Argv } from 'yargs'
 import { handleAsyncError as handle } from '../utils/async'
 
@@ -18,6 +17,7 @@ export const builder = (yargs: Argv) =>
     )
 
 export const feedback = async () => {
+  const { default: open } = await import('open')
   open('https://87dc93gvoy0.typeform.com/to/d1RgWfZX')
 }
 

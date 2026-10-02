@@ -1,4 +1,3 @@
-import runContentfulImport from 'contentful-import'
 import { handleAsyncError as handle } from '../../utils/async'
 import { proxyObjectToString } from '../../utils/proxy'
 import { version } from '../../../package.json'
@@ -218,6 +217,7 @@ export const importSpace = async (argv: ImportSpaceProps) => {
     options.rawProxy = rawProxy
   }
 
+  const { default: runContentfulImport } = await import('contentful-import')
   return runContentfulImport(options)
 }
 
