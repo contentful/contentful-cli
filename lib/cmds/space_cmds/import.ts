@@ -65,7 +65,8 @@ export const builder = (yargs: Argv) => {
       default: false
     })
     .option('include-experience-orchestration', {
-      describe: 'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
+      describe:
+        'Import Experience Orchestration entities (designTokens, components, experienceTemplates, experienceFragments, dataAssemblies, experiences). Requires a space with ExO enabled.',
       type: 'boolean',
       default: true
     })

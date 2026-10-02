@@ -1,4 +1,8 @@
-import type { SecurityCheck, SecurityContext, SecurityCheckRunResult } from './types'
+import type {
+  SecurityCheck,
+  SecurityContext,
+  SecurityCheckRunResult
+} from './types'
 
 interface AuditLoggingCollectionShape {
   items?: unknown[]
