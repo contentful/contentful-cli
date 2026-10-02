@@ -4,6 +4,9 @@ import { spaceUse } from '../space_cmds/use'
 import initialContent from './content.json'
 import { prompt } from '../../utils/actions'
 
+// init has no flags, so the space commands' flag hints don't apply here
+const promptHint = 'Run `contentful init` in an interactive terminal.'
+
 // TODO: use proper context types
 export const getSpace = async (context: any) => {
   const { newSpace } = await prompt([
@@ -44,7 +47,8 @@ export const getSpace = async (context: any) => {
 
     space = await spaceCreate({
       context,
-      name: spaceName
+      name: spaceName,
+      promptHint
     })
 
     if (content) {
@@ -59,7 +63,7 @@ export const getSpace = async (context: any) => {
       // TODO: log message about adding content model and content
     }
   } else {
-    space = await spaceUse({ context, successMsg: false })
+    space = await spaceUse({ context, successMsg: false, promptHint })
   }
 
   return space

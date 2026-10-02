@@ -30,14 +30,17 @@ test('confirmation is asked again when user denies', async () => {
 describe('prompt with a real readline', () => {
   const inquirer = jest.requireActual('inquirer')
   let input
+  let ui
 
   beforeEach(() => {
     input = new PassThrough()
     const output = new PassThrough()
     output.resume()
-    prompt.mockImplementation(questions =>
-      inquirer.createPromptModule({ input, output })(questions)
-    )
+    prompt.mockImplementation(questions => {
+      const pending = inquirer.createPromptModule({ input, output })(questions)
+      ui = pending.ui
+      return pending
+    })
   })
 
   const question = { type: 'confirm', name: 'ready', message: 'Ready?' }
@@ -65,6 +68,27 @@ describe('prompt with a real readline', () => {
     const pending = promptHelper([question])
     input.end('n\n')
     await expect(pending).resolves.toEqual({ ready: false })
+  })
+
+  test('resolves a piped answer without a trailing newline', async () => {
+    const pending = promptHelper([question])
+    input.end('n')
+    await expect(pending).resolves.toEqual({ ready: false })
+  })
+
+  test('rejects when the readline closes on EOF with stdin still open', async () => {
+    const pending = promptHelper([question])
+    ui.rl.close()
+    await expect(pending).rejects.toThrow(PreconditionFailedError)
+  })
+
+  test('leaves Ctrl+C to inquirer', async () => {
+    const pending = promptHelper([question])
+    const onSettled = jest.fn()
+    pending.then(onSettled, onSettled)
+    ui.close()
+    await new Promise(setImmediate)
+    expect(onSettled).not.toHaveBeenCalled()
   })
 
   test('confirmation forwards the hint', async () => {

@@ -57,13 +57,15 @@ interface SpaceUseProps {
   spaceId?: string
   header?: string
   successMsg?: boolean
+  promptHint?: string
 }
 
 export async function spaceUse({
   context,
   spaceId,
   header,
-  successMsg = true
+  successMsg = true,
+  promptHint = 'Pass --space-id <id> to select a space non-interactively.'
 }: SpaceUseProps) {
   inquirer.registerPrompt('autocomplete', inquirerPrompt)
   const { managementToken, activeEnvironmentId } = context
@@ -109,7 +111,7 @@ export async function spaceUse({
           spaceChoices.filter(space => space.name.includes(input))
       }
     ],
-    { hint: 'Pass --space-id <id> to select a space non-interactively.' }
+    { hint: promptHint }
   )
 
   const space = await client.getSpace(answersSpaceSelection.spaceId)
