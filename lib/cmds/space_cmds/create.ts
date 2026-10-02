@@ -108,7 +108,9 @@ the Pricing page: https://www.contentful.com/pricing/?faq_category=payments&faq=
 
   let confirm = false
   if (!yes) {
-    confirm = await confirmation(`Do you want to confirm the space creation?`)
+    confirm = await confirmation(`Do you want to confirm the space creation?`, {
+      hint: 'Pass --yes to skip this confirmation.'
+    })
   } else {
     confirm = true
   }

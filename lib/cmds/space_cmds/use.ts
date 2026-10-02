@@ -11,6 +11,7 @@ import { highlightStyle } from '../../utils/styles'
 import { getHeadersFromOption } from '../../utils/headers'
 import { copyright } from '../../utils/copyright'
 import { Space } from 'contentful-management'
+import { prompt } from '../../utils/actions'
 
 export const command = 'use'
 
@@ -97,16 +98,19 @@ export async function spaceUse({
       {}
     )
 
-  const answersSpaceSelection = await inquirer.prompt([
-    {
-      type: 'autocomplete',
-      name: 'spaceId',
-      prefix: '👀',
-      message: 'Please select a space:',
-      source: (_: any, input = '') =>
-        spaceChoices.filter(space => space.name.includes(input))
-    }
-  ])
+  const answersSpaceSelection = await prompt(
+    [
+      {
+        type: 'autocomplete',
+        name: 'spaceId',
+        prefix: '👀',
+        message: 'Please select a space:',
+        source: (_: any, input = '') =>
+          spaceChoices.filter(space => space.name.includes(input))
+      }
+    ],
+    { hint: 'Pass --space-id <id> to select a space non-interactively.' }
+  )
 
   const space = await client.getSpace(answersSpaceSelection.spaceId)
 
