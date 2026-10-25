@@ -81,6 +81,17 @@
       "description": "Pinned to v4 — migration to v5+ not yet done",
       "matchPackageNames": ["husky"],
       "allowedVersions": "<5.0.0"
+    },
+    {
+      "description": "ESM-only from v7, do not upgrade until ESM is supported",
+      "matchPackageNames": ["camelcase"],
+      "allowedVersions": "<7.0.0"
+    },
+    {
+      "description": "Never auto-merge major updates. Renovate still opens a PR and runs CI, but it waits for a human to merge.",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "addLabels": ["major-update", "needs-review"]
     }
   ]
 }
