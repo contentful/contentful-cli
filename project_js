@@ -1,0 +1,4 @@
+  "bin": {
+-     "contentful": "bin/contentful.js"
++     "ctfl": "bin/contentful.js"
+  }
